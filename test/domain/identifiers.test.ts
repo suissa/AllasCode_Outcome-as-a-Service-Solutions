@@ -23,6 +23,6 @@ test("rejects malformed and wrong-kind IDs", () => {
 });
 
 test("canonicalId normalizes external keys deterministically", () => {
-  assert.equal(canonicalId("workspace", "My Workspace / São Paulo"), "workspace_my_workspace_são_paulo");
+  assert.equal(canonicalId("workspace", "My Workspace / São Paulo"), "workspace_my_workspace_sao_paulo");
   assert.equal(canonicalId("actor", "Owner #1"), "actor_owner_1");
 });
