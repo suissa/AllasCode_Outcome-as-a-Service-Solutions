@@ -51,3 +51,5 @@ export * from "./security/access-review.ts";
 export * from "./ai/evaluation.ts";
 export * from "./application/outcome-case.ts";
 export * from "./core/atomic-behavior.ts";
+export * from "./diagnosis/root-cause.ts";
+export * from "./solutions/decision.ts";
