@@ -49,3 +49,4 @@ export * from "./security/compliance.ts";
 export * from "./security/ai-guard.ts";
 export * from "./security/access-review.ts";
 export * from "./ai/evaluation.ts";
+export * from "./application/outcome-case.ts";
