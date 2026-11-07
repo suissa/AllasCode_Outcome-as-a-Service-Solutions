@@ -12,7 +12,7 @@ export class BehaviorRejected extends Error{constructor(readonly code:string,rea
 export function runAtomicBehavior<I extends Record<string,unknown>,O>(b:AtomicBehavior<I,O>,input:I,ctx:BehaviorContext):BehaviorResult<O>{
  if(!b.id.trim()||b.version<1)throw new BehaviorRejected("BEHAVIOR_MANIFEST_INVALID","manifest");
  const issues=validateValue(input,b.input,"payload");if(issues.length)throw new BehaviorRejected(issues[0]!.code,issues[0]!.path,issues);
- try{assertTenantScope(ctx.scope,{tenantId:ctx.scope.tenantId})}catch{throw new BehaviorRejected("TENANT_SCOPE_INVALID","context.scope")}
+ try{if(!ctx.scope.actorId||!ctx.scope.correlationId)throw new Error("CONTEXT_REQUIRED");assertTenantScope(ctx.scope,{tenantId:ctx.scope.tenantId})}catch{throw new BehaviorRejected("TENANT_SCOPE_INVALID","context.scope")}
  if(!b.authorize(ctx.scope,input))throw new BehaviorRejected("BEHAVIOR_UNAUTHORIZED","authorization");
  const output=b.execute(input,ctx.scope);
  const audit=createAuditEvent({id:`audit_${b.id}_${ctx.scope.correlationId}`,tenantId:ctx.scope.tenantId,actorId:ctx.scope.actorId,action:b.id,subjectType:"atomic_behavior",subjectId:b.id,correlationId:ctx.scope.correlationId,metadata:{version:b.version}},ctx.now);
