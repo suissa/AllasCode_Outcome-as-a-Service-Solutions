@@ -15,6 +15,6 @@ export function runAtomicBehavior<I extends Record<string,unknown>,O>(b:AtomicBe
  try{assertTenantScope({tenantId:ctx.scope.tenantId},ctx.scope)}catch{throw new BehaviorRejected("TENANT_SCOPE_INVALID","context.scope")}
  if(!b.authorize(ctx.scope,input))throw new BehaviorRejected("BEHAVIOR_UNAUTHORIZED","authorization");
  const output=b.execute(input,ctx.scope);
- const audit=createAuditEvent({tenantId:ctx.scope.tenantId,actorId:ctx.scope.actorId,action:b.id,resourceId:b.id,occurredAt:(ctx.now??new Date()).toISOString(),metadata:{version:b.version}});
+ const audit=createAuditEvent({id:`audit_${b.id}_${ctx.scope.correlationId}`,tenantId:ctx.scope.tenantId,actorId:ctx.scope.actorId,action:b.id,subjectType:"atomic_behavior",subjectId:b.id,correlationId:ctx.scope.correlationId,metadata:{version:b.version}},ctx.now);
  return Object.freeze({output,audit});
 }
