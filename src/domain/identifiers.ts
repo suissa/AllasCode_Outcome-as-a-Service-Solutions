@@ -19,7 +19,7 @@ export interface IdentifierIssue {
   message: string;
 }
 
-const ID_PATTERN = /^[a-z][a-z0-9]*(?:_[a-z0-9]+)*_[a-z0-9]{3,64}$/;
+const ID_PATTERN = /^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/;
 
 export function parseEntityId<K extends EntityKind>(
   kind: K,
@@ -31,7 +31,7 @@ export function parseEntityId<K extends EntityKind>(
       code: "ID_REQUIRED", path, message: "Identifier must be a non-empty string.",
     });
   }
-  if (value !== value.trim() || !ID_PATTERN.test(value)) {
+  if (value !== value.trim() || !ID_PATTERN.test(value) || value.slice(value.indexOf("_") + 1).length < 3 || value.slice(value.indexOf("_") + 1).length > 64) {
     throw new IdentifierValidationError({
       code: "ID_INVALID", path,
       message: "Identifier must be canonical: lowercase namespace and 3–64 lowercase alphanumeric suffix characters separated by underscores.",
