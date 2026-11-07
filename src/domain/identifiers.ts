@@ -7,8 +7,6 @@ export type EntityKind =
   | "outcome" | "initiative" | "capability" | "execution" | "evidence"
   | "contract" | "policy" | "task" | "metric";
 
-export type TenantId = EntityId<"tenant">;
-
 export type EntityId<K extends EntityKind = EntityKind> = string & {
   readonly __entityKind: K;
 };
