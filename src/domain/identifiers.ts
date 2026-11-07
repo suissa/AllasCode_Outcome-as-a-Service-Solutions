@@ -59,7 +59,7 @@ export function canonicalId<K extends EntityKind>(
   kind: K,
   externalKey: string,
 ): EntityId<K> {
-  const normalized = externalKey.normalize("NFKC").trim().toLowerCase()
+  const normalized = externalKey.normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "").trim().toLowerCase()
     .replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
   if (normalized.length < 3) {
     throw new IdentifierValidationError({
