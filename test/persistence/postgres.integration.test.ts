@@ -5,6 +5,7 @@ import { randomUUID } from "node:crypto";
 import postgres from "postgres";
 import { PostgresJsDatabase, PostgresOutcomeStore, type PostgresQueryClient } from "../../src/persistence/postgres-outcome-store.ts";
 import type { OutcomeCase } from "../../src/application/outcome-case.ts";
+import { PostgresWorkflowTaskStore, type DurableTask } from "../../src/execution/durable-runtime.ts";
 const databaseUrl = process.env.DATABASE_URL;
 test("PostgreSQL migration and transactional outcome persistence", { skip: !databaseUrl }, async () => {
   const client = postgres(databaseUrl!, { max: 1 });
@@ -16,6 +17,8 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
   try {
     const migration = await readFile(new URL("../../migrations/0001_outcome_platform.sql", import.meta.url), "utf8");
     await client.unsafe(migration);
+    const workflowMigration = await readFile(new URL("../../migrations/0002_workflow_tasks.sql", import.meta.url), "utf8");
+    await client.unsafe(workflowMigration);
     const initial: OutcomeCase = {
       id: caseId, tenantId, stage: "specified",
       spec: { metric: { id: "metric_it_001", name: "Revenue", unit: "BRL" } as never, baseline: 100, target: 150, direction: "increase", periodStart: "2026-01-01", periodEnd: "2026-02-01", attribution: "direct", approvedBy: "actor_it_001" },
@@ -31,7 +34,19 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     assert.equal((await store.commit(command)).replayed, true);
     assert.equal((await store.auditTrail(tenantId, caseId)).length, 1);
     await assert.rejects(() => store.commit({ ...command, fingerprint: "different" }), /IDEMPOTENCY_CONFLICT/);
+    const taskStore = new PostgresWorkflowTaskStore(db);
+    const workflowId = "workflow_it_" + suffix;
+    const taskId = "task_it_" + suffix;
+    const task: DurableTask = { id: taskId, tenantId, workflowId, dependencies: [], state: "ready", attempt: 0, maxAttempts: 2, timeoutMs: 1000, idempotencyKey: "task_idem_" + suffix, approvalRequired: false, input: {}, version: 1 };
+    await taskStore.createTask(task);
+    assert.equal((await taskStore.getTask(tenantId, taskId))?.state, "ready");
+    const running = { ...task, state: "running" as const, attempt: 1, version: 2 };
+    assert.equal(await taskStore.transition(tenantId, taskId, "ready", running), true);
+    await taskStore.appendEvent({ id: "task_event_" + suffix, tenantId, taskId, kind: "started", actorId: "actor_it_001", occurredAt: new Date().toISOString() });
+    assert.equal((await taskStore.listTasks(tenantId, workflowId)).length, 1);
   } finally {
+    await client.unsafe("delete from workflow_task_events where tenant_id = $1", [tenantId]);
+    await client.unsafe("delete from workflow_tasks where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from outcome_idempotency where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from outcome_audit_events where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from outcome_cases where tenant_id = $1", [tenantId]);
