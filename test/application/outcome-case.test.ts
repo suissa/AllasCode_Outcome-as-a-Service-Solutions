@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {startOutcomeCase,recordOutcomeEvidence,recordObservation,settleOutcomeCase,disputeOutcomeCase,OutcomeCaseError,validateOutcomeCase} from "../../src/application/outcome-case.ts";
+import {startOutcomeCase,recordOutcomeEvidence,recordObservation,settleOutcomeCase,disputeOutcomeCase,OutcomeCaseError,validateOutcomeCase,setControlBaseline,recordControlObservation} from "../../src/application/outcome-case.ts";
 import type {OutcomeCase} from "../../src/application/outcome-case.ts";
 const metric={id:"revenue",name:"Revenue",unit:"BRL",aggregation:"sum" as const,direction:"increase" as const,freshnessMs:86400000,requiredSources:["erp"]};
 const base:OutcomeCase={id:"outcome_growth",tenantId:"tenant_acme",stage:"specified",spec:{metric,baseline:100,target:150,direction:"increase",periodStart:"2026-01-01",periodEnd:"2026-02-01",attribution:"direct",approvedBy:"owner"},evidence:[],observations:[]};
@@ -38,4 +38,18 @@ test("observation validation rejects invalid confidence and duplicate source tim
  assert.throws(()=>recordObservation(c,{...observation,confidence:2}),/OBSERVATION_INVALID/);
  const once=recordObservation(c,observation);
  assert.throws(()=>recordObservation(once,observation),/OBSERVATION_DUPLICATE/);
+});
+
+test("experimental settlement applies difference-in-differences and records attribution",()=>{
+ const experimental={...base,spec:{...base.spec,attribution:"experimental" as const}};
+ let c=startOutcomeCase(experimental);
+ c=recordOutcomeEvidence(c,evidence,"sha256:abc");
+ c=recordObservation(c,observation);
+ assert.throws(()=>settleOutcomeCase(c,0,"difference-in-differences","report_exp"),/CONTROL_GROUP_REQUIRED/);
+ c=setControlBaseline(c,50);
+ c=recordControlObservation(c,{...observation,value:55,sourceId:"control_group"});
+ c=settleOutcomeCase(c,0,"difference-in-differences","report_exp");
+ assert.equal(c.result?.attribution?.adjustedChange,55);
+ assert.equal(c.result?.observed,155);
+ assert.equal(c.result?.achieved,true);
 });
