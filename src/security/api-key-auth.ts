@@ -11,12 +11,12 @@ function constantTimeHexEqual(left:string,right:string):boolean {
 export function createApiKeyAuthenticator(store:ApiKeyStore,now=()=>new Date()):Authenticate {
   return async (request:IncomingMessage):Promise<AuthenticatedActor|undefined>=>{
     const header=request.headers.authorization;
-    if(typeof header!=="string"||!header.startsWith("Bearer "))return undefined;
-    const token=header.slice(7).trim();const separator=token.indexOf(".");
+    if(typeof header!=="string"||!/^Bearer\s+/i.test(header))return undefined;
+    const token=header.replace(/^Bearer\s+/i,"").trim();const separator=token.indexOf(".");
     if(separator<1||separator===token.length-1)return undefined;
     const keyId=token.slice(0,separator);const secret=token.slice(separator+1);
     const record=await store.getKey(keyId);if(!record)return undefined;
-    if(record.revokedAt||record.expiresAt&&Date.parse(record.expiresAt)<=now().getTime())return undefined;
+    if(record.revokedAt||record.expiresAt&&(Number.isNaN(Date.parse(record.expiresAt))||Date.parse(record.expiresAt)<=now().getTime()))return undefined;
     if(!constantTimeHexEqual(record.secretHash,hashApiKeySecret(secret)))return undefined;
     return Object.freeze({tenantId:record.tenantId,actorId:record.actorId,roles:Object.freeze([...record.scopes])});
   };
@@ -39,7 +39,7 @@ export class PostgresApiKeyStore implements ApiKeyStore {
     return {keyId:row.key_id,tenantId:row.tenant_id,actorId:row.actor_id,secretHash:row.secret_hash,scopes:row.scopes,...(date(row.expires_at)?{expiresAt:date(row.expires_at)}:{}),...(date(row.revoked_at)?{revokedAt:date(row.revoked_at)}:{})};
   }
   async createKey(record:ApiKeyRecord):Promise<void>{
-    if(!record.keyId||!record.tenantId||!record.actorId||!/^[a-f0-9]{64}$/i.test(record.secretHash)||!record.scopes.length)throw new Error("API_KEY_RECORD_INVALID");
+    if(!record.keyId||!record.tenantId||!record.actorId||!/^[a-f0-9]{64}$/i.test(record.secretHash)||!record.scopes.length||record.scopes.some(scope=>!scope.trim())||new Set(record.scopes).size!==record.scopes.length||(record.expiresAt&&Number.isNaN(Date.parse(record.expiresAt))))throw new Error("API_KEY_RECORD_INVALID");
     await this.db.query("insert into api_keys (key_id,tenant_id,actor_id,secret_hash,scopes,expires_at,revoked_at) values ($1,$2,$3,$4,$5,$6,$7)",[record.keyId,record.tenantId,record.actorId,record.secretHash,[...record.scopes],record.expiresAt??null,record.revokedAt??null]);
   }
   async revokeKey(tenantId:string,keyId:string,at=new Date()):Promise<boolean>{
