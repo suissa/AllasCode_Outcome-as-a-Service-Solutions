@@ -17,7 +17,7 @@ export function simulateScenario(input:ScenarioSimulationInput):SimulatedScenari
  const netAt=(a:ScenarioAssumption,value:number)=>input.baseBenefit+(value-a.value)*a.benefitPerUnit-input.baseCost-(value-a.value)*a.costPerUnit;
  const sensitivity=input.assumptions.map(a=>({assumption:a.name,netBenefitAtMinimum:netAt(a,a.minimum),netBenefitAtMaximum:netAt(a,a.maximum),impact:Math.abs(netAt(a,a.maximum)-netAt(a,a.minimum))})).sort((a,b)=>b.impact-a.impact);
  const expectedNetBenefit=(benefit.min+benefit.max)/2-(cost.min+cost.max)/2;
- return Object.freeze({id:input.id,assumptions:Object.freeze(Object.fromEntries(input.assumptions.map(a=>[a.name,a.value]))),estimatedBenefit:benefit,estimatedCost:cost,risks:Object.freeze([...input.risks]),confidence:input.confidence,sensitivity:Object.freeze(sensitivity),expectedNetBenefit});
+ return Object.freeze({id:input.id,assumptions:Object.freeze(Object.fromEntries(input.assumptions.map(a=>[a.name,a.value]))),estimatedBenefit:benefit,estimatedCost:cost,risks:[...input.risks],confidence:input.confidence,sensitivity:Object.freeze(sensitivity),expectedNetBenefit});
 }
 export class CapabilityCatalog {
  private readonly versions=new Map<string,Capability[]>();
