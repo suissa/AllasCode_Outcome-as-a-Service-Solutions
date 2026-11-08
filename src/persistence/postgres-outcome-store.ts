@@ -39,15 +39,16 @@ export class PostgresOutcomeStore implements OutcomeStore {
     return Object.freeze(result.rows.map((row) => decodeJson<import("../domain/audit.ts").AuditEvent>(row.payload)));
   }
 }
+export interface PostgresQueryRows<T> extends ReadonlyArray<T> { count?: number }
 export interface PostgresQueryClient {
-  unsafe<T extends Record<string, unknown> = Record<string, unknown>>(sql: string, params?: readonly unknown[]): Promise<readonly T[]>;
+  unsafe<T extends Record<string, unknown> = Record<string, unknown>>(sql: string, params?: readonly unknown[]): Promise<PostgresQueryRows<T>>;
   begin<T>(work: (sql: PostgresTransactionClient) => Promise<T>): Promise<T>;
 }
-export interface PostgresTransactionClient { unsafe<T extends Record<string, unknown> = Record<string, unknown>>(sql: string, params?: readonly unknown[]): Promise<readonly T[]> }
+export interface PostgresTransactionClient { unsafe<T extends Record<string, unknown> = Record<string, unknown>>(sql: string, params?: readonly unknown[]): Promise<PostgresQueryRows<T>> }
 export class PostgresJsDatabase implements SqlDatabase {
   constructor(private readonly client: PostgresQueryClient) {}
   async query<T extends Record<string, unknown>>(sql: string, params: readonly unknown[] = []): Promise<{ rows: T[]; rowCount: number }> {
-    const rows = await this.client.unsafe<T>(sql, params); return { rows: [...rows], rowCount: rows.length };
+    const rows = await this.client.unsafe<T>(sql, params); return { rows: [...rows], rowCount: rows.count ?? rows.length };
   }
   async transaction<T>(work: (tx: SqlExecutor) => Promise<T>): Promise<T> {
     return this.client.begin((client) => work({ query: async <R extends Record<string, unknown>>(sql: string, params: readonly unknown[] = []) => {
