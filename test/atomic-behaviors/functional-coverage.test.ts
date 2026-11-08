@@ -86,9 +86,9 @@ test("operations and security controls require approvals and preserve recoverabi
  assert.throws(()=>decideAccessReview(grant,"user_001","retain","self review"),/ACCESS_REVIEW_INDEPENDENT_REQUIRED/);
  assert.throws(()=>authorizeExport({tenantId:"tenant_001",requestedBy:"owner",purpose:"DSAR",includePersonalData:true}),/PERSONAL_DATA_EXPORT_APPROVAL_REQUIRED/);
  assert.equal(authorizeExport({tenantId:"tenant_001",requestedBy:"owner",purpose:"DSAR",includePersonalData:true,approvedBy:"privacy_officer"}).approvedBy,"privacy_officer");
- const backup={id:"backup_001",tenantId:"tenant_001",createdAt:"2026-11-08T00:00:00Z",formatVersion:"1",contentHash:"sha256:ok",sizeBytes:20,scope:["tenant"]};
- assert.equal(restoreBackup(backup,"sha256:bad").restored,false);
- assert.equal(restoreBackup(backup,"sha256:ok").restored,true);
+ const backup={id:"backup_001",tenantId:"tenant_001",createdAt:"2026-11-08T00:00:00Z",formatVersion:"1",contentHash:"a".repeat(64),sizeBytes:20,scope:["tenant"]};
+ assert.equal((await restoreBackup(backup,"b".repeat(64),{restore:async()=>{}})).restored,false);
+ let restored=false;assert.equal((await restoreBackup(backup,"a".repeat(64),{restore:async()=>{restored=true;}})).restored,true);assert.equal(restored,true);
  assert.equal(aggregateHealth([{name:"db",status:"healthy",checkedAt:"2026-11-08T00:00:00Z",latencyMs:2},{name:"queue",status:"degraded",checkedAt:"2026-11-08T00:00:00Z",latencyMs:10}]),"degraded");
  const incident={id:"incident_001",tenantId:"tenant_001",severity:"sev2" as const,summary:"API outage",occurredAt:"2026-11-08T00:00:00Z",status:"open" as const,lessons:[]};
  assert.equal(transitionIncident(incident,"investigating").status,"investigating");
