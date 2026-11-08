@@ -32,7 +32,7 @@ test("Postgres store commits state, audit and idempotency in one transaction", a
   const store = new PostgresOutcomeStore(db); const value = makeCase();
   const result = await store.commit({ tenantId: value.tenantId, caseId: value.id, idempotencyKey: "idem_demo_001", fingerprint: "start", value, audit: makeAudit() });
   assert.equal(result.replayed, false); assert.equal(statements.length, 5);
-  assert.match(statements[2]!, /outcome_audit_events/); assert.match(statements[3]!, /outcome_idempotency/);
+  assert.match(statements[3]!, /outcome_audit_events/); assert.match(statements[4]!, /outcome_idempotency/);
 });
 test("Postgres store rejects idempotency key reuse with a different fingerprint", async () => {
   const tx: SqlExecutor = { query: async <T extends Record<string, unknown>>(statement: string) => statement.includes("select fingerprint")
