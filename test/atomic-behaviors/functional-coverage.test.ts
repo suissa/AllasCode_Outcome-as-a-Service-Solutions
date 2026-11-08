@@ -9,7 +9,7 @@ import { recordAgreementSignature, activateSignedAgreement, createAgreementPropo
 import { calculateOutcomeFee } from "../../src/commercial/outcome-fee.ts";
 import { recordDecision } from "../../src/solutions/decision.ts";
 import { CapabilityCatalog, simulateScenario, generateScenarios } from "../../src/solutions/catalog.ts";
-import { verifyPlaybook } from "../../src/solutions/playbook.ts";
+import { verifyPlaybook, improvePlaybookFromEvidence, PlaybookRegistry } from "../../src/solutions/playbook.ts";
 import { PolicyRegistry } from "../../src/domain/policy.ts";
 import { createInvitation, acceptInvitation, revokeMembership, WorkspaceRegistry } from "../../src/platform/workspace.ts";
 import { recoveryDecision, evaluateFlag, validateFlag } from "../../src/operations/recovery.ts";
@@ -183,4 +183,12 @@ test("customer report links only tenant-authorized evidence with short-lived HTT
  assert.equal(report.evidenceLinks?.length,1);assert.match(report.evidenceLinks?.[0]?.url??"",/^https:/);
  await assert.rejects(()=>buildOutcomeReportWithLinks(input,[{...evidence,tenantId:"tenant_other"}],{tenantId:"tenant_001",actorId:"customer_001",purpose:"report",allowedClassifications:["public"]},async()=>"https://evidence.example.com/link"),/REPORT_EVIDENCE_NOT_FOUND/);
  await assert.rejects(()=>buildOutcomeReportWithLinks(input,[evidence],{tenantId:"tenant_001",actorId:"customer_001",purpose:"report",allowedClassifications:["public"]},async()=>"http://unsafe.example.com/link"),/REPORT_EVIDENCE_LINK_INVALID/);
+});
+
+test("playbook improvement publishes a new version only with verified evidence",async()=>{
+ const base=verifyPlaybook({id:"playbook_evolve_001",version:1,name:"Lead qualification",steps:[{behaviorId:"behavior_001",inputSchema:"in.v1",outputSchema:"out.v1",approvalRequired:false}],evidenceBasis:["evidence_001"]},"reviewer");
+ const registry=new PlaybookRegistry();registry.register(base);
+ await assert.rejects(()=>improvePlaybookFromEvidence(base,[...base.steps,{behaviorId:"behavior_002",inputSchema:"in.v1",outputSchema:"out.v1",approvalRequired:true}],["evidence_unverified"],"reviewer",async()=>false),/PLAYBOOK_EVIDENCE_UNVERIFIED/);
+ const improved=await improvePlaybookFromEvidence(base,[...base.steps,{behaviorId:"behavior_002",inputSchema:"in.v1",outputSchema:"out.v1",approvalRequired:true}],["evidence_002"],"reviewer",async()=>true);
+ registry.publish(improved);assert.equal(registry.current(base.id).version,2);assert.equal(registry.history(base.id).length,2);
 });
