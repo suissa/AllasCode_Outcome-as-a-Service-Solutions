@@ -30,7 +30,7 @@ export class PostgresWorkflowTaskStore implements WorkflowTaskStore {
     const r=await this.db.query<{payload:DurableTask}>("select payload from workflow_tasks where tenant_id=$1 and workflow_id=$2 order by task_id",[tenantId,workflowId]);return Object.freeze(r.rows.map(x=>decodeTask(x.payload)));
   }
   async transition(tenantId:string,taskId:string,expected:DurableTaskState,next:DurableTask):Promise<boolean>{
-    const r=await this.db.query("update workflow_tasks set state=$4,payload=$5::jsonb,version=version+1,updated_at=now() where tenant_id=$1 and task_id=$2 and state=$3",[tenantId,taskId,expected,next.state,JSON.stringify({...next,version:next.version+1})]);return r.rowCount===1;
+    const r=await this.db.query("update workflow_tasks set state=$4,payload=$5::jsonb,version=version+1,updated_at=now() where tenant_id=$1 and task_id=$2 and state=$3",[tenantId,taskId,expected,next.state,JSON.stringify(next)]);return r.rowCount===1;
   }
   async appendEvent(event:WorkflowTaskEvent):Promise<void>{
     await this.db.query("insert into workflow_task_events (tenant_id,task_id,event_id,payload) values ($1,$2,$3,$4::jsonb)",[event.tenantId,event.taskId,event.id,JSON.stringify(event)]);
