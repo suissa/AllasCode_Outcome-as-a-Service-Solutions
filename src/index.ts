@@ -55,3 +55,8 @@ export * from "./diagnosis/root-cause.ts";
 export * from "./solutions/decision.ts";
 
 export * from "./application/platform.ts";
+
+export * from "./persistence/sql.ts";
+export * from "./persistence/outcome-store.ts";
+export * from "./persistence/postgres-outcome-store.ts";
+export * from "./http/server.ts";
