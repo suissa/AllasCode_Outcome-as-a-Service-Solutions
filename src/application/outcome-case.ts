@@ -5,6 +5,7 @@ import type { EvidenceRecord } from "../evidence/evidence.ts";
 import { verifyEvidence } from "../evidence/evidence.ts";
 import type { OutcomeReport } from "../reporting/report.ts";
 import { buildOutcomeReport } from "../reporting/report.ts";
+import { attributeOutcome } from "../outcomes/attribution.ts";
 
 export type CaseStage = "specified" | "active" | "measured" | "settled" | "disputed";
 export interface OutcomeCase {
@@ -14,6 +15,7 @@ export interface OutcomeCase {
   readonly spec: OutcomeSpec;
   readonly evidence: readonly EvidenceRecord[];
   readonly observations: readonly Observation[];
+  readonly attributionData?: { controlBaseline: number; controlObservations: readonly Observation[] };
   readonly result?: OutcomeResult;
   readonly report?: OutcomeReport;
 }
@@ -68,12 +70,32 @@ export function recordObservation(c: OutcomeCase, o: Observation): OutcomeCase {
     throw new OutcomeCaseError("OBSERVATION_DUPLICATE", "observation");
   return Object.freeze({...c,observations:Object.freeze([...c.observations,o])});
 }
+export function setControlBaseline(c: OutcomeCase, value: number): OutcomeCase {
+  if (c.stage !== "active") throw new OutcomeCaseError("CASE_NOT_ACTIVE", "stage");
+  if (c.spec.attribution !== "experimental") throw new OutcomeCaseError("CONTROL_GROUP_NOT_DECLARED", "spec.attribution");
+  if (!Number.isFinite(value)) throw new OutcomeCaseError("CONTROL_BASELINE_INVALID", "attributionData.controlBaseline");
+  return Object.freeze({ ...c, attributionData: { controlBaseline: value, controlObservations: c.attributionData?.controlObservations ?? [] } });
+}
+export function recordControlObservation(c: OutcomeCase, o: Observation): OutcomeCase {
+  if (c.stage !== "active") throw new OutcomeCaseError("CASE_NOT_ACTIVE", "stage");
+  if (c.spec.attribution !== "experimental") throw new OutcomeCaseError("CONTROL_GROUP_NOT_DECLARED", "spec.attribution");
+  if (!c.attributionData) throw new OutcomeCaseError("CONTROL_BASELINE_REQUIRED", "attributionData.controlBaseline");
+  if (o.metricId !== c.spec.metric.id || o.unit !== c.spec.metric.unit) throw new OutcomeCaseError("OBSERVATION_METRIC_MISMATCH", "controlObservation");
+  if (!Number.isFinite(o.value) || !Number.isFinite(o.confidence) || o.confidence < 0 || o.confidence > 1 || !o.sourceId || Number.isNaN(Date.parse(o.observedAt))) throw new OutcomeCaseError("OBSERVATION_INVALID", "controlObservation");
+  if (c.attributionData.controlObservations.some(x => x.sourceId === o.sourceId && x.observedAt === o.observedAt)) throw new OutcomeCaseError("OBSERVATION_DUPLICATE", "controlObservation");
+  return Object.freeze({ ...c, attributionData: { ...c.attributionData, controlObservations: Object.freeze([...c.attributionData.controlObservations, o]) } });
+}
 export function settleOutcomeCase(c: OutcomeCase, observationIndex: number, methodology: string, reportId: string, now = new Date()): OutcomeCase {
   if (c.stage !== "active") throw new OutcomeCaseError("CASE_NOT_ACTIVE", "stage");
   const observation=c.observations[observationIndex];
   if (!observation) throw new OutcomeCaseError("OBSERVATION_NOT_FOUND", "observationIndex");
   if (!c.evidence.length) throw new OutcomeCaseError("EVIDENCE_REQUIRED", "evidence");
-  const result=calculateOutcome(c.spec,observation);
+  const controlValues = c.attributionData?.controlObservations ?? [];
+  if (c.spec.attribution === "experimental" && (!c.attributionData || !controlValues.length)) throw new OutcomeCaseError("CONTROL_GROUP_REQUIRED", "attributionData");
+  const controlObserved = controlValues.length ? controlValues.reduce((sum, item) => sum + item.value, 0) / controlValues.length : undefined;
+  const attribution = attributeOutcome({ baseline: c.spec.baseline, observed: observation.value, method: c.spec.attribution, confidence: observation.confidence, ...(c.attributionData ? { controlBaseline: c.attributionData.controlBaseline } : {}), ...(controlObserved !== undefined ? { controlObserved } : {}) });
+  const adjustedObservation = { ...observation, value: c.spec.baseline + attribution.adjustedChange };
+  const result=Object.freeze({ ...calculateOutcome(c.spec,adjustedObservation), attribution });
   const report=buildOutcomeReport({id:reportId,tenantId:c.tenantId,outcomeId:c.id,result,evidenceIds:c.evidence.map(e=>e.id),methodology,limitations:[]},now);
   return Object.freeze({...c,stage:"settled",result,report});
 }
