@@ -39,7 +39,7 @@ export class PostgresApiKeyStore implements ApiKeyStore {
     return {keyId:row.key_id,tenantId:row.tenant_id,actorId:row.actor_id,secretHash:row.secret_hash,scopes:row.scopes,...(date(row.expires_at)?{expiresAt:date(row.expires_at)}:{}),...(date(row.revoked_at)?{revokedAt:date(row.revoked_at)}:{})};
   }
   async createKey(record:ApiKeyRecord):Promise<void>{
-    if(!record.keyId||!record.tenantId||!record.actorId||!constantTimeHexEqual(record.secretHash,record.secretHash)||!record.scopes.length)throw new Error("API_KEY_RECORD_INVALID");
+    if(!record.keyId||!record.tenantId||!record.actorId||!/^[a-f0-9]{64}$/i.test(record.secretHash)||!record.scopes.length)throw new Error("API_KEY_RECORD_INVALID");
     await this.db.query("insert into api_keys (key_id,tenant_id,actor_id,secret_hash,scopes,expires_at,revoked_at) values ($1,$2,$3,$4,$5,$6,$7)",[record.keyId,record.tenantId,record.actorId,record.secretHash,[...record.scopes],record.expiresAt??null,record.revokedAt??null]);
   }
   async revokeKey(tenantId:string,keyId:string,at=new Date()):Promise<boolean>{
