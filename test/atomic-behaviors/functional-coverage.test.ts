@@ -28,7 +28,7 @@ test("approval and deliverable acceptance enforce independent human evidence",()
 });
 test("connector contract requires bounded, contextual idempotent execution",()=>{
  const manifest={id:"connector_001",version:"1",name:"CRM",capabilities:["customer.read"],timeoutMs:1000,maxRetries:2,idempotent:true,allowedHosts:["crm.example.com"]};
- assert.throws(()=>validateConnectorRequest(manifest,{tenantId:"",actorId:"actor",operation:"read",payload:{},idempotencyKey:"idem",correlationId:"corr"}),/CONNECTOR_CONTEXT_REQUIRED/);
+ assert.throws(()=>validateConnectorRequest(manifest,{tenantId:"",actorId:"actor",operation:"customer.read",payload:{},idempotencyKey:"idem",correlationId:"corr"}),/CONNECTOR_CONTEXT_REQUIRED/);
  assert.doesNotThrow(()=>validateConnectorRequest(manifest,{tenantId:"tenant",actorId:"actor",operation:"read",payload:{},idempotencyKey:"idem",correlationId:"corr"}));
 });
 test("commercial metering and outcome fee apply deterministic caps and direction",()=>{
