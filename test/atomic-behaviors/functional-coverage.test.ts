@@ -17,6 +17,7 @@ import { validateBackup, verifyBackup, authorizeExport, restoreBackup } from "..
 import { aggregateHealth } from "../../src/operations/health.ts";
 import { rotateSecretReference } from "../../src/security/secret-reference.ts";
 import { decideAccessReview } from "../../src/security/access-review.ts";
+import { reviewControl } from "../../src/security/compliance.ts";
 import { submitFeedback, transitionIncident } from "../../src/operations/feedback.ts";
 import { createCalculationSnapshot, snapshotFingerprint } from "../../src/reporting/snapshot.ts";
 import { buildOutcomeReportWithLinks } from "../../src/reporting/report.ts";
@@ -191,4 +192,11 @@ test("playbook improvement publishes a new version only with verified evidence",
  await assert.rejects(()=>improvePlaybookFromEvidence(base,[...base.steps,{behaviorId:"behavior_002",inputSchema:"in.v1",outputSchema:"out.v1",approvalRequired:true}],["evidence_unverified"],"reviewer",async()=>false),/PLAYBOOK_EVIDENCE_UNVERIFIED/);
  const improved=await improvePlaybookFromEvidence(base,[...base.steps,{behaviorId:"behavior_002",inputSchema:"in.v1",outputSchema:"out.v1",approvalRequired:true}],["evidence_002"],"reviewer",async()=>true);
  registry.publish(improved);assert.equal(registry.current(base.id).version,2);assert.equal(registry.history(base.id).length,2);
+});
+
+test("compliance evidence cannot be self-reviewed or marked implemented without proof",()=>{
+ const evidence={controlId:"LGPD-ACCESS-001",tenantId:"tenant_001",status:"implemented" as const,evidenceIds:["evidence_001"],preparedBy:"security_engineer",notes:"Access reviews are recorded"};
+ assert.throws(()=>reviewControl({...evidence,evidenceIds:[]},"auditor"),/CONTROL_EVIDENCE_INVALID/);
+ assert.throws(()=>reviewControl(evidence,"security_engineer"),/CONTROL_REVIEW_INDEPENDENT_REQUIRED/);
+ assert.equal(reviewControl(evidence,"auditor").reviewedBy,"auditor");
 });
