@@ -7,7 +7,7 @@ const initial:OutcomeCase={id:"case1",tenantId:"tenantA",stage:"specified",spec:
 const ctx=(key:string,tenantId="tenantA"):CommandContext=>({tenantId,actorId:"owner",correlationId:"corr-"+key,idempotencyKey:key});
 test("platform runs approved case to settlement with tenant-isolated audit",()=>{
  const p=new OutcomePlatform();p.register(initial);assert.equal(p.start(ctx("start"),"case1").value.stage,"active");
- const ev={id:"ev1",tenantId:"tenantA",kind:"document",uri:"evidence://1",hash:"abc",capturedAt:"2026-01-02",sourceId:"ledger"} as any;
+ const ev={id:"ev1",tenantId:"tenantA",sourceId:"ledger",contentHash:"abc",capturedAt:"2026-01-02",classification:"internal"} as any;
  p.addEvidence(ctx("evidence"),"case1",ev,"abc");
  p.observe(ctx("observe"),"case1",{metricId:"revenue",value:160,unit:"BRL",observedAt:"2026-02-01",confidence:0.95,sourceId:"ledger"});
  const settled=p.settle(ctx("settle"),"case1",0,"ledger reconciliation","report1").value;
