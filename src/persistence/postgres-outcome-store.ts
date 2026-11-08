@@ -16,6 +16,7 @@ export class PostgresOutcomeStore implements OutcomeStore {
   }
   async commit(command: CommitCommand): Promise<CommitResult> {
     return this.db.transaction(async (tx) => {
+      await tx.query("select pg_advisory_xact_lock(hashtextextended($1, 0))", [command.tenantId + ":" + command.idempotencyKey]);
       const prior = await tx.query<IdempotencyRow>("select fingerprint, result from outcome_idempotency where tenant_id = $1 and idempotency_key = $2 for update", [command.tenantId, command.idempotencyKey]);
       const replay = prior.rows[0];
       if (replay) {
