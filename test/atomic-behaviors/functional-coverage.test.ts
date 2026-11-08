@@ -78,7 +78,7 @@ test("confidence interval requires sufficient sample and states approximation me
  assert.ok(interval.lower<10&&interval.upper>10); assert.equal(interval.method,"normal-approximation");
 });
 
-test("operations and security controls require approvals and preserve recoverability",()=>{
+test("operations and security controls require approvals and preserve recoverability",async()=>{
  const secret=rotateSecretReference({provider:"vault",key:"tenant/key",version:"v1"},"v2","security_owner");
  assert.equal(secret.current.version,"v2"); assert.equal(secret.revokePrevious,true);
  const grant={actorId:"user_001",tenantId:"tenant_001",resourceId:"case_001",permissions:["read","approve"],grantedBy:"owner",grantedAt:"2026-11-08T00:00:00Z"};
