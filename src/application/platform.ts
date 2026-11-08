@@ -29,7 +29,7 @@ export class OutcomePlatform {
   get(tenantId:string,id:string):OutcomeCase{const c=this.cases.get(`${tenantId}:${id}`);if(!c)throw new PlatformError("CASE_NOT_FOUND");return c}
   start(ctx:CommandContext,id:string){return this.command(ctx,"case.start",id,"start",()=>startOutcomeCase(this.get(ctx.tenantId,id)))}
   addEvidence(ctx:CommandContext,id:string,e:EvidenceRecord,hash:string){return this.command(ctx,"case.evidence",id,`evidence:${e.id}:${hash}`,()=>recordOutcomeEvidence(this.get(ctx.tenantId,id),e,hash))}
-  observe(ctx:CommandContext,id:string,o:Observation){return this.command(ctx,"case.observe",id,`observe:${o.metricId}:${o.timestamp}:${o.value}`,()=>recordObservation(this.get(ctx.tenantId,id),o))}
+  observe(ctx:CommandContext,id:string,o:Observation){return this.command(ctx,"case.observe",id,`observe:${o.metricId}:${o.observedAt}:${o.value}`,()=>recordObservation(this.get(ctx.tenantId,id),o))}
   settle(ctx:CommandContext,id:string,index:number,methodology:string,reportId:string,now=new Date()){return this.command(ctx,"case.settle",id,`settle:${index}:${methodology}:${reportId}`,()=>settleOutcomeCase(this.get(ctx.tenantId,id),index,methodology,reportId,now))}
   dispute(ctx:CommandContext,id:string,reason:string){return this.command(ctx,"case.dispute",id,`dispute:${reason}`,()=>disputeOutcomeCase(this.get(ctx.tenantId,id),reason))}
   auditTrail(tenantId:string):readonly AuditEvent[]{return Object.freeze(this.audits.filter(a=>a.tenantId===tenantId))}
