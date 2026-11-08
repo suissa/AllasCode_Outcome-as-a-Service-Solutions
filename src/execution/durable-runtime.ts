@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { SqlDatabase } from "../persistence/sql.ts";
-export type DurableTaskState = "ready"|"running"|"awaiting_approval"|"succeeded"|"failed"|"cancelled";
+export type DurableTaskState = "ready"|"running"|"awaiting_approval"|"paused"|"blocked"|"succeeded"|"failed"|"cancelled";
 export interface DurableTask {
   id: string; tenantId: string; workflowId: string; dependencies: readonly string[];
   state: DurableTaskState; attempt: number; maxAttempts: number; timeoutMs: number;
@@ -66,7 +66,7 @@ export class DurableWorkflowRuntime {
       await this.event(succeeded,"succeeded",actorId);return succeeded;
     }catch(error){
       const latest = await this.store.getTask(tenantId,taskId);
-      if(latest?.state==="cancelled")return latest;
+      if(latest?.state==="cancelled"||latest?.state==="paused"||latest?.state==="blocked")return latest;
       if(compensate){try{await compensate(running,error);}catch{error=new WorkflowRuntimeError("TASK_COMPENSATION_FAILED");}}
       const code=error instanceof Error?error.message:"TASK_EXECUTION_FAILED";
       const failed={...running,state:"failed" as const,errorCode:code,version:running.version+1};
@@ -89,6 +89,40 @@ export class DurableWorkflowRuntime {
     const { errorCode: _errorCode, ...withoutError } = task; const next={...withoutError,state:"ready" as const,version:task.version+1};
     if(!await this.store.transition(tenantId,taskId,"failed",next))throw new WorkflowRuntimeError("TASK_STATE_CONFLICT");
     await this.event(next,"retry_scheduled",actorId);return next;
+  }
+  async pause(tenantId:string,taskId:string,actorId:string,reason:string):Promise<DurableTask>{
+    if(!actorId||!reason.trim())throw new WorkflowRuntimeError("PAUSE_METADATA_REQUIRED");
+    const task=await this.store.getTask(tenantId,taskId);if(!task)throw new WorkflowRuntimeError("TASK_NOT_FOUND");
+    if(task.state!=="running")throw new WorkflowRuntimeError("TASK_NOT_RUNNING");
+    this.controllers.get(tenantId+":"+taskId)?.abort();
+    const next={...task,state:"paused" as const,version:task.version+1};
+    if(!await this.store.transition(tenantId,taskId,"running",next))throw new WorkflowRuntimeError("TASK_STATE_CONFLICT");
+    await this.event(next,"paused",actorId,{reason});return next;
+  }
+  async resume(tenantId:string,taskId:string,actorId:string,reason:string):Promise<DurableTask>{
+    if(!actorId||!reason.trim())throw new WorkflowRuntimeError("RESUME_METADATA_REQUIRED");
+    const task=await this.store.getTask(tenantId,taskId);if(!task)throw new WorkflowRuntimeError("TASK_NOT_FOUND");
+    if(task.state!=="paused")throw new WorkflowRuntimeError("TASK_NOT_PAUSED");
+    const next={...task,state:"ready" as const,version:task.version+1};
+    if(!await this.store.transition(tenantId,taskId,"paused",next))throw new WorkflowRuntimeError("TASK_STATE_CONFLICT");
+    await this.event(next,"resumed",actorId,{reason});return next;
+  }
+  async block(tenantId:string,taskId:string,actorId:string,reason:string):Promise<DurableTask>{
+    if(!actorId||!reason.trim())throw new WorkflowRuntimeError("BLOCK_METADATA_REQUIRED");
+    const task=await this.store.getTask(tenantId,taskId);if(!task)throw new WorkflowRuntimeError("TASK_NOT_FOUND");
+    if(!["ready","running","awaiting_approval"].includes(task.state))throw new WorkflowRuntimeError("TASK_CANNOT_BLOCK");
+    if(task.state==="running")this.controllers.get(tenantId+":"+taskId)?.abort();
+    const next={...task,state:"blocked" as const,version:task.version+1};
+    if(!await this.store.transition(tenantId,taskId,task.state,next))throw new WorkflowRuntimeError("TASK_STATE_CONFLICT");
+    await this.event(next,"escalated_to_human",actorId,{reason});return next;
+  }
+  async unblock(tenantId:string,taskId:string,actorId:string,resolution:string):Promise<DurableTask>{
+    if(!actorId||!resolution.trim())throw new WorkflowRuntimeError("UNBLOCK_METADATA_REQUIRED");
+    const task=await this.store.getTask(tenantId,taskId);if(!task)throw new WorkflowRuntimeError("TASK_NOT_FOUND");
+    if(task.state!=="blocked")throw new WorkflowRuntimeError("TASK_NOT_BLOCKED");
+    const next={...task,state:"ready" as const,version:task.version+1};
+    if(!await this.store.transition(tenantId,taskId,"blocked",next))throw new WorkflowRuntimeError("TASK_STATE_CONFLICT");
+    await this.event(next,"human_resolution_recorded",actorId,{resolution});return next;
   }
   async cancel(tenantId:string,taskId:string,actorId:string):Promise<DurableTask>{
     const task=await this.store.getTask(tenantId,taskId);if(!task)throw new WorkflowRuntimeError("TASK_NOT_FOUND");
