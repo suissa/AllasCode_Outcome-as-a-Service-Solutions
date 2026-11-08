@@ -13,7 +13,7 @@ function makeAudit(): AuditEvent {
 test("Postgres store scopes reads by tenant and case", async () => {
   let sql = "";
   const db: SqlDatabase = {
-    query: async <T extends Record<string, unknown>>(statement: string) => { sql = statement; return { rows: [{ payload: makeCase(), version: 1 }] as unknown as T[], rowCount: 1 }; },
+    query: async <T extends Record<string, unknown>>(statement: string) => { sql = statement; return { rows: [{ payload: makeCase(), version: 1 }] as unknown as unknown as T[], rowCount: 1 }; },
     transaction: async <T>(work: (tx: SqlExecutor) => Promise<T>) => work(db),
   };
   const store = new PostgresOutcomeStore(db);
@@ -24,9 +24,9 @@ test("Postgres store commits state, audit and idempotency in one transaction", a
   const statements: string[] = [];
   const tx: SqlExecutor = { query: async <T extends Record<string, unknown>>(statement: string) => {
     statements.push(statement);
-    if (statement.includes("select fingerprint")) return { rows: [] as T[], rowCount: 0 };
-    if (statement.includes("select payload, version")) return { rows: [{ payload: makeCase(), version: 1 }] as T[], rowCount: 1 };
-    return { rows: [] as T[], rowCount: 1 };
+    if (statement.includes("select fingerprint")) return { rows: [] as unknown as T[], rowCount: 0 };
+    if (statement.includes("select payload, version")) return { rows: [{ payload: makeCase(), version: 1 }] as unknown as T[], rowCount: 1 };
+    return { rows: [] as unknown as T[], rowCount: 1 };
   } };
   const db: SqlDatabase = { query: tx.query, transaction: async <T>(work: (executor: SqlExecutor) => Promise<T>) => work(tx) };
   const store = new PostgresOutcomeStore(db); const value = makeCase();
@@ -36,8 +36,8 @@ test("Postgres store commits state, audit and idempotency in one transaction", a
 });
 test("Postgres store rejects idempotency key reuse with a different fingerprint", async () => {
   const tx: SqlExecutor = { query: async <T extends Record<string, unknown>>(statement: string) => statement.includes("select fingerprint")
-    ? { rows: [{ fingerprint: "original", result: makeCase() }] as T[], rowCount: 1 }
-    : { rows: [] as T[], rowCount: 0 } };
+    ? { rows: [{ fingerprint: "original", result: makeCase() }] as unknown as T[], rowCount: 1 }
+    : { rows: [] as unknown as T[], rowCount: 0 } };
   const db: SqlDatabase = { query: tx.query, transaction: async <T>(work: (executor: SqlExecutor) => Promise<T>) => work(tx) };
   const store = new PostgresOutcomeStore(db);
   await assert.rejects(() => store.commit({ tenantId: "tenant_demo_001", caseId: "outcome_demo_001", idempotencyKey: "idem_demo_001", fingerprint: "different", value: makeCase(), audit: makeAudit() }), /IDEMPOTENCY_CONFLICT/);
