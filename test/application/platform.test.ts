@@ -2,14 +2,14 @@ import {test} from "node:test";import assert from "node:assert/strict";
 import {OutcomePlatform,PlatformError} from "../../src/application/platform.ts";
 import type {OutcomeCase} from "../../src/application/outcome-case.ts";
 import type {CommandContext} from "../../src/application/platform.ts";
-const metric={id:"revenue",name:"Revenue",unit:"BRL",aggregation:"sum" as const};
+const metric={id:"revenue",name:"Revenue",unit:"BRL",aggregation:"sum" as const,direction:"increase" as const,freshnessMs:86400000,requiredSources:["ledger"]};
 const initial:OutcomeCase={id:"case1",tenantId:"tenantA",stage:"specified",spec:{metric,baseline:100,target:150,direction:"increase",periodStart:"2026-01-01",periodEnd:"2026-02-01",attribution:"direct",approvedBy:"owner"},evidence:[],observations:[]};
 const ctx=(key:string,tenantId="tenantA"):CommandContext=>({tenantId,actorId:"owner",correlationId:"corr-"+key,idempotencyKey:key});
 test("platform runs approved case to settlement with tenant-isolated audit",()=>{
  const p=new OutcomePlatform();p.register(initial);assert.equal(p.start(ctx("start"),"case1").value.stage,"active");
- const ev={id:"ev1",tenantId:"tenantA",kind:"document",uri:"evidence://1",hash:"abc",capturedAt:"2026-01-02",source:"ledger"} as any;
+ const ev={id:"ev1",tenantId:"tenantA",kind:"document",uri:"evidence://1",hash:"abc",capturedAt:"2026-01-02",sourceId:"ledger"} as any;
  p.addEvidence(ctx("evidence"),"case1",ev,"abc");
- p.observe(ctx("observe"),"case1",{metricId:"revenue",value:160,unit:"BRL",timestamp:"2026-02-01",confidence:0.95,source:"ledger"});
+ p.observe(ctx("observe"),"case1",{metricId:"revenue",value:160,unit:"BRL",observedAt:"2026-02-01",confidence:0.95,source:"ledger"});
  const settled=p.settle(ctx("settle"),"case1",0,"ledger reconciliation","report1").value;
  assert.equal(settled.stage,"settled");assert.equal(settled.result?.achieved,true);assert.equal(settled.report?.evidenceIds[0],"ev1");
  assert.equal(p.auditTrail("tenantA").length,4);assert.equal(p.auditTrail("tenantB").length,0);
