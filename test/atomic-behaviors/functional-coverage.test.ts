@@ -5,7 +5,7 @@ import { evaluateAcceptance } from "../../src/execution/acceptance.ts";
 import { validateConnectorRequest, dispatchConnector } from "../../src/integrations/connector.ts";
 import { priceUsage } from "../../src/commercial/metering.ts";
 import { buildInvoice, issueInvoice, recordInvoicePayment, refundInvoice, disputeInvoice } from "../../src/commercial/invoice.ts";
-import { recordAgreementSignature, activateSignedAgreement } from "../../src/commercial/agreement.ts";
+import { recordAgreementSignature, activateSignedAgreement, createAgreementProposal } from "../../src/commercial/agreement.ts";
 import { calculateOutcomeFee } from "../../src/commercial/outcome-fee.ts";
 import { recordDecision } from "../../src/solutions/decision.ts";
 import { verifyPlaybook } from "../../src/solutions/playbook.ts";
@@ -140,4 +140,11 @@ test("agreement activation requires verified signatures from every required sign
  await assert.rejects(()=>Promise.resolve(activateSignedAgreement(first,["owner","customer"])),/AGREEMENT_SIGNATURES_INCOMPLETE/);
  const second=await recordAgreementSignature(first,signature("customer"),async()=>true);
  assert.equal(activateSignedAgreement(second,["owner","customer"]).status,"active");
+});
+
+test("proposal is generated only from a selected evidence-backed solution decision",()=>{
+ const decision={id:"decision_proposal_001",tenantId:"tenant_001",outcomeId:"outcome_001",decidedBy:"owner_001",decidedAt:"2026-11-08T00:00:00Z",selectedScenarioId:"scenario_001",rejectedScenarioIds:[],rationale:"Evidence-backed expected value",criteria:{netBenefit:1},evidenceIds:["evidence_001"],status:"selected" as const};
+ const proposal=createAgreementProposal({id:"proposal_001",version:1,decision,scenarioId:"scenario_001",scope:["sales funnel"],deliverables:["new qualification workflow"],exclusions:["paid media"],fees:[{id:"fixed",kind:"fixed",currency:"BRL",amount:5000}]});
+ assert.equal(proposal.status,"draft");assert.equal(proposal.sourceDecisionId,decision.id);assert.deepEqual(proposal.evidenceIds,["evidence_001"]);
+ assert.throws(()=>createAgreementProposal({id:"proposal_002",version:1,decision,scenarioId:"another_scenario",scope:["x"],deliverables:["y"],exclusions:[],fees:[]}),/PROPOSAL_DECISION_MISMATCH/);
 });
