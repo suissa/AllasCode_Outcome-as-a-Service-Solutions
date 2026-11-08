@@ -9,7 +9,11 @@ import { calculateOutcomeFee } from "../../src/commercial/outcome-fee.ts";
 import { recordDecision } from "../../src/solutions/decision.ts";
 import { verifyPlaybook } from "../../src/solutions/playbook.ts";
 import { recoveryDecision, evaluateFlag, validateFlag } from "../../src/operations/recovery.ts";
-import { validateBackup, verifyBackup } from "../../src/operations/backup.ts";
+import { validateBackup, verifyBackup, authorizeExport, restoreBackup } from "../../src/operations/backup.ts";
+import { aggregateHealth } from "../../src/operations/health.ts";
+import { rotateSecretReference } from "../../src/security/secret-reference.ts";
+import { decideAccessReview } from "../../src/security/access-review.ts";
+import { submitFeedback, transitionIncident } from "../../src/operations/feedback.ts";
 import { createCalculationSnapshot, snapshotFingerprint } from "../../src/reporting/snapshot.ts";
 import { evaluateExact } from "../../src/ai/evaluation.ts";
 import { calculateConfidenceInterval } from "../../src/outcomes/settlement.ts";
@@ -66,4 +70,21 @@ test("confidence interval requires sufficient sample and states approximation me
  assert.throws(()=>calculateConfidenceInterval({mean:10,standardDeviation:2,sampleSize:10}),/CONFIDENCE_SAMPLE_TOO_SMALL/);
  const interval=calculateConfidenceInterval({mean:10,standardDeviation:2,sampleSize:100});
  assert.ok(interval.lower<10&&interval.upper>10); assert.equal(interval.method,"normal-approximation");
+});
+
+test("operations and security controls require approvals and preserve recoverability",()=>{
+ const secret=rotateSecretReference({provider:"vault",key:"tenant/key",version:"v1"},"v2","security_owner");
+ assert.equal(secret.current.version,"v2"); assert.equal(secret.revokePrevious,true);
+ const grant={actorId:"user_001",tenantId:"tenant_001",resourceId:"case_001",permissions:["read","approve"],grantedBy:"owner",grantedAt:"2026-11-08T00:00:00Z"};
+ assert.equal(decideAccessReview(grant,"auditor","retain","still required").decision,"retain");
+ assert.throws(()=>decideAccessReview(grant,"user_001","retain","self review"),/ACCESS_REVIEW_INDEPENDENT_REQUIRED/);
+ assert.throws(()=>authorizeExport({tenantId:"tenant_001",requestedBy:"owner",purpose:"DSAR",includePersonalData:true}),/PERSONAL_DATA_EXPORT_APPROVAL_REQUIRED/);
+ assert.equal(authorizeExport({tenantId:"tenant_001",requestedBy:"owner",purpose:"DSAR",includePersonalData:true,approvedBy:"privacy_officer"}).approvedBy,"privacy_officer");
+ const backup={id:"backup_001",tenantId:"tenant_001",createdAt:"2026-11-08T00:00:00Z",formatVersion:"1",contentHash:"sha256:ok",sizeBytes:20,scope:["tenant"]};
+ assert.equal(restoreBackup(backup,"sha256:bad").restored,false);
+ assert.equal(restoreBackup(backup,"sha256:ok").restored,true);
+ assert.equal(aggregateHealth([{name:"db",status:"healthy",checkedAt:"2026-11-08T00:00:00Z",latencyMs:2},{name:"queue",status:"degraded",checkedAt:"2026-11-08T00:00:00Z",latencyMs:10}]),"degraded");
+ const incident={id:"incident_001",tenantId:"tenant_001",severity:"sev2" as const,summary:"API outage",occurredAt:"2026-11-08T00:00:00Z",status:"open" as const,lessons:[]};
+ assert.equal(transitionIncident(incident,"investigating").status,"investigating");
+ assert.equal(submitFeedback({id:"feedback_001",tenantId:"tenant_001",subjectId:"case_001",rating:5,submittedAt:"2026-11-08T00:00:00Z"}).rating,5);
 });
