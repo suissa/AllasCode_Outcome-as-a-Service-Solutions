@@ -6,6 +6,7 @@ import postgres from "postgres";
 import { PostgresJsDatabase, PostgresOutcomeStore, type PostgresQueryClient } from "../../src/persistence/postgres-outcome-store.ts";
 import type { OutcomeCase } from "../../src/application/outcome-case.ts";
 import { PostgresWorkflowTaskStore, type DurableTask } from "../../src/execution/durable-runtime.ts";
+import { PostgresApiKeyStore, hashApiKeySecret } from "../../src/security/api-key-auth.ts";
 const databaseUrl = process.env.DATABASE_URL;
 test("PostgreSQL migration and transactional outcome persistence", { skip: !databaseUrl }, async () => {
   const client = postgres(databaseUrl!, { max: 1 });
@@ -19,6 +20,8 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     await client.unsafe(migration);
     const workflowMigration = await readFile(new URL("../../migrations/0002_workflow_tasks.sql", import.meta.url), "utf8");
     await client.unsafe(workflowMigration);
+    const apiKeyMigration = await readFile(new URL("../../migrations/0003_api_keys.sql", import.meta.url), "utf8");
+    await client.unsafe(apiKeyMigration);
     const initial: OutcomeCase = {
       id: caseId, tenantId, stage: "specified",
       spec: { metric: { id: "metric_it_001", name: "Revenue", unit: "BRL" } as never, baseline: 100, target: 150, direction: "increase", periodStart: "2026-01-01", periodEnd: "2026-02-01", attribution: "direct", approvedBy: "actor_it_001" },
@@ -46,7 +49,14 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     assert.equal(await taskStore.transition(tenantId, taskId, "ready", running), true);
     await taskStore.appendEvent({ id: "task_event_" + suffix, tenantId, taskId, kind: "started", actorId: "actor_it_001", occurredAt: new Date().toISOString() });
     assert.equal((await taskStore.listTasks(tenantId, workflowId)).length, 1);
+    const apiKeys = new PostgresApiKeyStore(db);
+    const keyId = "key_it_" + suffix;
+    await apiKeys.createKey({ keyId, tenantId, actorId:"actor_it_001", secretHash:hashApiKeySecret("secret_for_integration"), scopes:["case.read"] });
+    assert.equal((await apiKeys.getKey(keyId))?.tenantId,tenantId);
+    assert.equal(await apiKeys.revokeKey(tenantId,keyId),true);
+    assert.ok((await apiKeys.getKey(keyId))?.revokedAt);
   } finally {
+    await client.unsafe("delete from api_keys where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from workflow_task_events where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from workflow_tasks where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from outcome_idempotency where tenant_id = $1", [tenantId]);
