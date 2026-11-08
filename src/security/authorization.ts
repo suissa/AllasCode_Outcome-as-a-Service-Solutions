@@ -77,10 +77,13 @@ export class PostgresAuthorizationStore implements AuthorizationStore {
  }
  async effectiveGrants(tenantId:string,actorId:string,now=new Date()):Promise<readonly (AuthorizationGrant&{permissions:readonly string[]})[]>{
   const r=await this.db.query<GrantRow>("select g.tenant_id,g.grant_id,g.actor_id,g.role_id,g.effect,g.workspace_id,g.resource_type,g.resource_id,g.conditions,g.granted_by,g.granted_at,g.expires_at,g.revoked_at,r.permissions from authorization_grants g join authorization_roles r on r.tenant_id=g.tenant_id and r.role_id=g.role_id where g.tenant_id=$1 and g.actor_id=$2 and g.revoked_at is null and (g.expires_at is null or g.expires_at>$3)",[tenantId,actorId,now.toISOString()]);
-  return Object.freeze(r.rows.map(row=>({tenantId:row.tenant_id,id:row.grant_id,actorId:row.actor_id,roleId:row.role_id,effect:row.effect,
-   ...(row.workspace_id?{workspaceId:row.workspace_id}:{}),...(row.resource_type?{resourceType:row.resource_type}:{}),...(row.resource_id?{resourceId:row.resource_id}:{}),
-   conditions:conditions(row.conditions),grantedBy:row.granted_by,grantedAt:iso(row.granted_at)!,...(iso(row.expires_at)?{expiresAt:iso(row.expires_at)}:{}),
-   ...(iso(row.revoked_at)?{revokedAt:iso(row.revoked_at)}:{}),permissions:row.permissions})));
+  return Object.freeze(r.rows.map(row=>{
+   const expiresAt=iso(row.expires_at),revokedAt=iso(row.revoked_at);
+   return {tenantId:row.tenant_id,id:row.grant_id,actorId:row.actor_id,roleId:row.role_id,effect:row.effect,
+    ...(row.workspace_id?{workspaceId:row.workspace_id}:{}),...(row.resource_type?{resourceType:row.resource_type}:{}),...(row.resource_id?{resourceId:row.resource_id}:{}),
+    conditions:conditions(row.conditions),grantedBy:row.granted_by,grantedAt:iso(row.granted_at)!,
+    ...(expiresAt?{expiresAt}:{}),...(revokedAt?{revokedAt}:{}),permissions:row.permissions};
+  }));
  }
  async recordDecision(d:AuthorizationDecision):Promise<void>{
   await this.db.query("insert into authorization_decisions (tenant_id,decision_id,actor_id,action,resource_type,resource_id,allowed,reason,matched_grant_ids,evaluated_at) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",[d.tenantId,d.id,d.actorId,d.action,d.resourceType,d.resourceId,d.allowed,d.reason,[...d.matchedGrantIds],d.evaluatedAt]);
