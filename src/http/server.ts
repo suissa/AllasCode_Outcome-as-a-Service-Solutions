@@ -1,7 +1,7 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { randomUUID } from "node:crypto";
 import type { OutcomeCase } from "../application/outcome-case.ts";
-import { startOutcomeCase, recordOutcomeEvidence, recordObservation, settleOutcomeCase, disputeOutcomeCase } from "../application/outcome-case.ts";
+import { startOutcomeCase, recordOutcomeEvidence, recordObservation, settleOutcomeCase, disputeOutcomeCase, validateOutcomeCase } from "../application/outcome-case.ts";
 import { createAuditEvent } from "../domain/audit.ts";
 import type { EvidenceRecord } from "../evidence/evidence.ts";
 import type { Observation } from "../measurement/metrics.ts";
@@ -55,7 +55,8 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
         const input = await readBody(request); const value = input as unknown as OutcomeCase;
         if (value.tenantId && value.tenantId !== actor.tenantId) { send(response, 403, { error: "TENANT_MISMATCH", correlationId }); return; }
         const safe = Object.freeze({ ...value, tenantId: actor.tenantId });
-        if (!safe.id || !safe.spec || !Array.isArray(safe.evidence) || !Array.isArray(safe.observations)) { send(response, 400, { error: "CASE_PAYLOAD_INVALID", correlationId }); return; }
+        const errors = validateOutcomeCase(safe);
+        if (errors.length) { send(response, 400, { error: "CASE_PAYLOAD_INVALID", issues: errors, correlationId }); return; }
         await options.store.createCase(safe); send(response, 201, { value: safe, correlationId }); return;
       }
       const caseId = parts[2];
@@ -87,7 +88,7 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
         default: send(response, 404, { error: "ROUTE_NOT_FOUND", correlationId }); return;
       }
       const audit = createAuditEvent({ id: randomUUID(), tenantId: actor.tenantId, actorId: actor.actorId, action: "case." + action, subjectType: "OutcomeCase", subjectId: caseId, correlationId, before: current.stage, after: next.stage });
-      const result = await options.store.commit({ tenantId: actor.tenantId, caseId, idempotencyKey, fingerprint: fingerprint(action, input), value: next, audit });
+      const result = await options.store.commit({ tenantId: actor.tenantId, caseId, idempotencyKey, fingerprint: fingerprint(action + ":" + caseId, input), value: next, audit });
       send(response, 200, { value: result.value, replayed: result.replayed, correlationId });
     } catch (error) {
       const err = error as Error & { statusCode?: number };
