@@ -22,6 +22,29 @@ export class OutcomeCaseError extends Error {
     super(message); this.name = "OutcomeCaseError";
   }
 }
+export function validateOutcomeCase(c: OutcomeCase): string[] {
+  const errors: string[] = [];
+  if (!c.id || !c.tenantId) errors.push("CASE_ID_TENANT_REQUIRED");
+  if (c.stage !== "specified") errors.push("CASE_INITIAL_STAGE_INVALID");
+  if (!c.spec?.approvedBy) errors.push("OUTCOME_NOT_APPROVED");
+  if (!c.spec?.metric?.id || !c.spec.metric.unit) errors.push("METRIC_DEFINITION_REQUIRED");
+  if (!Number.isFinite(c.spec?.baseline) || !Number.isFinite(c.spec?.target)) errors.push("OUTCOME_VALUES_INVALID");
+  if (!c.spec?.periodStart || !c.spec?.periodEnd || Date.parse(c.spec.periodEnd) <= Date.parse(c.spec.periodStart)) errors.push("OUTCOME_PERIOD_INVALID");
+  if (!Array.isArray(c.evidence) || !Array.isArray(c.observations)) errors.push("CASE_COLLECTIONS_INVALID");
+  if (Array.isArray(c.evidence)) {
+    const ids = new Set<string>();
+    for (const item of c.evidence) {
+      if (item.tenantId !== c.tenantId) errors.push("TENANT_MISMATCH");
+      if (ids.has(item.id)) errors.push("EVIDENCE_DUPLICATE");
+      ids.add(item.id);
+    }
+  }
+  if (Array.isArray(c.observations)) for (const item of c.observations) {
+    if (item.metricId !== c.spec.metric.id || item.unit !== c.spec.metric.unit) errors.push("OBSERVATION_METRIC_MISMATCH");
+    if (!Number.isFinite(item.value) || !Number.isFinite(item.confidence) || item.confidence < 0 || item.confidence > 1 || Number.isNaN(Date.parse(item.observedAt)) || !item.sourceId) errors.push("OBSERVATION_INVALID");
+  }
+  return [...new Set(errors)];
+}
 export function startOutcomeCase(c: OutcomeCase): OutcomeCase {
   if (c.stage !== "specified") throw new OutcomeCaseError("CASE_STAGE_INVALID", "stage");
   if (!c.spec.approvedBy) throw new OutcomeCaseError("OUTCOME_NOT_APPROVED", "spec.approvedBy");
@@ -39,6 +62,10 @@ export function recordObservation(c: OutcomeCase, o: Observation): OutcomeCase {
   if (c.stage !== "active") throw new OutcomeCaseError("CASE_NOT_ACTIVE", "stage");
   if (o.metricId!==c.spec.metric.id || o.unit!==c.spec.metric.unit)
     throw new OutcomeCaseError("OBSERVATION_METRIC_MISMATCH", "observation");
+  if (!Number.isFinite(o.value) || !Number.isFinite(o.confidence) || o.confidence < 0 || o.confidence > 1 || !o.sourceId || Number.isNaN(Date.parse(o.observedAt)))
+    throw new OutcomeCaseError("OBSERVATION_INVALID", "observation");
+  if (c.observations.some(x => x.sourceId === o.sourceId && x.observedAt === o.observedAt && x.metricId === o.metricId))
+    throw new OutcomeCaseError("OBSERVATION_DUPLICATE", "observation");
   return Object.freeze({...c,observations:Object.freeze([...c.observations,o])});
 }
 export function settleOutcomeCase(c: OutcomeCase, observationIndex: number, methodology: string, reportId: string, now = new Date()): OutcomeCase {
