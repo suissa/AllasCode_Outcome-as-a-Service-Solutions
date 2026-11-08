@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { decideApproval } from "../../src/execution/approval.ts";
-import { evaluateAcceptance } from "../../src/execution/acceptance.ts";
+import { evaluateAcceptance, reviewAcceptance } from "../../src/execution/acceptance.ts";
 import { validateConnectorRequest, dispatchConnector } from "../../src/integrations/connector.ts";
 import { priceUsage } from "../../src/commercial/metering.ts";
 import { buildInvoice, issueInvoice, recordInvoicePayment, refundInvoice, disputeInvoice } from "../../src/commercial/invoice.ts";
