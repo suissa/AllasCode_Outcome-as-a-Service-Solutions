@@ -68,3 +68,5 @@ export * from "./execution/task-graph.ts";
 export * from "./execution/durable-runtime.ts";
 
 export * from "./security/api-key-auth.ts";
+
+export * from "./persistence/migrations.ts";
