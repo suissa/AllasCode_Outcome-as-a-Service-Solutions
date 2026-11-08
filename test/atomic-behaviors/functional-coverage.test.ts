@@ -17,6 +17,7 @@ import { submitFeedback, transitionIncident } from "../../src/operations/feedbac
 import { createCalculationSnapshot, snapshotFingerprint } from "../../src/reporting/snapshot.ts";
 import { evaluateExact } from "../../src/ai/evaluation.ts";
 import { calculateConfidenceInterval } from "../../src/outcomes/settlement.ts";
+import { verifyEvidenceAccess } from "../../src/evidence/evidence.ts";
 
 test("approval and deliverable acceptance enforce independent human evidence",()=>{
  const request={id:"approval_001",tenantId:"tenant_001",actorId:"actor_001",action:"publish",resourceId:"site_001",risk:"high" as const,status:"pending" as const};
@@ -98,4 +99,11 @@ test("connector dispatch retries only retryable results and bounds uncertain sid
  const unsafe={manifest:{...manifest,idempotent:false,timeoutMs:5},execute:async()=>new Promise<never>(()=>{})};
  const timeout=await dispatchConnector(unsafe,{tenantId:"tenant_001",actorId:"actor_001",operation:"customer.write",payload:{},idempotencyKey:"idem_002",correlationId:"corr_002"});
  assert.equal(timeout.result.errorCode,"CONNECTOR_TIMEOUT_UNCERTAIN");assert.equal(timeout.attempts,1);
+});
+
+test("evidence access is tenant, purpose and classification scoped",()=>{
+ const evidence={id:"evidence_001",tenantId:"tenant_a",sourceId:"crm",capturedAt:"2026-11-08T00:00:00Z",contentHash:"a".repeat(64),classification:"confidential" as const};
+ const context={tenantId:"tenant_b",actorId:"actor_001",purpose:"outcome_validation",allowedClassifications:["public","internal"] as const};
+ const errors=verifyEvidenceAccess(evidence,context);
+ assert.ok(errors.includes("TENANT_MISMATCH"));assert.ok(errors.includes("EVIDENCE_CLASSIFICATION_FORBIDDEN"));assert.ok(errors.includes("EVIDENCE_VERIFICATION_REQUIRED"));
 });
