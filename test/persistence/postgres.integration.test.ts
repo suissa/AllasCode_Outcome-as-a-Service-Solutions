@@ -25,6 +25,8 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
       evidence: [], observations: [],
     };
     await store.createCase(initial);
+    const rawCaseRows = await client.unsafe("select tenant_id, case_id, payload from outcome_cases where tenant_id = $1 and case_id = $2", [tenantId, caseId]);
+    assert.equal(rawCaseRows.length, 1, "raw PostgreSQL insert must be visible");
     assert.equal((await store.getCase(tenantId, caseId))?.id, caseId);
     const next: OutcomeCase = { ...initial, stage: "active" };
     const audit = { id: "audit_" + suffix, tenantId, actorId: "actor_it_001", action: "case.start", subjectType: "OutcomeCase", subjectId: caseId, occurredAt: new Date().toISOString(), correlationId: "corr_" + suffix };
