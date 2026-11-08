@@ -5,6 +5,7 @@ export interface DurableTask {
   id: string; tenantId: string; workflowId: string; dependencies: readonly string[];
   state: DurableTaskState; attempt: number; maxAttempts: number; timeoutMs: number;
   idempotencyKey: string; approvalRequired: boolean; approvedBy?: string;
+  requestedBy?: string; assignedActorId?: string;
   input: unknown; output?: unknown; errorCode?: string; version: number;
 }
 export interface WorkflowTaskEvent { id: string; tenantId: string; taskId: string; kind: string; actorId: string; occurredAt: string; detail?: unknown }
@@ -38,10 +39,13 @@ export interface TaskExecutionResult { output: unknown }
 export type TaskExecutor = (task: DurableTask, signal: AbortSignal) => Promise<TaskExecutionResult>;
 export type TaskCompensator = (task: DurableTask, cause: unknown) => Promise<void>;
 export class DurableWorkflowRuntime {
+  private readonly controllers = new Map<string, AbortController>();
   constructor(private readonly store:WorkflowTaskStore,private readonly now:()=>Date=()=>new Date()){}
   async run(tenantId:string,taskId:string,actorId:string,execute:TaskExecutor,compensate?:TaskCompensator):Promise<DurableTask>{
     const task=await this.store.getTask(tenantId,taskId);if(!task)throw new WorkflowRuntimeError("TASK_NOT_FOUND");
     if(task.state!=="ready")throw new WorkflowRuntimeError("TASK_NOT_READY");
+    if(!actorId)throw new WorkflowRuntimeError("TASK_ACTOR_REQUIRED");
+    if(task.assignedActorId&&task.assignedActorId!==actorId)throw new WorkflowRuntimeError("TASK_ACTOR_MISMATCH");
     const all=await this.store.listTasks(tenantId,task.workflowId);
     if(!task.dependencies.every(id=>all.some(x=>x.id===id&&x.state==="succeeded")))throw new WorkflowRuntimeError("TASK_DEPENDENCIES_INCOMPLETE");
     if(task.approvalRequired&&!task.approvedBy){
@@ -52,7 +56,7 @@ export class DurableWorkflowRuntime {
     const running={...task,state:"running" as const,attempt:task.attempt+1,version:task.version+1};
     if(!await this.store.transition(tenantId,taskId,"ready",running))throw new WorkflowRuntimeError("TASK_CLAIM_CONFLICT");
     await this.event(running,"started",actorId);
-    const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
+    const controller=new AbortController();const controllerKey=tenantId+":"+taskId;this.controllers.set(controllerKey,controller);let timer:ReturnType<typeof setTimeout>|undefined;
     try{
       const timeout=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(new WorkflowRuntimeError("TASK_TIMEOUT"));},running.timeoutMs);});
       const result=await Promise.race([execute(running,controller.signal),timeout]);
@@ -60,16 +64,19 @@ export class DurableWorkflowRuntime {
       if(!await this.store.transition(tenantId,taskId,"running",succeeded))throw new WorkflowRuntimeError("TASK_STATE_CONFLICT");
       await this.event(succeeded,"succeeded",actorId);return succeeded;
     }catch(error){
+      const latest = await this.store.getTask(tenantId,taskId);
+      if(latest?.state==="cancelled")return latest;
       if(compensate){try{await compensate(running,error);}catch{error=new WorkflowRuntimeError("TASK_COMPENSATION_FAILED");}}
       const code=error instanceof Error?error.message:"TASK_EXECUTION_FAILED";
       const failed={...running,state:"failed" as const,errorCode:code,version:running.version+1};
       if(!await this.store.transition(tenantId,taskId,"running",failed))throw new WorkflowRuntimeError("TASK_STATE_CONFLICT");
       await this.event(failed,"failed",actorId,{errorCode:code});return failed;
-    }finally{if(timer)clearTimeout(timer);}
+    }finally{if(timer)clearTimeout(timer);this.controllers.delete(controllerKey);}
   }
   async approve(tenantId:string,taskId:string,approverId:string,reason:string):Promise<DurableTask>{
     if(!approverId||!reason.trim())throw new WorkflowRuntimeError("APPROVAL_METADATA_REQUIRED");
     const task=await this.store.getTask(tenantId,taskId);if(!task)throw new WorkflowRuntimeError("TASK_NOT_FOUND");
+    if(task.requestedBy&&task.requestedBy===approverId)throw new WorkflowRuntimeError("APPROVER_NOT_INDEPENDENT");
     if(task.state!=="awaiting_approval")throw new WorkflowRuntimeError("TASK_NOT_AWAITING_APPROVAL");
     const next={...task,state:"ready" as const,approvedBy:approverId,version:task.version+1};
     if(!await this.store.transition(tenantId,taskId,"awaiting_approval",next))throw new WorkflowRuntimeError("TASK_STATE_CONFLICT");
@@ -84,7 +91,8 @@ export class DurableWorkflowRuntime {
   }
   async cancel(tenantId:string,taskId:string,actorId:string):Promise<DurableTask>{
     const task=await this.store.getTask(tenantId,taskId);if(!task)throw new WorkflowRuntimeError("TASK_NOT_FOUND");
-    if(task.state==="running"||task.state==="succeeded"||task.state==="cancelled")throw new WorkflowRuntimeError("TASK_CANNOT_CANCEL");
+    if(task.state==="succeeded"||task.state==="cancelled")throw new WorkflowRuntimeError("TASK_CANNOT_CANCEL");
+    if(task.state==="running")this.controllers.get(tenantId+":"+taskId)?.abort();
     const next={...task,state:"cancelled" as const,version:task.version+1};
     if(!await this.store.transition(tenantId,taskId,task.state,next))throw new WorkflowRuntimeError("TASK_STATE_CONFLICT");
     await this.event(next,"cancelled",actorId);return next;
