@@ -63,3 +63,9 @@ The PostgreSQL store commits case state, append-only audit event and idempotency
 ## Local validation
 
 Run `npm run typecheck` and `npm test`. To run the real PostgreSQL integration test locally, provide `DATABASE_URL` pointing to a disposable PostgreSQL database; the test applies the idempotent migration and removes its generated tenant data afterward.
+
+## Durable task execution
+
+`PostgresWorkflowTaskStore` persists workflow task state and append-only task events. `DurableWorkflowRuntime` claims tasks with compare-and-set transitions, checks completed dependencies, pauses high-risk work at an approval gate, enforces execution timeouts, records outputs/failures, supports bounded retry and cancellation, and invokes an optional compensation callback after an execution error.
+
+A task executor receives an `AbortSignal`; it must honor cancellation and implement its own idempotent external side effects. Compensation is an injected behavior, not a guarantee that an external system can be rolled back. The runtime is a durable step engine, but it does not yet include a background queue, distributed worker deployment, scheduled retry/backoff service, dead-letter UI or outbox relay.
