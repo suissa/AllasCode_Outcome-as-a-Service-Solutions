@@ -50,3 +50,19 @@ test("durable runtime requires independent approval and cancels running work",as
  assert.equal(cancelled.state,"cancelled");
  assert.equal((await running).state,"cancelled");
 });
+
+test("durable runtime pauses and resumes active work and escalates blocked tasks",async()=>{
+ const store=new MemoryStore();await store.createTask(task("task_pause"));
+ const runtime=new DurableWorkflowRuntime(store);
+ let started!:()=>void;const began=new Promise<void>(resolve=>{started=resolve;});
+ const pending=runtime.run("tenant_001","task_pause","actor",async(_task,signal)=>new Promise((_resolve,reject)=>{started();signal.addEventListener("abort",()=>reject(new Error("ABORTED")));}));
+ await began;
+ assert.equal((await runtime.pause("tenant_001","task_pause","operator","awaiting clarification")).state,"paused");
+ assert.equal((await pending).state,"paused");
+ assert.equal((await runtime.resume("tenant_001","task_pause","operator","clarification resolved")).state,"ready");
+ assert.equal((await runtime.run("tenant_001","task_pause","actor",async()=>({output:"done"}))).state,"succeeded");
+ await store.createTask(task("task_block"));
+ assert.equal((await runtime.block("tenant_001","task_block","operator","ambiguous request")).state,"blocked");
+ assert.equal((await runtime.unblock("tenant_001","task_block","reviewer","clarified scope")).state,"ready");
+ assert.equal((await runtime.cancel("tenant_001","task_block","owner")).state,"cancelled");
+});
