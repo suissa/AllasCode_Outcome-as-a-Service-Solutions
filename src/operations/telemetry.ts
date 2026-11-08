@@ -22,6 +22,6 @@ export function evaluateSloWindow(slo:Slo,events:readonly SloEvent[],now=new Dat
 export interface Anomaly { index:number; value:number; zScore:number }
 export function detectAnomalies(values:readonly number[],threshold=3):readonly Anomaly[]{
  if(values.length<3||!Number.isFinite(threshold)||threshold<=0||values.some(v=>!Number.isFinite(v)))throw new Error("ANOMALY_INPUT_INVALID");
- const mean=values.reduce((a,b)=>a+b,0)/values.length;const variance=values.reduce((sum,v)=>sum+(v-mean)**2,0)/(values.length-1);const sd=Math.sqrt(variance);
- return Object.freeze(values.flatMap((value,index)=>{const z=sd===0?(value===mean?0:Number.POSITIVE_INFINITY):(value-mean)/sd;return Math.abs(z)>=threshold?[Object.freeze({index,value,zScore:z})]:[];}));
+ const sorted=[...values].sort((a,b)=>a-b);const median=sorted.length%2?sorted[Math.floor(sorted.length/2)]!:(sorted[sorted.length/2-1]!+sorted[sorted.length/2]!)/2;const deviations=values.map(v=>Math.abs(v-median)).sort((a,b)=>a-b);const mad=deviations.length%2?deviations[Math.floor(deviations.length/2)]!:(deviations[deviations.length/2-1]!+deviations[deviations.length/2]!)/2;
+ return Object.freeze(values.flatMap((value,index)=>{const z=mad===0?(value===median?0:Math.sign(value-median)*Number.POSITIVE_INFINITY):0.6745*(value-median)/mad;return Math.abs(z)>=threshold?[Object.freeze({index,value,zScore:z})]:[];}));
 }
