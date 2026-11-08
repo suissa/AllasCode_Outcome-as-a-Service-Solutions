@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { decideApproval } from "../../src/execution/approval.ts";
 import { evaluateAcceptance } from "../../src/execution/acceptance.ts";
-import { validateConnectorRequest } from "../../src/integrations/connector.ts";
+import { validateConnectorRequest, dispatchConnector } from "../../src/integrations/connector.ts";
 import { priceUsage } from "../../src/commercial/metering.ts";
 import { buildInvoice, issueInvoice, recordInvoicePayment, refundInvoice, disputeInvoice } from "../../src/commercial/invoice.ts";
 import { calculateOutcomeFee } from "../../src/commercial/outcome-fee.ts";
@@ -87,4 +87,15 @@ test("operations and security controls require approvals and preserve recoverabi
  const incident={id:"incident_001",tenantId:"tenant_001",severity:"sev2" as const,summary:"API outage",occurredAt:"2026-11-08T00:00:00Z",status:"open" as const,lessons:[]};
  assert.equal(transitionIncident(incident,"investigating").status,"investigating");
  assert.equal(submitFeedback({id:"feedback_001",tenantId:"tenant_001",subjectId:"case_001",rating:5,submittedAt:"2026-11-08T00:00:00Z"}).rating,5);
+});
+
+test("connector dispatch retries only retryable results and bounds uncertain side effects",async()=>{
+ const manifest={id:"connector_retry_001",version:"1",name:"CRM",capabilities:["customer.write"],timeoutMs:100,maxRetries:2,idempotent:true,allowedHosts:["crm.example.com"]};
+ let attempts=0;
+ const connector={manifest,execute:async()=>{attempts++;return attempts===1?{status:"retryable_error" as const,errorCode:"RATE_LIMIT"}:{status:"success" as const,output:{id:"customer_001"}}}};
+ const result=await dispatchConnector(connector,{tenantId:"tenant_001",actorId:"actor_001",operation:"customer.write",payload:{},idempotencyKey:"idem_001",correlationId:"corr_001"});
+ assert.equal(result.result.status,"success");assert.equal(result.attempts,2);
+ const unsafe={manifest:{...manifest,idempotent:false,timeoutMs:5},execute:async()=>new Promise<never>(()=>{})};
+ const timeout=await dispatchConnector(unsafe,{tenantId:"tenant_001",actorId:"actor_001",operation:"customer.write",payload:{},idempotencyKey:"idem_002",correlationId:"corr_002"});
+ assert.equal(timeout.result.errorCode,"CONNECTOR_TIMEOUT_UNCERTAIN");assert.equal(timeout.attempts,1);
 });
