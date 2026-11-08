@@ -18,12 +18,12 @@ export class OutcomePlatform {
   private key(c:CommandContext,id:string){return `${c.tenantId}:${id}`}
   private assertContext(c:CommandContext){if(!c.tenantId||!c.actorId||!c.correlationId||!c.idempotencyKey)throw new PlatformError("COMMAND_CONTEXT_REQUIRED")}
   private command<T>(ctx:CommandContext,action:string,subjectId:string,fingerprint:string,execute:()=>T):PlatformCommandResult<T>{
-    this.assertContext(ctx);const idem=`${ctx.tenantId}:${ctx.idempotencyKey}`,old=this.idempotency.get(idem);
-    if(old){if(old.fingerprint!==fingerprint)throw new PlatformError("IDEMPOTENCY_CONFLICT");return {value:old.result as T,replayed:true}}
+    this.assertContext(ctx);const idem=`${ctx.tenantId}:${ctx.idempotencyKey}`,commandFingerprint=`${action}:${subjectId}:${fingerprint}`,old=this.idempotency.get(idem);
+    if(old){if(old.fingerprint!==commandFingerprint)throw new PlatformError("IDEMPOTENCY_CONFLICT");return {value:old.result as T,replayed:true}}
     const before=this.cases.get(this.key(ctx,subjectId));const value=execute();
     this.cases.set(this.key(ctx,subjectId),value as OutcomeCase);
     this.audits.push(createAuditEvent({id:`audit_${++this.sequence}`,tenantId:ctx.tenantId,actorId:ctx.actorId,action,subjectType:"OutcomeCase",subjectId,correlationId:ctx.correlationId,before:before?.stage,after:(value as OutcomeCase).stage,metadata:{idempotencyKey:ctx.idempotencyKey}}));
-    this.idempotency.set(idem,{fingerprint,result:value});return {value,replayed:false};
+    this.idempotency.set(idem,{fingerprint:commandFingerprint,result:value});return {value,replayed:false};
   }
   register(c:OutcomeCase){if(!c.id||!c.tenantId)throw new PlatformError("CASE_ID_TENANT_REQUIRED");const k=`${c.tenantId}:${c.id}`;if(this.cases.has(k))throw new PlatformError("CASE_ALREADY_EXISTS");this.cases.set(k,Object.freeze(c));return c}
   get(tenantId:string,id:string):OutcomeCase{const c=this.cases.get(`${tenantId}:${id}`);if(!c)throw new PlatformError("CASE_NOT_FOUND");return c}
