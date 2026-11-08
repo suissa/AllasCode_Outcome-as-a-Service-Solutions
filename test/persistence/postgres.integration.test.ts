@@ -11,6 +11,7 @@ import { PostgresUsageLedger } from "../../src/commercial/metering.ts";
 import { applyMigrations } from "../../src/persistence/migrations.ts";
 import { PostgresIntentVersionStore } from "../../src/intent/postgres-version-store.ts";
 import { PostgresWorkspaceStore } from "../../src/platform/postgres-workspace-store.ts";
+import { PostgresAuthorizationStore, evaluateAuthorization } from "../../src/security/authorization.ts";
 const databaseUrl = process.env.DATABASE_URL;
 test("PostgreSQL migration and transactional outcome persistence", { skip: !databaseUrl }, async () => {
   const client = postgres(databaseUrl!, { max: 1 });
@@ -20,9 +21,9 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
   const tenantId = "tenant_it_" + suffix;
   const caseId = "outcome_it_" + suffix;
   try {
-    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
-    assert.equal((await applyMigrations(db,migrations)).applied.length,6);
-    assert.equal((await applyMigrations(db,migrations)).skipped.length,6);
+    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql","0007_authorization_rbac_abac.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
+    assert.equal((await applyMigrations(db,migrations)).applied.length,7);
+    assert.equal((await applyMigrations(db,migrations)).skipped.length,7);
     const initial: OutcomeCase = {
       id: caseId, tenantId, stage: "specified",
       spec: { metric: { id: "metric_it_001", name: "Revenue", unit: "BRL" } as never, baseline: 100, target: 150, direction: "increase", periodStart: "2026-01-01", periodEnd: "2026-02-01", attribution: "direct", approvedBy: "actor_it_001" },
@@ -70,11 +71,25 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     await workspaceStore.invite({ workspaceId, tenantId:tenantId as never, actorId:"actor_invited_" + suffix, role:"analyst", invitedBy:"actor_it_001", expiresAt:new Date(Date.now()+3600000).toISOString(), invitationTokenHash:"token_hash_" + suffix });
     assert.equal((await workspaceStore.accept(tenantId,workspaceId,"actor_invited_" + suffix,"token_hash_" + suffix)).status,"active");
     assert.equal((await workspaceStore.revoke(tenantId,workspaceId,"actor_invited_" + suffix,"actor_it_001")).status,"revoked");
+    const authorization = new PostgresAuthorizationStore(db);
+    const roleId = "role_it_" + suffix;
+    const grantId = "grant_it_" + suffix;
+    const authorizedActor = "actor_authz_" + suffix;
+    await authorization.createRole({ tenantId, id:roleId, name:"Integration Analyst " + suffix, permissions:["case.read"], createdBy:"actor_it_001" });
+    await authorization.grant({ tenantId, id:grantId, actorId:authorizedActor, roleId, effect:"allow", workspaceId, conditions:{ actor:{ region:"br" }, resource:{ classification:"internal" } }, grantedBy:"actor_it_001" });
+    const authorizationDecision = await evaluateAuthorization(authorization,{ tenantId, actorId:authorizedActor, attributes:{ region:"br" } },"case.read",{ tenantId, type:"case", id:caseId, workspaceId, attributes:{ classification:"internal" } });
+    assert.equal(authorizationDecision.allowed,true);
+    assert.equal((await evaluateAuthorization(authorization,{ tenantId, actorId:authorizedActor, attributes:{ region:"us" } },"case.read",{ tenantId, type:"case", id:caseId, workspaceId, attributes:{ classification:"internal" } })).allowed,false);
+    assert.equal(await authorization.revoke(tenantId,grantId,"actor_it_001"),true);
+    assert.equal((await evaluateAuthorization(authorization,{ tenantId, actorId:authorizedActor, attributes:{ region:"br" } },"case.read",{ tenantId, type:"case", id:caseId, workspaceId, attributes:{ classification:"internal" } })).allowed,false);
     const intentVersions = new PostgresIntentVersionStore(db);
     const intentSnapshot = { id:"intent_it_"+suffix,tenantId,actorId:"actor_it_001",statement:"Improve retention",desiredOutcome:"retention",scope:["onboarding"],constraints:[],status:"draft" as const,version:1,provenance:{channel:"api" as const,sourceId:"api_request",capturedAt:new Date().toISOString()},createdAt:new Date().toISOString() };
     await intentVersions.append({intentId:intentSnapshot.id,version:1,snapshot:intentSnapshot,changedBy:"actor_it_001",changedAt:intentSnapshot.createdAt,changeReason:"captured"});
     assert.equal((await intentVersions.history(tenantId,intentSnapshot.id)).length,1);
   } finally {
+    await client.unsafe("delete from authorization_decisions where tenant_id = $1", [tenantId]);
+    await client.unsafe("delete from authorization_grants where tenant_id = $1", [tenantId]);
+    await client.unsafe("delete from authorization_roles where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from workspace_memberships where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from workspaces where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from intent_versions where tenant_id = $1", [tenantId]);
