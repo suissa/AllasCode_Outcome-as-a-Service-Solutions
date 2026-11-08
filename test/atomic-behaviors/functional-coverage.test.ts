@@ -8,6 +8,8 @@ import { buildInvoice, issueInvoice, recordInvoicePayment, refundInvoice, disput
 import { calculateOutcomeFee } from "../../src/commercial/outcome-fee.ts";
 import { recordDecision } from "../../src/solutions/decision.ts";
 import { verifyPlaybook } from "../../src/solutions/playbook.ts";
+import { PolicyRegistry } from "../../src/domain/policy.ts";
+import { createInvitation, acceptInvitation, revokeMembership, WorkspaceRegistry } from "../../src/platform/workspace.ts";
 import { recoveryDecision, evaluateFlag, validateFlag } from "../../src/operations/recovery.ts";
 import { validateBackup, verifyBackup, authorizeExport, restoreBackup } from "../../src/operations/backup.ts";
 import { aggregateHealth } from "../../src/operations/health.ts";
@@ -106,4 +108,25 @@ test("evidence access is tenant, purpose and classification scoped",()=>{
  const context={tenantId:"tenant_b",actorId:"actor_001",purpose:"outcome_validation",allowedClassifications:["public","internal"] as const};
  const errors=verifyEvidenceAccess(evidence,context);
  assert.ok(errors.includes("TENANT_MISMATCH"));assert.ok(errors.includes("EVIDENCE_CLASSIFICATION_FORBIDDEN"));assert.ok(errors.includes("EVIDENCE_VERIFICATION_REQUIRED"));
+});
+
+test("policy versions are immutable and only approved effective versions resolve",()=>{
+ const policies=new PolicyRegistry<{allow:boolean}>();
+ policies.register("tenant_001",{id:"policy_001",version:1,name:"Base",effectiveAt:"2026-01-01",rules:{allow:true}});
+ policies.approve("tenant_001","policy_001",1,"policy_owner");
+ policies.propose("tenant_001",{id:"policy_001",version:2,name:"Restricted",effectiveAt:"2026-11-01",rules:{allow:false}});
+ assert.equal(policies.effective("tenant_001","policy_001").version,1);
+ policies.approve("tenant_001","policy_001",2,"policy_reviewer");
+ assert.equal(policies.effective("tenant_001","policy_001").rules.allow,false);
+ assert.equal(policies.history("tenant_001","policy_001").length,2);
+});
+test("workspace invitations expire, validate token and require intended actor",()=>{
+ const invitation=createInvitation({workspaceId:"workspace_001",tenantId:"tenant_001" as never,actorId:"actor_001",role:"analyst",invitedBy:"owner_001",expiresAt:"2026-12-01T00:00:00Z",invitationTokenHash:"hash"});
+ assert.throws(()=>acceptInvitation(invitation,"actor_001","wrong"),/INVITATION_TOKEN_INVALID/);
+ assert.throws(()=>acceptInvitation(invitation,"other_actor","hash"),/INVITATION_ACTOR_MISMATCH/);
+ assert.equal(acceptInvitation(invitation,"actor_001","hash").status,"active");
+ assert.equal(revokeMembership(invitation,"owner_001").status,"revoked");
+ const workspaces=new WorkspaceRegistry();
+ workspaces.create({id:"workspace_001",tenantId:"tenant_001" as never,name:"Team",slug:"team",status:"active",createdAt:"2026-11-08T00:00:00Z"});
+ assert.throws(()=>workspaces.create({id:"workspace_002",tenantId:"tenant_001" as never,name:"Team 2",slug:"team",status:"active",createdAt:"2026-11-08T00:00:00Z"}),/WORKSPACE_SLUG_CONFLICT/);
 });
