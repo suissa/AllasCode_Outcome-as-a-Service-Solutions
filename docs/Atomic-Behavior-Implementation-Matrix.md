@@ -6,7 +6,7 @@ This matrix ties each open atomic issue to the code entry point and automated te
 |---:|---|---|
 | #9 | Canonical entities and identifiers | `src/domain/identifiers.ts`; `test/domain/identifiers.test.ts` |
 | #10 | Tenant boundaries and isolation | `src/domain/tenant-scope.ts`; `test/domain/tenant-scope.test.ts` |
-| #11 | Workspace membership/invitations | `src/platform/workspace.ts` |
+| #11 | Workspace membership/invitations | `src/platform/workspace.ts`, `src/platform/postgres-workspace-store.ts`; PostgreSQL integration tests |
 | #12 | RBAC/ABAC authorization | `src/domain/access-control.ts`; `test/domain/access-control.test.ts` |
 | #13 | Lifecycle and legal transitions | `src/domain/lifecycle.ts`; `test/domain/lifecycle.test.ts` |
 | #14 | Audit and immutable decisions | `src/domain/audit.ts`; atomic behavior audit |
