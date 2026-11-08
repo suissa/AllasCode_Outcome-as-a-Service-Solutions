@@ -66,3 +66,5 @@ export * from "./core/abt.ts";
 export * from "./execution/task-graph.ts";
 
 export * from "./execution/durable-runtime.ts";
+
+export * from "./security/api-key-auth.ts";
