@@ -1,4 +1,4 @@
-export interface Capability{id:string;version:number;name:string;description:string;causes:string[];outcomes:string[];dependencies:string[];risk:"low"|"medium"|"high";cost:{currency:string;min:number;max:number};evidenceIds:string[]}export interface Scenario{id:string;assumptions:Record<string,number>;estimatedBenefit:{min:number;max:number};estimatedCost:{min:number;max:number};risks:string[];confidence:number}export function compareScenarios(a:Scenario,b:Scenario):number{const score=(s:Scenario)=>s.confidence*(s.estimatedBenefit.min-s.estimatedCost.max);return score(b)-score(a)}export function validateCapability(c:Capability):string[]{const e:string[]=[];if(!c.id||!c.name)e.push("identity:REQUIRED");if(c.version<1)e.push("version:INVALID");if(c.cost.min<0||c.cost.max<c.cost.min)e.push("cost:INVALID_RANGE");return e}
+export interface Capability{id:string;version:number;name:string;description:string;causes:string[];outcomes:string[];dependencies:string[];risk:"low"|"medium"|"high";cost:{currency:string;min:number;max:number};evidenceIds:string[];benefit?:{min:number;max:number}}export interface Scenario{id:string;assumptions:Record<string,number>;estimatedBenefit:{min:number;max:number};estimatedCost:{min:number;max:number};risks:string[];confidence:number}export function compareScenarios(a:Scenario,b:Scenario):number{const score=(s:Scenario)=>s.confidence*(s.estimatedBenefit.min-s.estimatedCost.max);return score(b)-score(a)}export function validateCapability(c:Capability):string[]{const e:string[]=[];if(!c.id||!c.name)e.push("identity:REQUIRED");if(c.version<1)e.push("version:INVALID");if(c.cost.min<0||c.cost.max<c.cost.min)e.push("cost:INVALID_RANGE");return e}
 export interface ScenarioAssumption { name:string; value:number; minimum:number; maximum:number; benefitPerUnit:number; costPerUnit:number }
 export interface ScenarioSensitivity { assumption:string; netBenefitAtMinimum:number; netBenefitAtMaximum:number; impact:number }
 export interface ScenarioSimulationInput {
@@ -40,7 +40,9 @@ export class CapabilityCatalog {
 export function generateScenarios(idPrefix:string,capabilities:readonly Capability[]):Scenario[]{
  if(!idPrefix||!capabilities.length)throw new Error("SCENARIO_CAPABILITIES_REQUIRED");
  const invalid=capabilities.flatMap(validateCapability);if(invalid.length)throw new Error("CAPABILITY_INVALID:"+invalid.join(","));
+ if(capabilities.some(c=>!c.benefit))throw new Error("CAPABILITY_BENEFIT_REQUIRED");
  const totalCost=capabilities.reduce((sum,c)=>({min:sum.min+c.cost.min,max:sum.max+c.cost.max}),{min:0,max:0});
+ const totalBenefit=capabilities.reduce((sum,c)=>({min:sum.min+c.benefit!.min,max:sum.max+c.benefit!.max}),{min:0,max:0});
  const risks=capabilities.map(c=>c.risk).filter((risk,index,all)=>all.indexOf(risk)===index);
- return [{id:idPrefix+"_combined",assumptions:{capabilityCount:capabilities.length},estimatedBenefit:{min:0,max:0},estimatedCost:totalCost,risks,confidence:capabilities.reduce((sum,c)=>sum+(c.risk==="low"?.9:c.risk==="medium"?.7:.4),0)/capabilities.length}];
+ return [{id:idPrefix+"_combined",assumptions:{capabilityCount:capabilities.length},estimatedBenefit:totalBenefit,estimatedCost:totalCost,risks,confidence:capabilities.reduce((sum,c)=>sum+(c.risk==="low"?.9:c.risk==="medium"?.7:.4),0)/capabilities.length}];
 }
