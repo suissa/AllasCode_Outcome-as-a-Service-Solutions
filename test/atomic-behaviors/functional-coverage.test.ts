@@ -172,5 +172,5 @@ test("capability catalog preserves versions and combines only explicit benefit r
  catalog.register(cap);catalog.publish({...cap,version:2,cost:{currency:"BRL",min:150,max:250}});
  assert.equal(catalog.current(cap.id).version,2);assert.equal(catalog.history(cap.id).length,2);
  assert.deepEqual(generateScenarios("alternative",[catalog.current(cap.id)])[0]?.estimatedBenefit,{min:500,max:900});
- assert.throws(()=>generateScenarios("alternative",[{...catalog.current(cap.id),benefit:undefined}]),/CAPABILITY_BENEFIT_REQUIRED/);
+ const {benefit:_benefit,...withoutBenefit}=catalog.current(cap.id);assert.throws(()=>generateScenarios("alternative",[withoutBenefit]),/CAPABILITY_BENEFIT_REQUIRED/);
 });
