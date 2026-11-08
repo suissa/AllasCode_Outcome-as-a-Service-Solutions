@@ -41,8 +41,8 @@ test("Postgres workspace store persists tenant-scoped workspaces and invitation 
 
   const invitation = await store.invite({
     workspaceId: workspace.id, tenantId: workspace.tenantId, actorId: "actor_002", role: "analyst",
-    status: "invited" as never, invitedBy: "owner_001", expiresAt: "2026-12-01T00:00:00Z", invitationTokenHash: "token_hash",
-  } as Omit<Membership, "status" | "createdAt">, new Date("2026-11-08T00:00:00Z"));
+    invitedBy: "owner_001", expiresAt: "2026-12-01T00:00:00Z", invitationTokenHash: "token_hash",
+  }, new Date("2026-11-08T00:00:00Z"));
   assert.equal(invitation.status, "invited");
   await assert.rejects(() => store.accept("tenant_other", workspace.id, "actor_002", "token_hash"), /MEMBERSHIP_NOT_FOUND/);
   await assert.rejects(() => store.accept("tenant_001", workspace.id, "actor_002", "wrong"), /INVITATION_TOKEN_INVALID/);
