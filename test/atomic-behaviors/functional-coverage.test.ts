@@ -19,6 +19,7 @@ import { rotateSecretReference } from "../../src/security/secret-reference.ts";
 import { decideAccessReview } from "../../src/security/access-review.ts";
 import { submitFeedback, transitionIncident } from "../../src/operations/feedback.ts";
 import { createCalculationSnapshot, snapshotFingerprint } from "../../src/reporting/snapshot.ts";
+import { buildOutcomeReportWithLinks } from "../../src/reporting/report.ts";
 import { evaluateExact } from "../../src/ai/evaluation.ts";
 import { calculateConfidenceInterval } from "../../src/outcomes/settlement.ts";
 import { verifyEvidenceAccess } from "../../src/evidence/evidence.ts";
@@ -173,4 +174,13 @@ test("capability catalog preserves versions and combines only explicit benefit r
  assert.equal(catalog.current(cap.id).version,2);assert.equal(catalog.history(cap.id).length,2);
  assert.deepEqual(generateScenarios("alternative",[catalog.current(cap.id)])[0]?.estimatedBenefit,{min:500,max:900});
  const {benefit:_benefit,...withoutBenefit}=catalog.current(cap.id);assert.throws(()=>generateScenarios("alternative",[withoutBenefit]),/CAPABILITY_BENEFIT_REQUIRED/);
+});
+
+test("customer report links only tenant-authorized evidence with short-lived HTTPS URLs",async()=>{
+ const evidence={id:"evidence_report_001",tenantId:"tenant_001",sourceId:"analytics",capturedAt:"2026-11-08T00:00:00Z",contentHash:"a".repeat(64),classification:"public" as const};
+ const input={id:"report_001",tenantId:"tenant_001",outcomeId:"outcome_001",result:{baseline:10,target:20,observed:20,absoluteChange:10,targetProgress:1,confidence:.95,achieved:true},evidenceIds:[evidence.id],methodology:"Verified analytics baseline",limitations:[]};
+ const report=await buildOutcomeReportWithLinks(input,[evidence],{tenantId:"tenant_001",actorId:"customer_001",purpose:"customer_report",allowedClassifications:["public"]},async(_e,expiresAt)=>"https://evidence.example.com/download?expires="+encodeURIComponent(expiresAt),new Date("2026-11-08T00:00:00Z"));
+ assert.equal(report.evidenceLinks?.length,1);assert.match(report.evidenceLinks?.[0]?.url??"",/^https:/);
+ await assert.rejects(()=>buildOutcomeReportWithLinks(input,[{...evidence,tenantId:"tenant_other"}],{tenantId:"tenant_001",actorId:"customer_001",purpose:"report",allowedClassifications:["public"]},async()=>"https://evidence.example.com/link"),/REPORT_EVIDENCE_NOT_FOUND/);
+ await assert.rejects(()=>buildOutcomeReportWithLinks(input,[evidence],{tenantId:"tenant_001",actorId:"customer_001",purpose:"report",allowedClassifications:["public"]},async()=>"http://unsafe.example.com/link"),/REPORT_EVIDENCE_LINK_INVALID/);
 });
