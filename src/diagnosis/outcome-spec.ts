@@ -25,3 +25,15 @@ export function approveOutcomeTarget(t:OutcomeTarget,b:BaselineSnapshot,actor:st
  if(t.metricId!==b.metric.id||t.unit!==b.metric.unit||t.baseline!==b.value)throw new Error("TARGET_BASELINE_MISMATCH");
  return Object.freeze({...t,version:t.version??1,baselineSnapshotId:b.approvedAt,approvedBy:actor,approvedAt:at.toISOString()});
 }
+
+import { assessDataQuality } from "../measurement/data-quality.ts";
+export function createBaselineSnapshot(metric:MetricDefinition,observations:readonly Observation[],period:string,now=new Date()):BaselineSnapshot{
+ if(!period.trim()||!observations.length)throw new Error("BASELINE_OBSERVATIONS_REQUIRED");
+ const values=observations.map(o=>o.value);
+ if(values.some(v=>!Number.isFinite(v)))throw new Error("BASELINE_OBSERVATION_INVALID");
+ const ordered=[...observations].sort((a,b)=>Date.parse(a.observedAt)-Date.parse(b.observedAt));
+ const value=metric.aggregation==="sum"?values.reduce((a,b)=>a+b,0):metric.aggregation==="avg"?values.reduce((a,b)=>a+b,0)/values.length:metric.aggregation==="min"?Math.min(...values):metric.aggregation==="max"?Math.max(...values):metric.aggregation==="count"?values.length:ordered[ordered.length-1]!.value;
+ const quality=assessDataQuality(metric,observations,metric.requiredSources,now);
+ const status=quality.valid&&quality.fresh&&quality.complete?"valid":!quality.fresh?"stale":"incomplete";
+ return Object.freeze({metric,observations:[...observations],value,period,quality:status});
+}
