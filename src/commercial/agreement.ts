@@ -30,5 +30,5 @@ export function createAgreementProposal(input:AgreementProposalInput):Agreement 
   };
   const errors=validateAgreement(proposal);
   if(errors.length)throw new Error("PROPOSAL_INVALID:"+errors.join(","));
-  return Object.freeze({...proposal,scope:Object.freeze(proposal.scope),deliverables:Object.freeze(proposal.deliverables),exclusions:Object.freeze(proposal.exclusions),fees:Object.freeze(proposal.fees),evidenceIds:Object.freeze([...(proposal.evidenceIds??[])])});
+  return Object.freeze({...proposal,scope:[...proposal.scope],deliverables:[...proposal.deliverables],exclusions:[...proposal.exclusions],fees:[...proposal.fees],evidenceIds:[...(proposal.evidenceIds??[])]});
 }
