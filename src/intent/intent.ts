@@ -25,5 +25,5 @@ export function captureIntent(input: IntentCaptureInput): OutcomeIntent {
   if (errors.length) throw new Error("INTENT_INVALID:" + errors.join(","));
   if (!intent.provenance.sourceId || Number.isNaN(Date.parse(intent.provenance.capturedAt)) || Number.isNaN(Date.parse(intent.createdAt)))
     throw new Error("INTENT_PROVENANCE_INVALID");
-  return Object.freeze({ ...intent, scope: Object.freeze([...intent.scope]), constraints: Object.freeze([...intent.constraints]) });
+  return Object.freeze({ ...intent, scope: [...intent.scope], constraints: [...intent.constraints] });
 }
