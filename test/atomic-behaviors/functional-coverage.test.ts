@@ -5,6 +5,7 @@ import { evaluateAcceptance } from "../../src/execution/acceptance.ts";
 import { validateConnectorRequest, dispatchConnector } from "../../src/integrations/connector.ts";
 import { priceUsage } from "../../src/commercial/metering.ts";
 import { buildInvoice, issueInvoice, recordInvoicePayment, refundInvoice, disputeInvoice } from "../../src/commercial/invoice.ts";
+import { recordAgreementSignature, activateSignedAgreement } from "../../src/commercial/agreement.ts";
 import { calculateOutcomeFee } from "../../src/commercial/outcome-fee.ts";
 import { recordDecision } from "../../src/solutions/decision.ts";
 import { verifyPlaybook } from "../../src/solutions/playbook.ts";
@@ -129,4 +130,14 @@ test("workspace invitations expire, validate token and require intended actor",(
  const workspaces=new WorkspaceRegistry();
  workspaces.create({id:"workspace_001",tenantId:"tenant_001" as never,name:"Team",slug:"team",status:"active",createdAt:"2026-11-08T00:00:00Z"});
  assert.throws(()=>workspaces.create({id:"workspace_002",tenantId:"tenant_001" as never,name:"Team 2",slug:"team",status:"active",createdAt:"2026-11-08T00:00:00Z"}),/WORKSPACE_SLUG_CONFLICT/);
+});
+
+test("agreement activation requires verified signatures from every required signer",async()=>{
+ const agreement={id:"agreement_sig_001",tenantId:"tenant_001",version:1,status:"draft" as const,scope:["checkout"],deliverables:["conversion improvement"],exclusions:[],fees:[{id:"fixed",kind:"fixed" as const,currency:"BRL",amount:100}]};
+ const signature=(signerId:string)=>({signerId,signatureHash:"sha256_"+signerId,provider:"qualified-signature",signedAt:"2026-11-08T10:00:00Z",verificationReference:"verification_"+signerId});
+ await assert.rejects(()=>recordAgreementSignature(agreement,signature("owner"),async()=>false),/AGREEMENT_SIGNATURE_UNVERIFIED/);
+ const first=await recordAgreementSignature(agreement,signature("owner"),async()=>true);
+ await assert.rejects(()=>Promise.resolve(activateSignedAgreement(first,["owner","customer"])),/AGREEMENT_SIGNATURES_INCOMPLETE/);
+ const second=await recordAgreementSignature(first,signature("customer"),async()=>true);
+ assert.equal(activateSignedAgreement(second,["owner","customer"]).status,"active");
 });
