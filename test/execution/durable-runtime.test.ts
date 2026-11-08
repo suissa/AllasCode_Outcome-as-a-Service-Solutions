@@ -36,3 +36,17 @@ test("durable runtime times out and invokes compensation",async()=>{
  const result=await runtime.run("tenant_001","task_timeout","actor",async(_task,signal)=>new Promise((_resolve,reject)=>{signal.addEventListener("abort",()=>reject(new Error("ABORTED")));}),async()=>{compensated=true;});
  assert.equal(result.state,"failed");assert.equal(result.errorCode,"TASK_TIMEOUT");assert.equal(compensated,true);
 });
+
+test("durable runtime requires independent approval and cancels running work",async()=>{
+ const store=new MemoryStore();await store.createTask(task("task_cancel",{approvalRequired:true,requestedBy:"owner"}));
+ const runtime=new DurableWorkflowRuntime(store);
+ await runtime.run("tenant_001","task_cancel","owner",async()=>({output:null}));
+ await assert.rejects(()=>runtime.approve("tenant_001","task_cancel","owner","self approval"),/APPROVER_NOT_INDEPENDENT/);
+ await runtime.approve("tenant_001","task_cancel","reviewer","independent approval");
+ let started!:()=>void;const began=new Promise<void>(resolve=>{started=resolve;});
+ const running=runtime.run("tenant_001","task_cancel","reviewer",async(_task,signal)=>new Promise((_resolve,reject)=>{started();signal.addEventListener("abort",()=>reject(new Error("ABORTED")));}));
+ await began;
+ const cancelled=await runtime.cancel("tenant_001","task_cancel","reviewer");
+ assert.equal(cancelled.state,"cancelled");
+ assert.equal((await running).state,"cancelled");
+});
