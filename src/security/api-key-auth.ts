@@ -35,8 +35,9 @@ export class PostgresApiKeyStore implements ApiKeyStore {
   async getKey(keyId:string):Promise<ApiKeyRecord|undefined>{
     const r=await this.db.query<ApiKeyRow>("select key_id,tenant_id,actor_id,secret_hash,scopes,expires_at,revoked_at from api_keys where key_id=$1",[keyId]);
     const row=r.rows[0];if(!row)return undefined;
-    const date=(value:Date|string|null|undefined)=>value===null||value===undefined?undefined:value instanceof Date?value.toISOString():new Date(value).toISOString();
-    return {keyId:row.key_id,tenantId:row.tenant_id,actorId:row.actor_id,secretHash:row.secret_hash,scopes:row.scopes,...(date(row.expires_at)?{expiresAt:date(row.expires_at)}:{}),...(date(row.revoked_at)?{revokedAt:date(row.revoked_at)}:{})};
+    const date=(value:Date|string|null|undefined):string|undefined=>value===null||value===undefined?undefined:value instanceof Date?value.toISOString():new Date(value).toISOString();
+    const expiresAt=date(row.expires_at);const revokedAt=date(row.revoked_at);
+    return {keyId:row.key_id,tenantId:row.tenant_id,actorId:row.actor_id,secretHash:row.secret_hash,scopes:row.scopes,...(expiresAt?{expiresAt}:{}),...(revokedAt?{revokedAt}:{})};
   }
   async createKey(record:ApiKeyRecord):Promise<void>{
     if(!record.keyId||!record.tenantId||!record.actorId||!/^[a-f0-9]{64}$/i.test(record.secretHash)||!record.scopes.length||record.scopes.some(scope=>!scope.trim())||new Set(record.scopes).size!==record.scopes.length||(record.expiresAt&&Number.isNaN(Date.parse(record.expiresAt))))throw new Error("API_KEY_RECORD_INVALID");
