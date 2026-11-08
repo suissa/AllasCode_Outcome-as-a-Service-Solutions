@@ -17,16 +17,17 @@ export interface WorkflowTaskStore {
   appendEvent(event: WorkflowTaskEvent): Promise<void>;
 }
 export class WorkflowRuntimeError extends Error { constructor(readonly code: string){ super(code); this.name="WorkflowRuntimeError"; } }
+const decodeTask = (value: DurableTask | string): DurableTask => typeof value === "string" ? JSON.parse(value) as DurableTask : value;
 export class PostgresWorkflowTaskStore implements WorkflowTaskStore {
   constructor(private readonly db: SqlDatabase) {}
   async createTask(task: DurableTask): Promise<void> {
     await this.db.query("insert into workflow_tasks (tenant_id, workflow_id, task_id, state, payload, version) values ($1,$2,$3,$4,$5::jsonb,1)", [task.tenantId,task.workflowId,task.id,task.state,JSON.stringify(task)]);
   }
   async getTask(tenantId:string,taskId:string):Promise<DurableTask|undefined>{
-    const r=await this.db.query<{payload:DurableTask}>("select payload from workflow_tasks where tenant_id=$1 and task_id=$2",[tenantId,taskId]);return r.rows[0]?.payload;
+    const r=await this.db.query<{payload:DurableTask|string}>("select payload from workflow_tasks where tenant_id=$1 and task_id=$2",[tenantId,taskId]);return r.rows[0] ? decodeTask(r.rows[0].payload) : undefined;
   }
   async listTasks(tenantId:string,workflowId:string):Promise<readonly DurableTask[]>{
-    const r=await this.db.query<{payload:DurableTask}>("select payload from workflow_tasks where tenant_id=$1 and workflow_id=$2 order by task_id",[tenantId,workflowId]);return Object.freeze(r.rows.map(x=>x.payload));
+    const r=await this.db.query<{payload:DurableTask}>("select payload from workflow_tasks where tenant_id=$1 and workflow_id=$2 order by task_id",[tenantId,workflowId]);return Object.freeze(r.rows.map(x=>decodeTask(x.payload)));
   }
   async transition(tenantId:string,taskId:string,expected:DurableTaskState,next:DurableTask):Promise<boolean>{
     const r=await this.db.query("update workflow_tasks set state=$4,payload=$5::jsonb,version=version+1,updated_at=now() where tenant_id=$1 and task_id=$2 and state=$3",[tenantId,taskId,expected,next.state,JSON.stringify({...next,version:next.version+1})]);return r.rowCount===1;
