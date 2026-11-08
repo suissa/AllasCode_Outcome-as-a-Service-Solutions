@@ -19,7 +19,7 @@ test("task graph rejects cycles, unknown dependencies and tenant leakage",()=>{
 });
 test("execution controls enforce legal transitions and count replay",()=>{
  let state: TaskRuntimeState={status:"draft",version:1,replayCount:0};
- state=transitionExecution(state,"approve"); state=transitionExecution(state,"start"); state=transitionExecution(state,"pause"); state=transitionExecution(state,"resume"); state=transitionExecution(state,"fail"); state=transitionExecution(state,"replay");
- assert.deepEqual(state,{status:"running",version:7,replayCount:1});
+ state=transitionExecution(state,"approve"); state=transitionExecution(state,"start"); state=transitionExecution(state,"pause"); state=transitionExecution(state,"resume"); state=transitionExecution(state,"fail"); state=transitionExecution(state,"replay"); state=transitionExecution(state,"complete");
+ assert.deepEqual(state,{status:"completed",version:8,replayCount:1});
  assert.throws(()=>transitionExecution(state,"pause"),/EXECUTION_TRANSITION_INVALID/);
 });
