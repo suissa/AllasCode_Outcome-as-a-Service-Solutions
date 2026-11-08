@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { SqlDatabase } from "../persistence/sql.ts";
 export type DurableTaskState = "ready"|"running"|"awaiting_approval"|"succeeded"|"failed"|"cancelled";
 export interface DurableTask {
@@ -77,7 +78,7 @@ export class DurableWorkflowRuntime {
   async retry(tenantId:string,taskId:string,actorId:string):Promise<DurableTask>{
     const task=await this.store.getTask(tenantId,taskId);if(!task)throw new WorkflowRuntimeError("TASK_NOT_FOUND");
     if(task.state!=="failed"||task.attempt>=task.maxAttempts)throw new WorkflowRuntimeError("TASK_RETRY_BUDGET_EXHAUSTED");
-    const next={...task,state:"ready" as const,errorCode:undefined,version:task.version+1};
+    const { errorCode: _errorCode, ...withoutError } = task; const next={...withoutError,state:"ready" as const,version:task.version+1};
     if(!await this.store.transition(tenantId,taskId,"failed",next))throw new WorkflowRuntimeError("TASK_STATE_CONFLICT");
     await this.event(next,"retry_scheduled",actorId);return next;
   }
@@ -91,5 +92,5 @@ export class DurableWorkflowRuntime {
   private async event(task:DurableTask,kind:string,actorId:string,detail?:unknown):Promise<void>{
     await this.store.appendEvent({id:this.makeId(),tenantId:task.tenantId,taskId:task.id,kind,actorId,occurredAt:this.now().toISOString(),...(detail===undefined?{}:{detail})});
   }
-  private makeId():string{return "task_event_"+this.now().getTime().toString(36)+"_"+Math.random().toString(36).slice(2,10);}
+  private makeId():string{return randomUUID();}
 }
