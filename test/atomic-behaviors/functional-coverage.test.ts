@@ -11,6 +11,7 @@ import { recoveryDecision, evaluateFlag, validateFlag } from "../../src/operatio
 import { validateBackup, verifyBackup } from "../../src/operations/backup.ts";
 import { createCalculationSnapshot, snapshotFingerprint } from "../../src/reporting/snapshot.ts";
 import { evaluateExact } from "../../src/ai/evaluation.ts";
+import { calculateConfidenceInterval } from "../../src/outcomes/settlement.ts";
 
 test("approval and deliverable acceptance enforce independent human evidence",()=>{
  const request={id:"approval_001",tenantId:"tenant_001",actorId:"actor_001",action:"publish",resourceId:"site_001",risk:"high" as const,status:"pending" as const};
@@ -49,4 +50,19 @@ test("backup and calculation snapshots preserve verifiable evidence inputs",()=>
  const snapshot=createCalculationSnapshot({id:"snapshot_001",outcomeId:"outcome_001",specVersion:1,methodVersion:"did-v1",inputEvidenceHashes:["sha256:abc"],result:{baseline:10,target:20,observed:15,absoluteChange:5,targetProgress:.5,confidence:.8,achieved:false}});
  assert.ok(snapshotFingerprint(snapshot).includes("sha256:abc"));
  assert.equal(evaluateExact({id:"eval_001",input:{},expected:{ok:true},tags:["safety"]},{ok:true},"model-v1","prompt-v1").passed,true);
+});
+
+test("invoice payments, refunds and disputes are append-only and bounded",()=>{
+ const invoice=issueInvoice(buildInvoice({id:"invoice_001",tenantId:"tenant_001",agreementId:"agreement_001",currency:"BRL",entries:[{id:"entry_001",tenantId:"tenant_001",sourceEventId:"usage_001",kind:"charge",amount:100,currency:"BRL",createdAt:"2026-11-08T00:00:00Z"}],adjustments:0}));
+ const initial={invoice,paidAmount:0,refundedAmount:0,events:[]};
+ const paid=recordInvoicePayment(initial,{id:"event_pay_001",invoiceId:"invoice_001",tenantId:"tenant_001",kind:"payment",amount:100,currency:"BRL",occurredAt:"2026-11-08T01:00:00Z"});
+ assert.equal(paid.invoice.status,"paid");
+ const disputed=disputeInvoice(paid,{id:"event_dispute_001",invoiceId:"invoice_001",tenantId:"tenant_001",kind:"dispute_opened",currency:"BRL",reason:"Charge questioned",occurredAt:"2026-11-08T02:00:00Z"});
+ assert.equal(disputed.invoice.status,"disputed");
+ assert.throws(()=>refundInvoice(disputed,{id:"event_refund_001",invoiceId:"invoice_001",tenantId:"tenant_001",kind:"refund",amount:101,currency:"BRL",reason:"refund",occurredAt:"2026-11-08T03:00:00Z"}),/REFUND_NOT_ALLOWED/);
+});
+test("confidence interval requires sufficient sample and states approximation method",()=>{
+ assert.throws(()=>calculateConfidenceInterval({mean:10,standardDeviation:2,sampleSize:10}),/CONFIDENCE_SAMPLE_TOO_SMALL/);
+ const interval=calculateConfidenceInterval({mean:10,standardDeviation:2,sampleSize:100});
+ assert.ok(interval.lower<10&&interval.upper>10); assert.equal(interval.method,"normal-approximation");
 });
