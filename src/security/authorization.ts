@@ -36,7 +36,7 @@ function hasPermission(permissions:readonly string[],action:string):boolean {
 }
 function matchesGrant(g:AuthorizationGrant,r:AuthorizationResource,p:AuthorizationPrincipal):boolean {
  return (!g.workspaceId||g.workspaceId===r.workspaceId)&&(!g.resourceType||g.resourceType===r.type)
- &&(!g.resourceId||g.resourceId===r.id)&&matches(g.conditions.actor,p.attributes)&&matches(g.conditions.resource,r.attributes);
+ &&(!g.resourceId||g.resourceId===r.id)&&matches(g.conditions.actor,p.attributes)&&matches(g.conditions.resource,{...r.attributes,...(r.ownerId?{ownerId:r.ownerId}:{})});
 }
 export async function evaluateAuthorization(store:AuthorizationStore,principal:AuthorizationPrincipal,action:string,resource:AuthorizationResource,now=new Date()):Promise<AuthorizationDecision>{
  if(!validId(principal.tenantId)||!validId(principal.actorId)||!action||!resource.type||!resource.id)throw new Error("AUTHORIZATION_CONTEXT_INVALID");
