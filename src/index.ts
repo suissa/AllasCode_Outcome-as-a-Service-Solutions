@@ -78,3 +78,5 @@ export * from "./intent/postgres-version-store.ts";
 export * from "./operations/release.ts";
 
 export * from "./platform/postgres-workspace-store.ts";
+
+export * from "./security/authorization.ts";
