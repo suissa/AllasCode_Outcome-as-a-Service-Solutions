@@ -44,6 +44,7 @@ export async function extractIntentFields(input:IntentCaptureInput,extractor:Int
  if(!input.deadline&&!extracted.deadline)questions.push("By when should this result be achieved?");
  for(const ambiguity of extracted.ambiguities)questions.push("Clarify: "+ambiguity);
  if(questions.length)return Object.freeze({status:"needs_clarification",questions:Object.freeze([...new Set(questions)]),extraction:extracted});
- const intent=captureIntent({...input,desiredOutcome,scope,constraints:[...(input.constraints??[]),...(extracted.constraints??[])],deadline:input.deadline??extracted.deadline});
+ const deadline=input.deadline??extracted.deadline;
+ const intent=captureIntent({...input,desiredOutcome,scope,constraints:[...(input.constraints??[]),...(extracted.constraints??[])],...(deadline!==undefined?{deadline}:{})});
  return Object.freeze({status:"captured",intent,extraction:extracted});
 }
