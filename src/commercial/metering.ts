@@ -15,7 +15,7 @@ const decodeLedger=(v:LedgerEntry|string):LedgerEntry=>typeof v==="string"?JSON.
 export class PostgresUsageLedger {
  constructor(private readonly db:SqlDatabase){}
  async record(event:UsageEvent,rate:number,currency:string):Promise<{entry:LedgerEntry;replayed:boolean}>{
-  if(!event.id||!event.tenantId||!event.actorId||!event.idempotencyKey||!event.unit||Number.isNaN(Date.parse(event.occurredAt)))throw new Error("USAGE_EVENT_INVALID");
+  if(!event.id||!event.tenantId||!event.actorId||!event.idempotencyKey||!event.unit||Number.isNaN(Date.parse(event.occurredAt))||!/^[A-Z]{3}$/.test(currency))throw new Error("USAGE_EVENT_INVALID");
   const fingerprint=JSON.stringify([event,rate,currency]);const entry=priceUsage(event,rate,currency);
   return this.db.transaction(async tx=>{
    await tx.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[event.tenantId+":"+event.idempotencyKey]);
