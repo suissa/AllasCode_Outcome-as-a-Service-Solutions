@@ -72,3 +72,5 @@ export * from "./security/api-key-auth.ts";
 export * from "./persistence/migrations.ts";
 
 export * from "./commercial/settlement-workflow.ts";
+
+export * from "./intent/postgres-version-store.ts";
