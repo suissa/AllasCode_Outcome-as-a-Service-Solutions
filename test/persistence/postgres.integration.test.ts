@@ -8,6 +8,7 @@ import type { OutcomeCase } from "../../src/application/outcome-case.ts";
 import { PostgresWorkflowTaskStore, type DurableTask } from "../../src/execution/durable-runtime.ts";
 import { PostgresApiKeyStore, hashApiKeySecret } from "../../src/security/api-key-auth.ts";
 import { PostgresUsageLedger } from "../../src/commercial/metering.ts";
+import { applyMigrations } from "../../src/persistence/migrations.ts";
 const databaseUrl = process.env.DATABASE_URL;
 test("PostgreSQL migration and transactional outcome persistence", { skip: !databaseUrl }, async () => {
   const client = postgres(databaseUrl!, { max: 1 });
@@ -17,14 +18,9 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
   const tenantId = "tenant_it_" + suffix;
   const caseId = "outcome_it_" + suffix;
   try {
-    const migration = await readFile(new URL("../../migrations/0001_outcome_platform.sql", import.meta.url), "utf8");
-    await client.unsafe(migration);
-    const workflowMigration = await readFile(new URL("../../migrations/0002_workflow_tasks.sql", import.meta.url), "utf8");
-    await client.unsafe(workflowMigration);
-    const apiKeyMigration = await readFile(new URL("../../migrations/0003_api_keys.sql", import.meta.url), "utf8");
-    await client.unsafe(apiKeyMigration);
-    const usageMigration = await readFile(new URL("../../migrations/0004_usage_ledger.sql", import.meta.url), "utf8");
-    await client.unsafe(usageMigration);
+    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
+    assert.equal((await applyMigrations(db,migrations)).applied.length,4);
+    assert.equal((await applyMigrations(db,migrations)).skipped.length,4);
     const initial: OutcomeCase = {
       id: caseId, tenantId, stage: "specified",
       spec: { metric: { id: "metric_it_001", name: "Revenue", unit: "BRL" } as never, baseline: 100, target: 150, direction: "increase", periodStart: "2026-01-01", periodEnd: "2026-02-01", attribution: "direct", approvedBy: "actor_it_001" },
