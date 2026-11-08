@@ -27,3 +27,5 @@ test("missing command context fails closed before mutation",()=>{
  const p=new OutcomePlatform();p.register(initial);assert.throws(()=>p.start({...ctx("x"),actorId:""},"case1"),e=>e instanceof PlatformError&&e.code==="COMMAND_CONTEXT_REQUIRED");
  assert.equal(p.get("tenantA","case1").stage,"specified");assert.equal(p.auditTrail("tenantA").length,0);
 });
+
+test("idempotency key cannot replay a command against a different case",()=>{ const p=new OutcomePlatform();p.register(initial);p.register({...initial,id:"case2"});p.start(ctx("same-key"),"case1");assert.throws(()=>p.start(ctx("same-key"),"case2"),e=>e instanceof PlatformError&&e.code==="IDEMPOTENCY_CONFLICT"); });

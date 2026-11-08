@@ -6,7 +6,7 @@ This matrix ties each open atomic issue to the code entry point and automated te
 |---:|---|---|
 | #9 | Canonical entities and identifiers | `src/domain/identifiers.ts`; `test/domain/identifiers.test.ts` |
 | #10 | Tenant boundaries and isolation | `src/domain/tenant-scope.ts`; `test/domain/tenant-scope.test.ts` |
-| #11 | Workspace membership/invitations | `src/platform/workspace.ts` |
+| #11 | Workspace membership/invitations | `src/platform/workspace.ts`, `src/platform/postgres-workspace-store.ts`; PostgreSQL integration tests |
 | #12 | RBAC/ABAC authorization | `src/domain/access-control.ts`; `test/domain/access-control.test.ts` |
 | #13 | Lifecycle and legal transitions | `src/domain/lifecycle.ts`; `test/domain/lifecycle.test.ts` |
 | #14 | Audit and immutable decisions | `src/domain/audit.ts`; atomic behavior audit |
@@ -82,3 +82,19 @@ This matrix ties each open atomic issue to the code entry point and automated te
 ## Validation status
 
 Issue implementations are tracked separately from issue closure. Do not close an issue merely because a module exists: required acceptance tests, adversarial tenant/authorization tests, and any external integration evidence must be attached first.
+
+## Additional implementation and verification added
+
+| Issue | Verified capability added | Evidence |
+|---:|---|---|
+| #17–18 | Capture and normalize web/API/conversation intent with source provenance | `src/intent/intent.ts`; `test/discovery/intake.test.ts` |
+| #24 | Generate discovery interview, data-request, process-map and workshop tasks from qualified intent | `src/discovery/intake.ts`; `test/discovery/intake.test.ts` |
+| #68 | Append payment/refund/dispute events with tenant, currency, amount and status guards | `src/commercial/invoice.ts`; `test/atomic-behaviors/functional-coverage.test.ts` |
+| #69 | Validate task dependency graphs, cycles, tenant boundaries and deterministic execution waves | `src/execution/task-graph.ts`; `test/execution/task-graph.test.ts` |
+| #71–72 | Durable PostgreSQL task state, compare-and-set claims, approval gate, timeout, retry, cancellation and compensation hook | `src/execution/durable-runtime.ts`; `migrations/0002_workflow_tasks.sql`; `test/execution/durable-runtime.test.ts` |
+| #76 | Explicit legal execution-control transitions and replay counter | `src/execution/task-graph.ts`; `test/execution/task-graph.test.ts` |
+| #82 | Normal-approximation confidence interval with minimum sample-size guard | `src/outcomes/settlement.ts`; `test/atomic-behaviors/functional-coverage.test.ts` |
+| Cross-cutting | PostgreSQL case/audit/idempotency store and authenticated HTTP adapter | `src/persistence/`, `src/http/server.ts`, `test/persistence/postgres.integration.test.ts` |
+| Cross-cutting | Strict ABT validation for identifiers, text, email, phone, URL, money, dates, timestamps, references, evidence, metrics, secrets and payload envelopes | `src/core/abt.ts`; `test/core/abt.test.ts` |
+
+These additions increase implementation depth and CI coverage, but do not close the backlog. In particular, identity-provider integration, policy administration, queue/outbox relay, deployed connector implementations, payment-provider reconciliation, full dashboard, production deployment and operational security review still require dedicated acceptance work.
