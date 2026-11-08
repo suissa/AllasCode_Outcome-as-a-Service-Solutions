@@ -32,7 +32,7 @@ test("approval and deliverable acceptance enforce independent human evidence",()
 test("connector contract requires bounded, contextual idempotent execution",()=>{
  const manifest={id:"connector_001",version:"1",name:"CRM",capabilities:["customer.read"],timeoutMs:1000,maxRetries:2,idempotent:true,allowedHosts:["crm.example.com"]};
  assert.throws(()=>validateConnectorRequest(manifest,{tenantId:"",actorId:"actor",operation:"customer.read",payload:{},idempotencyKey:"idem",correlationId:"corr"}),/CONNECTOR_CONTEXT_REQUIRED/);
- assert.doesNotThrow(()=>validateConnectorRequest(manifest,{tenantId:"tenant",actorId:"actor",operation:"read",payload:{},idempotencyKey:"idem",correlationId:"corr"}));
+ assert.doesNotThrow(()=>validateConnectorRequest(manifest,{tenantId:"tenant",actorId:"actor",operation:"customer.read",payload:{},idempotencyKey:"idem",correlationId:"corr"}));
 });
 test("commercial metering and outcome fee apply deterministic caps and direction",()=>{
  const entry=priceUsage({id:"usage_001",tenantId:"tenant_001",actorId:"actor_001",quantity:3,unit:"task",occurredAt:"2026-11-08T10:00:00Z",idempotencyKey:"idem_001"},10,"BRL");
@@ -137,7 +137,7 @@ test("agreement activation requires verified signatures from every required sign
  const signature=(signerId:string)=>({signerId,signatureHash:"sha256_"+signerId,provider:"qualified-signature",signedAt:"2026-11-08T10:00:00Z",verificationReference:"verification_"+signerId});
  await assert.rejects(()=>recordAgreementSignature(agreement,signature("owner"),async()=>false),/AGREEMENT_SIGNATURE_UNVERIFIED/);
  const first=await recordAgreementSignature(agreement,signature("owner"),async()=>true);
- await assert.rejects(()=>Promise.resolve(activateSignedAgreement(first,["owner","customer"])),/AGREEMENT_SIGNATURES_INCOMPLETE/);
+ assert.throws(()=>activateSignedAgreement(first,["owner","customer"]),/AGREEMENT_SIGNATURES_INCOMPLETE/);
  const second=await recordAgreementSignature(first,signature("customer"),async()=>true);
  assert.equal(activateSignedAgreement(second,["owner","customer"]).status,"active");
 });
