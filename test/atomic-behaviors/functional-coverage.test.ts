@@ -4,6 +4,7 @@ import { decideApproval } from "../../src/execution/approval.ts";
 import { evaluateAcceptance } from "../../src/execution/acceptance.ts";
 import { validateConnectorRequest } from "../../src/integrations/connector.ts";
 import { priceUsage } from "../../src/commercial/metering.ts";
+import { buildInvoice, issueInvoice, recordInvoicePayment, refundInvoice, disputeInvoice } from "../../src/commercial/invoice.ts";
 import { calculateOutcomeFee } from "../../src/commercial/outcome-fee.ts";
 import { recordDecision } from "../../src/solutions/decision.ts";
 import { verifyPlaybook } from "../../src/solutions/playbook.ts";
