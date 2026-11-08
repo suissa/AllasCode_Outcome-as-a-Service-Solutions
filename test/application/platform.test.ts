@@ -9,7 +9,7 @@ test("platform runs approved case to settlement with tenant-isolated audit",()=>
  const p=new OutcomePlatform();p.register(initial);assert.equal(p.start(ctx("start"),"case1").value.stage,"active");
  const ev={id:"ev1",tenantId:"tenantA",kind:"document",uri:"evidence://1",hash:"abc",capturedAt:"2026-01-02",sourceId:"ledger"} as any;
  p.addEvidence(ctx("evidence"),"case1",ev,"abc");
- p.observe(ctx("observe"),"case1",{metricId:"revenue",value:160,unit:"BRL",observedAt:"2026-02-01",confidence:0.95,source:"ledger"});
+ p.observe(ctx("observe"),"case1",{metricId:"revenue",value:160,unit:"BRL",observedAt:"2026-02-01",confidence:0.95,sourceId:"ledger"});
  const settled=p.settle(ctx("settle"),"case1",0,"ledger reconciliation","report1").value;
  assert.equal(settled.stage,"settled");assert.equal(settled.result?.achieved,true);assert.equal(settled.report?.evidenceIds[0],"ev1");
  assert.equal(p.auditTrail("tenantA").length,4);assert.equal(p.auditTrail("tenantB").length,0);
