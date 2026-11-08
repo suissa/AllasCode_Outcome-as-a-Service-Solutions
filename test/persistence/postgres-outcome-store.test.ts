@@ -13,7 +13,7 @@ function makeAudit(): AuditEvent {
 test("Postgres store scopes reads by tenant and case", async () => {
   let sql = "";
   const db: SqlDatabase = {
-    query: async <T extends Record<string, unknown>>(statement: string) => { sql = statement; return { rows: [{ payload: makeCase(), version: 1 }] as T[], rowCount: 1 }; },
+    query: async <T extends Record<string, unknown>>(statement: string) => { sql = statement; return { rows: [{ payload: makeCase(), version: 1 }] as unknown as T[], rowCount: 1 }; },
     transaction: async <T>(work: (tx: SqlExecutor) => Promise<T>) => work(db),
   };
   const store = new PostgresOutcomeStore(db);
