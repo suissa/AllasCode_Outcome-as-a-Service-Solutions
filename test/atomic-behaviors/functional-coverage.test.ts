@@ -148,3 +148,12 @@ test("proposal is generated only from a selected evidence-backed solution decisi
  assert.equal(proposal.status,"draft");assert.equal(proposal.sourceDecisionId,decision.id);assert.deepEqual(proposal.evidenceIds,["evidence_001"]);
  assert.throws(()=>createAgreementProposal({id:"proposal_002",version:1,decision,scenarioId:"another_scenario",scope:["x"],deliverables:["y"],exclusions:[],fees:[]}),/PROPOSAL_DECISION_MISMATCH/);
 });
+
+test("acceptance contracts require evidence for every passed required criterion",()=>{
+ const contract={deliverableId:"deliverable_contract_001",checks:[{id:"tests",description:"Automated tests pass",required:true,passed:true,evidenceIds:["ci_run_001"]},{id:"approval",description:"Owner approves",required:true,passed:true,evidenceIds:["approval_001"]}]};
+ const accepted=evaluateAcceptance(contract);
+ assert.equal(accepted.accepted,true);
+ assert.throws(()=>reviewAcceptance({...accepted,accepted:false},"reviewer",true),/DELIVERABLE_NOT_ACCEPTABLE/);
+ const invalid=evaluateAcceptance({...contract,checks:[{...contract.checks[0]!,evidenceIds:[]}]});
+ assert.equal(invalid.accepted,false);assert.ok(invalid.issues?.includes("ACCEPTANCE_EVIDENCE_REQUIRED:tests"));
+});
