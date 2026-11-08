@@ -59,8 +59,9 @@ export class DurableWorkflowRuntime {
     await this.event(running,"started",actorId);
     const controller=new AbortController();const controllerKey=tenantId+":"+taskId;this.controllers.set(controllerKey,controller);let timer:ReturnType<typeof setTimeout>|undefined;
     try{
-      const timeout=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(new WorkflowRuntimeError("TASK_TIMEOUT"));},running.timeoutMs);});
-      const result=await Promise.race([execute(running,controller.signal),timeout]);
+      const timeout=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{controller.abort("TASK_TIMEOUT");reject(new WorkflowRuntimeError("TASK_TIMEOUT"));},running.timeoutMs);});
+      const aborted=new Promise<never>((_,reject)=>controller.signal.addEventListener("abort",()=>reject(new WorkflowRuntimeError(controller.signal.reason==="TASK_TIMEOUT"?"TASK_TIMEOUT":"TASK_ABORTED")),{once:true}));
+      const result=await Promise.race([execute(running,controller.signal),timeout,aborted]);
       const succeeded={...running,state:"succeeded" as const,output:result.output,version:running.version+1};
       if(!await this.store.transition(tenantId,taskId,"running",succeeded))throw new WorkflowRuntimeError("TASK_STATE_CONFLICT");
       await this.event(succeeded,"succeeded",actorId);return succeeded;
