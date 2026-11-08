@@ -69,3 +69,7 @@ Run `npm run typecheck` and `npm test`. To run the real PostgreSQL integration t
 `PostgresWorkflowTaskStore` persists workflow task state and append-only task events. `DurableWorkflowRuntime` claims tasks with compare-and-set transitions, checks completed dependencies, pauses high-risk work at an approval gate, enforces execution timeouts, records outputs/failures, supports bounded retry and cancellation, and invokes an optional compensation callback after an execution error.
 
 A task executor receives an `AbortSignal`; it must honor cancellation and implement its own idempotent external side effects. Compensation is an injected behavior, not a guarantee that an external system can be rolled back. The runtime is a durable step engine, but it does not yet include a background queue, distributed worker deployment, scheduled retry/backoff service, dead-letter UI or outbox relay.
+
+## Service authentication
+
+The HTTP adapter can use `createApiKeyAuthenticator` and `createScopeAuthorizer`. API keys are presented as `Authorization: Bearer <keyId>.<secret>`; only a SHA-256 digest is stored. The PostgreSQL registry supports tenant-scoped revocation and expiry. Provisioning must generate a high-entropy secret, store only `hashApiKeySecret(secret)`, and deliver the raw secret once through a secure channel. The API does not expose a key-creation route. Scopes are exact action names such as `case.read` or scoped wildcards such as `case.*`; the authorizer also checks the resource tenant.
