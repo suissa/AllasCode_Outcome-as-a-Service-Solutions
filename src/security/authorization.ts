@@ -23,7 +23,7 @@ export interface AuthorizationStore {
  recordDecision(decision:AuthorizationDecision):Promise<void>;
 }
 const validId=(v:string)=>/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$/.test(v);
-const validPermission=(v:string)=>v==="*"||/^[a-z][a-z0-9_-]*(?:\.[a-z][a-z0-9_*-]*)*$/.test(v);
+const validPermission=(v:string)=>v==="*"||/^[a-z][a-z0-9_-]*(?:\.[a-z][a-z0-9_-]*)*(?:\.\*)?$/.test(v);
 function validConditions(c:AuthorizationConditions):boolean {
  return Object.entries(c.actor??{}).every(([k,v])=>!!k&&["string","number","boolean"].includes(typeof v))
  && Object.entries(c.resource??{}).every(([k,v])=>!!k&&["string","number","boolean"].includes(typeof v));
