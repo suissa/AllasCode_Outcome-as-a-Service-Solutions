@@ -1,6 +1,7 @@
 import {test} from "node:test";import assert from "node:assert/strict";
 import {OutcomePlatform,PlatformError} from "../../src/application/platform.ts";
-import type {OutcomeCase,CommandContext} from "../../src/application/outcome-case.ts";
+import type {OutcomeCase} from "../../src/application/outcome-case.ts";
+import type {CommandContext} from "../../src/application/platform.ts";
 const metric={id:"revenue",name:"Revenue",unit:"BRL",aggregation:"sum" as const};
 const initial:OutcomeCase={id:"case1",tenantId:"tenantA",stage:"specified",spec:{metric,baseline:100,target:150,direction:"increase",periodStart:"2026-01-01",periodEnd:"2026-02-01",attribution:"direct",approvedBy:"owner"},evidence:[],observations:[]};
 const ctx=(key:string,tenantId="tenantA"):CommandContext=>({tenantId,actorId:"owner",correlationId:"corr-"+key,idempotencyKey:key});
