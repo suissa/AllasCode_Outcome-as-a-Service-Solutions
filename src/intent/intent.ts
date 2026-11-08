@@ -27,3 +27,23 @@ export function captureIntent(input: IntentCaptureInput): OutcomeIntent {
     throw new Error("INTENT_PROVENANCE_INVALID");
   return Object.freeze({ ...intent, scope: [...intent.scope], constraints: [...intent.constraints] });
 }
+
+export interface IntentExtractionResult { desiredOutcome?:string; scope?:readonly string[]; constraints?:readonly string[]; deadline?:string; domain?:string; confidence:number; ambiguities:readonly string[] }
+export type IntentExtractor=(statement:string,signal?:AbortSignal)=>Promise<IntentExtractionResult>;
+export type IntentExtractionOutcome={status:"captured";intent:OutcomeIntent;extraction:IntentExtractionResult}|{status:"needs_clarification";questions:readonly string[];extraction:IntentExtractionResult};
+export async function extractIntentFields(input:IntentCaptureInput,extractor:IntentExtractor,minConfidence=0.75,signal?:AbortSignal):Promise<IntentExtractionOutcome>{
+ if(!Number.isFinite(minConfidence)||minConfidence<0||minConfidence>1)throw new Error("INTENT_CONFIDENCE_THRESHOLD_INVALID");
+ const extracted=await extractor(input.statement,signal);
+ if(!Number.isFinite(extracted.confidence)||extracted.confidence<0||extracted.confidence>1)throw new Error("INTENT_EXTRACTION_CONFIDENCE_INVALID");
+ const desiredOutcome=input.desiredOutcome.trim()||extracted.desiredOutcome?.trim()||"";
+ const scope=input.scope?.length?input.scope:extracted.scope??[];
+ const questions:string[]=[];
+ if(extracted.confidence<minConfidence)questions.push("Please confirm the interpretation of the requested outcome.");
+ if(!desiredOutcome)questions.push("What measurable result should change?");
+ if(!scope.length)questions.push("Which process, team or customer segment is in scope?");
+ if(!input.deadline&&!extracted.deadline)questions.push("By when should this result be achieved?");
+ for(const ambiguity of extracted.ambiguities)questions.push("Clarify: "+ambiguity);
+ if(questions.length)return Object.freeze({status:"needs_clarification",questions:Object.freeze([...new Set(questions)]),extraction:extracted});
+ const intent=captureIntent({...input,desiredOutcome,scope,constraints:[...(input.constraints??[]),...(extracted.constraints??[])],deadline:input.deadline??extracted.deadline});
+ return Object.freeze({status:"captured",intent,extraction:extracted});
+}
