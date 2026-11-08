@@ -7,6 +7,7 @@ import { PostgresJsDatabase, PostgresOutcomeStore, type PostgresQueryClient } fr
 import type { OutcomeCase } from "../../src/application/outcome-case.ts";
 import { PostgresWorkflowTaskStore, type DurableTask } from "../../src/execution/durable-runtime.ts";
 import { PostgresApiKeyStore, hashApiKeySecret } from "../../src/security/api-key-auth.ts";
+import { PostgresUsageLedger } from "../../src/commercial/metering.ts";
 const databaseUrl = process.env.DATABASE_URL;
 test("PostgreSQL migration and transactional outcome persistence", { skip: !databaseUrl }, async () => {
   const client = postgres(databaseUrl!, { max: 1 });
@@ -22,6 +23,8 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     await client.unsafe(workflowMigration);
     const apiKeyMigration = await readFile(new URL("../../migrations/0003_api_keys.sql", import.meta.url), "utf8");
     await client.unsafe(apiKeyMigration);
+    const usageMigration = await readFile(new URL("../../migrations/0004_usage_ledger.sql", import.meta.url), "utf8");
+    await client.unsafe(usageMigration);
     const initial: OutcomeCase = {
       id: caseId, tenantId, stage: "specified",
       spec: { metric: { id: "metric_it_001", name: "Revenue", unit: "BRL" } as never, baseline: 100, target: 150, direction: "increase", periodStart: "2026-01-01", periodEnd: "2026-02-01", attribution: "direct", approvedBy: "actor_it_001" },
@@ -55,7 +58,16 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     assert.equal((await apiKeys.getKey(keyId))?.tenantId,tenantId);
     assert.equal(await apiKeys.revokeKey(tenantId,keyId),true);
     assert.ok((await apiKeys.getKey(keyId))?.revokedAt);
+    const usageLedger = new PostgresUsageLedger(db);
+    const usage = { id:"usage_it_"+suffix,tenantId,actorId:"actor_it_001",quantity:3,unit:"task",occurredAt:new Date().toISOString(),idempotencyKey:"usage_idem_"+suffix };
+    const usageFirst = await usageLedger.record(usage,10,"BRL");
+    assert.equal(usageFirst.entry.amount,30);
+    assert.equal((await usageLedger.record(usage,10,"BRL")).replayed,true);
+    await assert.rejects(()=>usageLedger.record({...usage,quantity:4},10,"BRL"),/USAGE_IDEMPOTENCY_CONFLICT/);
+    assert.equal((await usageLedger.list(tenantId)).length,1);
   } finally {
+    await client.unsafe("delete from usage_ledger_entries where tenant_id = $1", [tenantId]);
+    await client.unsafe("delete from usage_meter_events where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from api_keys where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from workflow_task_events where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from workflow_tasks where tenant_id = $1", [tenantId]);
