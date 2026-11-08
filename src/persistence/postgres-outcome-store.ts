@@ -1,15 +1,16 @@
 import type { OutcomeCase } from "../application/outcome-case.ts";
 import type { SqlDatabase, SqlExecutor } from "./sql.ts";
 import type { CommitCommand, CommitResult, OutcomeStore } from "./outcome-store.ts";
-interface CaseRow extends Record<string, unknown> { payload: OutcomeCase; version: number }
-interface IdempotencyRow extends Record<string, unknown> { fingerprint: string; result: OutcomeCase }
-interface AuditRow extends Record<string, unknown> { payload: import("../domain/audit.ts").AuditEvent }
+interface CaseRow extends Record<string, unknown> { payload: OutcomeCase | string; version: number }
+interface IdempotencyRow extends Record<string, unknown> { fingerprint: string; result: OutcomeCase | string }
+interface AuditRow extends Record<string, unknown> { payload: import("../domain/audit.ts").AuditEvent | string }
+const decodeJson = <T>(value: T | string): T => typeof value === "string" ? JSON.parse(value) as T : value;
 
 export class PostgresOutcomeStore implements OutcomeStore {
   constructor(private readonly db: SqlDatabase) {}
   async getCase(tenantId: string, caseId: string): Promise<OutcomeCase | undefined> {
     const result = await this.db.query<CaseRow>("select payload, version from outcome_cases where tenant_id = $1 and case_id = $2", [tenantId, caseId]);
-    return result.rows[0]?.payload;
+    return result.rows[0] ? decodeJson<OutcomeCase>(result.rows[0].payload) : undefined;
   }
   async createCase(value: OutcomeCase): Promise<void> {
     await this.db.query("insert into outcome_cases (tenant_id, case_id, payload, version) values ($1, $2, $3::jsonb, 1)", [value.tenantId, value.id, JSON.stringify(value)]);
@@ -21,7 +22,7 @@ export class PostgresOutcomeStore implements OutcomeStore {
       const replay = prior.rows[0];
       if (replay) {
         if (replay.fingerprint !== command.fingerprint) throw new Error("IDEMPOTENCY_CONFLICT");
-        return { value: replay.result, replayed: true };
+        return { value: decodeJson<OutcomeCase>(replay.result), replayed: true };
       }
       const current = await tx.query<CaseRow>("select payload, version from outcome_cases where tenant_id = $1 and case_id = $2 for update", [command.tenantId, command.caseId]);
       if (!current.rows[0]) throw new Error("CASE_NOT_FOUND");
@@ -35,7 +36,7 @@ export class PostgresOutcomeStore implements OutcomeStore {
     const result = caseId
       ? await this.db.query<AuditRow>("select payload from outcome_audit_events where tenant_id = $1 and case_id = $2 order by created_at, event_id", [tenantId, caseId])
       : await this.db.query<AuditRow>("select payload from outcome_audit_events where tenant_id = $1 order by created_at, event_id", [tenantId]);
-    return Object.freeze(result.rows.map((row) => row.payload));
+    return Object.freeze(result.rows.map((row) => decodeJson<import("../domain/audit.ts").AuditEvent>(row.payload)));
   }
 }
 export interface PostgresQueryClient {
