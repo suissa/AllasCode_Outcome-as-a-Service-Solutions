@@ -8,6 +8,7 @@ import { buildInvoice, issueInvoice, recordInvoicePayment, refundInvoice, disput
 import { recordAgreementSignature, activateSignedAgreement, createAgreementProposal } from "../../src/commercial/agreement.ts";
 import { calculateOutcomeFee } from "../../src/commercial/outcome-fee.ts";
 import { recordDecision } from "../../src/solutions/decision.ts";
+import { CapabilityCatalog, simulateScenario, generateScenarios } from "../../src/solutions/catalog.ts";
 import { verifyPlaybook } from "../../src/solutions/playbook.ts";
 import { PolicyRegistry } from "../../src/domain/policy.ts";
 import { createInvitation, acceptInvitation, revokeMembership, WorkspaceRegistry } from "../../src/platform/workspace.ts";
@@ -156,4 +157,20 @@ test("acceptance contracts require evidence for every passed required criterion"
  assert.throws(()=>reviewAcceptance({...accepted,accepted:false},"reviewer",true),/DELIVERABLE_NOT_ACCEPTABLE/);
  const invalid=evaluateAcceptance({...contract,checks:[{...contract.checks[0]!,evidenceIds:[]}]});
  assert.equal(invalid.accepted,false);assert.ok(invalid.issues?.includes("ACCEPTANCE_EVIDENCE_REQUIRED:tests"));
+});
+
+test("scenario simulation exposes bounded assumptions and sensitivity impact",()=>{
+ const result=simulateScenario({id:"scenario_sim_001",baseBenefit:1000,baseCost:400,confidence:.8,risks:["adoption"],assumptions:[{name:"conversion_uplift",value:.1,minimum:.05,maximum:.15,benefitPerUnit:2000,costPerUnit:500}]});
+ assert.deepEqual(result.estimatedBenefit,{min:900,max:1100});
+ assert.deepEqual(result.estimatedCost,{min:375,max:425});
+ assert.equal(result.expectedNetBenefit,600);assert.equal(result.sensitivity[0]?.impact,150);
+ assert.throws(()=>simulateScenario({id:"scenario_bad",baseBenefit:1,baseCost:1,confidence:1,risks:[],assumptions:[{name:"bad",value:2,minimum:3,maximum:4,benefitPerUnit:1,costPerUnit:1}]}),/SCENARIO_ASSUMPTION_INVALID/);
+});
+test("capability catalog preserves versions and combines only explicit benefit ranges",()=>{
+ const catalog=new CapabilityCatalog();
+ const cap={id:"capability_001",version:1,name:"CRM automation",description:"Automate qualification",causes:["manual_followup"],outcomes:["conversion"],dependencies:[],risk:"low" as const,cost:{currency:"BRL",min:100,max:200},benefit:{min:500,max:900},evidenceIds:["evidence_001"]};
+ catalog.register(cap);catalog.publish({...cap,version:2,cost:{currency:"BRL",min:150,max:250}});
+ assert.equal(catalog.current(cap.id).version,2);assert.equal(catalog.history(cap.id).length,2);
+ assert.deepEqual(generateScenarios("alternative",[catalog.current(cap.id)])[0]?.estimatedBenefit,{min:500,max:900});
+ assert.throws(()=>generateScenarios("alternative",[{...catalog.current(cap.id),benefit:undefined}]),/CAPABILITY_BENEFIT_REQUIRED/);
 });
