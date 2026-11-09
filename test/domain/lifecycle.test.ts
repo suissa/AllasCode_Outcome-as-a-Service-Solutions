@@ -13,7 +13,7 @@ const identity={entityId:"case_abc",tenantId:"tenant_abc",actorId:"actor_abc",co
 test("approval and contextual guard are independently enforced",()=>{
  assert.throws(()=>transition("draft","publish",table),LifecycleApprovalRequiredError);
  assert.throws(()=>transitionLifecycle(machine,"draft",0,{action:"publish",approved:true,context:{reviewed:false}},identity),LifecycleGuardRejectedError);
- assert.equal(transition("draft","publish",table,true),"active");
+ assert.throws(()=>transition("draft","publish",table,true),LifecycleGuardRejectedError);\n assert.equal(transitionLifecycle(machine,"draft",0,{action:"publish",approved:true,context:{reviewed:true}},identity).state,"active");
 });
 test("rejects illegal actions and terminal transitions",()=>{
  assert.throws(()=>transition("draft","close",table),InvalidTransitionError);
