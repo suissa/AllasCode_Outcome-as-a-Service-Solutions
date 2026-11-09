@@ -17,10 +17,11 @@ const iso=(v:Date|string|null|undefined):string|undefined=>v==null?undefined:v i
 const decode=<T>(v:T|string):T=>typeof v==="string"?JSON.parse(v) as T:v;
 const fingerprint=(action:SettlementAction)=>createHash("sha256").update(canonicalJson(action),"utf8").digest("hex");
 function toRecord(row:ActionRow,replayed=false):SettlementWorkflowRecord{
- return Object.freeze({tenantId:row.tenant_id,actionId:row.action_id,idempotencyKey:row.idempotency_key,fingerprint:row.fingerprint,action:decode(row.payload),state:row.state,attempt:Number(row.attempt),maxAttempts:Number(row.max_attempts),...(iso(row.lease_until)?{leaseUntil:iso(row.lease_until)}:{}),...(row.claimed_by?{claimedBy:row.claimed_by}:{}),...(row.external_reference?{externalReference:row.external_reference}:{}),...(row.error_code?{errorCode:row.error_code}:{}),createdAt:iso(row.created_at)!,updatedAt:iso(row.updated_at)!,replayed});
+ const leaseUntil=iso(row.lease_until);
+ return Object.freeze({tenantId:row.tenant_id,actionId:row.action_id,idempotencyKey:row.idempotency_key,fingerprint:row.fingerprint,action:decode(row.payload),state:row.state,attempt:Number(row.attempt),maxAttempts:Number(row.max_attempts),...(leaseUntil?{leaseUntil}:{}),...(row.claimed_by?{claimedBy:row.claimed_by}:{}),...(row.external_reference?{externalReference:row.external_reference}:{}),...(row.error_code?{errorCode:row.error_code}:{}),createdAt:iso(row.created_at)!,updatedAt:iso(row.updated_at)!,replayed});
 }
 function toEvent(row:EventRow):SettlementWorkflowEvent{
- return Object.freeze({tenantId:row.tenant_id,actionId:row.action_id,eventId:row.event_id,kind:row.kind,actorId:row.actor_id,correlationId:row.correlation_id,payload:decode(row.payload),occurredAt:iso(row.occurred_at)!});
+ return Object.freeze({tenantId:row.tenant_id,actionId:row.action_id,eventId:row.event_id,kind:row.kind,actorId:row.actor_id,correlationId:row.correlation_id,payload:decode<Record<string,unknown>>(row.payload),occurredAt:iso(row.occurred_at)!});
 }
 function validateContext(context:SettlementContext):void{
  if(!required(context.tenantId)||!required(context.actorId)||!required(context.correlationId))throw new Error("SETTLEMENT_CONTEXT_INVALID");
