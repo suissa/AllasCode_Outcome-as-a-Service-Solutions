@@ -9,17 +9,17 @@ class MemoryDb implements SqlDatabase {
  readonly snapshots=new Map<string,{tenant_id:string;snapshot_id:string;fingerprint:string;payload:unknown}>();
  readonly ledger=new Map<string,{tenantId:string;sequence:number;eventId:string;eventType:string;previousHash:string;eventHash:string;payload:unknown}[]>();
  async query<T extends Record<string,unknown>>(sql:string,p:readonly unknown[]=[]):Promise<{rows:T[];rowCount:number}>{
-  if(sql.includes("from calculation_snapshots")){const rows=[...(this.snapshots.values())].filter(r=>r.tenant_id===p[0]).map(r=>({tenant_id:r.tenant_id,snapshot_id:r.snapshot_id,fingerprint:r.fingerprint,payload:r.payload}));return{rows:rows as T[],rowCount:rows.length};}
-  if(sql.includes("from audit_event_ledger")){const rows=this.ledger.get(String(p[0]))??[];return{rows:rows as T[],rowCount:rows.length};}
+  if(sql.includes("from calculation_snapshots")){const rows=[...(this.snapshots.values())].filter(r=>r.tenant_id===p[0]).map(r=>({tenant_id:r.tenant_id,snapshot_id:r.snapshot_id,fingerprint:r.fingerprint,payload:r.payload}));return{rows:rows as unknown as T[],rowCount:rows.length};}
+  if(sql.includes("from audit_event_ledger")){const rows=this.ledger.get(String(p[0]))??[];return{rows:rows as unknown as T[],rowCount:rows.length};}
   throw new Error("UNEXPECTED_QUERY:"+sql);
  }
  async transaction<T>(work:(tx:SqlExecutor)=>Promise<T>):Promise<T>{
   const tx:SqlExecutor={query:async<R extends Record<string,unknown>>(sql:string,p:readonly unknown[]=[]):Promise<{rows:R[];rowCount:number}>=>{
    const tenant=String(p[0]??"");
    if(sql.includes("pg_advisory_xact_lock"))return{rows:[],rowCount:1};
-   if(sql.includes("from calculation_snapshots where tenant_id=$1 and snapshot_id=$2")){const r=this.snapshots.get(tenant+":"+String(p[1]));return{rows:(r?[r]:[]) as R[],rowCount:r?1:0};}
-   if(sql.includes("from audit_event_ledger where tenant_id=$1 and event_id=$2")){const r=(this.ledger.get(tenant)??[]).find(x=>x.eventId===p[1]);return{rows:(r?[{tenant_id:r.tenantId,sequence:r.sequence,event_id:r.eventId,event_type:r.eventType,previous_hash:r.previousHash,event_hash:r.eventHash,payload:r.payload}]:[]) as R[],rowCount:r?1:0};}
-   if(sql.includes("from audit_event_ledger where tenant_id=$1 order by sequence desc")){const rows=this.ledger.get(tenant)??[];const r=rows.at(-1);return{rows:(r?[{tenant_id:r.tenantId,sequence:r.sequence,event_id:r.eventId,event_type:r.eventType,previous_hash:r.previousHash,event_hash:r.eventHash,payload:r.payload}]:[]) as R[],rowCount:r?1:0};}
+   if(sql.includes("from calculation_snapshots where tenant_id=$1 and snapshot_id=$2")){const r=this.snapshots.get(tenant+":"+String(p[1]));return{rows:(r?[r]:[]) as unknown as R[],rowCount:r?1:0};}
+   if(sql.includes("from audit_event_ledger where tenant_id=$1 and event_id=$2")){const r=(this.ledger.get(tenant)??[]).find(x=>x.eventId===p[1]);return{rows:(r?[{tenant_id:r.tenantId,sequence:r.sequence,event_id:r.eventId,event_type:r.eventType,previous_hash:r.previousHash,event_hash:r.eventHash,payload:r.payload}]:[]) as unknown as R[],rowCount:r?1:0};}
+   if(sql.includes("from audit_event_ledger where tenant_id=$1 order by sequence desc")){const rows=this.ledger.get(tenant)??[];const r=rows.at(-1);return{rows:(r?[{tenant_id:r.tenantId,sequence:r.sequence,event_id:r.eventId,event_type:r.eventType,previous_hash:r.previousHash,event_hash:r.eventHash,payload:r.payload}]:[]) as unknown as R[],rowCount:r?1:0};}
    if(sql.startsWith("insert into calculation_snapshots")){const row={tenant_id:tenant,snapshot_id:String(p[1]),fingerprint:String(p[2]),payload:JSON.parse(String(p[3]))};this.snapshots.set(tenant+":"+row.snapshot_id,row);return{rows:[],rowCount:1};}
    if(sql.startsWith("insert into audit_event_ledger")){const rows=this.ledger.get(tenant)??[];rows.push({tenantId:tenant,sequence:Number(p[1]),eventId:String(p[2]),eventType:"audit",previousHash:String(p[3]),eventHash:String(p[4]),payload:JSON.parse(String(p[5]))});this.ledger.set(tenant,rows);return{rows:[],rowCount:1};}
    throw new Error("UNEXPECTED_SQL:"+sql);
