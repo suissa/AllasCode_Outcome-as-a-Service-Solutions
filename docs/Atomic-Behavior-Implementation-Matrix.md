@@ -59,7 +59,7 @@ This matrix ties each open atomic issue to the code entry point and automated te
 | #81 | Attribution and uncertainty | `src/outcomes/attribution.ts` |
 | #82 | Outcome/confidence calculation | `src/outcomes/settlement.ts` |
 | #83 | Evidence-linked reports | `src/reporting/report.ts` |
-| #84 | Acceptance/payment/bonus/refund/dispute flow | `src/commercial/invoice.ts`, `src/outcomes/settlement.ts` |
+| #84 | Acceptance/payment/bonus/refund/dispute flow | `src/commercial/settlement-workflow.ts`, `src/commercial/durable-settlement.ts`; `migrations/0012_durable_settlement_workflow.sql`; unit and PostgreSQL integration tests |
 | #85 | Reproducible snapshots/audit | `src/reporting/snapshot.ts` |
 | #86 | SLO/health/telemetry | `src/operations/health.ts`, `src/operations/telemetry.ts` |
 | #87 | Trace/log/metric correlation | `src/operations/telemetry.ts` |

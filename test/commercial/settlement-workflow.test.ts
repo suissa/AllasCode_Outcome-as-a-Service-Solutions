@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { planSettlementActions, executeSettlementPlan } from "../../src/commercial/settlement-workflow.ts";
 test("settlement planner holds disputed or unaccepted outcomes and pays only accepted results",()=>{
- const base={tenantId:"tenant_001",outcomeId:"outcome_001",agreementId:"agreement_001",accepted:true,achieved:true,disputed:false,currency:"BRL",feeAmount:100,bonusAmount:20,refundableAmount:50};
+ const base={tenantId:"tenant_001",outcomeId:"outcome_001",agreementId:"agreement_001",accepted:true,achieved:true,disputed:false,paymentCaptured:true,currency:"BRL",feeAmount:100,bonusAmount:20,refundableAmount:50};
  assert.deepEqual(planSettlementActions({...base,accepted:false}).map(a=>a.kind),["hold"]);
  assert.deepEqual(planSettlementActions({...base,disputed:true}).map(a=>a.kind),["open_dispute","hold"]);
  assert.deepEqual(planSettlementActions(base).map(a=>a.kind),["issue_fee_invoice","credit_bonus"]);
