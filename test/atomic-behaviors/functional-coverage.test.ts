@@ -60,7 +60,7 @@ test("backup and calculation snapshots preserve verifiable evidence inputs",()=>
  const backupHash="a".repeat(64);
  const backup={id:"backup_001",tenantId:"tenant_001",createdAt:"2026-11-08T10:00:00Z",formatVersion:"1",contentHash:backupHash,sizeBytes:100,scope:["tenant"]};
  validateBackup(backup); assert.equal(verifyBackup(backup,backupHash),true);
- const snapshot=createCalculationSnapshot({id:"snapshot_001",outcomeId:"outcome_001",specVersion:1,methodVersion:"did-v1",inputEvidenceHashes:["sha256:"+"a".repeat(64)],result:{baseline:10,target:20,observed:15,absoluteChange:5,targetProgress:.5,confidence:.8,achieved:false}});
+ const snapshot=createCalculationSnapshot({id:"snapshot_001",tenantId:"tenant_001",outcomeId:"outcome_001",specVersion:1,methodVersion:"did-v1",inputEvidenceHashes:["sha256:"+"a".repeat(64)],result:{baseline:10,target:20,observed:15,absoluteChange:5,targetProgress:.5,confidence:.8,achieved:false}});
  const fingerprint=snapshotFingerprint(snapshot);assert.match(fingerprint,/^[a-f0-9]{64}$/);assert.notEqual(fingerprint,snapshotFingerprint({...snapshot,result:{...snapshot.result,observed:16}}));
  assert.equal(evaluateExact({id:"eval_001",input:{},expected:{ok:true},tags:["safety"]},{ok:true},"model-v1","prompt-v1").passed,true);
 });
