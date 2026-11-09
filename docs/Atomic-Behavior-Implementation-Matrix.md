@@ -10,7 +10,7 @@ This matrix ties each open atomic issue to the code entry point and automated te
 | #12 | RBAC/ABAC authorization | `src/domain/access-control.ts`, `src/security/authorization.ts`; `migrations/0007_authorization_rbac_abac.sql`; unit and PostgreSQL integration tests |
 | #13 | Lifecycle and legal transitions | `src/domain/lifecycle.ts`; `migrations/0008_lifecycle_transition_events.sql`; `test/domain/lifecycle.test.ts`; PostgreSQL migration integration |
 | #14 | Audit and immutable decisions | `src/domain/audit.ts`; `migrations/0009_immutable_audit_decision_ledger.sql`; `test/domain/audit.test.ts`; PostgreSQL integration tests |
-| #15 | Policy registry/version/approval | `src/domain/policy.ts`; `test/atomic-behaviors/core-controls.test.ts` |
+| #15 | Policy registry/version/approval | `src/domain/policy.ts`, `PostgresPolicyRegistry`; `migrations/0011_policy_registry_version_approvals.sql`; `test/domain/policy.test.ts`; PostgreSQL integration tests |
 | #16 | Privacy classification/consent/retention | `src/domain/privacy.ts`, `src/domain/consent.ts`; core-controls tests |
 | #17 | Capture intent channels | `src/intent/intent.ts` |
 | #18 | Normalize intent envelope | `src/intent/intent.ts` |

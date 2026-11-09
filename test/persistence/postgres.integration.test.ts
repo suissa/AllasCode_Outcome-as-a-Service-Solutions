@@ -14,6 +14,7 @@ import { createCalculationSnapshot, PostgresCalculationSnapshotStore } from "../
 import { PostgresWorkspaceStore } from "../../src/platform/postgres-workspace-store.ts";
 import { PostgresAuthorizationStore, evaluateAuthorization } from "../../src/security/authorization.ts";
 import { PostgresAuditLedger, createAuditEvent, createDecisionRecord } from "../../src/domain/audit.ts";
+import { PostgresPolicyRegistry } from "../../src/domain/policy.ts";
 const databaseUrl = process.env.DATABASE_URL;
 test("PostgreSQL migration and transactional outcome persistence", { skip: !databaseUrl }, async () => {
   const client = postgres(databaseUrl!, { max: 1 });
@@ -23,9 +24,9 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
   const tenantId = "tenant_it_" + suffix;
   const caseId = "outcome_it_" + suffix;
   try {
-    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql","0007_authorization_rbac_abac.sql","0008_lifecycle_transition_events.sql","0009_immutable_audit_decision_ledger.sql","0010_calculation_snapshots.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
-    assert.equal((await applyMigrations(db,migrations)).applied.length,10);
-    assert.equal((await applyMigrations(db,migrations)).skipped.length,10);
+    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql","0007_authorization_rbac_abac.sql","0008_lifecycle_transition_events.sql","0009_immutable_audit_decision_ledger.sql","0010_calculation_snapshots.sql","0011_policy_registry_version_approvals.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
+    assert.equal((await applyMigrations(db,migrations)).applied.length,11);
+    assert.equal((await applyMigrations(db,migrations)).skipped.length,11);
     const initial: OutcomeCase = {
       id: caseId, tenantId, stage: "specified",
       spec: { metric: { id: "metric_it_001", name: "Revenue", unit: "BRL" } as never, baseline: 100, target: 150, direction: "increase", periodStart: "2026-01-01", periodEnd: "2026-02-01", attribution: "direct", approvedBy: "actor_it_001" },
@@ -102,6 +103,17 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     assert.equal((await snapshotStore.get(tenantId,calculationSnapshot.id))?.id,calculationSnapshot.id);
     assert.equal((await snapshotStore.list(tenantId,caseId)).length,1);
     assert.deepEqual(await auditLedger.verify(tenantId),{valid:true,eventsChecked:3});
+    const policies = new PostgresPolicyRegistry<{ limit:number }>(db);
+    const policyId = "policy_it_" + suffix;
+    const policyV1 = { id:policyId, version:1, name:"Integration policy", effectiveAt:"2026-01-01T00:00:00.000Z", rules:{ limit:100 } };
+    await policies.register(tenantId,policyV1,"actor_author_"+suffix);
+    await policies.propose(tenantId,{...policyV1,version:2,rules:{limit:200}},"actor_author_"+suffix);
+    await assert.rejects(()=>policies.approve(tenantId,policyId,1,"actor_author_"+suffix,"self approval"),/POLICY_SEPARATION_OF_DUTIES/);
+    await policies.approve(tenantId,policyId,1,"actor_reviewer_"+suffix,"Reviewed and approved",new Date("2026-01-02T00:00:00.000Z"));
+    assert.equal((await policies.effective(tenantId,policyId,new Date("2026-02-01"))).version,1);
+    assert.equal((await policies.history(tenantId,policyId)).length,2);
+    await assert.rejects(()=>client.unsafe("update policy_versions set name='tampered' where tenant_id=$1 and policy_id=$2",[tenantId,policyId]),/POLICY_HISTORY_APPEND_ONLY/);
+    await assert.rejects(()=>client.unsafe("delete from policy_approvals where tenant_id=$1 and policy_id=$2",[tenantId,policyId]),/POLICY_HISTORY_APPEND_ONLY/);
     const intentVersions = new PostgresIntentVersionStore(db);
     const intentSnapshot = { id:"intent_it_"+suffix,tenantId,actorId:"actor_it_001",statement:"Improve retention",desiredOutcome:"retention",scope:["onboarding"],constraints:[],status:"draft" as const,version:1,provenance:{channel:"api" as const,sourceId:"api_request",capturedAt:new Date().toISOString()},createdAt:new Date().toISOString() };
     await intentVersions.append({intentId:intentSnapshot.id,version:1,snapshot:intentSnapshot,changedBy:"actor_it_001",changedAt:intentSnapshot.createdAt,changeReason:"captured"});

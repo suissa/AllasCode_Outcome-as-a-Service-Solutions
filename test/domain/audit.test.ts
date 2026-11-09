@@ -57,10 +57,11 @@ function toRow(entry:AuditLedgerEntry):Record<string,unknown> {
 const makeEvent = (id:string, tenantId="tenant_1") => createAuditEvent({ id, tenantId, actorId:"actor_1", action:"case.updated", subjectType:"case", subjectId:"case_1", correlationId:"corr_1" });
 test("ledger chains entries, handles idempotent retries and isolates tenants", async () => {
   const ledger = new PostgresAuditLedger(new MemoryDb());
-  const first = await ledger.append(makeEvent("event_1"));
+  const firstEvent = makeEvent("event_1");
+  const first = await ledger.append(firstEvent);
   assert.equal(first.sequence, 1); assert.equal(first.previousHash, AUDIT_GENESIS_HASH);
-  assert.equal((await ledger.append(makeEvent("event_1"))).replayed, true);
-  await assert.rejects(() => ledger.append(createAuditEvent({ ...makeEvent("event_1"), action:"different" })), /AUDIT_IDEMPOTENCY_CONFLICT/);
+  assert.equal((await ledger.append(firstEvent)).replayed, true);
+  await assert.rejects(() => ledger.append(createAuditEvent({ ...firstEvent, action:"different" })), /AUDIT_IDEMPOTENCY_CONFLICT/);
   const second = await ledger.append(makeEvent("event_2"));
   assert.equal(second.sequence, 2); assert.equal(second.previousHash, first.eventHash);
   await ledger.append(makeEvent("event_other", "tenant_2"));
