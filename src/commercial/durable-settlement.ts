@@ -11,7 +11,7 @@ export interface SettlementWorkflowRecord{
 }
 export interface SettlementWorkflowEvent{tenantId:string;actionId:string;eventId:string;kind:SettlementEventKind;actorId:string;correlationId:string;payload:Readonly<Record<string,unknown>>;occurredAt:string}
 interface ActionRow extends Record<string,unknown>{tenant_id:string;action_id:string;idempotency_key:string;fingerprint:string;payload:SettlementAction|string;state:SettlementActionState;attempt:number|string;max_attempts:number|string;lease_until:Date|string|null;claimed_by:string|null;external_reference:string|null;error_code:string|null;created_at:Date|string;updated_at:Date|string}
-interface EventRow extends Record<string,unknown>{tenant_id:string;action_id:string;event_id:string;kind:SettlementEventKind;actor_id:string;correlation_id:string;payload:unknown|string;occurred_at:Date|string}
+interface EventRow extends Record<string,unknown>{tenant_id:string;action_id:string;event_id:string;kind:SettlementEventKind;actor_id:string;correlation_id:string;payload:Record<string,unknown>|string;occurred_at:Date|string}
 const required=(v:string)=>typeof v==="string"&&v.trim().length>0;
 const iso=(v:Date|string|null|undefined):string|undefined=>v==null?undefined:v instanceof Date?v.toISOString():new Date(v).toISOString();
 const decode=<T>(v:T|string):T=>typeof v==="string"?JSON.parse(v) as T:v;
