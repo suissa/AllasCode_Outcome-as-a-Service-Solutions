@@ -15,6 +15,8 @@ import { PostgresWorkspaceStore } from "../../src/platform/postgres-workspace-st
 import { PostgresAuthorizationStore, evaluateAuthorization } from "../../src/security/authorization.ts";
 import { PostgresAuditLedger, createAuditEvent, createDecisionRecord } from "../../src/domain/audit.ts";
 import { PostgresPolicyRegistry } from "../../src/domain/policy.ts";
+import { PostgresSettlementWorkflow } from "../../src/commercial/durable-settlement.ts";
+import { planSettlementActions } from "../../src/commercial/settlement-workflow.ts";
 const databaseUrl = process.env.DATABASE_URL;
 test("PostgreSQL migration and transactional outcome persistence", { skip: !databaseUrl }, async () => {
   const client = postgres(databaseUrl!, { max: 1 });
@@ -24,9 +26,9 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
   const tenantId = "tenant_it_" + suffix;
   const caseId = "outcome_it_" + suffix;
   try {
-    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql","0007_authorization_rbac_abac.sql","0008_lifecycle_transition_events.sql","0009_immutable_audit_decision_ledger.sql","0010_calculation_snapshots.sql","0011_policy_registry_version_approvals.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
-    assert.equal((await applyMigrations(db,migrations)).applied.length,11);
-    assert.equal((await applyMigrations(db,migrations)).skipped.length,11);
+    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql","0007_authorization_rbac_abac.sql","0008_lifecycle_transition_events.sql","0009_immutable_audit_decision_ledger.sql","0010_calculation_snapshots.sql","0011_policy_registry_version_approvals.sql","0012_durable_settlement_workflow.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
+    assert.equal((await applyMigrations(db,migrations)).applied.length,12);
+    assert.equal((await applyMigrations(db,migrations)).skipped.length,12);
     const initial: OutcomeCase = {
       id: caseId, tenantId, stage: "specified",
       spec: { metric: { id: "metric_it_001", name: "Revenue", unit: "BRL" } as never, baseline: 100, target: 150, direction: "increase", periodStart: "2026-01-01", periodEnd: "2026-02-01", attribution: "direct", approvedBy: "actor_it_001" },
@@ -114,6 +116,17 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     assert.equal((await policies.history(tenantId,policyId)).length,2);
     await assert.rejects(()=>client.unsafe("update policy_versions set name='tampered' where tenant_id=$1 and policy_id=$2",[tenantId,policyId]),/POLICY_HISTORY_APPEND_ONLY/);
     await assert.rejects(()=>client.unsafe("delete from policy_approvals where tenant_id=$1 and policy_id=$2",[tenantId,policyId]),/POLICY_HISTORY_APPEND_ONLY/);
+    const settlementWorkflow = new PostgresSettlementWorkflow(db);
+    const settlementPlan = planSettlementActions({tenantId,outcomeId:caseId,agreementId:"agreement_it_"+suffix,accepted:true,achieved:true,disputed:false,paymentCaptured:true,currency:"BRL",feeAmount:250,bonusAmount:25,refundableAmount:0});
+    const settlementContext = {tenantId,actorId:"actor_it_001",correlationId:"corr_settlement_"+suffix};
+    const queuedSettlement = await settlementWorkflow.enqueue(settlementPlan,settlementContext);
+    assert.equal(queuedSettlement.length,2);
+    const claimedSettlement = await settlementWorkflow.claim(tenantId,settlementPlan[0]!.id,"worker_it_"+suffix,{...settlementContext,actorId:"worker_it_"+suffix});
+    assert.equal(claimedSettlement?.state,"running");
+    const completedSettlement = await settlementWorkflow.complete(tenantId,settlementPlan[0]!.id,"worker_it_"+suffix,"provider_ref_"+suffix,{...settlementContext,actorId:"worker_it_"+suffix});
+    assert.equal(completedSettlement.state,"succeeded");
+    assert.equal((await settlementWorkflow.events(tenantId,settlementPlan[0]!.id)).length,3);
+    await assert.rejects(()=>client.unsafe("update settlement_workflow_events set kind='failed' where tenant_id=$1",[tenantId]),/SETTLEMENT_EVENT_IMMUTABLE/);
     const intentVersions = new PostgresIntentVersionStore(db);
     const intentSnapshot = { id:"intent_it_"+suffix,tenantId,actorId:"actor_it_001",statement:"Improve retention",desiredOutcome:"retention",scope:["onboarding"],constraints:[],status:"draft" as const,version:1,provenance:{channel:"api" as const,sourceId:"api_request",capturedAt:new Date().toISOString()},createdAt:new Date().toISOString() };
     await intentVersions.append({intentId:intentSnapshot.id,version:1,snapshot:intentSnapshot,changedBy:"actor_it_001",changedAt:intentSnapshot.createdAt,changeReason:"captured"});
