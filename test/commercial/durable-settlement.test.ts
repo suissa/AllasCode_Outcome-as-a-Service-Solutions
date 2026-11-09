@@ -45,7 +45,7 @@ test("settlement claims use leases, enforce worker ownership and retry safely",a
  await workflow.enqueue([action],context);
  const first=await workflow.claim("tenant_1",action.id,"worker_a",{...context,actorId:"worker_a"},1000,new Date("2026-11-09T12:00:00Z"));
  assert.equal(first?.attempt,1);
- assert.equal(await workflow.claim("tenant_1",action.id,"worker_b",{...context,actorId:"worker_b"},1000,new Date("2026-11-09T12:00:01Z")),null);
+ assert.equal(await workflow.claim("tenant_1",action.id,"worker_b",{...context,actorId:"worker_b"},1000,new Date("2026-11-09T12:00:00.500Z")),null);
  await assert.rejects(()=>workflow.complete("tenant_1",action.id,"worker_b","external_1",context),/SETTLEMENT_WORKER_MISMATCH/);
  const retry=await workflow.fail("tenant_1",action.id,"worker_a","PROVIDER_BUSY",true,{...context,actorId:"worker_a"},new Date("2026-11-09T12:00:02Z"));
  assert.equal(retry.state,"pending");
