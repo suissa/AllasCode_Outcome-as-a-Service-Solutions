@@ -14,7 +14,14 @@ export function createCalculationSnapshot(s:Omit<CalculationSnapshot,"calculated
  if(![s.result.baseline,s.result.target,s.result.observed,s.result.absoluteChange,s.result.targetProgress,s.result.confidence].every(Number.isFinite)||s.result.confidence<0||s.result.confidence>1||typeof s.result.achieved!=="boolean")throw new Error("SNAPSHOT_RESULT_INVALID");
  const snapshot={...s,inputEvidenceHashes:[...s.inputEvidenceHashes],result:{...s.result},calculatedAt:at.toISOString()};canonicalJson(snapshot);return Object.freeze(snapshot);
 }
+export function validateCalculationSnapshot(s:CalculationSnapshot):void{
+ if(!required(s.id)||!required(s.tenantId)||!required(s.outcomeId)||!Number.isInteger(s.specVersion)||s.specVersion<1||!required(s.methodVersion)||!Number.isFinite(Date.parse(s.calculatedAt)))throw new Error("SNAPSHOT_METADATA_INVALID");
+ if(!Array.isArray(s.inputEvidenceHashes)||!s.inputEvidenceHashes.length||s.inputEvidenceHashes.some(h=>typeof h!=="string"||!/^([a-f0-9]{64}|sha256:[a-f0-9]{64})$/i.test(h))||new Set(s.inputEvidenceHashes).size!==s.inputEvidenceHashes.length)throw new Error("SNAPSHOT_EVIDENCE_REQUIRED");
+ if(!s.result||![s.result.baseline,s.result.target,s.result.observed,s.result.absoluteChange,s.result.targetProgress,s.result.confidence].every(Number.isFinite)||s.result.confidence<0||s.result.confidence>1||typeof s.result.achieved!=="boolean")throw new Error("SNAPSHOT_RESULT_INVALID");
+ canonicalJson(s);
+}
 export function snapshotFingerprint(s:CalculationSnapshot):string{
+ validateCalculationSnapshot(s);
  const payload={id:s.id,tenantId:s.tenantId,outcomeId:s.outcomeId,specVersion:s.specVersion,methodVersion:s.methodVersion,inputEvidenceHashes:[...s.inputEvidenceHashes].sort(),result:s.result};
  return createHash("sha256").update(canonicalJson(payload),"utf8").digest("hex");
 }
@@ -24,7 +31,7 @@ export class PostgresCalculationSnapshotStore{
  constructor(private readonly db:SqlDatabase){}
  async save(snapshot:CalculationSnapshot,context:SnapshotAuditContext):Promise<StoredCalculationSnapshot>{
   if(!required(context.actorId)||!required(context.correlationId))throw new Error("SNAPSHOT_AUDIT_CONTEXT_REQUIRED");
-  const fingerprint=snapshotFingerprint(snapshot);const serialized=canonicalJson(snapshot);const auditEventId="snapshot:"+snapshot.id;
+  validateCalculationSnapshot(snapshot);const fingerprint=snapshotFingerprint(snapshot);const serialized=canonicalJson(snapshot);const auditEventId="snapshot:"+snapshot.id;
   return this.db.transaction(async tx=>{
    await tx.query("select pg_advisory_xact_lock(hashtextextended($1,0))",["audit-ledger:"+snapshot.tenantId]);
    const existing=await tx.query<SnapshotRow>("select tenant_id,snapshot_id,fingerprint,payload from calculation_snapshots where tenant_id=$1 and snapshot_id=$2",[snapshot.tenantId,snapshot.id]);
@@ -46,13 +53,13 @@ export class PostgresCalculationSnapshotStore{
  async get(tenantId:string,snapshotId:string):Promise<CalculationSnapshot|null>{
   if(!required(tenantId)||!required(snapshotId))throw new Error("SNAPSHOT_LOOKUP_SCOPE_REQUIRED");
   const result=await this.db.query<SnapshotRow>("select tenant_id,snapshot_id,fingerprint,payload from calculation_snapshots where tenant_id=$1 and snapshot_id=$2",[tenantId,snapshotId]);
-  const row=result.rows[0];if(!row)return null;const snapshot=decode(row.payload);
+  const row=result.rows[0];if(!row)return null;const snapshot=decode(row.payload);validateCalculationSnapshot(snapshot);
   if(row.tenant_id!==tenantId||snapshot.tenantId!==tenantId||snapshot.id!==snapshotId||snapshotFingerprint(snapshot)!==row.fingerprint)throw new Error("SNAPSHOT_INTEGRITY_FAILED");
   return Object.freeze(snapshot);
  }
  async list(tenantId:string,outcomeId:string):Promise<readonly CalculationSnapshot[]>{
   if(!required(tenantId)||!required(outcomeId))throw new Error("SNAPSHOT_LOOKUP_SCOPE_REQUIRED");
   const result=await this.db.query<SnapshotRow>("select tenant_id,snapshot_id,fingerprint,payload from calculation_snapshots where tenant_id=$1 and outcome_id=$2 order by calculated_at,snapshot_id",[tenantId,outcomeId]);
-  return Object.freeze(result.rows.map(row=>{const snapshot=decode(row.payload);if(row.tenant_id!==tenantId||snapshot.tenantId!==tenantId||snapshotFingerprint(snapshot)!==row.fingerprint)throw new Error("SNAPSHOT_INTEGRITY_FAILED");return Object.freeze(snapshot)}));
+  return Object.freeze(result.rows.map(row=>{const snapshot=decode(row.payload);validateCalculationSnapshot(snapshot);if(row.tenant_id!==tenantId||snapshot.tenantId!==tenantId||snapshotFingerprint(snapshot)!==row.fingerprint)throw new Error("SNAPSHOT_INTEGRITY_FAILED");return Object.freeze(snapshot)}));
  }
 }
