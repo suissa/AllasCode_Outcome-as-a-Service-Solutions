@@ -8,7 +8,7 @@ This matrix ties each open atomic issue to the code entry point and automated te
 | #10 | Tenant boundaries and isolation | `src/domain/tenant-scope.ts`; `test/domain/tenant-scope.test.ts` |
 | #11 | Workspace membership/invitations | `src/platform/workspace.ts`, `src/platform/postgres-workspace-store.ts`; PostgreSQL integration tests |
 | #12 | RBAC/ABAC authorization | `src/domain/access-control.ts`, `src/security/authorization.ts`; `migrations/0007_authorization_rbac_abac.sql`; unit and PostgreSQL integration tests |
-| #13 | Lifecycle and legal transitions | `src/domain/lifecycle.ts`; `test/domain/lifecycle.test.ts` |
+| #13 | Lifecycle and legal transitions | `src/domain/lifecycle.ts`; `migrations/0008_lifecycle_transition_events.sql`; `test/domain/lifecycle.test.ts`; PostgreSQL migration integration |
 | #14 | Audit and immutable decisions | `src/domain/audit.ts`; atomic behavior audit |
 | #15 | Policy registry/version/approval | `src/domain/policy.ts`; `test/atomic-behaviors/core-controls.test.ts` |
 | #16 | Privacy classification/consent/retention | `src/domain/privacy.ts`, `src/domain/consent.ts`; core-controls tests |
