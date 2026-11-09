@@ -24,7 +24,11 @@ test("canonical serialization is stable and rejects ambiguous values", () => {
 });
 class MemoryDb implements SqlDatabase {
   readonly tenants = new Map<string, AuditLedgerEntry[]>();
-  async query<T extends Record<string,unknown>>(): Promise<{rows:T[];rowCount:number}> { return { rows:[], rowCount:0 }; }
+  async query<T extends Record<string,unknown>>(sql:string,p:readonly unknown[]=[]): Promise<{rows:T[];rowCount:number}> {
+    const tenant=String(p[0]??""); const rows=this.tenants.get(tenant)??[];
+    const selected=sql.includes("event_type='decision'")?rows.filter(entry=>entry.eventType==="decision"):rows;
+    return { rows:selected.map(toRow) as T[], rowCount:selected.length };
+  }
   async transaction<T>(work:(tx:SqlExecutor)=>Promise<T>):Promise<T> {
     const tx:SqlExecutor = { query:async<R extends Record<string,unknown>>(sql:string,p:readonly unknown[]=[]):Promise<{rows:R[];rowCount:number}> => {
       const tenant = String(p[0] ?? "");
