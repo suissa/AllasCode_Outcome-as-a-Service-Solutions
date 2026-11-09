@@ -27,6 +27,6 @@ test("transition emits immutable event and uses expected revision as CAS guard",
  assert.throws(()=>transitionLifecycle(machine,"draft",4,{action:"publish",approved:true,expectedRevision:3,context:{reviewed:true}},identity),LifecycleRevisionConflictError);
 });
 test("definition rejects ambiguous edges and malformed states",()=>{
- assert.throws(()=>assertLifecycleDefinition({...machine,transitions:[...table,table[0]]}),/LIFECYCLE_TRANSITION_AMBIGUOUS/);
+ assert.throws(()=>assertLifecycleDefinition({...machine,transitions:[...table,table[0]!]}),/LIFECYCLE_TRANSITION_AMBIGUOUS/);
  assert.throws(()=>assertLifecycleDefinition({...machine,initial:"unknown" as never}),/LIFECYCLE_DEFINITION_INVALID/);
 });
