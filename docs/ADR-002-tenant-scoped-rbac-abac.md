@@ -1,0 +1,8 @@
+# ADR-002: Tenant-scoped RBAC and ABAC authorization
+
+- Status: Accepted.
+- Context: The initial authorization primitive evaluates a single role/resource rule in memory. Platform access requires durable grants, workspace/resource scope, contextual attributes, revocation and explainable decisions.
+- Decision: Store tenant-owned role definitions and actor grants in PostgreSQL. Roles carry action permissions; grants bind actors to roles and may narrow access by workspace, resource type/id, expiry and exact-match actor/resource attributes. Support explicit deny grants, with deny precedence over any matching allow. Default is deny. Persist every decision, including the reason and matching grant IDs, in an append-only decision table. Tenant mismatch is denied before grant evaluation.
+- Security properties: Every lookup and mutation includes tenant ID. The role foreign key is tenant-composite. Expired and revoked grants are excluded in SQL. Permission wildcards are limited to a complete trailing segment. Conditions compare typed scalar values exactly; no expression evaluation or implicit coercion occurs. Authorization decision persistence failure propagates, so callers must fail closed.
+- Alternatives: Embedding roles only in API keys prevents independent access review and revocation. A policy engine could provide richer expressions but adds a runtime dependency before the policy language is defined.
+- Consequences: This is a deterministic RBAC/ABAC foundation, not an identity provider or a full policy administration console. Role changes are not yet versioned, and production use still requires an authenticated grant-management API, approval workflow, access-review scheduling, and threat modeling.

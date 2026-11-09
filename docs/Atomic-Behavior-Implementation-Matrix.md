@@ -7,10 +7,10 @@ This matrix ties each open atomic issue to the code entry point and automated te
 | #9 | Canonical entities and identifiers | `src/domain/identifiers.ts`; `test/domain/identifiers.test.ts` |
 | #10 | Tenant boundaries and isolation | `src/domain/tenant-scope.ts`; `test/domain/tenant-scope.test.ts` |
 | #11 | Workspace membership/invitations | `src/platform/workspace.ts`, `src/platform/postgres-workspace-store.ts`; PostgreSQL integration tests |
-| #12 | RBAC/ABAC authorization | `src/domain/access-control.ts`; `test/domain/access-control.test.ts` |
-| #13 | Lifecycle and legal transitions | `src/domain/lifecycle.ts`; `test/domain/lifecycle.test.ts` |
-| #14 | Audit and immutable decisions | `src/domain/audit.ts`; atomic behavior audit |
-| #15 | Policy registry/version/approval | `src/domain/policy.ts`; `test/atomic-behaviors/core-controls.test.ts` |
+| #12 | RBAC/ABAC authorization | `src/domain/access-control.ts`, `src/security/authorization.ts`; `migrations/0007_authorization_rbac_abac.sql`; unit and PostgreSQL integration tests |
+| #13 | Lifecycle and legal transitions | `src/domain/lifecycle.ts`; `migrations/0008_lifecycle_transition_events.sql`; `test/domain/lifecycle.test.ts`; PostgreSQL migration integration |
+| #14 | Audit and immutable decisions | `src/domain/audit.ts`; `migrations/0009_immutable_audit_decision_ledger.sql`; `test/domain/audit.test.ts`; PostgreSQL integration tests |
+| #15 | Policy registry/version/approval | `src/domain/policy.ts`, `PostgresPolicyRegistry`; `migrations/0011_policy_registry_version_approvals.sql`; `test/domain/policy.test.ts`; PostgreSQL integration tests |
 | #16 | Privacy classification/consent/retention | `src/domain/privacy.ts`, `src/domain/consent.ts`; core-controls tests |
 | #17 | Capture intent channels | `src/intent/intent.ts` |
 | #18 | Normalize intent envelope | `src/intent/intent.ts` |
@@ -59,7 +59,7 @@ This matrix ties each open atomic issue to the code entry point and automated te
 | #81 | Attribution and uncertainty | `src/outcomes/attribution.ts` |
 | #82 | Outcome/confidence calculation | `src/outcomes/settlement.ts` |
 | #83 | Evidence-linked reports | `src/reporting/report.ts` |
-| #84 | Acceptance/payment/bonus/refund/dispute flow | `src/commercial/invoice.ts`, `src/outcomes/settlement.ts` |
+| #84 | Acceptance/payment/bonus/refund/dispute flow | `src/commercial/settlement-workflow.ts`, `src/commercial/durable-settlement.ts`; `migrations/0012_durable_settlement_workflow.sql`; unit and PostgreSQL integration tests |
 | #85 | Reproducible snapshots/audit | `src/reporting/snapshot.ts` |
 | #86 | SLO/health/telemetry | `src/operations/health.ts`, `src/operations/telemetry.ts` |
 | #87 | Trace/log/metric correlation | `src/operations/telemetry.ts` |
@@ -98,3 +98,5 @@ Issue implementations are tracked separately from issue closure. Do not close an
 | Cross-cutting | Strict ABT validation for identifiers, text, email, phone, URL, money, dates, timestamps, references, evidence, metrics, secrets and payload envelopes | `src/core/abt.ts`; `test/core/abt.test.ts` |
 
 These additions increase implementation depth and CI coverage, but do not close the backlog. In particular, identity-provider integration, policy administration, queue/outbox relay, deployed connector implementations, payment-provider reconciliation, full dashboard, production deployment and operational security review still require dedicated acceptance work.
+
+| #85 | Persist immutable tenant-scoped calculation snapshots with canonical fingerprints and atomic audit-ledger records | `src/reporting/snapshot.ts`; `migrations/0010_calculation_snapshots.sql`; `test/reporting/calculation-snapshot.test.ts`; PostgreSQL integration test |
