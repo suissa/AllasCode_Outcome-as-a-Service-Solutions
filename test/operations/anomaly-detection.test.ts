@@ -84,7 +84,7 @@ test("turns every breached SLO dimension into a critical operational anomaly", (
 test("ignores normal metrics, healthy SLOs and failure rates below threshold", () => {
   const result = detectOperationalAnomalies(input({
     currentSamples: [{ ...current[0]!, value: 10 }],
-    executions: executions.map(item => ({ ...item, status: "success" as const, failureCode: undefined })),
+    executions: executions.map(({ failureCode: _failureCode, ...item }) => ({ ...item, status: "success" as const })),
     sloResults: [{
       policyId: "slo_api", tenantId: "tenant_a", status: "healthy", sampleSize: 100,
       availability: 1, errorRate: 0, latencyP95Ms: 50,
