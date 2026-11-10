@@ -1,14 +1,12 @@
-# Privacy classification, consent and retention
+# Privacy classification, consent and retention governance
 
-- **Behavior:** classify stored data and validate purpose, lawful basis and retention metadata.
-- **Owner:** platform governance/security.
-- **Version:** 1.0.0
-- **Macro issue:** #1 — Outcome domain, workspace and governance foundation.
-- **Atomic issue:** #16.
-- **Maturity:** reference implementation; deployment-specific retention schedules and lawful-basis policy remain tenant/legal configuration.
-- **Risk:** high; invalid metadata can cause unlawful processing or premature retention.
-- **Permissions:** callers must already be authorized to create or change the associated record; consent is tenant- and subject-scoped.
-- **Invariants:** purpose is non-empty; classification is from the declared enum; personal/sensitive data requires a non-empty consent reference or legal basis; retention timestamps must parse and be in the future at validation time; consent must be granted for the exact purpose, unexpired and not withdrawn.
-- **Observability:** emit stable validation codes; never log consent content or secret values.
-- **Side effects:** validators are pure. Consent withdrawal returns a new immutable record; persistence and audit are the caller's responsibility.
-- **Idempotency:** validation is deterministic for the same input and clock; repeated withdrawal is rejected rather than silently replayed.
+- Behavior: classify data, record explicit consent, validate processing legal basis and assess retention/deletion eligibility with legal-hold protection.
+- Issue: [#16](https://github.com/suissa/OaaS.Quest/issues/16)
+- Version: 1.0.0
+- Classification precedence: sensitive → personal → confidential → public → internal.
+- Consent: tenant/data-subject/purpose/category scoped, source and SHA-256 evidence hash, versioned status and idempotent record.
+- Withdrawal: authorized, revision-checked and audited; withdrawn consent cannot authorize new processing.
+- Processing basis: personal/sensitive records require a valid legal basis. Consent-based processing requires an active, unexpired consent matching tenant, data subject, purpose and category, granted before processing.
+- Retention: explicit retention deadline or policy-derived deadline; deletion-due records are distinguished from records protected by a documented legal hold.
+- Privacy: consent evidence payloads and raw documents are not stored by the domain record; only references and hashes are retained.
+- Side effects: consent storage, identity verification, deletion execution and legal-hold verification are explicit adapters.

@@ -1,14 +1,14 @@
-[privacy]
-allowed_classifications = ["public", "internal", "confidential", "personal", "sensitive"]
-require_purpose = true
-require_basis_for = ["personal", "sensitive"]
-basis_options = ["consent_id", "legal_basis"]
-retention_must_be_future = true
-
-[consent]
-purpose_match = "exact"
-require_tenant_id = true
-require_subject_id = true
-reject_future_capture = true
-reject_expired = true
-withdrawal_is_immutable = true
+version = "1.0"
+default_classification = "internal"
+classification_precedence = ["sensitive", "personal", "confidential", "public", "internal"]
+consent_evidence_hash = "sha256"
+require_consent_source = true
+require_purpose_and_categories = true
+require_consent_idempotency = true
+require_revision_for_withdrawal = true
+personal_data_requires_legal_basis = true
+consent_must_precede_processing = true
+default_retention_days = 365
+maximum_retention_days = 36500
+legal_hold_blocks_deletion = true
+store_raw_consent_evidence = false
