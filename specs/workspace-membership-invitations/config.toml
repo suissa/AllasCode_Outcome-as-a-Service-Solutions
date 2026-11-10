@@ -1,0 +1,14 @@
+version = "1.0"
+invitation_token_hash = "sha256"
+recipient_identity_hash = "sha256"
+persist_raw_email = false
+persist_raw_invitation_token = false
+invitation_expiry_max_days = 30
+allow_owner_role_invitation = false
+require_workspace_members_manage = true
+require_recipient_identity_verification = true
+accept_invitation_transactional = true
+require_invitation_idempotency = true
+require_unique_pending_recipient = true
+preserve_last_active_owner = true
+record_membership_revocation_reason = true
