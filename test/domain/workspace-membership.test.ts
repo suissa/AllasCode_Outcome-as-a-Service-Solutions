@@ -160,7 +160,7 @@ test("invitation revocation is authorized, revisioned and idempotency-safe", asy
   assert.equal(result.status, "revoked");
   assert.equal(result.revision, 2);
   assert.equal(result.revokedBy, "owner");
-  assert.equal(result.revocationReason, "Access removed");
+  assert.equal(result.revocationReason, "Wrong recipient");
   await assert.rejects(() => revokeWorkspaceInvitation({
     tenantId, workspaceId, invitationId: "inv_revoke", actorId: "owner",
     expectedRevision: 1, reason: "Duplicate", now,
@@ -189,6 +189,8 @@ test("membership revocation preserves at least one active owner", async () => {
   }, { store, authorize: auth });
   assert.equal(result.status, "revoked");
   assert.equal(result.revision, 2);
+  assert.equal(result.revokedBy, "owner");
+  assert.equal(result.revocationReason, "Access removed");
 });
 
 test("rejects malformed invitee email, invalid role, unauthorized creation and unsafe token", async () => {
