@@ -341,7 +341,7 @@ export function verifyExportArtifact(
   if (artifact.tenantId !== authorization.tenantId) fail("EXPORT_TENANT_MISMATCH", "artifact.tenantId");
   if (artifact.classification !== authorization.classification ||
       artifact.includesPersonalData !== authorization.includePersonalData) fail("EXPORT_CLASSIFICATION_MISMATCH", "artifact.classification");
-  if (Date.parse(artifact.createdAt) > now.getTime() || Date.parse(artifact.expiresAt) <= now.getTime() ||
+  if (Date.parse(artifact.createdAt) < Date.parse(authorization.authorizedAt) || Date.parse(artifact.createdAt) > now.getTime() || Date.parse(artifact.expiresAt) <= now.getTime() ||
       Date.parse(artifact.expiresAt) <= Date.parse(artifact.createdAt)) fail("EXPORT_ARTIFACT_EXPIRED", "artifact.expiresAt");
   if (!/^[a-f0-9]{64}$/i.test(artifact.contentHash) || !/^[a-f0-9]{64}$/i.test(actualHash) ||
       artifact.contentHash.toLowerCase() !== actualHash.toLowerCase()) fail("EXPORT_INTEGRITY_FAILED", "artifact.contentHash");
