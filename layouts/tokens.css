@@ -15,6 +15,10 @@
   --accent: #2F49E0;
   --accent-deep: #1E31A8;
   --accent-wash: #EEF1FE;
+  --band: #141C4E;
+  --band-deep: #0A1033;
+  --band-bright: #1E31A8;
+  --tick: var(--accent);
 
   --radius: 10px;
   --radius-sm: 8px;
@@ -60,6 +64,74 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 ::selection { background: var(--accent); color: #fff; }
+
+/* ---------------------------------------------------------------- faixa azul */
+
+.band {
+  --line: rgba(255, 255, 255, 0.16);
+  --line-2: rgba(255, 255, 255, 0.3);
+  --muted: rgba(255, 255, 255, 0.74);
+  --ink-2: rgba(255, 255, 255, 0.9);
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel-2: rgba(255, 255, 255, 0.1);
+  --tick: #8FB0FF;
+  background: var(--band);
+  color: #fff;
+}
+
+.band .btn--ghost { --btn-fg: #fff; border-color: rgba(255, 255, 255, 0.34); }
+.band .btn--ghost:hover {
+  --btn-fg: #fff;
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.band .section__title,
+.band .section__lead,
+.band .closing__title { color: #fff; }
+
+.band .btn--primary { --btn-bg: #fff; --btn-fg: var(--ink); }
+.band .btn--primary:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28); }
+
+.nav.band {
+  background: rgba(20, 28, 78, 0.94);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.nav.band .nav__meta { border-left-color: rgba(255, 255, 255, 0.18); }
+
+.band .home__title span { color: #8FB0FF; }
+
+.band .diff:hover,
+.band .nots li:hover,
+.band .blocks li:hover,
+.band .measure__list li:hover,
+.band .commercial__item:hover { color: #fff; }
+
+/* barra de progresso de leitura */
+
+.scroll-progress { display: none; }
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-progress {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 2px;
+      z-index: 90;
+      background: #6E8BFF;
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      animation: progress-grow linear both;
+      animation-timeline: scroll(root block);
+    }
+
+    @keyframes progress-grow {
+      to { transform: scaleX(1); }
+    }
+  }
+}
 
 /* ---------------------------------------------------------------- rodapé */
 

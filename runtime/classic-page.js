@@ -132,10 +132,11 @@ function renderSolutions(exp, copy) {
 }
 
 function renderNot(exp) {
-  return `<section class="section section--tight" id="o-que-nao-e">
+  return `<section class="section section--tight band" id="o-que-nao-e">
     <div class="shell">
       <div class="section__head reveal--soft">
         <h2 class="section__title">O que a OaaS.Quest não é</h2>
+        <span class="band__rule reveal-draw" aria-hidden="true"></span>
       </div>
       <ul class="nots">
         ${exp.positioning.not.map(item => `<li>${esc(item)}</li>`).join("")}
@@ -258,7 +259,7 @@ function renderFaq(exp, copy) {
 }
 
 function renderClosing(exp, copy) {
-  return `<section class="section closing">
+  return `<section class="section closing band">
     <div class="shell closing__inner">
       <div>
         <h2 class="closing__title">${esc(copy.closing.title)}</h2>

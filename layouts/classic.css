@@ -182,7 +182,8 @@
 }
 
 .diff:hover { transform: translateX(8px); }
-.diff__title { font-size: 16.5px; font-weight: 600; letter-spacing: -0.018em; }
+.diff__title { font-size: 16.5px; font-weight: 600; letter-spacing: -0.018em; transition: color 0.2s var(--ease); }
+.diff:hover .diff__title { color: var(--accent); }
 .diff__text { font-size: 14px; line-height: 1.6; color: var(--muted); max-width: 70ch; }
 
 .diffs--three {
@@ -200,12 +201,26 @@
 .nots { border-top: 1px solid var(--line); columns: 2; column-gap: clamp(32px, 5vw, 72px); }
 .nots li {
   break-inside: avoid;
-  padding: 16px 0;
+  position: relative;
+  padding: 16px 0 16px 20px;
   border-bottom: 1px solid var(--line);
   font-size: 15px;
   line-height: 1.6;
   color: var(--ink-2);
+  transition: color 0.2s var(--ease), transform 0.28s var(--ease);
 }
+
+.nots li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 24px;
+  width: 8px;
+  height: 1px;
+  background: var(--tick);
+}
+
+.nots li:hover { color: var(--ink); transform: translateX(6px); }
 
 .measure__title { font-size: 16px; letter-spacing: -0.015em; margin-bottom: 14px; }
 .measure__list--grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
@@ -261,7 +276,7 @@
   transition: border-color 0.28s var(--ease), color 0.28s var(--ease), background-color 0.28s var(--ease);
 }
 
-.step:hover .step__index { border-color: var(--accent); color: var(--accent); }
+.step:hover .step__index { border-color: var(--accent); background: var(--accent); color: #fff; }
 .step__title { font-size: 19px; letter-spacing: -0.022em; margin-bottom: 8px; }
 .step__text { font-size: 14.5px; line-height: 1.68; color: var(--muted); max-width: 52ch; }
 
@@ -347,7 +362,20 @@
   padding-block: 28px;
   border-bottom: 1px solid var(--line);
   align-items: start;
+  transition: transform 0.28s var(--ease);
 }
+
+.band__rule {
+  display: block;
+  width: 72px;
+  height: 2px;
+  margin-top: 18px;
+  background: var(--tick);
+  transform-origin: left center;
+}
+
+.phase:hover { transform: translateX(6px); }
+.phase:hover .phase__name { color: var(--accent); }
 
 .phase__period { font-size: 12.5px; color: var(--accent); padding-top: 3px; }
 .phase__name { font-size: 18px; letter-spacing: -0.02em; margin-bottom: 8px; }
@@ -428,7 +456,14 @@
 
 .sectors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(32px, 5vw, 72px); border-top: 1px solid var(--line); }
 
-.sector { padding-block: 24px; border-bottom: 1px solid var(--line); }
+.sector {
+  padding-block: 24px;
+  border-bottom: 1px solid var(--line);
+  transition: transform 0.28s var(--ease);
+}
+
+.sector:hover { transform: translateX(6px); }
+.sector:hover .sector__name { color: var(--accent); }
 .sector__name { font-size: 17px; letter-spacing: -0.02em; margin-bottom: 12px; }
 .sector__outcomes { display: grid; gap: 5px; margin-bottom: 12px; }
 .sector__outcomes li { position: relative; padding-left: 15px; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
@@ -495,13 +530,17 @@
 
 .faq__item summary::-webkit-details-marker { display: none; }
 .faq__item summary:hover { color: var(--accent); }
+.faq__item summary:hover svg { transform: translateY(2px); }
+.faq__item[open] summary:hover svg { transform: rotate(180deg); }
 .faq__item summary svg { flex: 0 0 auto; transition: transform 0.3s var(--ease); color: var(--muted); }
 .faq__item[open] summary svg { transform: rotate(180deg); color: var(--accent); }
 .faq__answer { padding-bottom: 22px; font-size: 14.5px; line-height: 1.7; color: var(--muted); max-width: 74ch; }
 
 /* ---------------------------------------------------------------- fechamento */
 
-.closing { background: var(--ink); color: #fff; border-bottom: 0; }
+.closing { background: var(--band-deep); color: #fff; border-bottom: 0; }
+
+.closing.band { background: var(--band-deep); }
 
 .closing__inner {
   display: grid;
