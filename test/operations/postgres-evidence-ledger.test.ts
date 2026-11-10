@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { after, describe, it } from "node:test";
+import { after, before, describe, it } from "node:test";
+import { readFileSync } from "node:fs";
 import postgres from "postgres";
 import { PostgresAppendOnlyLedger, ledgerDigest } from "../../src/operations/postgres-evidence-ledger.js";
 
@@ -9,6 +10,11 @@ describe("PostgresAppendOnlyLedger", { skip: !databaseUrl }, () => {
   const sql = postgres(databaseUrl!, { max: 4 });
   const ledger = new PostgresAppendOnlyLedger<{ value: number }>(sql);
   const tenant = "ledger-test-" + process.pid + "-" + Date.now();
+
+  before(async () => {
+    const migration = readFileSync(new URL("../../migrations/001_syntropic_evidence_ledger.sql", import.meta.url), "utf8");
+    await sql.unsafe(migration);
+  });
 
   after(async () => { await sql.end(); });
 
