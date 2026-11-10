@@ -32,7 +32,7 @@ export interface CustomerOutcomeReport extends OutcomeReport {
 }
 export class CustomerReportError extends Error {
   constructor(readonly code: string, readonly path: string, message = code) {
-    super(message); this.name = "CustomerReportError";
+    super(message === code ? code : code + ":" + message); this.name = "CustomerReportError";
   }
 }
 const reportRequired = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
