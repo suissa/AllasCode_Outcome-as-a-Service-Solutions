@@ -19,4 +19,4 @@ Migration `0014_durable_outcome_proposals.sql` adds tenant-scoped proposal recor
 
 ## Review boundary
 
-Persisted records begin in `ready_for_review` only after `assessProposalReadiness` reports no blockers. A proposal can be approved or rejected by a separately authorized actor. Contract composition remains a distinct operation and continues to require explicit approval and matching scope.
+Persisted records begin in `ready_for_review` only after `assessProposalReadiness` reports no blockers. A proposal can be approved or rejected by a separately authorized actor distinct from the submitter (maker-checker separation). Contract composition remains a distinct operation and continues to require explicit approval and matching scope.
