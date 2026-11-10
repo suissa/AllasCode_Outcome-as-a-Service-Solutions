@@ -58,7 +58,7 @@
     document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",()=>{if(window.OQ) OQ.logInteraction(mode,"content-navigation",{target:a.getAttribute("href")});}));
     if (window.OQ) OQ.logInteraction(mode,"content-loaded",{schemaVersion:exp.schemaVersion,sectorCount:sectors.length,roleCount:team.roles.length});
   }
-  document.addEventListener("DOMContentLoaded",()=>start().catch(error=>{
+  document.addEventListener("DOMContentLoaded",()=>window.OQReady.then(()=>start()).catch(error=>{
     console.error("Falha ao carregar conteúdo OaaS.Quest",error);
     const host=document.getElementById("oq-guild-content"); if(host) host.textContent="Não foi possível carregar os registros da Guilda. Atualize a página para tentar novamente.";
   }));
