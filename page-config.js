@@ -8,7 +8,8 @@
     "agent-team": "agent-team.pt-BR.json",
     "mission-steps": "mission-steps.pt-BR.json",
     discovery: "discovery.pt-BR.json",
-    "ui-copy": "ui-copy.pt-BR.json"
+    "ui-copy": "ui-copy.pt-BR.json",
+    "inference-graph": "inference-graph.pt-BR.json"
   };
   const readJson = async path => {
     const response = await fetch(new URL(root + path, document.baseURI));
