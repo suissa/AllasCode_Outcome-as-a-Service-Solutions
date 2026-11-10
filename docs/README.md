@@ -16,6 +16,8 @@ Esta pasta reúne as definições de produto, operação, engenharia, contratos 
 | [Implementation Plan](./Implementation-PLAN.md) | Backlog macro, Atomic Behaviors, critérios de aceitação e convenções de implementação |
 | [Atomic Behavior Matrix](./Atomic-Behavior-Implementation-Matrix.md) | Mapeamento de capacidades e implementação |
 | [Runtime Usage](./Runtime-Usage.md) | Estado e limites atuais do runtime de referência |
+| [Syntropic Antifragility](./syntropic-antifragility/manifest.md) | Atomic Behaviors, contratos, fluxo 2flow, implementação e governança do ciclo de evolução sintropicamente antifrágil |
+| [ADR-004 — Syntropic Antifragility](./ADR-004-syntropic-antifragility.md) | Decisão arquitetural e alternativas rejeitadas |
 | [ADRs](.) | Decisões arquiteturais registradas |
 
 ## Princípio central
