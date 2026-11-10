@@ -9,7 +9,7 @@ export class BackupGovernanceError extends Error {
 
 export type BackupEncryptionAlgorithm = "AES-256-GCM" | "XCHACHA20-POLY1305";
 
-export interface BackupManifest {
+export interface GovernedBackupManifest {
   id: string;
   tenantId: string;
   scope: readonly string[];
@@ -58,7 +58,7 @@ export interface DisasterRecoveryAssessment {
 export interface RestorePlan {
   id: string;
   tenantId: string;
-  backup: BackupManifest;
+  backup: GovernedBackupManifest;
   target: "staging" | "production";
   targetId: string;
   actorId: string;
@@ -69,13 +69,13 @@ export interface RestorePlan {
 }
 
 export interface RestoreProvider {
-  restoreToStaging(backup: BackupManifest, idempotencyKey: string): Promise<{ stageId: string; contentHash: string }>;
-  validateStaging(stageId: string, backup: BackupManifest): Promise<{ valid: boolean; tenantId: string; scope: readonly string[] }>;
+  restoreToStaging(backup: GovernedBackupManifest, idempotencyKey: string): Promise<{ stageId: string; contentHash: string }>;
+  validateStaging(stageId: string, backup: GovernedBackupManifest): Promise<{ valid: boolean; tenantId: string; scope: readonly string[] }>;
   promote(stageId: string, target: string): Promise<void>;
   rollback(stageId: string): Promise<void>;
 }
 
-export interface ExportAuthorization {
+export interface GovernedExportAuthorization {
   tenantId: string;
   requestedBy: string;
   purpose: string;
@@ -89,7 +89,7 @@ export interface ExportAuthorization {
 export interface ExportArtifact {
   id: string;
   tenantId: string;
-  classification: ExportAuthorization["classification"];
+  classification: GovernedExportAuthorization["classification"];
   contentHash: string;
   sizeBytes: number;
   createdAt: string;
@@ -109,7 +109,7 @@ function fail(code: string, path: string): never {
   throw new BackupGovernanceError(code, path);
 }
 
-export function validateBackupManifest(manifest: BackupManifest, now = new Date()): void {
+export function validateGovernedBackupManifest(manifest: GovernedBackupManifest, now = new Date()): void {
   if (!manifest || !required(manifest.id) || !required(manifest.tenantId) || !required(manifest.formatVersion) ||
       !required(manifest.region) || !required(manifest.createdBy) || !Array.isArray(manifest.scope) ||
       manifest.scope.length === 0 || manifest.scope.some(item => !required(item)) ||
@@ -131,14 +131,14 @@ export function validateBackupManifest(manifest: BackupManifest, now = new Date(
   if (Date.parse(manifest.retentionUntil) <= now.getTime()) fail("BACKUP_RETENTION_EXPIRED", "retentionUntil");
 }
 
-export function verifyBackupArtifact(manifest: BackupManifest, actualHash: string, now = new Date()): boolean {
-  validateBackupManifest(manifest, now);
+export function verifyBackupArtifact(manifest: GovernedBackupManifest, actualHash: string, now = new Date()): boolean {
+  validateGovernedBackupManifest(manifest, now);
   return /^[a-f0-9]{64}$/i.test(actualHash) && manifest.contentHash.toLowerCase() === actualHash.toLowerCase();
 }
 
 export function assessDisasterRecovery(
   policy: DisasterRecoveryPolicy,
-  backups: readonly BackupManifest[],
+  backups: readonly GovernedBackupManifest[],
   drills: readonly RestoreDrillEvidence[],
   now = new Date(),
 ): Readonly<DisasterRecoveryAssessment> {
@@ -155,7 +155,7 @@ export function assessDisasterRecovery(
   const backupIds = new Set<string>();
   for (let index = 0; index < backups.length; index += 1) {
     const item = backups[index]!;
-    validateBackupManifest(item, now);
+    validateGovernedBackupManifest(item, now);
     if (item.tenantId !== policy.tenantId) fail("BACKUP_TENANT_MISMATCH", `backups[${index}].tenantId`);
     if (backupIds.has(item.id)) fail("BACKUP_DUPLICATE", `backups[${index}].id`);
     backupIds.add(item.id);
@@ -213,7 +213,7 @@ export function assessDisasterRecovery(
 export function planBackupRestore(
   input: {
     tenantId: string;
-    backup: BackupManifest;
+    backup: GovernedBackupManifest;
     target: "staging" | "production";
     targetId: string;
     actorId: string;
@@ -229,7 +229,7 @@ export function planBackupRestore(
   }
   const now = input.now ?? new Date();
   if (!(now instanceof Date) || !Number.isFinite(now.getTime())) fail("BACKUP_CLOCK_INVALID", "now");
-  validateBackupManifest(input.backup, now);
+  validateGovernedBackupManifest(input.backup, now);
   if (input.backup.tenantId !== input.tenantId) fail("BACKUP_TENANT_MISMATCH", "backup.tenantId");
   if (input.target === "production" && (!required(input.approvedBy) || input.approvedBy === input.actorId)) {
     fail("RESTORE_APPROVAL_REQUIRED", "approvedBy");
@@ -259,7 +259,7 @@ export async function executeBackupRestore(
       (plan.target !== "staging" && plan.target !== "production")) {
     fail("RESTORE_PLAN_INVALID", "plan");
   }
-  validateBackupManifest(plan.backup, new Date(plan.plannedAt));
+  validateGovernedBackupManifest(plan.backup, new Date(plan.plannedAt));
   if (plan.backup.tenantId !== plan.tenantId || plan.expectedContentHash !== plan.backup.contentHash) {
     fail("BACKUP_TENANT_MISMATCH", "plan.backup");
   }
@@ -299,14 +299,14 @@ export function authorizeDataExport(
     tenantId: string;
     requestedBy: string;
     purpose: string;
-    classification: ExportAuthorization["classification"];
+    classification: GovernedExportAuthorization["classification"];
     includePersonalData: boolean;
     approvedBy?: string;
     idempotencyKey: string;
     now?: Date;
   },
   authorize: (actorId: string, tenantId: string, action: "data.export" | "data.export.personal") => boolean,
-): Readonly<ExportAuthorization> {
+): Readonly<GovernedExportAuthorization> {
   if (!request || !required(request.tenantId) || !required(request.requestedBy) ||
       !required(request.purpose) || !required(request.idempotencyKey) ||
       !["public", "internal", "confidential", "personal", "sensitive"].includes(request.classification) ||
@@ -329,7 +329,7 @@ export function authorizeDataExport(
 }
 
 export function verifyExportArtifact(
-  authorization: ExportAuthorization,
+  authorization: GovernedExportAuthorization,
   artifact: ExportArtifact,
   actualHash: string,
   now = new Date(),
