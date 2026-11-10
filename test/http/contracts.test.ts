@@ -30,6 +30,12 @@ class MemoryContracts implements ContractRegistryStore {
     this.idem.set(idemKey, { fingerprint, value }); return { value, replayed: false };
   }
   async get(tenant: string, id: string) { return this.records.get(tenant + ":" + id); }
+  async getIdempotentResult(tenant: string, key: string, fingerprint: string) {
+    const old = this.idem.get(tenant + ":" + key);
+    if (!old) return undefined;
+    if (old.fingerprint !== fingerprint) throw new Error("CONTRACT_IDEMPOTENCY_CONFLICT");
+    return old.value;
+  }
   async commit(command: Parameters<ContractRegistryStore["commit"]>[0]): Promise<ContractCommitResult> {
     const idemKey = command.tenantId + ":" + command.idempotencyKey; const old = this.idem.get(idemKey);
     if (old) { if (old.fingerprint !== command.fingerprint) throw new Error("CONTRACT_IDEMPOTENCY_CONFLICT"); return { value: old.value, replayed: true }; }
@@ -81,6 +87,9 @@ test("contract HTTP lifecycle persists a draft, review, approval, signatures and
     }
     const activated = await post(path + "/activate", "activate-1", {});
     assert.equal(activated.status, 200);
+    const replayed = await post(path + "/submit-review", "submit-1", {});
+    assert.equal(replayed.status, 200);
+    assert.equal((await replayed.json() as { replayed: boolean }).replayed, true);
     const final = await (await fetch(base + path)).json() as { value: ContractRecord };
     assert.equal(final.value.state, "active");
     assert.equal(final.value.agreement.status, "active");
