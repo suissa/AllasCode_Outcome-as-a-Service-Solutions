@@ -23,7 +23,9 @@ test("pages reference existing layouts, templates and resolvable JSON content",a
     assert.ok(page.sections.length>0);
     assert.ok(page.sections.every(section=>section.id&&section.contentRef));
     for(const ref of new Set([...page.contentRefs,...page.sections.map(section=>section.contentRef)])){
-      const [source,...path]=ref.split(".");
+      const parts=ref.split(".");
+      const source=parts.shift() ?? "";
+      const path=parts;
       assert.ok(sources[source],`Unknown content source: ${ref}`);
       let value=await load<unknown>(sources[source]);
       for(const key of path)value=(value as Record<string,unknown>)?.[key];
@@ -41,7 +43,7 @@ test("HTML entry points boot through the manifest-driven page runtime",async()=>
   assert.ok(loader.includes("CONTENT_REFERENCE_NOT_FOUND"));
   assert.ok(renderer.includes("window.OaaSPageReady"));
   assert.ok(renderer.includes("pageRuntime.sources.experience"));
-  for(const [path,id] of [["index.html","home"],["classico.html","classic"],["guilda.html","guild"],["descoberta/index.html","discovery"]]){
+  for(const [path,id] of [["index.html","home"],["classico.html","classic"],["guilda.html","guild"],["descoberta/index.html","discovery"]] as const){
     const html=await readFile(join(root,path),"utf8");
     assert.ok(html.includes('data-oaas-page="'+id+'"'),path+" must declare its page id");
     assert.ok(html.includes(path==="descoberta/index.html"?"../page-config.js":"page-config.js"),path+" must load the page runtime");
