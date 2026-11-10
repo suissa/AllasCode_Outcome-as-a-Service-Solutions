@@ -12,9 +12,10 @@ test("pages reference existing layouts, templates and resolvable JSON content",a
     "agent-team":"content/agent-team.pt-BR.json",
     "mission-steps":"content/mission-steps.pt-BR.json",
     discovery:"content/discovery.pt-BR.json",
+    "proposal-graph":"content/proposal-graph.pt-BR.json",
     "ui-copy":"content/ui-copy.pt-BR.json"
   };
-  for(const id of ["home","classic","guild","discovery"]){
+  for(const id of ["home","classic","guild","discovery","proposal"]){
     const page=await load<{id:string;entry:string;layout:string;contentRefs:string[];sections:{id:string;contentRef:string}[]}>(`pages/pt-BR/${id}.json`);
     assert.equal(page.id,id);
     await readFile(join(root,page.entry),"utf8");
@@ -37,7 +38,7 @@ test("pages reference existing layouts, templates and resolvable JSON content",a
   }
 });
 test("mission and discovery content are externalized and complete",async()=>{const steps=await load<{id:string;prompt:string}[]>("content/mission-steps.pt-BR.json");const discovery=await load<{stages:{id:string;questions:{id:string}[]}[];solutions:{id:string}[]}>("content/discovery.pt-BR.json");assert.equal(steps.length,7);assert.equal(new Set(steps.map(s=>s.id)).size,steps.length);assert.ok(steps.every(s=>s.prompt.trim().length>0));assert.equal(discovery.stages.length,19);assert.equal(discovery.solutions.length,12);assert.ok(discovery.stages.every(s=>s.id&&s.questions.length>0));});
-test("layout descriptors define template, stylesheet and renderer",async()=>{for(const id of ["chooser","classic","guild","discovery"]){const layout=await load<{id:string;template:string;stylesheet:string;renderer:string;slots:string[]}>(`layouts/${id}.json`);assert.equal(layout.id,id);assert.ok(layout.template&&layout.stylesheet&&layout.renderer&&layout.slots.length>0);}});
+test("layout descriptors define template, stylesheet and renderer",async()=>{for(const id of ["chooser","classic","guild","discovery","proposal"]){const layout=await load<{id:string;template:string;stylesheet:string;renderer:string;slots:string[]}>(`layouts/${id}.json`);assert.equal(layout.id,id);assert.ok(layout.template&&layout.stylesheet&&layout.renderer&&layout.slots.length>0);}});
 
 test("HTML entry points boot through the manifest-driven page runtime",async()=>{
   const loader=await readFile(join(root,"page-config.js"),"utf8");
@@ -52,7 +53,7 @@ test("HTML entry points boot through the manifest-driven page runtime",async()=>
   assert.ok(renderer.includes("window.OaaSPageReady"));
   assert.ok(renderer.includes("pageRuntime.sources.experience"));
   assert.ok(renderer.includes("document.readyState"));
-  for(const [path,id] of [["index.html","home"],["classico.html","classic"],["guilda.html","guild"],["descoberta/index.html","discovery"]] as const){
+  for(const [path,id] of [["index.html","home"],["classico.html","classic"],["guilda.html","guild"],["descoberta/index.html","discovery"],["proposta/index.html","proposal"]] as const){
     const html=await readFile(join(root,path),"utf8");
     assert.ok(html.includes('data-oaas-page="'+id+'"'),path+" must declare its page id");
     assert.ok(html.includes(path==="descoberta/index.html"?"../page-config.js":"page-config.js"),path+" must load the page runtime");
@@ -69,7 +70,7 @@ test("layout stylesheets are external assets, not embedded in the discovery entr
 });
 
 test("entry HTML delegates behavior to scripts declared by the layout",async()=>{
-  for(const id of ["chooser","classic","guild","discovery"]){
+  for(const id of ["chooser","classic","guild","discovery","proposal"]){
     const layout=await load<{scripts?:string[]}>(`layouts/${id}.json`);
     assert.ok(layout.scripts && layout.scripts.length>0,`${id} must declare runtime scripts`);
     for(const script of layout.scripts||[]) await readFile(join(root,script),"utf8");
@@ -106,7 +107,7 @@ test("page loader mounts templates and loads layout scripts from nested entries"
   await window.OaaSPageScriptsReady;
   assert.equal(mounted.innerHTML,"<main>Loaded</main>");
   assert.equal(document.title,"Discovery");
-  assert.deepEqual(scriptUrls,["https://example.test/runtime/discovery.js"]);
+  assert.deepEqual(scriptUrls,["https://example.test/runtime/proposal-inference.js","https://example.test/runtime/discovery.js"]);
 });
 
 test("Guild runtime reads interface copy from the localized catalog",async()=>{
