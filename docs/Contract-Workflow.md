@@ -19,7 +19,7 @@ A signature cannot be recorded before approval. A signer not listed in `required
 
 ## HTTP API
 
-All endpoints require authentication, tenant scope and action-level authorization. Mutating requests require an `Idempotency-Key` header.
+All endpoints require authentication, tenant scope and action-level authorization. Mutating requests require an `Idempotency-Key` header. Draft creation requires both `contract.create` and `proposal.approve`; the authenticated actor and timestamp are stored as the proposal approval reference.
 
 | Method | Path | Action |
 |---|---|---|
@@ -33,7 +33,7 @@ All endpoints require authentication, tenant scope and action-level authorizatio
 
 ### Draft request
 
-The body contains the structured proposal, agreement, parties, effective date, jurisdiction, required signer actor IDs and optional operational/security annex data. The server overwrites the approval actor with the authenticated actor and enforces tenant equality between the proposal, agreement and authenticated principal.
+The body contains the structured proposal, agreement, parties, effective date, jurisdiction, required signer actor IDs and optional operational/security annex data. The server recomputes proposal readiness from the submitted fields (it does not trust the client-supplied readiness flag), overwrites the approval actor with the authenticated actor, records that approval in the contract event and enforces tenant equality between the proposal, agreement and authenticated principal. Evidence references and their claimed verification state still require a trusted evidence registry/source adapter; structural readiness alone does not independently prove their authenticity.
 
 ### Signature verifier
 
