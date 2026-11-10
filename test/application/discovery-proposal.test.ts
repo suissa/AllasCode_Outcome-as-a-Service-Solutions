@@ -20,7 +20,7 @@ const snapshot = {
     top_priority: { value: "conversion" },
     integration: { value: "partial" },
     channels: { value: ["store", "whatsapp"] },
-    unknown_field: { value: null, status: "unknown" },
+    unknown_field: { value: null, status: "unknown" as const },
   },
 };
 
