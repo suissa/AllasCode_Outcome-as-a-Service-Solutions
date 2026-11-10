@@ -1,0 +1,39 @@
+version: "1.0"
+behavior: credential-governance
+credential:
+  required: [id, tenantId, ownerActorId, reference, scopes, status, createdAt, revision]
+  reference:
+    required: [provider, key, version]
+    allowedData: [provider, key, version, expiresAt]
+    forbidden: [secret, secretValue, tokenValue, privateKeyBytes]
+  status: [active, rotation_due, expired, revoked]
+rotation:
+  required: [tenantId, credentialId, actorId, expectedRevision, idempotencyKey]
+  authorization: security.credential.rotate
+  duePolicy: require_due_or_force
+  provider: idempotent_rotation_adapter
+  commit: compare_and_swap_with_idempotency
+accessReview:
+  required: [tenantId, grantId, reviewerId, decision, reasonCode, rationale, expectedRevision]
+  decision: [retain, revoke]
+  authorization: security.access.review
+  reviewerMustDifferFrom: [grant.actorId, grant.grantedBy]
+  revoke: clear_permissions_and_set_revokedAt
+  commit: compare_and_swap_with_audit_record
+invariants:
+  - tenant-isolation
+  - no-plaintext-secret-material
+  - stable-idempotency-key
+  - monotonic-revision
+  - least-privilege-permissions
+  - independent-reviewer
+  - reasoned-review-decision
+errors:
+  - { code: CREDENTIAL_UNAUTHORIZED, path: actorId }
+  - { code: CREDENTIAL_NOT_FOUND, path: credentialId }
+  - { code: CREDENTIAL_REVISION_CONFLICT, path: expectedRevision }
+  - { code: CREDENTIAL_ROTATION_NOT_DUE, path: credential.rotationDueAt }
+  - { code: CREDENTIAL_ROTATION_RESULT_INVALID, path: vault.result }
+  - { code: ACCESS_REVIEW_UNAUTHORIZED, path: reviewerId }
+  - { code: ACCESS_REVIEW_INDEPENDENT_REQUIRED, path: reviewerId }
+  - { code: ACCESS_REVIEW_REVISION_CONFLICT, path: expectedRevision }

@@ -1,0 +1,15 @@
+version = "1.0"
+secret_material_storage = false
+secret_material_returned_by_domain = false
+require_tenant_scope = true
+require_rotation_authorization = true
+require_access_review_authorization = true
+require_rotation_due_or_force = true
+require_vault_idempotency = true
+require_compare_and_swap = true
+require_independent_access_reviewer = true
+require_review_reason_code = true
+require_review_rationale = true
+permission_scope_format = "resource.action"
+revoke_clears_permissions = true
+rotation_default_window_days = 90
