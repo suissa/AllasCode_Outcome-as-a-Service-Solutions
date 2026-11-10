@@ -39,9 +39,9 @@ test("proposal store persists records, source traceability, and idempotency atom
   assert.equal(result.replayed, false);
   assert.equal(result.value.source.missionId, "mission_001");
   assert.equal(statements.length, 5);
-  assert.match(statements[1]!, /outcome_proposals/);
-  assert.match(statements[2]!, /outcome_proposal_events/);
-  assert.match(statements[3]!, /outcome_proposal_idempotency/);
+  assert.match(statements[2]!, /outcome_proposals/);
+  assert.match(statements[3]!, /outcome_proposal_events/);
+  assert.match(statements[4]!, /outcome_proposal_idempotency/);
 });
 
 test("proposal store rejects reuse of an idempotency key with a different payload", async () => {
