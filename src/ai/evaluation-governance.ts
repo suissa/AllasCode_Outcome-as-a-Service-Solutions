@@ -128,7 +128,7 @@ function validateSnapshot(snapshot: ModelEvaluationSnapshot): void {
         !["quality", "safety", "privacy", "fairness", "robustness", "latency", "cost"].includes(item.category) ||
         !Number.isFinite(item.score) || item.score < 0 || item.score > 1 ||
         typeof item.passed !== "boolean" || typeof item.critical !== "boolean" ||
-        !Array.isArray(item.issues) || item.issues.some(issue => !required(issue))) {
+        !Array.isArray(item.issues) || item.issues.some((issue: unknown) => !required(issue))) {
       fail("EVALUATION_RESULT_INVALID", path);
     }
     if (ids.has(item.caseId)) fail("EVALUATION_CASE_DUPLICATE", `${path}.caseId`);
