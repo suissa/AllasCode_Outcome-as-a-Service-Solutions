@@ -26,9 +26,9 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
   const tenantId = "tenant_it_" + suffix;
   const caseId = "outcome_it_" + suffix;
   try {
-    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql","0007_authorization_rbac_abac.sql","0008_lifecycle_transition_events.sql","0009_immutable_audit_decision_ledger.sql","0010_calculation_snapshots.sql","0011_policy_registry_version_approvals.sql","0012_durable_settlement_workflow.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
-    assert.equal((await applyMigrations(db,migrations)).applied.length,12);
-    assert.equal((await applyMigrations(db,migrations)).skipped.length,12);
+    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql","0007_authorization_rbac_abac.sql","0008_lifecycle_transition_events.sql","0009_immutable_audit_decision_ledger.sql","0010_calculation_snapshots.sql","0011_policy_registry_version_approvals.sql","0012_durable_settlement_workflow.sql","0013_immutable_intent_versions.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
+    assert.equal((await applyMigrations(db,migrations)).applied.length,13);
+    assert.equal((await applyMigrations(db,migrations)).skipped.length,13);
     const initial: OutcomeCase = {
       id: caseId, tenantId, stage: "specified",
       spec: { metric: { id: "metric_it_001", name: "Revenue", unit: "BRL" } as never, baseline: 100, target: 150, direction: "increase", periodStart: "2026-01-01", periodEnd: "2026-02-01", attribution: "direct", approvedBy: "actor_it_001" },
@@ -131,13 +131,18 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     const intentSnapshot = { id:"intent_it_"+suffix,tenantId,actorId:"actor_it_001",statement:"Improve retention",desiredOutcome:"retention",scope:["onboarding"],constraints:[],status:"draft" as const,version:1,provenance:{channel:"api" as const,sourceId:"api_request",capturedAt:new Date().toISOString()},createdAt:new Date().toISOString() };
     await intentVersions.append({intentId:intentSnapshot.id,version:1,snapshot:intentSnapshot,changedBy:"actor_it_001",changedAt:intentSnapshot.createdAt,changeReason:"captured"});
     assert.equal((await intentVersions.history(tenantId,intentSnapshot.id)).length,1);
+    await assert.rejects(()=>client.unsafe("update intent_versions set payload='{}'::jsonb where tenant_id=$1 and intent_id=$2",[tenantId,intentSnapshot.id]),/INTENT_VERSION_APPEND_ONLY/);
+    await assert.rejects(()=>client.unsafe("delete from intent_versions where tenant_id=$1 and intent_id=$2",[tenantId,intentSnapshot.id]),/INTENT_VERSION_APPEND_ONLY/);
   } finally {
     await client.unsafe("delete from authorization_decisions where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from authorization_grants where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from authorization_roles where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from workspace_memberships where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from workspaces where tenant_id = $1", [tenantId]);
-    await client.unsafe("delete from intent_versions where tenant_id = $1", [tenantId]);
+    await client.begin(async (tx) => {
+      await tx.unsafe("select set_config('app.allow_intent_version_purge', 'on', true)");
+      await tx.unsafe("delete from intent_versions where tenant_id = $1", [tenantId]);
+    });
     await client.unsafe("delete from usage_ledger_entries where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from usage_meter_events where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from api_keys where tenant_id = $1", [tenantId]);
