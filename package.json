@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "test": "tsx --test test/*.test.ts test/**/*.test.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "forger": "node scripts/forger.mjs",
+    "seo:check": "npm run forger && node --test test/forger.test.ts"
   },
   "devDependencies": {
     "tsx": "^4.20.6",
