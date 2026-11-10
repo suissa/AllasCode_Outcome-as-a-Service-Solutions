@@ -73,7 +73,7 @@ test("E2E Guilda: retail conversation → review → confirmation → Discovery 
   await expect(page.locator("#mission-controls")).toContainText("Confirmar missão e aprofundar diagnóstico");
   await page.getByRole("button", { name: "Confirmar missão e aprofundar diagnóstico" }).click();
   await page.getByRole("button", { name: "Aprofundar diagnóstico" }).click();
-  await expect(page).toHaveURL(/\/descoberta\/$/);
+  await expect(page).toHaveURL(/\\/descoberta\\/(?:index\\.html)?$/);
   await expect(page.locator("#app")).toContainText("Missão recebida do Modo Guilda");
 
   await completeDiscovery(page);
