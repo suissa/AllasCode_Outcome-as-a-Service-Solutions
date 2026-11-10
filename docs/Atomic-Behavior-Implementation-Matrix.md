@@ -101,4 +101,4 @@ These additions increase implementation depth and CI coverage, but do not close 
 
 | #85 | Persist immutable tenant-scoped calculation snapshots with canonical fingerprints and atomic audit-ledger records | `src/reporting/snapshot.ts`; `migrations/0010_calculation_snapshots.sql`; `test/reporting/calculation-snapshot.test.ts`; PostgreSQL integration test |
 
-| #17 | Strict channel capture, immutable normalized envelope and provenance chronology | `src/intent/intent.ts`; `test/intent/intent.test.ts`; `specs/intent-capture/` |
+| #17–18 | Strict channel capture, normalized request envelope, immutable snapshots and provenance chronology | `src/intent/intent.ts`; `test/intent/intent.test.ts`; `specs/intent-capture/` |
