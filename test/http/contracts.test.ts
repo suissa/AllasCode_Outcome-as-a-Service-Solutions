@@ -72,6 +72,8 @@ test("contract HTTP lifecycle persists a draft, review, approval, signatures and
     const path = "/v1/contracts/" + encodeURIComponent(id);
     assert.equal((await post(path + "/submit-review", "submit-1", {})).status, 200);
     assert.equal((await post(path + "/approve", "approve-1", {})).status, 200);
+    const mismatchedSignature = await post(path + "/signatures", "sign-mismatch", { signature: { signerId: "customer_admin", signatureHash: "verified:customer_admin", documentFingerprint: "0".repeat(64), provider: "test-verifier", signedAt: "2026-11-10T10:00:00.000Z", verificationReference: "wrong-document" } });
+    assert.equal(mismatchedSignature.status, 422);
     for (const signerId of ["customer_admin", "provider_admin"]) {
       const signed = await post(path + "/signatures", "sign-" + signerId, { signature: { signerId, signatureHash: "verified:" + signerId, documentFingerprint: createdBody.value.document.fingerprint, provider: "test-verifier", signedAt: "2026-11-10T10:00:00.000Z", verificationReference: "verification-" + signerId } });
       assert.equal(signed.status, 200);
