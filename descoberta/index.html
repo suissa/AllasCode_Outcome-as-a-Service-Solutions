@@ -106,7 +106,8 @@ function showDiagnostic(){
   if(typeof token!=='string'||!token.trim())throw new Error('AUTHENTICATION_REQUIRED');
   const headers={'content-type':'application/json','authorization':'Bearer '+token};
   if(path==='/v1/proposals')headers['idempotency-key']=crypto.randomUUID();
-  return fetch(new URL(path,proposalConfig.baseUrl),{method,headers,body:body?JSON.stringify(body):undefined,credentials:'omit',cache:'no-store'});
+  const base=new URL(proposalConfig.baseUrl,window.location.origin);const endpoint=new URL(base.pathname.replace(/\\/$/,'')+path,base.origin);
+  return fetch(endpoint,{method,headers,body:body?JSON.stringify(body):undefined,credentials:'omit',cache:'no-store'});
  };
  consent.addEventListener('change',()=>{submitButton.disabled=!consent.checked||!canConnect;readiness=null;submitButton.disabled=!consent.checked||!canConnect;setStatus(consent.checked?(canConnect?'Consentimento ativo nesta sessão. Você pode enviar a descoberta para análise comercial.':'API/auth não configuradas nesta aplicação.'):'Nenhum dado será enviado sem consentimento.');});
  if(!canConnect){previewButton.disabled=true;submitButton.disabled=true;setStatus('Envio remoto desabilitado: configure window.OaaSProposalConfig.baseUrl e getAccessToken() no host autenticado.');}
