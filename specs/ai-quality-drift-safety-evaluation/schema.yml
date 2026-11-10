@@ -1,0 +1,34 @@
+version: "1.0"
+behavior: ai-quality-drift-safety-evaluation
+snapshot:
+  required: [id, tenantId, modelId, modelVersion, promptVersion, datasetVersion, createdAt, results, snapshotHash]
+  hash: sha256-canonical
+  result:
+    required: [caseId, category, score, passed, critical, issues]
+    categories: [quality, safety, privacy, fairness, robustness, latency, cost]
+    score: float_0_to_1
+comparison:
+  sameTenant: true
+  sameModel: true
+  sameDatasetVersion: true
+  minimumCoverage: configurable
+  categories: [quality, safety, privacy, fairness, robustness, latency, cost]
+  reports: [overallDelta, categoryRegressions, safetyRegressions, newFailures, recoveredCases]
+safety:
+  criticalRegressionBlocksRelease: true
+  minimumPassRate: configurable
+invariants:
+  - snapshot-integrity
+  - unique-case-identifiers
+  - tenant-model-dataset-comparability
+  - minimum-sample-coverage
+  - deterministic-score-aggregation
+  - critical-safety-fail-closed
+  - no-raw-prompt-or-output-retention
+errors:
+  - { code: EVALUATION_TENANT_MISMATCH, path: tenantId }
+  - { code: EVALUATION_MODEL_MISMATCH, path: modelId }
+  - { code: EVALUATION_DATASET_MISMATCH, path: datasetVersion }
+  - { code: EVALUATION_COVERAGE_INSUFFICIENT, path: results }
+  - { code: EVALUATION_SNAPSHOT_HASH_MISMATCH, path: snapshotHash }
+  - { code: EVALUATION_CATEGORY_MISMATCH, path: results.caseId.category }
