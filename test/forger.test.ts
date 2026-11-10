@@ -27,7 +27,7 @@ test("chooser template copy bindings resolve against the locale catalog", async 
   ]);
   const catalog = JSON.parse(catalogText);
   const resolve = (path: string) => path.split(".").reduce((value: any, key: string) => value?.[key], catalog);
-  const bindings = [...template.matchAll(/data-copy(?:-aria-label)?="([^"]+)"/g)].map(match => match[1]);
+  const bindings = [...template.matchAll(/data-copy(?:-aria-label)?="([^"]+)"/g)].flatMap(match => match[1] ? [match[1]] : []);
   assert.ok(bindings.length > 0, "chooser should declare localized copy bindings");
   for (const binding of bindings) {
     assert.equal(typeof resolve(binding), "string", `missing localized copy: ${binding}`);
