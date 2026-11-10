@@ -28,3 +28,12 @@ test("requires a complete tenant execution context", () => {
   assert.throws(() => requireTenantScope(undefined), TenantIsolationError);
   assert.throws(() => requireTenantScope({ tenantId: tenantA, actorId: "", correlationId: "req_test_001" }), TenantIsolationError);
 });
+
+test("rejects malformed runtime tenant IDs and incomplete correlation metadata", () => {
+  assert.throws(() => requireTenantScope({ tenantId: "not-a-tenant" as never, actorId: "actor_owner_001", correlationId: "req_test_001" }),
+    /ID_INVALID/);
+  assert.throws(() => requireTenantScope({ tenantId: tenantA, actorId: "actor_owner_001", correlationId: " " }),
+    TenantIsolationError);
+  assert.throws(() => assertTenantScope(scope, { tenantId: "tenant_invalid" as never }),
+    /ID_INVALID/);
+});
