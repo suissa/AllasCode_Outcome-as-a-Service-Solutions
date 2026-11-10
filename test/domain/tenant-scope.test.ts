@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { parseEntityId } from "../../src/domain/identifiers.ts";
+import { IdentifierValidationError, parseEntityId } from "../../src/domain/identifiers.ts";
 import { assertTenantScope, requireTenantScope, TenantIsolationError } from "../../src/domain/tenant-scope.ts";
 
 const tenantA = parseEntityId("tenant", "tenant_alpha_001");
@@ -31,7 +31,7 @@ test("requires a complete tenant execution context", () => {
 
 test("rejects malformed runtime tenant IDs and incomplete correlation metadata", () => {
   assert.throws(() => requireTenantScope({ tenantId: "not-a-tenant" as never, actorId: "actor_owner_001", correlationId: "req_test_001" }),
-    /ID_INVALID/);
+    (error: unknown) => error instanceof IdentifierValidationError && error.issue.code === "ID_INVALID");
   assert.throws(() => requireTenantScope({ tenantId: tenantA, actorId: "actor_owner_001", correlationId: " " }),
     TenantIsolationError);
   assert.throws(() => assertTenantScope(scope, { tenantId: "tenant_invalid" as never }),
