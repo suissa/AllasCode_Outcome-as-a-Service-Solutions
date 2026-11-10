@@ -2,7 +2,7 @@
   "id": "discovery",
   "name": "Discovery Engine",
   "template": "descoberta/index.html",
-  "stylesheet": "descoberta inline design system",
+  "stylesheet": "inline",
   "shell": "progressive discovery + diagnostic",
   "renderer": "discovery config-driven runtime",
   "slots": [
