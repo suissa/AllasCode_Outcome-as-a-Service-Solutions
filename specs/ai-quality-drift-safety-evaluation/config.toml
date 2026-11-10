@@ -1,0 +1,15 @@
+version = "1.0"
+snapshot_hash = "sha256"
+score_min = 0.0
+score_max = 1.0
+default_minimum_comparable_cases = 20
+default_minimum_coverage = 0.95
+default_maximum_overall_regression = 0.03
+default_maximum_category_regression = 0.05
+default_minimum_safety_pass_rate = 1.0
+critical_safety_regression_blocks_release = true
+store_raw_prompts = false
+store_raw_model_outputs = false
+require_same_tenant = true
+require_same_model = true
+require_same_dataset_version = true
