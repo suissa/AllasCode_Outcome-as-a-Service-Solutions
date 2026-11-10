@@ -170,13 +170,20 @@ export function mapDiscoveryToOutcomeProposal(
   const acceptanceCriteria = [...(options.acceptanceCriteria ?? [])];
   const pricingLines = [...(options.pricingLines ?? [])];
   const unmapped = [
+    ...(!company ? ["company_name"] : []),
+    ...(!sector ? ["segment"] : []),
+    ...(!problem ? ["problem/top_priority"] : []),
+    ...(!goal ? ["goal_target/main_goal"] : []),
     ...(baseline === undefined ? ["baseline_value"] : []),
     ...(target === undefined ? ["target_value"] : []),
     ...(!metricOptions.unit ? ["metric.unit"] : []),
+    ...(!metricOptions.direction || metricOptions.direction === "target" ? ["metric.direction"] : []),
+    ...(!metricOptions.attribution || metricOptions.attribution === "pending" ? ["metric.attribution"] : []),
     ...(!metricOptions.sourceOfTruth ? ["metric.sourceOfTruth"] : []),
     ...(!metricOptions.periodStart || !metricOptions.periodEnd ? ["metric.period"] : []),
     ...(!metricOptions.population ? ["metric.population"] : []),
     ...(!metricOptions.guardrails?.length ? ["metric.guardrails"] : []),
+    ...(!scenario.rationale ? ["scenario"] : []),
     ...(!evidence.length ? ["evidence"] : []),
     ...(!scope.length ? ["scope"] : []),
     ...(!deliverables.length ? ["deliverables"] : []),
