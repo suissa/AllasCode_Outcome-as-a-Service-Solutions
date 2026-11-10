@@ -63,7 +63,7 @@ const numeric = (value: unknown): number | undefined => {
   return Number.isFinite(parsed) ? parsed : undefined;
 };
 const values = (snapshot: DiscoverySnapshot) => Object.fromEntries(
-  Object.entries(snapshot.answers).map(([key, answer]) => [key, answer?.value]),
+  Object.entries(snapshot.answers).map(([key, answer]) => [key, answer?.status === "unknown" ? undefined : answer?.value]),
 );
 const SECTORS: Record<string, string> = {
   retail: "Comércio", services: "Serviços", industry: "Indústria",
@@ -117,8 +117,8 @@ export function mapDiscoveryToOutcomeProposal(
   if (!Number.isFinite(generatedAt.getTime())) throw new Error("DISCOVERY_PROPOSAL_CLOCK_INVALID");
 
   const answer = values(snapshot);
-  const company = text(answer.company_name) ?? "Cliente não identificado";
-  const sector = SECTORS[String(answer.segment)] ?? "Setor não identificado";
+  const company = text(answer.company_name) ?? "";
+  const sector = SECTORS[String(answer.segment)] ?? "";
   const goal = text(answer.goal_target) ?? GOALS[String(answer.main_goal)] ?? "";
   const priority = text(answer.top_priority);
   const bottleneck = BOTTLENECKS[String(answer.operational_bottleneck)] ?? text(answer.operational_bottleneck);
@@ -136,7 +136,6 @@ export function mapDiscoveryToOutcomeProposal(
   const metricId = text(answer.primary_kpi) ?? "metric_pending";
   const baseline = numeric(answer.baseline_value);
   const target = numeric(answer.target_value);
-  const sourceCode = text(answer.measurement_source);
   const metricOptions = options.metric ?? {};
   const metric: ProposalMetric = {
     id: metricId,
