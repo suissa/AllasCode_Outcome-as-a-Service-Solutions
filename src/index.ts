@@ -94,3 +94,4 @@ export * from "./operations/backup-governance.ts";
 export * from "./operations/release-governance.ts";
 export * from "./operations/incident-feedback-governance.ts";
 export * from "./ai/evaluation-governance.ts";
+export * from "./solutions/capability-knowledge-governance.ts";
