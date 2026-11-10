@@ -6,11 +6,14 @@ import { createAuditEvent } from "../domain/audit.ts";
 import type { EvidenceRecord } from "../evidence/evidence.ts";
 import type { Observation } from "../measurement/metrics.ts";
 import type { OutcomeStore } from "../persistence/outcome-store.ts";
+import type { ContractRegistryStore, CreateContractRecordInput, ContractRecord } from "../commercial/contract-workflow.ts";
+import { createContractRecord, createContractEvent, submitContractForReview, approveContractForSignature, signContract, activateContract, contractCommandFingerprint } from "../commercial/contract-workflow.ts";
+import type { SignatureVerifier, AgreementSignature } from "../commercial/agreement.ts";
 
 export interface AuthenticatedActor { tenantId: string; actorId: string; roles: readonly string[] }
 export type Authenticate = (request: IncomingMessage) => Promise<AuthenticatedActor | undefined>;
 export type Authorize = (actor: AuthenticatedActor, action: string, resource?: OutcomeCase) => boolean | Promise<boolean>;
-export interface OutcomeHttpOptions { store: OutcomeStore; authenticate: Authenticate; authorize: Authorize; now?: () => Date }
+export interface OutcomeHttpOptions { store: OutcomeStore; authenticate: Authenticate; authorize: Authorize; contracts?: ContractRegistryStore; verifyContractSignature?: SignatureVerifier; now?: () => Date }
 type JsonObject = Record<string, unknown>;
 
 async function readBody(request: IncomingMessage): Promise<JsonObject> {
@@ -49,6 +52,67 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
       const actor = await options.authenticate(request);
       if (!actor || !actor.tenantId || !actor.actorId) { send(response, 401, { error: "AUTHENTICATION_REQUIRED", correlationId }); return; }
       const parts = url.pathname.split("/").filter(Boolean);
+      if (parts[0] === "v1" && parts[1] === "contracts") {
+        const registry = options.contracts;
+        if (!registry) { send(response, 503, { error: "CONTRACT_REGISTRY_UNAVAILABLE", correlationId }); return; }
+        if (parts.length === 3 && parts[2] === "drafts" && request.method === "POST") {
+          if (!(await options.authorize(actor, "contract.create"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          const input = await readBody(request);
+          const idempotencyKey = requiredString(request.headers["idempotency-key"], "IDEMPOTENCY_KEY_REQUIRED");
+          if (!Array.isArray(input.requiredSigners) || input.requiredSigners.some(s => typeof s !== "string")) throw Object.assign(new Error("CONTRACT_REQUIRED_SIGNERS_INVALID"), { statusCode: 400 });
+          const createInput: CreateContractRecordInput = {
+            proposal: input.proposal as CreateContractRecordInput["proposal"], agreement: input.agreement as CreateContractRecordInput["agreement"],
+            parties: input.parties as CreateContractRecordInput["parties"], effectiveDate: requiredString(input.effectiveDate, "CONTRACT_EFFECTIVE_DATE_REQUIRED"),
+            jurisdiction: requiredString(input.jurisdiction, "CONTRACT_JURISDICTION_REQUIRED"), approvedBy: actor.actorId, requiredSigners: input.requiredSigners as string[],
+            ...(typeof input.expiryDate === "string" ? { expiryDate: input.expiryDate } : {}),
+            ...(input.deliveryPlan && typeof input.deliveryPlan === "object" ? { deliveryPlan: input.deliveryPlan as Record<string, unknown> } : {}),
+            ...(input.sla && typeof input.sla === "object" ? { sla: input.sla as Record<string, unknown> } : {}),
+            ...(input.security && typeof input.security === "object" ? { security: input.security as Record<string, unknown> } : {}),
+            ...(input.dataProcessing && typeof input.dataProcessing === "object" ? { dataProcessing: input.dataProcessing as Record<string, unknown> } : {}),
+            ...(input.sectorTerms && typeof input.sectorTerms === "object" ? { sectorTerms: input.sectorTerms as Record<string, unknown> } : {}),
+          };
+          const value = createContractRecord(createInput, actor.tenantId, now());
+          const event = createContractEvent({ record: value, actorId: actor.actorId, correlationId, action: "created", fromState: null, now: now() });
+          const result = await registry.createDraft(value, event, idempotencyKey, contractCommandFingerprint("create", createInput));
+          send(response, result.replayed ? 200 : 201, { value: result.value, replayed: result.replayed, correlationId }); return;
+        }
+        const contractId = parts[2];
+        if (!contractId) { send(response, 404, { error: "ROUTE_NOT_FOUND", correlationId }); return; }
+        const current = await registry.get(actor.tenantId, contractId);
+        if (!current) { send(response, 404, { error: "CONTRACT_NOT_FOUND", correlationId }); return; }
+        if (parts.length === 3 && request.method === "GET") {
+          if (!(await options.authorize(actor, "contract.read"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          send(response, 200, { value: current, correlationId }); return;
+        }
+        if (parts.length === 4 && parts[3] === "events" && request.method === "GET") {
+          if (!(await options.authorize(actor, "contract.events.read"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          send(response, 200, { value: await registry.events(actor.tenantId, contractId), correlationId }); return;
+        }
+        if (request.method !== "POST" || parts.length !== 4) { send(response, 404, { error: "ROUTE_NOT_FOUND", correlationId }); return; }
+        const action = parts[3]!;
+        if (!(await options.authorize(actor, "contract." + action))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+        const input = await readBody(request);
+        const idempotencyKey = requiredString(request.headers["idempotency-key"], "IDEMPOTENCY_KEY_REQUIRED");
+        const at = now(); let next: ContractRecord;
+        let eventAction: import("../commercial/contract-workflow.ts").ContractEvent["action"];
+        let metadata: Record<string, unknown> = {};
+        switch (action) {
+          case "submit-review": next = submitContractForReview(current, actor.actorId, at); eventAction = "submitted_for_review"; break;
+          case "approve": next = approveContractForSignature(current, actor.actorId, at); eventAction = "approved_for_signature"; break;
+          case "signatures": {
+            if (!options.verifyContractSignature) { send(response, 503, { error: "SIGNATURE_VERIFIER_NOT_CONFIGURED", correlationId }); return; }
+            const signature = input.signature as AgreementSignature;
+            if (!signature || typeof signature !== "object") throw Object.assign(new Error("CONTRACT_SIGNATURE_REQUIRED"), { statusCode: 400 });
+            next = await signContract(current, signature, options.verifyContractSignature, at);
+            eventAction = "signature_recorded"; metadata = { signerId: signature.signerId, provider: signature.provider }; break;
+          }
+          case "activate": next = activateContract(current, actor.actorId, at); eventAction = "activated"; break;
+          default: send(response, 404, { error: "ROUTE_NOT_FOUND", correlationId }); return;
+        }
+        const event = createContractEvent({ record: next, actorId: actor.actorId, correlationId, action: eventAction, fromState: current.state, now: at, metadata });
+        const result = await registry.commit({ tenantId: actor.tenantId, contractId, expectedRevision: current.revision, idempotencyKey, fingerprint: contractCommandFingerprint(action, input), value: next, event });
+        send(response, 200, { value: result.value, replayed: result.replayed, correlationId }); return;
+      }
       if (parts[0] !== "v1" || parts[1] !== "cases") { send(response, 404, { error: "ROUTE_NOT_FOUND", correlationId }); return; }
       if (parts.length === 2 && request.method === "POST") {
         if (!(await options.authorize(actor, "case.create"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
