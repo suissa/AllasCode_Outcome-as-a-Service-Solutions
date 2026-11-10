@@ -134,7 +134,7 @@ export function createGovernedRelease(
   validateMigrationPlan(input.migrations);
   return Object.freeze({
     ...input,
-    migrations: Object.freeze(input.migrations.map(item => Object.freeze({ ...item }))),
+    migrations: Object.freeze([...input.migrations].sort((a, b) => a.order - b.order).map(item => Object.freeze({ ...item }))),
     rollbackPlan: Object.freeze([...input.rollbackPlan]),
     checks: Object.freeze({ ...input.checks }),
     status: "draft",
@@ -250,17 +250,16 @@ export function rollbackGovernedRelease(
 export function validateGovernedFeatureFlag(flag: GovernedFeatureFlag, now = new Date()): void {
   if (!flag || !required(flag.tenantId) || !required(flag.key) || !required(flag.salt) ||
       !required(flag.updatedBy) || !validTimestamp(flag.updatedAt) ||
-      typeof flag.enabled !== "boolean" || !Number.isInteger(flag.percentage) ||
-      flag.percentage < 0 || flag.percentage > 100 ||
+      typeof flag.enabled !== "boolean" ||
       !Array.isArray(flag.allowlist) || !Array.isArray(flag.denylist) ||
       flag.allowlist.some(item => !required(item)) || flag.denylist.some(item => !required(item)) ||
-      new Set(flag.allowlist).size !== flag.allowlist.length || new Set(flag.denylist).size !== flag.denylist.length ||
       (flag.activeFrom !== undefined && !validTimestamp(flag.activeFrom)) ||
       (flag.expiresAt !== undefined && !validTimestamp(flag.expiresAt)) ||
       !(now instanceof Date) || !Number.isFinite(now.getTime())) {
     fail("FEATURE_FLAG_INVALID", "flag");
   }
-  if (flag.percentage < 0 || flag.percentage > 100) fail("FEATURE_FLAG_PERCENTAGE_INVALID", "percentage");
+  if (!Number.isInteger(flag.percentage) || flag.percentage < 0 || flag.percentage > 100) fail("FEATURE_FLAG_PERCENTAGE_INVALID", "percentage");
+  if (new Set(flag.allowlist).size !== flag.allowlist.length || new Set(flag.denylist).size !== flag.denylist.length) fail("FEATURE_FLAG_ACTOR_DUPLICATE", "allowlist/denylist");
   if (Date.parse(flag.updatedAt) > now.getTime()) fail("FEATURE_FLAG_TIMESTAMP_INVALID", "updatedAt");
   if (flag.expiresAt && flag.activeFrom && Date.parse(flag.expiresAt) <= Date.parse(flag.activeFrom)) {
     fail("FEATURE_FLAG_INVALID", "expiresAt");
