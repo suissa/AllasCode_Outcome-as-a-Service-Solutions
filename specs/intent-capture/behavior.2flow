@@ -1,0 +1,10 @@
+capture_intent -(validate_input_object)-> validate_channel
+validate_channel -(supported)-> normalize_text_and_lists
+validate_channel -(unsupported)-> reject_INTENT_CHANNEL_INVALID
+normalize_text_and_lists -(valid_items)-> validate_identity_and_statement
+normalize_text_and_lists -(malformed_list_item)-> reject_stable_error
+validate_identity_and_statement -(complete)-> validate_provenance
+validate_identity_and_statement -(missing_required_field)-> reject_INTENT_INVALID
+validate_provenance -(valid_ordered_timestamps_and_source)-> create_immutable_intent
+validate_provenance -(invalid_or_out_of_order)-> reject_INTENT_PROVENANCE_INVALID
+create_immutable_intent -(success)-> return_draft_intent
