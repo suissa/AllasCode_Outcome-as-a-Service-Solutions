@@ -300,3 +300,23 @@ The product and delivery team must use the following documents when qualifying, 
 - `docs/Security-Trust-and-Architecture.md`: identity, authorization, agent authority, tenant isolation, integrations, cryptographic posture, privacy and operational safeguards.
 
 These documents are business/domain specifications, not proof that every described capability is implemented or deployed. Preserve the distinction between implemented behavior, operating guidance, illustrative commercial examples and roadmap items. Any new pricing rule or contract mechanism that affects calculation or settlement must have a versioned domain contract, validation rules, tests and evidence before production use.
+
+
+## M8 extension — Syntropic Antifragility
+
+The experimental reference package is documented in [Syntropic Antifragility](./syntropic-antifragility/manifest.md) and governed by [ADR-004](./ADR-004-syntropic-antifragility.md). Track these Atomic Behaviors under M8:
+
+- AB-SYN-001 CaptureDisruption.
+- AB-SYN-002 VerifyEvidenceIntegrity.
+- AB-SYN-003 ReviewRootCause.
+- AB-SYN-004 ProposeStructuralChange.
+- AB-SYN-005 VerifyFormalProperties.
+- AB-SYN-006 RunRegressionAndChaosTests.
+- AB-SYN-007 AssessPromotion.
+- AB-SYN-008 PromoteApprovedChange through release-governance handoff only.
+- AB-SYN-009 MeasurePostChangeEffect.
+- AB-SYN-010 RollbackRegression.
+- AB-SYN-011 ConsolidateVerifiedLearning.
+- AB-SYN-012 DetectRecurrence.
+
+A proposal is not antifragile merely because it recovered from an incident. Promotion requires integrity-verified tenant-scoped evidence, reviewed cause, passing tests, applicable formal proof, policy approval, bounded blast radius, verified rollback and risk-based human approval. Learning is published only after measured improvement with no guardrail regression.
