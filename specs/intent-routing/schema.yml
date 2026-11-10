@@ -1,0 +1,17 @@
+version: "1.0"
+behavior: intent-routing
+input:
+  intent: { type: OutcomeIntent, required: true }
+  ambiguities: { type: array, required: false, itemType: text }
+  qualificationRule: { type: QualificationRule, required: false }
+output:
+  route: { type: enum, values: [discovery, clarification, rejected] }
+  status: { type: enum, values: [qualified, needs_clarification, rejected] }
+  reasons: { type: array, itemType: error-code }
+  explanations: { type: array, itemType: text }
+  clarifications: { type: array, itemType: Clarification }
+errors:
+  - INTENT_CLARIFICATION_INPUT_INVALID
+  - INTENT_AMBIGUITY_INVALID
+  - QUALIFICATION_RULE_INVALID
+  - INTENT_NOT_QUALIFIED
