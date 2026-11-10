@@ -102,3 +102,6 @@ export * from "./domain/privacy-governance.ts";
 export * from "./commercial/proposal.ts";
 
 export * from "./application/discovery-proposal.ts";
+
+export * from "./persistence/proposal-store.ts";
+export * from "./persistence/postgres-proposal-store.ts";
