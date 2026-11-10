@@ -1,0 +1,9 @@
+[routing]
+discovery_requires_valid_intent = true
+discovery_requires_complete_intent = true
+discovery_requires_zero_ambiguities = true
+incomplete_route = "clarification"
+invalid_route = "rejected"
+rule_violation_route = "rejected"
+include_stable_reason_codes = true
+include_human_explanations = true
