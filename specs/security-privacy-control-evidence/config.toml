@@ -1,0 +1,15 @@
+version = "1.0"
+require_authorized_control_runner = true
+require_tenant_scope = true
+require_evidence_sha256 = true
+require_evidence_source = true
+require_strict_period_bounds = true
+require_fresh_evidence = true
+personal_data_requires_consent_or_legal_basis = true
+protected_evidence_requires_independent_verification = true
+missing_evidence_status = "not_evidenced"
+failed_evidence_status = "failed"
+bundle_hash = "sha256"
+require_independent_bundle_review = true
+include_raw_evidence_payloads = false
+include_secret_material = false
