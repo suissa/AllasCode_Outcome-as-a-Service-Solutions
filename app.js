@@ -1,8 +1,14 @@
+async function loadMissionSteps() {
+  const runtime = window.OaaSPageReady ? await window.OaaSPageReady : null;
+  const steps = runtime && (runtime.sources["mission-steps"] || (runtime.content && runtime.content["mission-steps"]));
+  if (steps) return steps;
+  const response = await fetch("content/mission-steps.pt-BR.json");
+  if (!response.ok) throw new Error("MISSION_STEPS_UNAVAILABLE");
+  return response.json();
+}
+
 window.OQReady = (async function () {
-  const STEPS = await fetch("content/mission-steps.pt-BR.json").then(response => {
-    if (!response.ok) throw new Error("MISSION_STEPS_UNAVAILABLE");
-    return response.json();
-  });
+  const STEPS = await loadMissionSteps();
   const KEY="oaas.quest.v1",DISCOVERY_KEY="goaltropic.discovery.v1";
   const empty=()=>({version:2,mode:null,events:[],conversations:{guilda:[],classico:[]},mission:null});
   function read(){try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(!raw||typeof raw!=="object")return empty();return {...empty(),...raw,version:2,events:Array.isArray(raw.events)?raw.events:[],conversations:{guilda:[],classico:[],...(raw.conversations||{})}}}catch{return empty()}}
