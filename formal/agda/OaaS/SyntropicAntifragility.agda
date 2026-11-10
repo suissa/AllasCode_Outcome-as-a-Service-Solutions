@@ -24,16 +24,29 @@ promotable (gate true true true true true true false _) = true
 promotable (gate true true true true true true true true) = true
 promotable _ = false
 
-requiredProofBlocks : (g : PromotionGate) →
-  proofRequired g ≡ true →
-  proofPassed g ≡ false →
-  promotable g ≡ false
-requiredProofBlocks (gate _ _ _ _ true false _ _) refl refl = refl
+-- Required proof failure blocks an otherwise fully approved promotion gate.
+requiredProofBlocks : promotable (gate true true true true true false false false) ≡ false
+requiredProofBlocks = refl
 
+-- Missing evidence blocks promotion regardless of the other gate values.
 missingEvidenceBlocks : (g : PromotionGate) →
   evidenceVerified g ≡ false →
   promotable g ≡ false
 missingEvidenceBlocks (gate false _ _ _ _ _ _ _) refl = refl
+
+-- Failed tests, policy denial and unverified rollback each block promotion.
+failedTestsBlock : promotable (gate true false true true false false false false) ≡ false
+failedTestsBlock = refl
+
+policyDenialBlocks : promotable (gate true true false true false false false false) ≡ false
+policyDenialBlocks = refl
+
+unverifiedRollbackBlocks : promotable (gate true true true false false false false false) ≡ false
+unverifiedRollbackBlocks = refl
+
+-- A required human approval cannot be replaced by an agent decision.
+missingHumanApprovalBlocks : promotable (gate true true true true false false true false) ≡ false
+missingHumanApprovalBlocks = refl
 
 record EvolutionResult : Set where
   constructor evolution
@@ -47,3 +60,9 @@ syntropicImprovement _ = false
 
 improvementRequiresNoRegression : syntropicImprovement (evolution true false) ≡ true
 improvementRequiresNoRegression = refl
+
+noImprovementMeansNoAntifragileClaim : syntropicImprovement (evolution false false) ≡ false
+noImprovementMeansNoAntifragileClaim = refl
+
+regressionMeansNoAntifragileClaim : syntropicImprovement (evolution true true) ≡ false
+regressionMeansNoAntifragileClaim = refl
