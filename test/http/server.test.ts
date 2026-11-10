@@ -92,3 +92,62 @@ test("proposal preview enforces authorization and required request fields", asyn
     await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
   }
 });
+
+
+test("proposal submission requires idempotency, authorization and complete readiness before persistence", async () => {
+  let writes = 0;
+  const proposalStore = {
+    create: async () => { writes++; throw new Error("should_not_persist"); },
+    get: async () => undefined,
+    list: async () => [],
+    transition: async () => { throw new Error("not_used"); },
+    events: async () => [],
+  };
+  const server = createOutcomeHttpServer({
+    store: {
+      getCase: async () => undefined, createCase: async () => {},
+      commit: async command => ({ value: command.value, replayed: false }), auditTrail: async () => [],
+    },
+    proposalStore,
+    authenticate: async () => ({ tenantId: "tenant_secure", actorId: "actor_submitter", roles: ["owner"] }),
+    authorize: async (_actor, action) => action === "proposal.create",
+  });
+  await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
+  try {
+    const address = server.address(); assert.ok(address && typeof address === "object");
+    const base = "http://127.0.0.1:" + address.port;
+    const missingKey = await fetch(base + "/v1/proposals", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ snapshot: { answers: {} }, options: { tenantId: "tenant_attacker" } }),
+    });
+    assert.equal(missingKey.status, 400);
+    const incomplete = await fetch(base + "/v1/proposals", {
+      method: "POST", headers: { "content-type": "application/json", "idempotency-key": "discovery_submit_001" },
+      body: JSON.stringify({ snapshot: { source: "guilda", missionId: "mission_001", answers: {} }, options: { tenantId: "tenant_attacker", proposalId: "attacker_id", version: 99 } }),
+    });
+    assert.equal(incomplete.status, 422);
+    const payload = await incomplete.json() as { error: string; value: { tenantId: string; readiness: { status: string } } };
+    assert.equal(payload.error, "PROPOSAL_NOT_READY_FOR_REVIEW");
+    assert.equal(payload.value.tenantId, "tenant_secure");
+    assert.equal(payload.value.readiness.status, "incomplete");
+    assert.equal(writes, 0);
+  } finally {
+    await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+  }
+});
+
+test("proposal routes are unavailable unless a durable store is configured", async () => {
+  const server = createOutcomeHttpServer({
+    store: { getCase: async () => undefined, createCase: async () => {}, commit: async command => ({ value: command.value, replayed: false }), auditTrail: async () => [] },
+    authenticate: async () => ({ tenantId: "tenant_secure", actorId: "actor_submitter", roles: ["owner"] }),
+    authorize: async () => true,
+  });
+  await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
+  try {
+    const address = server.address(); assert.ok(address && typeof address === "object");
+    const response = await fetch("http://127.0.0.1:" + address.port + "/v1/proposals");
+    assert.equal(response.status, 503);
+  } finally {
+    await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+  }
+});
