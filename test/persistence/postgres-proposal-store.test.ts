@@ -70,7 +70,7 @@ test("proposal transition checks tenant, current version, and review boundary", 
   assert.equal(approved.proposal.version, 2);
   await assert.rejects(() => store.transition({
     tenantId: "tenant_demo_001", proposalId: "proposal_demo_001", actorId: "reviewer_001", expectedVersion: 2,
-    status: "rejected", reason: "Revisão", event: event("rejected", 3),
+    status: "rejected", reason: "Revisão", event: { ...event("rejected", 3), actorId: "reviewer_001" },
   }), /PROPOSAL_VERSION_CONFLICT/);
 });
 
