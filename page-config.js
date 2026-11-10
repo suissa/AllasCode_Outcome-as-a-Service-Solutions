@@ -20,6 +20,15 @@
     const page = await readJson("pages/pt-BR/" + pageId + ".json");
     const layout = await readJson("layouts/" + page.layout + ".json");
     if (page.id !== pageId || layout.id !== page.layout) throw new Error("PAGE_LAYOUT_ID_MISMATCH");
+    const stylesheet = document.createElement("link");
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = new URL(root + layout.stylesheet, document.baseURI).href;
+    stylesheet.dataset.oaasLayoutStylesheet = layout.id;
+    await new Promise((resolve, reject) => {
+      stylesheet.onload = resolve;
+      stylesheet.onerror = () => reject(new Error("LAYOUT_STYLESHEET_FETCH_FAILED:" + layout.stylesheet));
+      document.head.append(stylesheet);
+    });
     const templateResponse = await fetch(new URL(root + layout.template, document.baseURI));
     if (!templateResponse.ok) throw new Error("LAYOUT_TEMPLATE_FETCH_FAILED:" + layout.template);
     const rootElement = document.getElementById("oaas-page-root");
