@@ -8,7 +8,7 @@ import {
   recordPrivacyConsent,
   validateDataProcessingBasis,
   withdrawPrivacyConsent,
-  type ConsentRecord,
+  type GovernedPrivacyConsentRecord,
   type ConsentStore,
   type DataProcessingRecord,
 } from "../../src/domain/privacy-governance.ts";
@@ -18,16 +18,16 @@ const tenantId = parseEntityId("tenant", "tenant_alpha_001");
 const evidenceHash = createHash("sha256").update("explicit consent screen capture", "utf8").digest("hex");
 
 class MemoryConsentStore implements ConsentStore {
-  records = new Map<string, ConsentRecord>();
-  idempotency = new Map<string, ConsentRecord>();
+  records = new Map<string, GovernedPrivacyConsentRecord>();
+  idempotency = new Map<string, GovernedPrivacyConsentRecord>();
   async getConsent(tenant: string, id: string) { return this.records.get(tenant + ":" + id); }
   async findConsentByIdempotency(tenant: string, key: string) { return this.idempotency.get(tenant + ":" + key); }
-  async createConsent(record: ConsentRecord, key: string) {
+  async createConsent(record: GovernedPrivacyConsentRecord, key: string) {
     this.records.set(record.tenantId + ":" + record.id, record);
     this.idempotency.set(record.tenantId + ":" + key, record);
     return true;
   }
-  async commitConsent(updated: ConsentRecord, expectedRevision: number) {
+  async commitConsent(updated: GovernedPrivacyConsentRecord, expectedRevision: number) {
     const key = updated.tenantId + ":" + updated.id;
     const current = this.records.get(key);
     if (!current || current.revision !== expectedRevision) return false;
@@ -145,7 +145,7 @@ test("assesses retention due dates, policy limits and legal holds deterministica
 
 test("rejects cross-tenant, malformed and inconsistent retention metadata", () => {
   assert.throws(() => assessRetention({
-    id: "record_1", tenantId: "tenant_other_001", category: "contact", classification: "personal",
+    id: "record_1", tenantId: parseEntityId("tenant", "tenant_other_001"), category: "contact", classification: "personal",
     createdAt: "2026-01-01T00:00:00.000Z",
   }, { tenantId, retentionDays: 30, legalHold: false }, now), /PRIVACY_TENANT_MISMATCH/);
   assert.throws(() => assessRetention({
