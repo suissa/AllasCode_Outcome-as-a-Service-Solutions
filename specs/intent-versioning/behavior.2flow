@@ -1,0 +1,10 @@
+append_intent_version -(validate_scope_and_snapshot)-> validate_change_metadata
+validate_change_metadata -(valid)-> acquire_tenant_intent_lock
+validate_change_metadata -(invalid)-> reject_INTENT_VERSION_INVALID
+acquire_tenant_intent_lock -(read_latest_version)-> check_contiguous_sequence
+check_contiguous_sequence -(next_version)-> append_immutable_row
+check_contiguous_sequence -(gap_or_duplicate)-> reject_INTENT_VERSION_CONFLICT
+append_immutable_row -(commit)-> return_success
+read_intent_history -(tenant_and_intent_filter)-> decode_and_validate_rows
+ decode_and_validate_rows -(valid)-> return_frozen_ordered_history
+decode_and_validate_rows -(corrupt)-> reject_INTENT_VERSION_CORRUPT

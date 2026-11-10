@@ -1,0 +1,18 @@
+version: "1.0"
+behavior: intent-versioning
+input:
+  intentId: { type: identifier, required: true }
+  version: { type: integer, required: true, minimum: 1 }
+  snapshot: { type: OutcomeIntent, required: true }
+  changedBy: { type: identifier, required: true }
+  changedAt: { type: timestamp, required: true, minimum: snapshot.createdAt }
+  changeReason: { type: text, required: true, minLength: 1 }
+output:
+  type: immutable-IntentVersion
+  orderedHistory: true
+errors:
+  - INTENT_VERSION_SCOPE_INVALID
+  - INTENT_VERSION_INVALID
+  - INTENT_VERSION_CONFLICT
+  - INTENT_VERSION_CORRUPT
+  - INTENT_VERSION_APPEND_ONLY
