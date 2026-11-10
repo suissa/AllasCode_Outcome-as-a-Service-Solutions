@@ -1,0 +1,10 @@
+[intent_versions]
+sequence = "contiguous_per_tenant_intent"
+append_only = true
+validate_snapshot = true
+require_change_actor = true
+require_change_reason = true
+require_change_timestamp = true
+changed_at_must_follow_creation = true
+lock_scope = "tenant_id:intent_id"
+maintenance_purge_setting = "app.allow_intent_version_purge"
