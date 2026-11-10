@@ -20,7 +20,7 @@ function buildProposal({graph,discovery,answers,createdAt=new Date().toISOString
   const question=questionById.get(questionId),mapping=mappingById.get(questionId);
   if(!question||!mapping)continue;
   const value=normalizeAnswer(entry);
-  const isUnknown=value===undefined||value===null||value==="";
+  const isUnknown=value===undefined||value===null||value===""||value==="unknown"||(Array.isArray(value)&&value.length===0);
   if(isUnknown){
    unknowns.push({questionId,label:question.label,reason:"Não informado ou marcado como desconhecido"});
    const unknownMap=mapping.values.$unknown;
@@ -29,6 +29,7 @@ function buildProposal({graph,discovery,answers,createdAt=new Date().toISOString
   }
   const values=Array.isArray(value)?value:[value];
   for(const item of values){
+   if(item==="unknown"){unknowns.push({questionId,label:question.label,reason:"Marcado explicitamente como desconhecido"});continue;}
    const key=question.type==="number"?"$numeric":question.type==="text"?"$text":String(item);
    const association=mapping.values[key]||mapping.values[String(item)];
    if(!association)continue;
