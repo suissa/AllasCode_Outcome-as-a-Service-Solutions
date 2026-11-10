@@ -83,7 +83,7 @@ export interface IntentCaptureInput {
 function normalizeList(values: readonly string[] | undefined, errorCode: string): readonly string[] {
   if (values === undefined) return Object.freeze([]);
   if (!Array.isArray(values) || values.some((value) => !nonEmpty(value))) throw new Error(errorCode);
-  return Object.freeze(values.map((value) => value.trim()));
+  return Object.freeze([...new Set(values.map((value) => value.trim()))]);
 }
 
 export function normalizeIntentEnvelope(input: IntentCaptureInput): IntentCaptureInput {
@@ -119,14 +119,14 @@ export function captureIntent(input: IntentCaptureInput): OutcomeIntent {
     }),
     createdAt: normalized.createdAt,
   };
-  const errors = validateIntent(intent);
-  if (errors.length) throw new Error("INTENT_INVALID:" + errors.join(","));
-
   const capturedAt = parsedTimestamp(intent.provenance.capturedAt);
   const createdAt = parsedTimestamp(intent.createdAt);
   if (!intent.provenance.sourceId || capturedAt === undefined || createdAt === undefined || capturedAt > createdAt) {
     throw new Error("INTENT_PROVENANCE_INVALID");
   }
+
+  const errors = validateIntent(intent);
+  if (errors.length) throw new Error("INTENT_INVALID:" + errors.join(","));
 
   return Object.freeze({
     ...intent,
