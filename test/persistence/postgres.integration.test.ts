@@ -138,7 +138,7 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     const contractRegistry = new PostgresContractRegistryStore(db);
     const contractId = "contract_it_" + suffix;
     const contractTimestamp = new Date("2026-11-10T12:00:00.000Z").toISOString();
-    const contractRecord = { tenantId, id:contractId, proposalId:"proposal_it_"+suffix, proposalVersion:1, agreement:{} as never, document:{fingerprint:"a".repeat(64)} as never, requiredSigners:["signer_it_"+suffix], state:"draft" as const, revision:1, createdAt:contractTimestamp, updatedAt:contractTimestamp } as ContractRecord;
+    const contractRecord = { tenantId, id:contractId, proposalId:"proposal_it_"+suffix, proposalVersion:1, agreement:{} as never, document:{fingerprint:"a".repeat(64)} as never, requiredSigners:["signer_it_"+suffix], proposalApproval:{approvedBy:"actor_it_001",approvedAt:contractTimestamp}, state:"draft" as const, revision:1, createdAt:contractTimestamp, updatedAt:contractTimestamp } as ContractRecord;
     const contractCreatedEvent:ContractEvent = { tenantId, contractId, eventId:"contract_created_"+suffix, revision:1, actorId:"actor_it_001", correlationId:"corr_contract_"+suffix, action:"created", fromState:null, toState:"draft", occurredAt:contractTimestamp, metadata:{documentFingerprint:"a".repeat(64)} };
     const contractFingerprint = "a".repeat(64);
     assert.equal((await contractRegistry.createDraft(contractRecord,contractCreatedEvent,"contract_create_"+suffix,contractFingerprint)).replayed,false);
