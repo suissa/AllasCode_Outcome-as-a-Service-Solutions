@@ -9869,11 +9869,2381 @@
     }
   ],
   "unknownPolicy": {
-    "values": [
+    "markers": [
       "unknown",
-      "na",
-      "none"
+      "$unknown",
+      null
     ],
-    "rule": "Preserve as context or unknown; never treat missing answers as evidence of a problem."
-  }
+    "rule": "Missing or explicitly unknown answers remain gaps. Explicit negative answers such as 'no' or 'none' are facts about the declared context, not evidence of a problem by themselves."
+  },
+  "nodes": [
+    {
+      "id": "answer:company_name:$text",
+      "type": "answer",
+      "questionId": "company_name",
+      "value": "$text"
+    },
+    {
+      "id": "answer:company_name:$unknown",
+      "type": "answer",
+      "questionId": "company_name",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:segment:retail",
+      "type": "answer",
+      "questionId": "segment",
+      "value": "retail"
+    },
+    {
+      "id": "answer:segment:services",
+      "type": "answer",
+      "questionId": "segment",
+      "value": "services"
+    },
+    {
+      "id": "answer:segment:industry",
+      "type": "answer",
+      "questionId": "segment",
+      "value": "industry"
+    },
+    {
+      "id": "answer:segment:technology",
+      "type": "answer",
+      "questionId": "segment",
+      "value": "technology"
+    },
+    {
+      "id": "answer:segment:food",
+      "type": "answer",
+      "questionId": "segment",
+      "value": "food"
+    },
+    {
+      "id": "answer:segment:health",
+      "type": "answer",
+      "questionId": "segment",
+      "value": "health"
+    },
+    {
+      "id": "answer:segment:other",
+      "type": "answer",
+      "questionId": "segment",
+      "value": "other"
+    },
+    {
+      "id": "answer:years_active:lt1",
+      "type": "answer",
+      "questionId": "years_active",
+      "value": "lt1"
+    },
+    {
+      "id": "answer:years_active:1_3",
+      "type": "answer",
+      "questionId": "years_active",
+      "value": "1_3"
+    },
+    {
+      "id": "answer:years_active:3_5",
+      "type": "answer",
+      "questionId": "years_active",
+      "value": "3_5"
+    },
+    {
+      "id": "answer:years_active:gt5",
+      "type": "answer",
+      "questionId": "years_active",
+      "value": "gt5"
+    },
+    {
+      "id": "answer:team_size:solo",
+      "type": "answer",
+      "questionId": "team_size",
+      "value": "solo"
+    },
+    {
+      "id": "answer:team_size:2_5",
+      "type": "answer",
+      "questionId": "team_size",
+      "value": "2_5"
+    },
+    {
+      "id": "answer:team_size:6_15",
+      "type": "answer",
+      "questionId": "team_size",
+      "value": "6_15"
+    },
+    {
+      "id": "answer:team_size:16_50",
+      "type": "answer",
+      "questionId": "team_size",
+      "value": "16_50"
+    },
+    {
+      "id": "answer:team_size:gt50",
+      "type": "answer",
+      "questionId": "team_size",
+      "value": "gt50"
+    },
+    {
+      "id": "answer:main_goal:sales",
+      "type": "answer",
+      "questionId": "main_goal",
+      "value": "sales"
+    },
+    {
+      "id": "answer:main_goal:profit",
+      "type": "answer",
+      "questionId": "main_goal",
+      "value": "profit"
+    },
+    {
+      "id": "answer:main_goal:cost",
+      "type": "answer",
+      "questionId": "main_goal",
+      "value": "cost"
+    },
+    {
+      "id": "answer:main_goal:productivity",
+      "type": "answer",
+      "questionId": "main_goal",
+      "value": "productivity"
+    },
+    {
+      "id": "answer:main_goal:service",
+      "type": "answer",
+      "questionId": "main_goal",
+      "value": "service"
+    },
+    {
+      "id": "answer:main_goal:automation",
+      "type": "answer",
+      "questionId": "main_goal",
+      "value": "automation"
+    },
+    {
+      "id": "answer:main_goal:expansion",
+      "type": "answer",
+      "questionId": "main_goal",
+      "value": "expansion"
+    },
+    {
+      "id": "answer:main_goal:retention",
+      "type": "answer",
+      "questionId": "main_goal",
+      "value": "retention"
+    },
+    {
+      "id": "answer:main_goal:other",
+      "type": "answer",
+      "questionId": "main_goal",
+      "value": "other"
+    },
+    {
+      "id": "answer:goal_target:$text",
+      "type": "answer",
+      "questionId": "goal_target",
+      "value": "$text"
+    },
+    {
+      "id": "answer:goal_target:$unknown",
+      "type": "answer",
+      "questionId": "goal_target",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:goal_deadline:30d",
+      "type": "answer",
+      "questionId": "goal_deadline",
+      "value": "30d"
+    },
+    {
+      "id": "answer:goal_deadline:60d",
+      "type": "answer",
+      "questionId": "goal_deadline",
+      "value": "60d"
+    },
+    {
+      "id": "answer:goal_deadline:90d",
+      "type": "answer",
+      "questionId": "goal_deadline",
+      "value": "90d"
+    },
+    {
+      "id": "answer:goal_deadline:6m",
+      "type": "answer",
+      "questionId": "goal_deadline",
+      "value": "6m"
+    },
+    {
+      "id": "answer:goal_deadline:flexible",
+      "type": "answer",
+      "questionId": "goal_deadline",
+      "value": "flexible"
+    },
+    {
+      "id": "answer:success_definition:$text",
+      "type": "answer",
+      "questionId": "success_definition",
+      "value": "$text"
+    },
+    {
+      "id": "answer:success_definition:$unknown",
+      "type": "answer",
+      "questionId": "success_definition",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:business_model:products",
+      "type": "answer",
+      "questionId": "business_model",
+      "value": "products"
+    },
+    {
+      "id": "answer:business_model:services",
+      "type": "answer",
+      "questionId": "business_model",
+      "value": "services"
+    },
+    {
+      "id": "answer:business_model:both",
+      "type": "answer",
+      "questionId": "business_model",
+      "value": "both"
+    },
+    {
+      "id": "answer:sales_mode:physical",
+      "type": "answer",
+      "questionId": "sales_mode",
+      "value": "physical"
+    },
+    {
+      "id": "answer:sales_mode:digital",
+      "type": "answer",
+      "questionId": "sales_mode",
+      "value": "digital"
+    },
+    {
+      "id": "answer:sales_mode:both",
+      "type": "answer",
+      "questionId": "sales_mode",
+      "value": "both"
+    },
+    {
+      "id": "answer:channels:store",
+      "type": "answer",
+      "questionId": "channels",
+      "value": "store"
+    },
+    {
+      "id": "answer:channels:whatsapp",
+      "type": "answer",
+      "questionId": "channels",
+      "value": "whatsapp"
+    },
+    {
+      "id": "answer:channels:instagram",
+      "type": "answer",
+      "questionId": "channels",
+      "value": "instagram"
+    },
+    {
+      "id": "answer:channels:website",
+      "type": "answer",
+      "questionId": "channels",
+      "value": "website"
+    },
+    {
+      "id": "answer:channels:marketplace",
+      "type": "answer",
+      "questionId": "channels",
+      "value": "marketplace"
+    },
+    {
+      "id": "answer:channels:phone",
+      "type": "answer",
+      "questionId": "channels",
+      "value": "phone"
+    },
+    {
+      "id": "answer:channels:other",
+      "type": "answer",
+      "questionId": "channels",
+      "value": "other"
+    },
+    {
+      "id": "answer:sales_process:$text",
+      "type": "answer",
+      "questionId": "sales_process",
+      "value": "$text"
+    },
+    {
+      "id": "answer:sales_process:$unknown",
+      "type": "answer",
+      "questionId": "sales_process",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:systems:own",
+      "type": "answer",
+      "questionId": "systems",
+      "value": "own"
+    },
+    {
+      "id": "answer:systems:erp",
+      "type": "answer",
+      "questionId": "systems",
+      "value": "erp"
+    },
+    {
+      "id": "answer:systems:crm",
+      "type": "answer",
+      "questionId": "systems",
+      "value": "crm"
+    },
+    {
+      "id": "answer:systems:sheets",
+      "type": "answer",
+      "questionId": "systems",
+      "value": "sheets"
+    },
+    {
+      "id": "answer:systems:independent",
+      "type": "answer",
+      "questionId": "systems",
+      "value": "independent"
+    },
+    {
+      "id": "answer:systems:manual",
+      "type": "answer",
+      "questionId": "systems",
+      "value": "manual"
+    },
+    {
+      "id": "answer:integration:yes",
+      "type": "answer",
+      "questionId": "integration",
+      "value": "yes"
+    },
+    {
+      "id": "answer:integration:partial",
+      "type": "answer",
+      "questionId": "integration",
+      "value": "partial"
+    },
+    {
+      "id": "answer:integration:no",
+      "type": "answer",
+      "questionId": "integration",
+      "value": "no"
+    },
+    {
+      "id": "answer:integration:unknown",
+      "type": "answer",
+      "questionId": "integration",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:records:sales",
+      "type": "answer",
+      "questionId": "records",
+      "value": "sales"
+    },
+    {
+      "id": "answer:records:customers",
+      "type": "answer",
+      "questionId": "records",
+      "value": "customers"
+    },
+    {
+      "id": "answer:records:products",
+      "type": "answer",
+      "questionId": "records",
+      "value": "products"
+    },
+    {
+      "id": "answer:records:service",
+      "type": "answer",
+      "questionId": "records",
+      "value": "service"
+    },
+    {
+      "id": "answer:records:finance",
+      "type": "answer",
+      "questionId": "records",
+      "value": "finance"
+    },
+    {
+      "id": "answer:records:inventory",
+      "type": "answer",
+      "questionId": "records",
+      "value": "inventory"
+    },
+    {
+      "id": "answer:records:none",
+      "type": "answer",
+      "questionId": "records",
+      "value": "none"
+    },
+    {
+      "id": "answer:data_access:api",
+      "type": "answer",
+      "questionId": "data_access",
+      "value": "api"
+    },
+    {
+      "id": "answer:data_access:export",
+      "type": "answer",
+      "questionId": "data_access",
+      "value": "export"
+    },
+    {
+      "id": "answer:data_access:reports",
+      "type": "answer",
+      "questionId": "data_access",
+      "value": "reports"
+    },
+    {
+      "id": "answer:data_access:manual",
+      "type": "answer",
+      "questionId": "data_access",
+      "value": "manual"
+    },
+    {
+      "id": "answer:data_access:none",
+      "type": "answer",
+      "questionId": "data_access",
+      "value": "none"
+    },
+    {
+      "id": "answer:monthly_revenue:$numeric",
+      "type": "answer",
+      "questionId": "monthly_revenue",
+      "value": "$numeric"
+    },
+    {
+      "id": "answer:monthly_revenue:$unknown",
+      "type": "answer",
+      "questionId": "monthly_revenue",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:monthly_sales:$numeric",
+      "type": "answer",
+      "questionId": "monthly_sales",
+      "value": "$numeric"
+    },
+    {
+      "id": "answer:monthly_sales:$unknown",
+      "type": "answer",
+      "questionId": "monthly_sales",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:average_ticket:$numeric",
+      "type": "answer",
+      "questionId": "average_ticket",
+      "value": "$numeric"
+    },
+    {
+      "id": "answer:average_ticket:$unknown",
+      "type": "answer",
+      "questionId": "average_ticket",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:margin_value:$numeric",
+      "type": "answer",
+      "questionId": "margin_value",
+      "value": "$numeric"
+    },
+    {
+      "id": "answer:margin_value:$unknown",
+      "type": "answer",
+      "questionId": "margin_value",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:margin_type:gross",
+      "type": "answer",
+      "questionId": "margin_type",
+      "value": "gross"
+    },
+    {
+      "id": "answer:margin_type:contribution",
+      "type": "answer",
+      "questionId": "margin_type",
+      "value": "contribution"
+    },
+    {
+      "id": "answer:margin_type:net",
+      "type": "answer",
+      "questionId": "margin_type",
+      "value": "net"
+    },
+    {
+      "id": "answer:margin_type:unknown",
+      "type": "answer",
+      "questionId": "margin_type",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:metrics_source:system",
+      "type": "answer",
+      "questionId": "metrics_source",
+      "value": "system"
+    },
+    {
+      "id": "answer:metrics_source:accounting",
+      "type": "answer",
+      "questionId": "metrics_source",
+      "value": "accounting"
+    },
+    {
+      "id": "answer:metrics_source:estimate",
+      "type": "answer",
+      "questionId": "metrics_source",
+      "value": "estimate"
+    },
+    {
+      "id": "answer:metrics_source:unknown",
+      "type": "answer",
+      "questionId": "metrics_source",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:acquisition_channels:referral",
+      "type": "answer",
+      "questionId": "acquisition_channels",
+      "value": "referral"
+    },
+    {
+      "id": "answer:acquisition_channels:walkin",
+      "type": "answer",
+      "questionId": "acquisition_channels",
+      "value": "walkin"
+    },
+    {
+      "id": "answer:acquisition_channels:instagram",
+      "type": "answer",
+      "questionId": "acquisition_channels",
+      "value": "instagram"
+    },
+    {
+      "id": "answer:acquisition_channels:google",
+      "type": "answer",
+      "questionId": "acquisition_channels",
+      "value": "google"
+    },
+    {
+      "id": "answer:acquisition_channels:ads",
+      "type": "answer",
+      "questionId": "acquisition_channels",
+      "value": "ads"
+    },
+    {
+      "id": "answer:acquisition_channels:whatsapp",
+      "type": "answer",
+      "questionId": "acquisition_channels",
+      "value": "whatsapp"
+    },
+    {
+      "id": "answer:acquisition_channels:marketplace",
+      "type": "answer",
+      "questionId": "acquisition_channels",
+      "value": "marketplace"
+    },
+    {
+      "id": "answer:acquisition_channels:returning",
+      "type": "answer",
+      "questionId": "acquisition_channels",
+      "value": "returning"
+    },
+    {
+      "id": "answer:acquisition_channels:other",
+      "type": "answer",
+      "questionId": "acquisition_channels",
+      "value": "other"
+    },
+    {
+      "id": "answer:new_customer_tracking:yes",
+      "type": "answer",
+      "questionId": "new_customer_tracking",
+      "value": "yes"
+    },
+    {
+      "id": "answer:new_customer_tracking:partial",
+      "type": "answer",
+      "questionId": "new_customer_tracking",
+      "value": "partial"
+    },
+    {
+      "id": "answer:new_customer_tracking:no",
+      "type": "answer",
+      "questionId": "new_customer_tracking",
+      "value": "no"
+    },
+    {
+      "id": "answer:channel_attribution:yes",
+      "type": "answer",
+      "questionId": "channel_attribution",
+      "value": "yes"
+    },
+    {
+      "id": "answer:channel_attribution:partial",
+      "type": "answer",
+      "questionId": "channel_attribution",
+      "value": "partial"
+    },
+    {
+      "id": "answer:channel_attribution:no",
+      "type": "answer",
+      "questionId": "channel_attribution",
+      "value": "no"
+    },
+    {
+      "id": "answer:lead_registration:complete",
+      "type": "answer",
+      "questionId": "lead_registration",
+      "value": "complete"
+    },
+    {
+      "id": "answer:lead_registration:partial",
+      "type": "answer",
+      "questionId": "lead_registration",
+      "value": "partial"
+    },
+    {
+      "id": "answer:lead_registration:none",
+      "type": "answer",
+      "questionId": "lead_registration",
+      "value": "none"
+    },
+    {
+      "id": "answer:customer_followup:automatic",
+      "type": "answer",
+      "questionId": "customer_followup",
+      "value": "automatic"
+    },
+    {
+      "id": "answer:customer_followup:manual",
+      "type": "answer",
+      "questionId": "customer_followup",
+      "value": "manual"
+    },
+    {
+      "id": "answer:customer_followup:partial",
+      "type": "answer",
+      "questionId": "customer_followup",
+      "value": "partial"
+    },
+    {
+      "id": "answer:customer_followup:none",
+      "type": "answer",
+      "questionId": "customer_followup",
+      "value": "none"
+    },
+    {
+      "id": "answer:abandonment_tracking:yes",
+      "type": "answer",
+      "questionId": "abandonment_tracking",
+      "value": "yes"
+    },
+    {
+      "id": "answer:abandonment_tracking:partial",
+      "type": "answer",
+      "questionId": "abandonment_tracking",
+      "value": "partial"
+    },
+    {
+      "id": "answer:abandonment_tracking:no",
+      "type": "answer",
+      "questionId": "abandonment_tracking",
+      "value": "no"
+    },
+    {
+      "id": "answer:repeat_purchase:high",
+      "type": "answer",
+      "questionId": "repeat_purchase",
+      "value": "high"
+    },
+    {
+      "id": "answer:repeat_purchase:some",
+      "type": "answer",
+      "questionId": "repeat_purchase",
+      "value": "some"
+    },
+    {
+      "id": "answer:repeat_purchase:low",
+      "type": "answer",
+      "questionId": "repeat_purchase",
+      "value": "low"
+    },
+    {
+      "id": "answer:repeat_purchase:unknown",
+      "type": "answer",
+      "questionId": "repeat_purchase",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:purchase_interval:fixed",
+      "type": "answer",
+      "questionId": "purchase_interval",
+      "value": "fixed"
+    },
+    {
+      "id": "answer:purchase_interval:variable",
+      "type": "answer",
+      "questionId": "purchase_interval",
+      "value": "variable"
+    },
+    {
+      "id": "answer:purchase_interval:unknown",
+      "type": "answer",
+      "questionId": "purchase_interval",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:loyalty_program:structured",
+      "type": "answer",
+      "questionId": "loyalty_program",
+      "value": "structured"
+    },
+    {
+      "id": "answer:loyalty_program:informal",
+      "type": "answer",
+      "questionId": "loyalty_program",
+      "value": "informal"
+    },
+    {
+      "id": "answer:loyalty_program:no",
+      "type": "answer",
+      "questionId": "loyalty_program",
+      "value": "no"
+    },
+    {
+      "id": "answer:repeat_tracking:yes",
+      "type": "answer",
+      "questionId": "repeat_tracking",
+      "value": "yes"
+    },
+    {
+      "id": "answer:repeat_tracking:partial",
+      "type": "answer",
+      "questionId": "repeat_tracking",
+      "value": "partial"
+    },
+    {
+      "id": "answer:repeat_tracking:no",
+      "type": "answer",
+      "questionId": "repeat_tracking",
+      "value": "no"
+    },
+    {
+      "id": "answer:growth_capacity:adequate",
+      "type": "answer",
+      "questionId": "growth_capacity",
+      "value": "adequate"
+    },
+    {
+      "id": "answer:growth_capacity:limited",
+      "type": "answer",
+      "questionId": "growth_capacity",
+      "value": "limited"
+    },
+    {
+      "id": "answer:growth_capacity:unknown",
+      "type": "answer",
+      "questionId": "growth_capacity",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:operational_bottleneck:service",
+      "type": "answer",
+      "questionId": "operational_bottleneck",
+      "value": "service"
+    },
+    {
+      "id": "answer:operational_bottleneck:overload",
+      "type": "answer",
+      "questionId": "operational_bottleneck",
+      "value": "overload"
+    },
+    {
+      "id": "answer:operational_bottleneck:process",
+      "type": "answer",
+      "questionId": "operational_bottleneck",
+      "value": "process"
+    },
+    {
+      "id": "answer:operational_bottleneck:information",
+      "type": "answer",
+      "questionId": "operational_bottleneck",
+      "value": "information"
+    },
+    {
+      "id": "answer:operational_bottleneck:people",
+      "type": "answer",
+      "questionId": "operational_bottleneck",
+      "value": "people"
+    },
+    {
+      "id": "answer:operational_bottleneck:unknown",
+      "type": "answer",
+      "questionId": "operational_bottleneck",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:operational_bottleneck:other",
+      "type": "answer",
+      "questionId": "operational_bottleneck",
+      "value": "other"
+    },
+    {
+      "id": "answer:repetitive_tasks:many",
+      "type": "answer",
+      "questionId": "repetitive_tasks",
+      "value": "many"
+    },
+    {
+      "id": "answer:repetitive_tasks:some",
+      "type": "answer",
+      "questionId": "repetitive_tasks",
+      "value": "some"
+    },
+    {
+      "id": "answer:repetitive_tasks:few",
+      "type": "answer",
+      "questionId": "repetitive_tasks",
+      "value": "few"
+    },
+    {
+      "id": "answer:repetitive_tasks:unknown",
+      "type": "answer",
+      "questionId": "repetitive_tasks",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:main_offers:$text",
+      "type": "answer",
+      "questionId": "main_offers",
+      "value": "$text"
+    },
+    {
+      "id": "answer:main_offers:$unknown",
+      "type": "answer",
+      "questionId": "main_offers",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:margin_knowledge:yes",
+      "type": "answer",
+      "questionId": "margin_knowledge",
+      "value": "yes"
+    },
+    {
+      "id": "answer:margin_knowledge:estimate",
+      "type": "answer",
+      "questionId": "margin_knowledge",
+      "value": "estimate"
+    },
+    {
+      "id": "answer:margin_knowledge:no",
+      "type": "answer",
+      "questionId": "margin_knowledge",
+      "value": "no"
+    },
+    {
+      "id": "answer:profitability_mix:yes",
+      "type": "answer",
+      "questionId": "profitability_mix",
+      "value": "yes"
+    },
+    {
+      "id": "answer:profitability_mix:partial",
+      "type": "answer",
+      "questionId": "profitability_mix",
+      "value": "partial"
+    },
+    {
+      "id": "answer:profitability_mix:no",
+      "type": "answer",
+      "questionId": "profitability_mix",
+      "value": "no"
+    },
+    {
+      "id": "answer:has_inventory:yes",
+      "type": "answer",
+      "questionId": "has_inventory",
+      "value": "yes"
+    },
+    {
+      "id": "answer:has_inventory:no",
+      "type": "answer",
+      "questionId": "has_inventory",
+      "value": "no"
+    },
+    {
+      "id": "answer:has_inventory:na",
+      "type": "answer",
+      "questionId": "has_inventory",
+      "value": "na"
+    },
+    {
+      "id": "answer:stock_control:system",
+      "type": "answer",
+      "questionId": "stock_control",
+      "value": "system"
+    },
+    {
+      "id": "answer:stock_control:spreadsheet",
+      "type": "answer",
+      "questionId": "stock_control",
+      "value": "spreadsheet"
+    },
+    {
+      "id": "answer:stock_control:manual",
+      "type": "answer",
+      "questionId": "stock_control",
+      "value": "manual"
+    },
+    {
+      "id": "answer:stock_control:multiple",
+      "type": "answer",
+      "questionId": "stock_control",
+      "value": "multiple"
+    },
+    {
+      "id": "answer:stock_control:unknown",
+      "type": "answer",
+      "questionId": "stock_control",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:stockout_frequency:often",
+      "type": "answer",
+      "questionId": "stockout_frequency",
+      "value": "often"
+    },
+    {
+      "id": "answer:stockout_frequency:sometimes",
+      "type": "answer",
+      "questionId": "stockout_frequency",
+      "value": "sometimes"
+    },
+    {
+      "id": "answer:stockout_frequency:rarely",
+      "type": "answer",
+      "questionId": "stockout_frequency",
+      "value": "rarely"
+    },
+    {
+      "id": "answer:stockout_frequency:unknown",
+      "type": "answer",
+      "questionId": "stockout_frequency",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:stockout_frequency:na",
+      "type": "answer",
+      "questionId": "stockout_frequency",
+      "value": "na"
+    },
+    {
+      "id": "answer:product_demand:yes",
+      "type": "answer",
+      "questionId": "product_demand",
+      "value": "yes"
+    },
+    {
+      "id": "answer:product_demand:partial",
+      "type": "answer",
+      "questionId": "product_demand",
+      "value": "partial"
+    },
+    {
+      "id": "answer:product_demand:no",
+      "type": "answer",
+      "questionId": "product_demand",
+      "value": "no"
+    },
+    {
+      "id": "answer:product_demand:na",
+      "type": "answer",
+      "questionId": "product_demand",
+      "value": "na"
+    },
+    {
+      "id": "answer:purchase_decision:system",
+      "type": "answer",
+      "questionId": "purchase_decision",
+      "value": "system"
+    },
+    {
+      "id": "answer:purchase_decision:sales",
+      "type": "answer",
+      "questionId": "purchase_decision",
+      "value": "sales"
+    },
+    {
+      "id": "answer:purchase_decision:experience",
+      "type": "answer",
+      "questionId": "purchase_decision",
+      "value": "experience"
+    },
+    {
+      "id": "answer:purchase_decision:manual",
+      "type": "answer",
+      "questionId": "purchase_decision",
+      "value": "manual"
+    },
+    {
+      "id": "answer:purchase_decision:combined",
+      "type": "answer",
+      "questionId": "purchase_decision",
+      "value": "combined"
+    },
+    {
+      "id": "answer:purchase_decision:na",
+      "type": "answer",
+      "questionId": "purchase_decision",
+      "value": "na"
+    },
+    {
+      "id": "answer:replenishment:weekly",
+      "type": "answer",
+      "questionId": "replenishment",
+      "value": "weekly"
+    },
+    {
+      "id": "answer:replenishment:monthly",
+      "type": "answer",
+      "questionId": "replenishment",
+      "value": "monthly"
+    },
+    {
+      "id": "answer:replenishment:when_needed",
+      "type": "answer",
+      "questionId": "replenishment",
+      "value": "when_needed"
+    },
+    {
+      "id": "answer:replenishment:seasonal",
+      "type": "answer",
+      "questionId": "replenishment",
+      "value": "seasonal"
+    },
+    {
+      "id": "answer:replenishment:na",
+      "type": "answer",
+      "questionId": "replenishment",
+      "value": "na"
+    },
+    {
+      "id": "answer:supplier_count:one",
+      "type": "answer",
+      "questionId": "supplier_count",
+      "value": "one"
+    },
+    {
+      "id": "answer:supplier_count:2_5",
+      "type": "answer",
+      "questionId": "supplier_count",
+      "value": "2_5"
+    },
+    {
+      "id": "answer:supplier_count:gt5",
+      "type": "answer",
+      "questionId": "supplier_count",
+      "value": "gt5"
+    },
+    {
+      "id": "answer:supplier_count:unknown",
+      "type": "answer",
+      "questionId": "supplier_count",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:supplier_count:na",
+      "type": "answer",
+      "questionId": "supplier_count",
+      "value": "na"
+    },
+    {
+      "id": "answer:reorder_alerts:yes",
+      "type": "answer",
+      "questionId": "reorder_alerts",
+      "value": "yes"
+    },
+    {
+      "id": "answer:reorder_alerts:partial",
+      "type": "answer",
+      "questionId": "reorder_alerts",
+      "value": "partial"
+    },
+    {
+      "id": "answer:reorder_alerts:no",
+      "type": "answer",
+      "questionId": "reorder_alerts",
+      "value": "no"
+    },
+    {
+      "id": "answer:reorder_alerts:na",
+      "type": "answer",
+      "questionId": "reorder_alerts",
+      "value": "na"
+    },
+    {
+      "id": "answer:finance_control:system",
+      "type": "answer",
+      "questionId": "finance_control",
+      "value": "system"
+    },
+    {
+      "id": "answer:finance_control:sheets",
+      "type": "answer",
+      "questionId": "finance_control",
+      "value": "sheets"
+    },
+    {
+      "id": "answer:finance_control:accountant",
+      "type": "answer",
+      "questionId": "finance_control",
+      "value": "accountant"
+    },
+    {
+      "id": "answer:finance_control:mixed",
+      "type": "answer",
+      "questionId": "finance_control",
+      "value": "mixed"
+    },
+    {
+      "id": "answer:finance_control:manual",
+      "type": "answer",
+      "questionId": "finance_control",
+      "value": "manual"
+    },
+    {
+      "id": "answer:cash_forecast:yes",
+      "type": "answer",
+      "questionId": "cash_forecast",
+      "value": "yes"
+    },
+    {
+      "id": "answer:cash_forecast:partial",
+      "type": "answer",
+      "questionId": "cash_forecast",
+      "value": "partial"
+    },
+    {
+      "id": "answer:cash_forecast:no",
+      "type": "answer",
+      "questionId": "cash_forecast",
+      "value": "no"
+    },
+    {
+      "id": "answer:monthly_profit:yes",
+      "type": "answer",
+      "questionId": "monthly_profit",
+      "value": "yes"
+    },
+    {
+      "id": "answer:monthly_profit:partial",
+      "type": "answer",
+      "questionId": "monthly_profit",
+      "value": "partial"
+    },
+    {
+      "id": "answer:monthly_profit:no",
+      "type": "answer",
+      "questionId": "monthly_profit",
+      "value": "no"
+    },
+    {
+      "id": "answer:stock_financing:often",
+      "type": "answer",
+      "questionId": "stock_financing",
+      "value": "often"
+    },
+    {
+      "id": "answer:stock_financing:sometimes",
+      "type": "answer",
+      "questionId": "stock_financing",
+      "value": "sometimes"
+    },
+    {
+      "id": "answer:stock_financing:rarely",
+      "type": "answer",
+      "questionId": "stock_financing",
+      "value": "rarely"
+    },
+    {
+      "id": "answer:stock_financing:unknown",
+      "type": "answer",
+      "questionId": "stock_financing",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:stock_financing:na",
+      "type": "answer",
+      "questionId": "stock_financing",
+      "value": "na"
+    },
+    {
+      "id": "answer:marketing_channels:instagram",
+      "type": "answer",
+      "questionId": "marketing_channels",
+      "value": "instagram"
+    },
+    {
+      "id": "answer:marketing_channels:whatsapp",
+      "type": "answer",
+      "questionId": "marketing_channels",
+      "value": "whatsapp"
+    },
+    {
+      "id": "answer:marketing_channels:google",
+      "type": "answer",
+      "questionId": "marketing_channels",
+      "value": "google"
+    },
+    {
+      "id": "answer:marketing_channels:facebook",
+      "type": "answer",
+      "questionId": "marketing_channels",
+      "value": "facebook"
+    },
+    {
+      "id": "answer:marketing_channels:ads",
+      "type": "answer",
+      "questionId": "marketing_channels",
+      "value": "ads"
+    },
+    {
+      "id": "answer:marketing_channels:local",
+      "type": "answer",
+      "questionId": "marketing_channels",
+      "value": "local"
+    },
+    {
+      "id": "answer:marketing_channels:other",
+      "type": "answer",
+      "questionId": "marketing_channels",
+      "value": "other"
+    },
+    {
+      "id": "answer:campaign_frequency:weekly",
+      "type": "answer",
+      "questionId": "campaign_frequency",
+      "value": "weekly"
+    },
+    {
+      "id": "answer:campaign_frequency:monthly",
+      "type": "answer",
+      "questionId": "campaign_frequency",
+      "value": "monthly"
+    },
+    {
+      "id": "answer:campaign_frequency:sometimes",
+      "type": "answer",
+      "questionId": "campaign_frequency",
+      "value": "sometimes"
+    },
+    {
+      "id": "answer:campaign_frequency:never",
+      "type": "answer",
+      "questionId": "campaign_frequency",
+      "value": "never"
+    },
+    {
+      "id": "answer:customer_base:yes",
+      "type": "answer",
+      "questionId": "customer_base",
+      "value": "yes"
+    },
+    {
+      "id": "answer:customer_base:partial",
+      "type": "answer",
+      "questionId": "customer_base",
+      "value": "partial"
+    },
+    {
+      "id": "answer:customer_base:no",
+      "type": "answer",
+      "questionId": "customer_base",
+      "value": "no"
+    },
+    {
+      "id": "answer:proactive_contact:yes",
+      "type": "answer",
+      "questionId": "proactive_contact",
+      "value": "yes"
+    },
+    {
+      "id": "answer:proactive_contact:no",
+      "type": "answer",
+      "questionId": "proactive_contact",
+      "value": "no"
+    },
+    {
+      "id": "answer:campaign_measurement:yes",
+      "type": "answer",
+      "questionId": "campaign_measurement",
+      "value": "yes"
+    },
+    {
+      "id": "answer:campaign_measurement:partial",
+      "type": "answer",
+      "questionId": "campaign_measurement",
+      "value": "partial"
+    },
+    {
+      "id": "answer:campaign_measurement:no",
+      "type": "answer",
+      "questionId": "campaign_measurement",
+      "value": "no"
+    },
+    {
+      "id": "answer:response_time:fast",
+      "type": "answer",
+      "questionId": "response_time",
+      "value": "fast"
+    },
+    {
+      "id": "answer:response_time:medium",
+      "type": "answer",
+      "questionId": "response_time",
+      "value": "medium"
+    },
+    {
+      "id": "answer:response_time:slow",
+      "type": "answer",
+      "questionId": "response_time",
+      "value": "slow"
+    },
+    {
+      "id": "answer:response_time:unknown",
+      "type": "answer",
+      "questionId": "response_time",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:conversion_tracking:yes",
+      "type": "answer",
+      "questionId": "conversion_tracking",
+      "value": "yes"
+    },
+    {
+      "id": "answer:conversion_tracking:partial",
+      "type": "answer",
+      "questionId": "conversion_tracking",
+      "value": "partial"
+    },
+    {
+      "id": "answer:conversion_tracking:unknown",
+      "type": "answer",
+      "questionId": "conversion_tracking",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:abandonment_frequency:often",
+      "type": "answer",
+      "questionId": "abandonment_frequency",
+      "value": "often"
+    },
+    {
+      "id": "answer:abandonment_frequency:sometimes",
+      "type": "answer",
+      "questionId": "abandonment_frequency",
+      "value": "sometimes"
+    },
+    {
+      "id": "answer:abandonment_frequency:rarely",
+      "type": "answer",
+      "questionId": "abandonment_frequency",
+      "value": "rarely"
+    },
+    {
+      "id": "answer:abandonment_frequency:unknown",
+      "type": "answer",
+      "questionId": "abandonment_frequency",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:abandonment_reason:price",
+      "type": "answer",
+      "questionId": "abandonment_reason",
+      "value": "price"
+    },
+    {
+      "id": "answer:abandonment_reason:availability",
+      "type": "answer",
+      "questionId": "abandonment_reason",
+      "value": "availability"
+    },
+    {
+      "id": "answer:abandonment_reason:response",
+      "type": "answer",
+      "questionId": "abandonment_reason",
+      "value": "response"
+    },
+    {
+      "id": "answer:abandonment_reason:trust",
+      "type": "answer",
+      "questionId": "abandonment_reason",
+      "value": "trust"
+    },
+    {
+      "id": "answer:abandonment_reason:unknown",
+      "type": "answer",
+      "questionId": "abandonment_reason",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:abandonment_reason:other",
+      "type": "answer",
+      "questionId": "abandonment_reason",
+      "value": "other"
+    },
+    {
+      "id": "answer:order_tracking:automatic",
+      "type": "answer",
+      "questionId": "order_tracking",
+      "value": "automatic"
+    },
+    {
+      "id": "answer:order_tracking:manual",
+      "type": "answer",
+      "questionId": "order_tracking",
+      "value": "manual"
+    },
+    {
+      "id": "answer:order_tracking:none",
+      "type": "answer",
+      "questionId": "order_tracking",
+      "value": "none"
+    },
+    {
+      "id": "answer:order_tracking:na",
+      "type": "answer",
+      "questionId": "order_tracking",
+      "value": "na"
+    },
+    {
+      "id": "answer:after_sales:structured",
+      "type": "answer",
+      "questionId": "after_sales",
+      "value": "structured"
+    },
+    {
+      "id": "answer:after_sales:informal",
+      "type": "answer",
+      "questionId": "after_sales",
+      "value": "informal"
+    },
+    {
+      "id": "answer:after_sales:none",
+      "type": "answer",
+      "questionId": "after_sales",
+      "value": "none"
+    },
+    {
+      "id": "answer:complaints:recorded",
+      "type": "answer",
+      "questionId": "complaints",
+      "value": "recorded"
+    },
+    {
+      "id": "answer:complaints:informal",
+      "type": "answer",
+      "questionId": "complaints",
+      "value": "informal"
+    },
+    {
+      "id": "answer:complaints:none",
+      "type": "answer",
+      "questionId": "complaints",
+      "value": "none"
+    },
+    {
+      "id": "answer:satisfaction:yes",
+      "type": "answer",
+      "questionId": "satisfaction",
+      "value": "yes"
+    },
+    {
+      "id": "answer:satisfaction:partial",
+      "type": "answer",
+      "questionId": "satisfaction",
+      "value": "partial"
+    },
+    {
+      "id": "answer:satisfaction:no",
+      "type": "answer",
+      "questionId": "satisfaction",
+      "value": "no"
+    },
+    {
+      "id": "answer:lead_followup_quality:yes",
+      "type": "answer",
+      "questionId": "lead_followup_quality",
+      "value": "yes"
+    },
+    {
+      "id": "answer:lead_followup_quality:partial",
+      "type": "answer",
+      "questionId": "lead_followup_quality",
+      "value": "partial"
+    },
+    {
+      "id": "answer:lead_followup_quality:no",
+      "type": "answer",
+      "questionId": "lead_followup_quality",
+      "value": "no"
+    },
+    {
+      "id": "answer:lead_followup_quality:na",
+      "type": "answer",
+      "questionId": "lead_followup_quality",
+      "value": "na"
+    },
+    {
+      "id": "answer:lost_sales_evidence:yes",
+      "type": "answer",
+      "questionId": "lost_sales_evidence",
+      "value": "yes"
+    },
+    {
+      "id": "answer:lost_sales_evidence:partial",
+      "type": "answer",
+      "questionId": "lost_sales_evidence",
+      "value": "partial"
+    },
+    {
+      "id": "answer:lost_sales_evidence:no",
+      "type": "answer",
+      "questionId": "lost_sales_evidence",
+      "value": "no"
+    },
+    {
+      "id": "answer:conversion_baseline:$numeric",
+      "type": "answer",
+      "questionId": "conversion_baseline",
+      "value": "$numeric"
+    },
+    {
+      "id": "answer:conversion_baseline:$unknown",
+      "type": "answer",
+      "questionId": "conversion_baseline",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:conversion_notes:$text",
+      "type": "answer",
+      "questionId": "conversion_notes",
+      "value": "$text"
+    },
+    {
+      "id": "answer:conversion_notes:$unknown",
+      "type": "answer",
+      "questionId": "conversion_notes",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:primary_kpi:revenue",
+      "type": "answer",
+      "questionId": "primary_kpi",
+      "value": "revenue"
+    },
+    {
+      "id": "answer:primary_kpi:profit",
+      "type": "answer",
+      "questionId": "primary_kpi",
+      "value": "profit"
+    },
+    {
+      "id": "answer:primary_kpi:sales_count",
+      "type": "answer",
+      "questionId": "primary_kpi",
+      "value": "sales_count"
+    },
+    {
+      "id": "answer:primary_kpi:ticket",
+      "type": "answer",
+      "questionId": "primary_kpi",
+      "value": "ticket"
+    },
+    {
+      "id": "answer:primary_kpi:conversion",
+      "type": "answer",
+      "questionId": "primary_kpi",
+      "value": "conversion"
+    },
+    {
+      "id": "answer:primary_kpi:retention",
+      "type": "answer",
+      "questionId": "primary_kpi",
+      "value": "retention"
+    },
+    {
+      "id": "answer:primary_kpi:cost",
+      "type": "answer",
+      "questionId": "primary_kpi",
+      "value": "cost"
+    },
+    {
+      "id": "answer:primary_kpi:productivity",
+      "type": "answer",
+      "questionId": "primary_kpi",
+      "value": "productivity"
+    },
+    {
+      "id": "answer:primary_kpi:satisfaction",
+      "type": "answer",
+      "questionId": "primary_kpi",
+      "value": "satisfaction"
+    },
+    {
+      "id": "answer:primary_kpi:other",
+      "type": "answer",
+      "questionId": "primary_kpi",
+      "value": "other"
+    },
+    {
+      "id": "answer:baseline_value:$text",
+      "type": "answer",
+      "questionId": "baseline_value",
+      "value": "$text"
+    },
+    {
+      "id": "answer:baseline_value:$unknown",
+      "type": "answer",
+      "questionId": "baseline_value",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:target_value:$text",
+      "type": "answer",
+      "questionId": "target_value",
+      "value": "$text"
+    },
+    {
+      "id": "answer:target_value:$unknown",
+      "type": "answer",
+      "questionId": "target_value",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:measurement_source:system",
+      "type": "answer",
+      "questionId": "measurement_source",
+      "value": "system"
+    },
+    {
+      "id": "answer:measurement_source:finance",
+      "type": "answer",
+      "questionId": "measurement_source",
+      "value": "finance"
+    },
+    {
+      "id": "answer:measurement_source:analytics",
+      "type": "answer",
+      "questionId": "measurement_source",
+      "value": "analytics"
+    },
+    {
+      "id": "answer:measurement_source:survey",
+      "type": "answer",
+      "questionId": "measurement_source",
+      "value": "survey"
+    },
+    {
+      "id": "answer:measurement_source:manual",
+      "type": "answer",
+      "questionId": "measurement_source",
+      "value": "manual"
+    },
+    {
+      "id": "answer:measurement_source:unknown",
+      "type": "answer",
+      "questionId": "measurement_source",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:top_priority:sales",
+      "type": "answer",
+      "questionId": "top_priority",
+      "value": "sales"
+    },
+    {
+      "id": "answer:top_priority:marketing",
+      "type": "answer",
+      "questionId": "top_priority",
+      "value": "marketing"
+    },
+    {
+      "id": "answer:top_priority:conversion",
+      "type": "answer",
+      "questionId": "top_priority",
+      "value": "conversion"
+    },
+    {
+      "id": "answer:top_priority:stock",
+      "type": "answer",
+      "questionId": "top_priority",
+      "value": "stock"
+    },
+    {
+      "id": "answer:top_priority:finance",
+      "type": "answer",
+      "questionId": "top_priority",
+      "value": "finance"
+    },
+    {
+      "id": "answer:top_priority:operations",
+      "type": "answer",
+      "questionId": "top_priority",
+      "value": "operations"
+    },
+    {
+      "id": "answer:top_priority:customer",
+      "type": "answer",
+      "questionId": "top_priority",
+      "value": "customer"
+    },
+    {
+      "id": "answer:top_priority:unknown",
+      "type": "answer",
+      "questionId": "top_priority",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:investment:limited",
+      "type": "answer",
+      "questionId": "investment",
+      "value": "limited"
+    },
+    {
+      "id": "answer:investment:flexible",
+      "type": "answer",
+      "questionId": "investment",
+      "value": "flexible"
+    },
+    {
+      "id": "answer:investment:unknown",
+      "type": "answer",
+      "questionId": "investment",
+      "value": "unknown"
+    },
+    {
+      "id": "answer:deadline:immediate",
+      "type": "answer",
+      "questionId": "deadline",
+      "value": "immediate"
+    },
+    {
+      "id": "answer:deadline:30d",
+      "type": "answer",
+      "questionId": "deadline",
+      "value": "30d"
+    },
+    {
+      "id": "answer:deadline:60d",
+      "type": "answer",
+      "questionId": "deadline",
+      "value": "60d"
+    },
+    {
+      "id": "answer:deadline:90d",
+      "type": "answer",
+      "questionId": "deadline",
+      "value": "90d"
+    },
+    {
+      "id": "answer:deadline:flexible",
+      "type": "answer",
+      "questionId": "deadline",
+      "value": "flexible"
+    },
+    {
+      "id": "answer:constraints:technical",
+      "type": "answer",
+      "questionId": "constraints",
+      "value": "technical"
+    },
+    {
+      "id": "answer:constraints:financial",
+      "type": "answer",
+      "questionId": "constraints",
+      "value": "financial"
+    },
+    {
+      "id": "answer:constraints:operational",
+      "type": "answer",
+      "questionId": "constraints",
+      "value": "operational"
+    },
+    {
+      "id": "answer:constraints:legal",
+      "type": "answer",
+      "questionId": "constraints",
+      "value": "legal"
+    },
+    {
+      "id": "answer:constraints:none",
+      "type": "answer",
+      "questionId": "constraints",
+      "value": "none"
+    },
+    {
+      "id": "answer:approver:owner",
+      "type": "answer",
+      "questionId": "approver",
+      "value": "owner"
+    },
+    {
+      "id": "answer:approver:manager",
+      "type": "answer",
+      "questionId": "approver",
+      "value": "manager"
+    },
+    {
+      "id": "answer:approver:team",
+      "type": "answer",
+      "questionId": "approver",
+      "value": "team"
+    },
+    {
+      "id": "answer:approver:board",
+      "type": "answer",
+      "questionId": "approver",
+      "value": "board"
+    },
+    {
+      "id": "answer:approver:other",
+      "type": "answer",
+      "questionId": "approver",
+      "value": "other"
+    },
+    {
+      "id": "answer:diagnosis_validation:confirmed",
+      "type": "answer",
+      "questionId": "diagnosis_validation",
+      "value": "confirmed"
+    },
+    {
+      "id": "answer:diagnosis_validation:partial",
+      "type": "answer",
+      "questionId": "diagnosis_validation",
+      "value": "partial"
+    },
+    {
+      "id": "answer:diagnosis_validation:corrections",
+      "type": "answer",
+      "questionId": "diagnosis_validation",
+      "value": "corrections"
+    },
+    {
+      "id": "dimension:company-profile",
+      "type": "dimension",
+      "label": "company profile"
+    },
+    {
+      "id": "dimension:industry-context",
+      "type": "dimension",
+      "label": "industry context"
+    },
+    {
+      "id": "dimension:operating-maturity",
+      "type": "dimension",
+      "label": "operating maturity"
+    },
+    {
+      "id": "dimension:operating-capacity",
+      "type": "dimension",
+      "label": "operating capacity"
+    },
+    {
+      "id": "dimension:desired-outcome",
+      "type": "dimension",
+      "label": "desired outcome"
+    },
+    {
+      "id": "dimension:desired-outcome",
+      "type": "dimension",
+      "label": "desired outcome"
+    },
+    {
+      "id": "dimension:timeline",
+      "type": "dimension",
+      "label": "timeline"
+    },
+    {
+      "id": "dimension:success-criteria",
+      "type": "dimension",
+      "label": "success criteria"
+    },
+    {
+      "id": "dimension:commercial-model",
+      "type": "dimension",
+      "label": "commercial model"
+    },
+    {
+      "id": "dimension:sales-channels",
+      "type": "dimension",
+      "label": "sales channels"
+    },
+    {
+      "id": "dimension:sales-channels",
+      "type": "dimension",
+      "label": "sales channels"
+    },
+    {
+      "id": "dimension:sales-process",
+      "type": "dimension",
+      "label": "sales process"
+    },
+    {
+      "id": "dimension:technology-landscape",
+      "type": "dimension",
+      "label": "technology landscape"
+    },
+    {
+      "id": "dimension:integration-readiness",
+      "type": "dimension",
+      "label": "integration readiness"
+    },
+    {
+      "id": "dimension:data-coverage",
+      "type": "dimension",
+      "label": "data coverage"
+    },
+    {
+      "id": "dimension:data-access",
+      "type": "dimension",
+      "label": "data access"
+    },
+    {
+      "id": "dimension:financial-baseline",
+      "type": "dimension",
+      "label": "financial baseline"
+    },
+    {
+      "id": "dimension:commercial-baseline",
+      "type": "dimension",
+      "label": "commercial baseline"
+    },
+    {
+      "id": "dimension:commercial-baseline",
+      "type": "dimension",
+      "label": "commercial baseline"
+    },
+    {
+      "id": "dimension:profitability-baseline",
+      "type": "dimension",
+      "label": "profitability baseline"
+    },
+    {
+      "id": "dimension:profitability-baseline",
+      "type": "dimension",
+      "label": "profitability baseline"
+    },
+    {
+      "id": "dimension:data-reliability",
+      "type": "dimension",
+      "label": "data reliability"
+    },
+    {
+      "id": "dimension:acquisition",
+      "type": "dimension",
+      "label": "acquisition"
+    },
+    {
+      "id": "dimension:acquisition-measurement",
+      "type": "dimension",
+      "label": "acquisition measurement"
+    },
+    {
+      "id": "dimension:acquisition-measurement",
+      "type": "dimension",
+      "label": "acquisition measurement"
+    },
+    {
+      "id": "dimension:lead-management",
+      "type": "dimension",
+      "label": "lead management"
+    },
+    {
+      "id": "dimension:lead-management",
+      "type": "dimension",
+      "label": "lead management"
+    },
+    {
+      "id": "dimension:lead-management",
+      "type": "dimension",
+      "label": "lead management"
+    },
+    {
+      "id": "dimension:retention",
+      "type": "dimension",
+      "label": "retention"
+    },
+    {
+      "id": "dimension:retention",
+      "type": "dimension",
+      "label": "retention"
+    },
+    {
+      "id": "dimension:retention",
+      "type": "dimension",
+      "label": "retention"
+    },
+    {
+      "id": "dimension:retention-measurement",
+      "type": "dimension",
+      "label": "retention measurement"
+    },
+    {
+      "id": "dimension:operating-capacity",
+      "type": "dimension",
+      "label": "operating capacity"
+    },
+    {
+      "id": "dimension:operational-bottleneck",
+      "type": "dimension",
+      "label": "operational bottleneck"
+    },
+    {
+      "id": "dimension:automation-potential",
+      "type": "dimension",
+      "label": "automation potential"
+    },
+    {
+      "id": "dimension:offer-portfolio",
+      "type": "dimension",
+      "label": "offer portfolio"
+    },
+    {
+      "id": "dimension:profitability-visibility",
+      "type": "dimension",
+      "label": "profitability visibility"
+    },
+    {
+      "id": "dimension:profitability-visibility",
+      "type": "dimension",
+      "label": "profitability visibility"
+    },
+    {
+      "id": "dimension:inventory-scope",
+      "type": "dimension",
+      "label": "inventory scope"
+    },
+    {
+      "id": "dimension:inventory-control",
+      "type": "dimension",
+      "label": "inventory control"
+    },
+    {
+      "id": "dimension:inventory-availability",
+      "type": "dimension",
+      "label": "inventory availability"
+    },
+    {
+      "id": "dimension:inventory-demand",
+      "type": "dimension",
+      "label": "inventory demand"
+    },
+    {
+      "id": "dimension:procurement",
+      "type": "dimension",
+      "label": "procurement"
+    },
+    {
+      "id": "dimension:procurement",
+      "type": "dimension",
+      "label": "procurement"
+    },
+    {
+      "id": "dimension:supplier-context",
+      "type": "dimension",
+      "label": "supplier context"
+    },
+    {
+      "id": "dimension:procurement-automation",
+      "type": "dimension",
+      "label": "procurement automation"
+    },
+    {
+      "id": "dimension:financial-management",
+      "type": "dimension",
+      "label": "financial management"
+    },
+    {
+      "id": "dimension:cash-visibility",
+      "type": "dimension",
+      "label": "cash visibility"
+    },
+    {
+      "id": "dimension:profitability-visibility",
+      "type": "dimension",
+      "label": "profitability visibility"
+    },
+    {
+      "id": "dimension:working-capital",
+      "type": "dimension",
+      "label": "working capital"
+    },
+    {
+      "id": "dimension:marketing-channels",
+      "type": "dimension",
+      "label": "marketing channels"
+    },
+    {
+      "id": "dimension:campaign-operations",
+      "type": "dimension",
+      "label": "campaign operations"
+    },
+    {
+      "id": "dimension:customer-data",
+      "type": "dimension",
+      "label": "customer data"
+    },
+    {
+      "id": "dimension:customer-engagement",
+      "type": "dimension",
+      "label": "customer engagement"
+    },
+    {
+      "id": "dimension:campaign-measurement",
+      "type": "dimension",
+      "label": "campaign measurement"
+    },
+    {
+      "id": "dimension:service-performance",
+      "type": "dimension",
+      "label": "service performance"
+    },
+    {
+      "id": "dimension:conversion-measurement",
+      "type": "dimension",
+      "label": "conversion measurement"
+    },
+    {
+      "id": "dimension:conversion-loss",
+      "type": "dimension",
+      "label": "conversion loss"
+    },
+    {
+      "id": "dimension:conversion-loss",
+      "type": "dimension",
+      "label": "conversion loss"
+    },
+    {
+      "id": "dimension:customer-visibility",
+      "type": "dimension",
+      "label": "customer visibility"
+    },
+    {
+      "id": "dimension:customer-relationship",
+      "type": "dimension",
+      "label": "customer relationship"
+    },
+    {
+      "id": "dimension:customer-feedback",
+      "type": "dimension",
+      "label": "customer feedback"
+    },
+    {
+      "id": "dimension:customer-feedback",
+      "type": "dimension",
+      "label": "customer feedback"
+    },
+    {
+      "id": "dimension:conversion-recovery",
+      "type": "dimension",
+      "label": "conversion recovery"
+    },
+    {
+      "id": "dimension:conversion-evidence",
+      "type": "dimension",
+      "label": "conversion evidence"
+    },
+    {
+      "id": "dimension:conversion-baseline",
+      "type": "dimension",
+      "label": "conversion baseline"
+    },
+    {
+      "id": "dimension:conversion-context",
+      "type": "dimension",
+      "label": "conversion context"
+    },
+    {
+      "id": "dimension:success-criteria",
+      "type": "dimension",
+      "label": "success criteria"
+    },
+    {
+      "id": "dimension:success-criteria",
+      "type": "dimension",
+      "label": "success criteria"
+    },
+    {
+      "id": "dimension:success-criteria",
+      "type": "dimension",
+      "label": "success criteria"
+    },
+    {
+      "id": "dimension:measurement-readiness",
+      "type": "dimension",
+      "label": "measurement readiness"
+    },
+    {
+      "id": "dimension:priority",
+      "type": "dimension",
+      "label": "priority"
+    },
+    {
+      "id": "dimension:investment-constraint",
+      "type": "dimension",
+      "label": "investment constraint"
+    },
+    {
+      "id": "dimension:timeline",
+      "type": "dimension",
+      "label": "timeline"
+    },
+    {
+      "id": "dimension:constraints",
+      "type": "dimension",
+      "label": "constraints"
+    },
+    {
+      "id": "dimension:governance",
+      "type": "dimension",
+      "label": "governance"
+    },
+    {
+      "id": "dimension:validation-status",
+      "type": "dimension",
+      "label": "validation status"
+    },
+    {
+      "id": "module:sales",
+      "type": "module",
+      "label": "Vendas e conversão"
+    },
+    {
+      "id": "module:marketing",
+      "type": "module",
+      "label": "Marketing e aquisição"
+    },
+    {
+      "id": "module:crm",
+      "type": "module",
+      "label": "Relacionamento e recorrência"
+    },
+    {
+      "id": "module:inventory",
+      "type": "module",
+      "label": "Estoque e suprimentos"
+    },
+    {
+      "id": "module:finance",
+      "type": "module",
+      "label": "Gestão financeira"
+    },
+    {
+      "id": "module:operations",
+      "type": "module",
+      "label": "Operações e automação"
+    },
+    {
+      "id": "module:integration",
+      "type": "module",
+      "label": "Integração e arquitetura de sistemas"
+    },
+    {
+      "id": "module:analytics",
+      "type": "module",
+      "label": "Medição e inteligência"
+    },
+    {
+      "id": "module:customer-experience",
+      "type": "module",
+      "label": "Experiência do cliente"
+    },
+    {
+      "id": "solution:SOL-SALES-001",
+      "type": "solution",
+      "label": "Recuperação de oportunidades comerciais",
+      "moduleId": "sales"
+    },
+    {
+      "id": "solution:SOL-SALES-002",
+      "type": "solution",
+      "label": "Otimização da conversão",
+      "moduleId": "sales"
+    },
+    {
+      "id": "solution:SOL-MKT-001",
+      "type": "solution",
+      "label": "Marketing orientado a resultados",
+      "moduleId": "marketing"
+    },
+    {
+      "id": "solution:SOL-CRM-001",
+      "type": "solution",
+      "label": "Reativação de clientes",
+      "moduleId": "crm"
+    },
+    {
+      "id": "solution:SOL-CRM-002",
+      "type": "solution",
+      "label": "Fidelização e recorrência",
+      "moduleId": "crm"
+    },
+    {
+      "id": "solution:SOL-STOCK-001",
+      "type": "solution",
+      "label": "Otimização de estoque e disponibilidade",
+      "moduleId": "inventory"
+    },
+    {
+      "id": "solution:SOL-STOCK-002",
+      "type": "solution",
+      "label": "Previsão de demanda e reposição",
+      "moduleId": "inventory"
+    },
+    {
+      "id": "solution:SOL-FIN-001",
+      "type": "solution",
+      "label": "Visibilidade financeira",
+      "moduleId": "finance"
+    },
+    {
+      "id": "solution:SOL-FIN-002",
+      "type": "solution",
+      "label": "Rentabilidade por produto ou serviço",
+      "moduleId": "finance"
+    },
+    {
+      "id": "solution:SOL-OPS-001",
+      "type": "solution",
+      "label": "Automação operacional",
+      "moduleId": "operations"
+    },
+    {
+      "id": "solution:SOL-OPS-002",
+      "type": "solution",
+      "label": "Integração de sistemas",
+      "moduleId": "integration"
+    },
+    {
+      "id": "solution:SOL-OPS-003",
+      "type": "solution",
+      "label": "Indicadores de gestão",
+      "moduleId": "analytics"
+    }
+  ]
 }
