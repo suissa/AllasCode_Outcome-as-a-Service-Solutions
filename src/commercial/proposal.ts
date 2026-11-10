@@ -186,3 +186,35 @@ export function composeOutcomeProposal(input: OutcomeProposalInput, generatedAt 
   };
   return Object.freeze(base);
 }
+
+const markdownText = (value: string): string => value.replace(/[\\\\`*_{}\[\]()#+.!|>~-]/g, "\\\\$&");
+const bulletList = (values: readonly string[]): string => values.length ? values.map(value => "- " + markdownText(value)).join("\\n") : "- A definir";
+
+export function renderOutcomeProposalMarkdown(proposal: OutcomeProposal): string {
+  const metric = proposal.metric;
+  const range = (value: ProposalScenario["estimatedBenefit"]): string => value
+    ? `${value.min}–${value.max} ${value.currency}`
+    : "A definir";
+  const evidence = proposal.evidence.map(item =>
+    `- ${markdownText(item.description)} (fonte: ${markdownText(item.source)}; verificação: ${item.verification}; ID: ${markdownText(item.id)})`
+  ).join("\\n") || "- Nenhuma evidência registrada";
+  const pricing = proposal.pricing.indicativeSummary
+    ? `Total indicativo calculado: ${proposal.pricing.indicativeSummary.total} ${proposal.pricing.indicativeSummary.currency}`
+    : "Preço ainda não calculável com os dados fornecidos";
+  return [
+    `# Proposta preliminar — ${markdownText(proposal.id)}`,
+    `\\n**Cliente:** ${markdownText(proposal.customer.name)}  \\n**Setor:** ${markdownText(proposal.customer.sector)}  \\n**Versão:** ${proposal.version}  \\n**Status:** ${proposal.readiness.status === "ready_for_review" ? "Pronta para revisão humana" : "Incompleta — requer dados adicionais"}`,
+    `\\n## Contexto e objetivo\\n\\n${markdownText(proposal.context)}\\n\\n**Problema:** ${markdownText(proposal.problem)}\\n\\n**Resultado desejado:** ${markdownText(proposal.desiredOutcome)}\\n\\n**Confiança do diagnóstico:** ${proposal.diagnosisConfidence}`,
+    `\\n## Evidências\\n\\n${evidence}`,
+    `\\n## Métrica de resultado\\n\\n- Indicador: ${markdownText(metric.name)} (${markdownText(metric.id)})\\n- Baseline: ${metric.baseline ?? "A definir"} ${markdownText(metric.unit)}\\n- Meta: ${metric.target ?? "A definir"} ${markdownText(metric.unit)}\\n- Período: ${metric.periodStart ?? "A definir"} a ${metric.periodEnd ?? "A definir"}\\n- Fonte da verdade: ${markdownText(metric.sourceOfTruth ?? "A definir")}\\n- População: ${markdownText(metric.population ?? "A definir")}\\n- Atribuição: ${metric.attribution}`,
+    `\\n**Guardrails**\\n\\n${bulletList(metric.guardrails)}\\n\\n**Exclusões de medição**\\n\\n${bulletList(metric.exclusions)}`,
+    `\\n## Cenário recomendado\\n\\n${markdownText(proposal.scenario.rationale)}\\n\\n- Benefício estimado: ${range(proposal.scenario.estimatedBenefit)}\\n- Custo estimado: ${range(proposal.scenario.estimatedCost)}\\n- Confiança: ${proposal.scenario.confidence}\\n\\n**Hipóteses**\\n\\n${bulletList(proposal.scenario.assumptions)}\\n\\n**Riscos**\\n\\n${bulletList(proposal.scenario.risks)}`,
+    `\\n## Escopo e execução\\n\\n**Incluído**\\n\\n${bulletList(proposal.scope)}\\n\\n**Entregáveis**\\n\\n${bulletList(proposal.deliverables)}\\n\\n**Fora do escopo**\\n\\n${bulletList(proposal.exclusions)}`,
+    `\\n**Dependências**\\n\\n${proposal.dependencies.map(item => `- ${markdownText(item.description)} — responsável: ${item.owner}; status: ${item.status}`).join("\\n") || "- Nenhuma declarada"}`,
+    `\\n**Responsabilidades**\\n\\n${proposal.responsibilities.map(item => `- ${item.party}: ${markdownText(item.description)}`).join("\\n") || "- A definir"}`,
+    `\\n**Critérios de aceite**\\n\\n${bulletList(proposal.acceptanceCriteria)}`,
+    `\\n## Condições comerciais\\n\\n${pricing}\\n\\nModelos informados: ${proposal.pricing.lines.map(line => line.kind).join(", ") || "A definir"}.`,
+    `\\n## Pendências para revisão\\n\\n**Bloqueios**\\n\\n${bulletList(proposal.readiness.blockers)}\\n\\n**Alertas**\\n\\n${bulletList(proposal.readiness.warnings)}`,
+    `\\n---\\n${proposal.commercialNotice}`,
+  ].join("\\n");
+}
