@@ -7,7 +7,8 @@
     "sector-playbooks": "sector-playbooks.pt-BR.json",
     "agent-team": "agent-team.pt-BR.json",
     "mission-steps": "mission-steps.pt-BR.json",
-    discovery: "discovery.pt-BR.json"
+    discovery: "discovery.pt-BR.json",
+    "ui-copy": "ui-copy.pt-BR.json"
   };
   const readJson = async path => {
     const response = await fetch(new URL(root + path, document.baseURI));
@@ -49,6 +50,17 @@
       if (value === undefined) throw new Error("CONTENT_REFERENCE_NOT_FOUND:" + ref);
       content[ref] = value;
     }
+    const copy = sources["ui-copy"] || {};
+    rootElement.querySelectorAll("[data-copy]").forEach(element => {
+      const value = getPath(copy, element.dataset.copy);
+      if (value === undefined) throw new Error("UI_COPY_REFERENCE_NOT_FOUND:" + element.dataset.copy);
+      element.textContent = String(value);
+    });
+    rootElement.querySelectorAll("[data-copy-aria-label]").forEach(element => {
+      const value = getPath(copy, element.dataset.copyAriaLabel);
+      if (value === undefined) throw new Error("UI_COPY_REFERENCE_NOT_FOUND:" + element.dataset.copyAriaLabel);
+      element.setAttribute("aria-label", String(value));
+    });
     document.documentElement.dataset.pageId = page.id;
     document.documentElement.dataset.layoutId = layout.id;
     document.title = page.title;

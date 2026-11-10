@@ -11,7 +11,8 @@ test("pages reference existing layouts, templates and resolvable JSON content",a
     "sector-playbooks":"content/sector-playbooks.pt-BR.json",
     "agent-team":"content/agent-team.pt-BR.json",
     "mission-steps":"content/mission-steps.pt-BR.json",
-    discovery:"content/discovery.pt-BR.json"
+    discovery:"content/discovery.pt-BR.json",
+    "ui-copy":"content/ui-copy.pt-BR.json"
   };
   for(const id of ["home","classic","guild","discovery"]){
     const page=await load<{id:string;entry:string;layout:string;contentRefs:string[];sections:{id:string;contentRef:string}[]}>(`pages/pt-BR/${id}.json`);
@@ -78,7 +79,7 @@ test("entry HTML delegates behavior to scripts declared by the layout",async()=>
 test("page loader mounts templates and loads layout scripts from nested entries",async()=>{
   const loader=await readFile(join(root,"page-config.js"),"utf8");
   const window:Record<string,any>={};
-  const mounted:{innerHTML:string}={innerHTML:""};
+  const mounted:{innerHTML:string;querySelectorAll:()=>any[]}={innerHTML:"",querySelectorAll:()=>[]};
   const scriptUrls:string[]=[];
   const document:any={
     baseURI:"https://example.test/descoberta/index.html",
