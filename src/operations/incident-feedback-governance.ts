@@ -291,7 +291,7 @@ export async function createIncidentPostmortem(
   },
   dependencies: {
     authorize(actorId: string, tenantId: string, action: "incident.postmortem.create" | "incident.postmortem.review"): Promise<boolean>;
-    verifyEvidence(evidenceId: string): Promise<boolean>;
+    verifyEvidence(tenantId: string, evidenceId: string): Promise<boolean>;
   },
 ): Promise<Readonly<IncidentPostmortem>> {
   if (!input || !required(input.preparedBy) || !required(input.reviewerId) ||
@@ -312,7 +312,8 @@ export async function createIncidentPostmortem(
     fail("POSTMORTEM_EVIDENCE_REQUIRED", "evidenceIds");
   }
   for (const id of input.evidenceIds) {
-    if (!required(id) || !await dependencies.verifyEvidence(id)) fail("POSTMORTEM_EVIDENCE_UNVERIFIED", `evidenceIds.${id}`);
+    if (!input.incident.evidenceIds.includes(id)) fail("POSTMORTEM_EVIDENCE_NOT_LINKED", `evidenceIds.${id}`);
+    if (!required(id) || !await dependencies.verifyEvidence(input.incident.tenantId, id)) fail("POSTMORTEM_EVIDENCE_UNVERIFIED", `evidenceIds.${id}`);
   }
   const actionIds = new Set<string>();
   const actions = input.actionItems.map((item, index) => {
