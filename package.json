@@ -8,13 +8,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "tsx --test test/*.test.ts test/**/*.test.ts",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
-    "vite": "^8.3.7"
+    "vite": "^8.3.7",
+    "@playwright/test": "^1.56.1"
   },
   "dependencies": {
     "postgres": "^3.4.7"
