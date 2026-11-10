@@ -8,6 +8,7 @@
     "agent-team": "agent-team.pt-BR.json",
     "mission-steps": "mission-steps.pt-BR.json",
     discovery: "discovery.pt-BR.json",
+    "proposal-graph": "proposal-graph.pt-BR.json",
     "ui-copy": "ui-copy.pt-BR.json"
   };
   const readJson = async path => {
