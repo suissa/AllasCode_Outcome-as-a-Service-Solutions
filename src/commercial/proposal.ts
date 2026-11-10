@@ -1,0 +1,188 @@
+import type { PricingLine, PricingSummary } from "./pricing.ts";
+import { calculatePricing } from "./pricing.ts";
+
+export type ProposalAttribution = "direct" | "contribution" | "experimental" | "pending";
+export type ProposalDependencyStatus = "confirmed" | "pending" | "blocked";
+export interface ProposalEvidence {
+  id: string;
+  description: string;
+  source: string;
+  period?: string;
+  verification: "verified" | "pending";
+}
+export interface ProposalMetric {
+  id: string;
+  name: string;
+  unit: string;
+  direction: "increase" | "decrease" | "target";
+  baseline?: number;
+  target?: number;
+  periodStart?: string;
+  periodEnd?: string;
+  sourceOfTruth?: string;
+  attribution: ProposalAttribution;
+  population?: string;
+  guardrails: readonly string[];
+  exclusions: readonly string[];
+}
+export interface ProposalScenario {
+  id: string;
+  rationale: string;
+  confidence: number;
+  estimatedBenefit?: { min: number; max: number; currency: string };
+  estimatedCost?: { min: number; max: number; currency: string };
+  assumptions: readonly string[];
+  risks: readonly string[];
+}
+export interface ProposalDependency {
+  description: string;
+  owner: "customer" | "provider" | "third_party";
+  status: ProposalDependencyStatus;
+  requiredBy?: string;
+}
+export interface ProposalResponsibility {
+  party: "customer" | "provider";
+  description: string;
+}
+export interface OutcomeProposalInput {
+  id: string;
+  version: number;
+  tenantId: string;
+  customerName: string;
+  sector: string;
+  context: string;
+  problem: string;
+  desiredOutcome: string;
+  diagnosisConfidence: number;
+  evidence: readonly ProposalEvidence[];
+  metric: ProposalMetric;
+  scenario: ProposalScenario;
+  scope: readonly string[];
+  deliverables: readonly string[];
+  exclusions: readonly string[];
+  dependencies: readonly ProposalDependency[];
+  responsibilities: readonly ProposalResponsibility[];
+  acceptanceCriteria: readonly string[];
+  pricingLines: readonly PricingLine[];
+  deliveryWindowDays?: number;
+  generatedAt?: string;
+}
+export interface ProposalReadiness {
+  status: "incomplete" | "ready_for_review";
+  blockers: readonly string[];
+  warnings: readonly string[];
+}
+export interface OutcomeProposal {
+  id: string;
+  version: number;
+  tenantId: string;
+  status: "draft";
+  generatedAt: string;
+  customer: { name: string; sector: string };
+  context: string;
+  problem: string;
+  desiredOutcome: string;
+  diagnosisConfidence: number;
+  evidence: readonly ProposalEvidence[];
+  metric: ProposalMetric;
+  scenario: ProposalScenario;
+  scope: readonly string[];
+  deliverables: readonly string[];
+  exclusions: readonly string[];
+  dependencies: readonly ProposalDependency[];
+  responsibilities: readonly ProposalResponsibility[];
+  acceptanceCriteria: readonly string[];
+  pricing: { lines: readonly PricingLine[]; indicativeSummary?: PricingSummary };
+  deliveryWindowDays?: number;
+  readiness: ProposalReadiness;
+  commercialNotice: string;
+}
+
+const hasText = (value: string | undefined): boolean => typeof value === "string" && value.trim().length > 0;
+const unique = (values: readonly string[]): boolean => new Set(values).size === values.length;
+const nonEmpty = (values: readonly string[]): boolean => values.length > 0 && values.every(hasText);
+
+export function assessProposalReadiness(input: OutcomeProposalInput): ProposalReadiness {
+  const blockers: string[] = [];
+  const warnings: string[] = [];
+  if (!hasText(input.id) || !Number.isInteger(input.version) || input.version < 1 || !hasText(input.tenantId)) blockers.push("PROPOSAL_IDENTITY_INVALID");
+  if (!hasText(input.customerName) || !hasText(input.sector)) blockers.push("CUSTOMER_CONTEXT_INCOMPLETE");
+  if (!hasText(input.context) || !hasText(input.problem) || !hasText(input.desiredOutcome)) blockers.push("BUSINESS_PROBLEM_INCOMPLETE");
+  if (!Number.isFinite(input.diagnosisConfidence) || input.diagnosisConfidence < 0 || input.diagnosisConfidence > 1) blockers.push("DIAGNOSIS_CONFIDENCE_INVALID");
+  if (!input.evidence.length || input.evidence.some(e => !hasText(e.id) || !hasText(e.description) || !hasText(e.source)) || !unique(input.evidence.map(e => e.id))) blockers.push("EVIDENCE_REGISTER_INCOMPLETE");
+  if (!input.evidence.some(e => e.verification === "verified")) warnings.push("NO_INDEPENDENTLY_VERIFIED_EVIDENCE");
+  const metric = input.metric;
+  if (!hasText(metric.id) || !hasText(metric.name) || !hasText(metric.unit)) blockers.push("PRIMARY_METRIC_INCOMPLETE");
+  if (!Number.isFinite(metric.baseline)) blockers.push("BASELINE_NOT_ESTABLISHED");
+  if (!Number.isFinite(metric.target) || metric.target === metric.baseline) blockers.push("TARGET_NOT_DEFINED");
+  if (!hasText(metric.sourceOfTruth)) blockers.push("SOURCE_OF_TRUTH_NOT_DEFINED");
+  if (!hasText(metric.population)) blockers.push("MEASUREMENT_POPULATION_NOT_DEFINED");
+  if (!metric.periodStart || !metric.periodEnd || Number.isNaN(Date.parse(metric.periodStart)) || Number.isNaN(Date.parse(metric.periodEnd)) || Date.parse(metric.periodEnd) <= Date.parse(metric.periodStart)) blockers.push("MEASUREMENT_PERIOD_INVALID");
+  if (metric.attribution === "pending") blockers.push("ATTRIBUTION_METHOD_PENDING");
+  if (!nonEmpty(metric.guardrails)) blockers.push("GUARDRAILS_NOT_DEFINED");
+  if (!unique(metric.guardrails) || !unique(metric.exclusions)) blockers.push("METRIC_RULES_DUPLICATED");
+  if (!hasText(input.scenario.id) || !hasText(input.scenario.rationale) || !Number.isFinite(input.scenario.confidence) || input.scenario.confidence < 0 || input.scenario.confidence > 1) blockers.push("SCENARIO_INVALID");
+  for (const range of [input.scenario.estimatedBenefit, input.scenario.estimatedCost]) {
+    if (range && (!Number.isFinite(range.min) || !Number.isFinite(range.max) || range.min < 0 || range.max < range.min || !/^[A-Z]{3}$/.test(range.currency))) blockers.push("SCENARIO_ESTIMATE_INVALID");
+  }
+  if (!nonEmpty(input.scope) || !unique(input.scope)) blockers.push("SCOPE_INCOMPLETE");
+  if (!nonEmpty(input.deliverables) || !unique(input.deliverables)) blockers.push("DELIVERABLES_INCOMPLETE");
+  if (!unique(input.exclusions)) blockers.push("EXCLUSIONS_DUPLICATED");
+  if (input.dependencies.some(d => !hasText(d.description) || !["customer", "provider", "third_party"].includes(d.owner) || !["confirmed", "pending", "blocked"].includes(d.status))) blockers.push("DEPENDENCY_REGISTER_INVALID");
+  if (input.dependencies.some(d => d.status !== "confirmed")) warnings.push("DEPENDENCIES_REQUIRE_CONFIRMATION");
+  if (!input.responsibilities.some(r => r.party === "customer") || !input.responsibilities.some(r => r.party === "provider") || input.responsibilities.some(r => !hasText(r.description))) blockers.push("RESPONSIBILITIES_INCOMPLETE");
+  if (!nonEmpty(input.acceptanceCriteria) || !unique(input.acceptanceCriteria)) blockers.push("ACCEPTANCE_CRITERIA_INCOMPLETE");
+  if (!input.pricingLines.length) blockers.push("COMMERCIAL_MODEL_NOT_DEFINED");
+  else {
+    try { calculatePricing(input.pricingLines); }
+    catch (error) { blockers.push(error instanceof Error ? error.message : "PRICING_INVALID"); }
+  }
+  if (input.deliveryWindowDays !== undefined && (!Number.isInteger(input.deliveryWindowDays) || input.deliveryWindowDays < 1)) blockers.push("DELIVERY_WINDOW_INVALID");
+  if (input.deliveryWindowDays && input.deliveryWindowDays > 90) warnings.push("DELIVERY_WINDOW_EXCEEDS_FIRST_90_DAY_CYCLE");
+  if (input.scenario.assumptions.length) warnings.push("SCENARIO_DEPENDS_ON_EXPLICIT_ASSUMPTIONS");
+  if (input.scenario.risks.length) warnings.push("SCENARIO_HAS_DECLARED_RISKS");
+  return Object.freeze({
+    status: blockers.length ? "incomplete" : "ready_for_review",
+    blockers: Object.freeze([...new Set(blockers)]),
+    warnings: Object.freeze([...new Set(warnings)]),
+  });
+}
+
+export function composeOutcomeProposal(input: OutcomeProposalInput, generatedAt = new Date()): OutcomeProposal {
+  if (!Number.isFinite(generatedAt.getTime())) throw new Error("PROPOSAL_GENERATION_DATE_INVALID");
+  const readiness = assessProposalReadiness(input);
+  let indicativeSummary: PricingSummary | undefined;
+  if (input.pricingLines.length) {
+    try { indicativeSummary = calculatePricing(input.pricingLines); }
+    catch { /* Keep an incomplete proposal inspectable; readiness carries the blocking error. */ }
+  }
+  const base = {
+    id: input.id,
+    version: input.version,
+    tenantId: input.tenantId,
+    status: "draft" as const,
+    generatedAt: input.generatedAt ?? generatedAt.toISOString(),
+    customer: { name: input.customerName, sector: input.sector },
+    context: input.context,
+    problem: input.problem,
+    desiredOutcome: input.desiredOutcome,
+    diagnosisConfidence: input.diagnosisConfidence,
+    evidence: input.evidence.map(e => ({ ...e })),
+    metric: { ...input.metric, guardrails: [...input.metric.guardrails], exclusions: [...input.metric.exclusions] },
+    scenario: { ...input.scenario, assumptions: [...input.scenario.assumptions], risks: [...input.scenario.risks] },
+    scope: [...input.scope],
+    deliverables: [...input.deliverables],
+    exclusions: [...input.exclusions],
+    dependencies: input.dependencies.map(d => ({ ...d })),
+    responsibilities: input.responsibilities.map(r => ({ ...r })),
+    acceptanceCriteria: [...input.acceptanceCriteria],
+    pricing: {
+      lines: input.pricingLines.map(line => ({ ...line })),
+      ...(indicativeSummary ? { indicativeSummary } : {}),
+    },
+    ...(input.deliveryWindowDays !== undefined ? { deliveryWindowDays: input.deliveryWindowDays } : {}),
+    readiness,
+    commercialNotice: "Minuta preliminar para revisão. Estimativas e hipóteses não são resultados garantidos. Cobrança por resultado depende de baseline aprovado, fonte de verdade, período, atribuição, guardrails e evidências aceitas pelas partes.",
+  };
+  return Object.freeze(base);
+}
