@@ -60,7 +60,7 @@ test("rejects cross-tenant evidence, unknown control references and duplicate ev
 });
 
 test("enforces privacy basis, independent verification and strict timestamps", () => {
-  assert.throws(() => run({ evidence: evidence.map(item => item.id === "ev-consent" ? { ...item, consentId: undefined, verifiedBy: undefined } : item) }),
+  assert.throws(() => run({ evidence: evidence.map(item => { if (item.id !== "ev-consent") return item; const { consentId: _consentId, verifiedBy: _verifiedBy, ...rest } = item; return rest; }) }),
     /COMPLIANCE_PRIVACY_BASIS_REQUIRED/);
   assert.throws(() => run({ evidence: evidence.map(item => item.id === "ev-access" ? { ...item, verifiedBy: "system" } : item) }),
     /COMPLIANCE_REVIEW_INDEPENDENT_REQUIRED/);
@@ -73,7 +73,7 @@ test("enforces privacy basis, independent verification and strict timestamps", (
 test("rejects invalid controls, period boundaries and unauthorized execution", () => {
   assert.throws(() => run({ controls: [{ ...controls[0]!, requiredEvidenceKinds: [] }] }), /COMPLIANCE_CONTROL_INVALID/);
   assert.throws(() => run({ periodStart: "2026-11-11T00:00:00.000Z" }), /COMPLIANCE_PERIOD_INVALID/);
-  assert.throws(() => run({ tenantId: "tenant_b" }), /COMPLIANCE_CONTROL_NOT_FOUND/);
+  assert.throws(() => run({ tenantId: "tenant_b" }), /COMPLIANCE_TENANT_MISMATCH/);
   assert.throws(() => run({}, () => false), /COMPLIANCE_RUN_UNAUTHORIZED/);
 });
 
@@ -87,5 +87,5 @@ test("builds a tamper-evident evidence bundle and requires independent reviewer"
   const reviewed = reviewComplianceEvidenceBundle(bundle, "independent_auditor", now);
   assert.equal(reviewed.reviewedBy, "independent_auditor");
   assert.ok(Object.isFrozen(reviewed));
-  assert.throws(() => reviewComplianceEvidenceBundle(bundle, "control_runner", now), /COMPLIANCE_REVIEW_INDEPENDENT_REQUIRED/);
+  assert.throws(() => reviewComplianceEvidenceBundle(bundle, "control_runner", now), /COMPLIANCE_REVIEW_INDEPENDENT_REQUIRED/);\n  assert.throws(() => reviewComplianceEvidenceBundle({ ...bundle, controls: [] }, "independent_auditor", now), /COMPLIANCE_BUNDLE_HASH_MISMATCH/);
 });
