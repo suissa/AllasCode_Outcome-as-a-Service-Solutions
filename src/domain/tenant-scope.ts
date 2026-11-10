@@ -1,5 +1,5 @@
 import type { EntityId } from "./identifiers.ts";
-import { IdentifierValidationError } from "./identifiers.ts";
+import { IdentifierValidationError, parseEntityId } from "./identifiers.ts";
 
 export type TenantId = EntityId<"tenant">;
 
@@ -19,14 +19,10 @@ export function assertTenantScope<T extends TenantScoped>(
   record: T,
   path = "record.tenantId",
 ): T {
-  if (!scope.tenantId || !record?.tenantId) {
-    throw new IdentifierValidationError({
-      code: "ID_REQUIRED", path,
-      message: "Tenant scope and record tenant ID are mandatory.",
-    });
-  }
-  if (scope.tenantId !== record.tenantId) {
-    throw new TenantIsolationError(path, scope.tenantId, record.tenantId);
+  const activeScope = requireTenantScope(scope);
+  const recordTenantId = parseEntityId("tenant", record?.tenantId, path);
+  if (activeScope.tenantId !== recordTenantId) {
+    throw new TenantIsolationError(path, activeScope.tenantId, recordTenantId);
   }
   return record;
 }
@@ -44,8 +40,11 @@ export class TenantIsolationError extends Error {
 
 /** Fail closed when tenant scope is absent; never fall back to a global query. */
 export function requireTenantScope(scope: TenantScope | null | undefined): TenantScope {
-  if (!scope?.tenantId || !scope.actorId || !scope.correlationId) {
+  if (!scope?.tenantId || typeof scope.actorId !== "string" || !scope.actorId.trim() || scope.actorId.length > 256 ||
+      typeof scope.correlationId !== "string" || !scope.correlationId.trim() || scope.correlationId.length > 256 ||
+      /\\s/.test(scope.actorId) || /\\s/.test(scope.correlationId)) {
     throw new TenantIsolationError("scope", "tenant_missing" as TenantId, "record_missing" as TenantId);
   }
-  return scope;
+  const tenantId = parseEntityId("tenant", scope.tenantId, "scope.tenantId");
+  return Object.freeze({ ...scope, tenantId });
 }
