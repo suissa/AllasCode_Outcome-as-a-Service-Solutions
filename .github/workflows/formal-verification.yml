@@ -1,0 +1,29 @@
+name: Formal verification
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "formal/agda/**"
+      - ".github/workflows/formal-verification.yml"
+  push:
+    branches: [main]
+    paths:
+      - "formal/agda/**"
+      - ".github/workflows/formal-verification.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  agda:
+    name: Check Agda proof obligations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Agda
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes agda-bin
+      - name: Typecheck formal specification
+        run: agda --safe -i formal/agda formal/agda/OaaS/SyntropicAntifragility.agda

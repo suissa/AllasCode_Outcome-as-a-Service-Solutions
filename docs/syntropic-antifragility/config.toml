@@ -1,0 +1,24 @@
+[syntropic_antifragility]
+enabled = true
+mode = "proposal-only"
+require_evidence = true
+require_tenant_scope = true
+require_regression_tests = true
+require_policy_approval = true
+require_verified_rollback = true
+require_bounded_blast_radius = true
+default_human_approval_for = ["high", "critical"]
+formal_proof_default = "required-for-invariant-changing-behaviors"
+learning_publication = "post-verification-only"
+
+[measurement]
+minimum_improving_metrics = 1
+allow_guardrail_regression = false
+default_tolerance = 0.0
+require_baseline_snapshot = true
+
+[security]
+raw_payload_in_learning_ledger = false
+cross_tenant_learning = false
+agent_can_promote = false
+agent_can_change_policy = false
