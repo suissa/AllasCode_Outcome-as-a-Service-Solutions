@@ -7,7 +7,8 @@
   "title": "OaaS.Quest — Descoberta de objetivos",
   "contentRefs": [
     "discovery.stages",
-    "discovery.solutions"
+    "discovery.solutions",
+    "ui-copy.discovery"
   ],
   "sections": [
     {
