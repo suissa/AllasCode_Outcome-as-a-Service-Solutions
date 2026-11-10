@@ -1,0 +1,39 @@
+version: "1.0"
+behavior: capability-playbook-template-evidence
+evidence:
+  required: [id, tenantId, contentHash, verifiedBy, verifiedAt, classification]
+  contentHash: sha256
+  mustBeUnexpired: true
+  verifierMustDifferFromAuthor: true
+capability:
+  required: [id, tenantId, version, revision, name, description, causes, outcomes, dependencies, risk, cost, benefit, evidenceIds]
+  publication: compare_and_swap
+  ranges: nonnegative_min_lte_max
+playbook:
+  required: [id, tenantId, version, revision, name, steps, evidenceIds]
+  stepRequired: [behaviorId, inputSchema, outputSchema, approvalRequired]
+  behaviorIdsUnique: true
+template:
+  required: [id, tenantId, version, revision, name, description, behaviorIds, inputSchema, outputSchema, schemaHash, evidenceIds]
+  schemaHash: sha256
+governance:
+  require_action_authorization: true
+  authorMustDifferFromReviewer: true
+  idempotency_scope: [tenantId, artifactId]
+invariants:
+  - tenant-isolation
+  - verified-evidence-only
+  - evidence-expiry-enforcement
+  - independent-review
+  - version-monotonicity
+  - compare-and-swap
+  - deterministic-schema-hash
+  - no-raw-evidence-payloads
+errors:
+  - { code: KNOWLEDGE_UNAUTHORIZED, path: actor/reviewer }
+  - { code: KNOWLEDGE_EVIDENCE_UNVERIFIED, path: evidenceIds }
+  - { code: KNOWLEDGE_EVIDENCE_TENANT_MISMATCH, path: evidenceIds.tenantId }
+  - { code: KNOWLEDGE_EVIDENCE_EXPIRED, path: evidenceIds.validUntil }
+  - { code: CAPABILITY_VERSION_CONFLICT, path: expectedVersion }
+  - { code: PLAYBOOK_STEPS_INVALID, path: steps }
+  - { code: CAPABILITY_TEMPLATE_VERSION_CONFLICT, path: expectedVersion }
