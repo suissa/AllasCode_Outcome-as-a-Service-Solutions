@@ -69,6 +69,7 @@ test("contract HTTP lifecycle persists a draft, review, approval, signatures and
     assert.equal(created.status, 201);
     const createdBody = await created.json() as { value: ContractRecord };
     const id = createdBody.value.id; assert.equal(createdBody.value.state, "draft");
+    assert.equal(createdBody.value.proposalApproval.approvedBy, "customer_admin");
     const path = "/v1/contracts/" + encodeURIComponent(id);
     assert.equal((await post(path + "/submit-review", "submit-1", {})).status, 200);
     assert.equal((await post(path + "/approve", "approve-1", {})).status, 200);
