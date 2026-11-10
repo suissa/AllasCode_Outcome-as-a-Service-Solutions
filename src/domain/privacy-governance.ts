@@ -12,7 +12,7 @@ export type ConsentSource = "web" | "api" | "conversation" | "paper" | "signed_d
 export type ConsentStatus = "active" | "withdrawn" | "denied" | "expired";
 export type ProcessingLegalBasis = "consent" | "contract" | "legal_obligation" | "legitimate_interest" | "vital_interest" | "public_task";
 
-export interface ConsentRecord {
+export interface GovernedPrivacyConsentRecord {
   id: string;
   tenantId: WorkspaceTenantId;
   dataSubjectId: string;
@@ -32,10 +32,10 @@ export interface ConsentRecord {
 }
 
 export interface ConsentStore {
-  getConsent(tenantId: string, id: string): Promise<ConsentRecord | undefined>;
-  findConsentByIdempotency(tenantId: string, key: string): Promise<ConsentRecord | undefined>;
-  createConsent(record: ConsentRecord, idempotencyKey: string): Promise<boolean>;
-  commitConsent(updated: ConsentRecord, expectedRevision: number): Promise<boolean>;
+  getConsent(tenantId: string, id: string): Promise<GovernedPrivacyConsentRecord | undefined>;
+  findConsentByIdempotency(tenantId: string, key: string): Promise<GovernedPrivacyConsentRecord | undefined>;
+  createConsent(record: GovernedPrivacyConsentRecord, idempotencyKey: string): Promise<boolean>;
+  commitConsent(updated: GovernedPrivacyConsentRecord, expectedRevision: number): Promise<boolean>;
 }
 
 export interface DataProcessingRecord {
@@ -126,7 +126,7 @@ export async function recordPrivacyConsent(
     store: ConsentStore;
     authorize(actorId: string, tenantId: WorkspaceTenantId, action: "privacy.consent.record"): Promise<boolean>;
   },
-): Promise<Readonly<ConsentRecord>> {
+): Promise<Readonly<GovernedPrivacyConsentRecord>> {
   if (!input || !required(input.id) || !required(input.dataSubjectId) || !required(input.actorId) ||
       !required(input.purpose) || !required(input.idempotencyKey) ||
       !Array.isArray(input.categories) || input.categories.length === 0 ||
@@ -155,7 +155,7 @@ export async function recordPrivacyConsent(
     }
     return Object.freeze({ ...replay, categories: Object.freeze([...replay.categories]) });
   }
-  const record: ConsentRecord = Object.freeze({
+  const record: GovernedPrivacyConsentRecord = Object.freeze({
     id: input.id, tenantId: input.tenantId, dataSubjectId: input.dataSubjectId,
     purpose: input.purpose, categories: Object.freeze([...input.categories].sort()),
     decision: input.decision, status: input.decision === "grant" ? "active" : "denied",
@@ -182,7 +182,7 @@ export async function withdrawPrivacyConsent(
     store: ConsentStore;
     authorize(actorId: string, tenantId: WorkspaceTenantId, action: "privacy.consent.withdraw"): Promise<boolean>;
   },
-): Promise<Readonly<ConsentRecord>> {
+): Promise<Readonly<GovernedPrivacyConsentRecord>> {
   if (!input || !required(input.consentId) || !required(input.actorId) || !required(input.reason) ||
       !Number.isInteger(input.expectedRevision) || input.expectedRevision < 1) fail("CONSENT_WITHDRAWAL_INPUT_INVALID", "input");
   validateTenantId(input.tenantId);
@@ -194,7 +194,7 @@ export async function withdrawPrivacyConsent(
   if (current.tenantId !== input.tenantId) fail("PRIVACY_TENANT_MISMATCH", "consent.tenantId");
   if (current.status !== "active") fail("CONSENT_NOT_ACTIVE", "consent.status");
   if (current.revision !== input.expectedRevision) fail("CONSENT_REVISION_CONFLICT", "expectedRevision");
-  const updated: ConsentRecord = Object.freeze({
+  const updated: GovernedPrivacyConsentRecord = Object.freeze({
     ...current, status: "withdrawn", withdrawnAt: now.toISOString(),
     withdrawnBy: input.actorId, withdrawalReason: input.reason, revision: current.revision + 1,
   });
@@ -204,7 +204,7 @@ export async function withdrawPrivacyConsent(
 
 export async function validateDataProcessingBasis(
   record: DataProcessingRecord,
-  findConsent: (tenantId: string, consentId: string) => Promise<ConsentRecord | undefined>,
+  findConsent: (tenantId: string, consentId: string) => Promise<GovernedPrivacyConsentRecord | undefined>,
   now = new Date(),
 ): Promise<true> {
   if (!record || !required(record.id) || !required(record.dataSubjectId) || !required(record.category) ||
