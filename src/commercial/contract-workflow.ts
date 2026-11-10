@@ -14,6 +14,7 @@ export interface ContractRecord {
   agreement: Agreement;
   document: ContractPackage;
   requiredSigners: readonly string[];
+  proposalApproval: { approvedBy: string; approvedAt: string };
   state: ContractLifecycleState;
   revision: number;
   createdAt: string;
@@ -88,6 +89,7 @@ export function createContractRecord(input: CreateContractRecordInput, tenantId:
   return deepFreeze({
     tenantId, id: document.id, proposalId: input.proposal.id, proposalVersion: input.proposal.version,
     agreement: { ...input.agreement }, document, requiredSigners: [...input.requiredSigners],
+    proposalApproval: { approvedBy: input.approvedBy, approvedAt: timestamp },
     state: "draft", revision: 1, createdAt: timestamp, updatedAt: timestamp,
   });
 }
