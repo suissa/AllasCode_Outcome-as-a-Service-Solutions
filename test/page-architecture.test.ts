@@ -94,7 +94,7 @@ test("page loader mounts templates and loads layout scripts from nested entries"
   };
   const payloads:Record<string,any>={
     "pages/pt-BR/discovery.json":{id:"discovery",layout:"discovery",title:"Discovery",contentRefs:["discovery.stages"],sections:[]},
-    "layouts/discovery.json":{id:"discovery",template:"layouts/discovery.html",stylesheet:"layouts/discovery.css",scripts:["runtime/discovery.js"]},
+    "layouts/discovery.json":{id:"discovery",template:"layouts/discovery.html",stylesheet:"layouts/discovery.css",scripts:["runtime/proposal-inference.js","runtime/discovery.js"]},
     "content/discovery.pt-BR.json":{stages:[]}
   };
   const fetch=async(input:unknown)=>{
