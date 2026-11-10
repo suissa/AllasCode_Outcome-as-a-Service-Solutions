@@ -1,0 +1,44 @@
+version: "1.0"
+behavior: slo-health-telemetry
+input:
+  policy:
+    required: [id, tenantId, name, availabilityTarget, errorRateTarget, latencyP95TargetMs, windowSeconds, minimumSamples]
+    constraints:
+      availabilityTarget: [0, 1]
+      errorRateTarget: [0, 1]
+      latencyP95TargetMs: positive
+      windowSeconds: [1, 2678400]
+      minimumSamples: [1, 1000000]
+  observations:
+    required: [id, tenantId, occurredAt, latencyMs, outcome]
+    uniqueBy: id
+    tenantMustEqual: policy.tenantId
+    occurredAt: strict-utc-iso8601-not-future
+    latencyMs: [0, 86400000]
+    outcome: [success, error]
+output:
+  status: [healthy, breached, insufficient_data]
+  metrics: [sampleSize, availability, errorRate, latencyP95Ms]
+  window: [windowStart, windowEnd]
+  breaches: metric-observed-target
+health:
+  tenantMustEqual: requestedTenantId
+  staleCriticalProbe: unhealthy
+  staleNonCriticalProbe: degraded
+  emptyProbeSet: unhealthy
+trace:
+  traceId: w3c-32-hex-nonzero
+  spanId: w3c-16-hex-nonzero
+  required: [tenantId, actorId, requestId]
+telemetry:
+  maxAttributes: 32
+  maxStringLength: 256
+  sensitiveKeyValues: redact
+  values: [string, finite-number, boolean, null]
+errors:
+  - { code: SLO_POLICY_INVALID, path: policy-field }
+  - { code: OBSERVATION_TENANT_MISMATCH, path: observations[index].tenantId }
+  - { code: OBSERVATION_TIMESTAMP_INVALID, path: observations[index].occurredAt }
+  - { code: HEALTH_TENANT_MISMATCH, path: probes[index].tenantId }
+  - { code: TRACE_ID_INVALID, path: traceId/spanId }
+  - { code: TELEMETRY_EVENT_INVALID, path: event }
