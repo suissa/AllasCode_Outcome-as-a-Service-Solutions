@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { assessProposalReadiness, composeOutcomeProposal, renderOutcomeProposalMarkdown, type OutcomeProposalInput } from "../../src/commercial/proposal.ts";
+import { assessProposalReadiness, composeContractFromOutcomeProposal, composeOutcomeProposal, renderOutcomeProposalMarkdown, type OutcomeProposalInput } from "../../src/commercial/proposal.ts";
 
 const valid: OutcomeProposalInput = {
   id: "proposal_001",
@@ -94,4 +94,46 @@ test("rejects a malformed proposal timestamp without losing the draft", () => {
 
 test("requires a valid generation clock", () => {
   assert.throws(() => composeOutcomeProposal(valid, new Date("invalid")), /PROPOSAL_GENERATION_DATE_INVALID/);
+});
+
+test("creates a contract draft from a review-ready proposal after explicit approval", () => {
+  const proposal = composeOutcomeProposal(valid, new Date("2026-11-10T12:00:00.000Z"));
+  const contract = composeContractFromOutcomeProposal({
+    proposal,
+    agreement: {
+      id: "agreement_001", tenantId: "tenant_001", version: 1, status: "draft",
+      scope: [...proposal.scope], deliverables: [...proposal.deliverables], exclusions: [...proposal.exclusions], fees: [],
+    },
+    parties: [
+      { legalName: "Cliente Exemplo Ltda.", representative: "Diretora", role: "customer" },
+      { legalName: "OaaS.Quest", representative: "Representante", role: "provider" },
+    ],
+    effectiveDate: "2026-11-10",
+    jurisdiction: "Brasil",
+    approvedBy: "customer_admin",
+  }, new Date("2026-11-10T12:00:00.000Z"));
+  assert.equal(contract.status, "draft");
+  assert.equal(contract.tenantId, proposal.tenantId);
+  assert.ok(contract.annexes.some(annex => annex.kind === "outcome"));
+  assert.ok(contract.annexes.some(annex => annex.kind === "acceptance"));
+});
+
+test("blocks contract composition when proposal is incomplete or agreement scope diverges", () => {
+  const proposal = composeOutcomeProposal({ ...valid, metric: { ...valid.metric, attribution: "pending" } });
+  const agreement = {
+    id: "agreement_001", tenantId: "tenant_001", version: 1, status: "draft" as const,
+    scope: [...valid.scope], deliverables: [...valid.deliverables], exclusions: [...valid.exclusions], fees: [],
+  };
+  const parties = [
+    { legalName: "Cliente Exemplo Ltda.", representative: "Diretora", role: "customer" as const },
+    { legalName: "OaaS.Quest", representative: "Representante", role: "provider" as const },
+  ];
+  assert.throws(() => composeContractFromOutcomeProposal({
+    proposal, agreement, parties, effectiveDate: "2026-11-10", jurisdiction: "Brasil", approvedBy: "customer_admin",
+  }), /PROPOSAL_NOT_READY_FOR_CONTRACT/);
+  const ready = composeOutcomeProposal(valid);
+  assert.throws(() => composeContractFromOutcomeProposal({
+    proposal: ready, agreement: { ...agreement, scope: ["Outro escopo"] }, parties,
+    effectiveDate: "2026-11-10", jurisdiction: "Brasil", approvedBy: "customer_admin",
+  }), /PROPOSAL_CONTRACT_SCOPE_MISMATCH/);
 });
