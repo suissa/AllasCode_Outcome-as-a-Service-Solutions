@@ -1,0 +1,11 @@
+validate_report_input -(valid)-> resolve_tenant_evidence
+validate_report_input -(invalid)-> reject_report
+resolve_tenant_evidence -(all_found)-> validate_provenance_and_integrity
+resolve_tenant_evidence -(missing_or_cross_tenant)-> reject_without_signing
+validate_provenance_and_integrity -(valid)-> authorize_all_evidence
+validate_provenance_and_integrity -(invalid)-> reject_without_signing
+authorize_all_evidence -(authorized)-> create_short_lived_signed_links
+authorize_all_evidence -(denied)-> reject_without_signing
+create_short_lived_signed_links -(all_https_valid)-> freeze_customer_report
+create_short_lived_signed_links -(provider_error_or_invalid_url)-> reject_report_and_record_failure
+freeze_customer_report -(success)-> return_report
