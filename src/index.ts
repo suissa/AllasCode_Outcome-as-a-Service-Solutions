@@ -100,3 +100,5 @@ export * from "./domain/workspace-membership.ts";
 export * from "./domain/privacy-governance.ts";
 
 export * from "./commercial/proposal.ts";
+
+export * from "./application/discovery-proposal.ts";
