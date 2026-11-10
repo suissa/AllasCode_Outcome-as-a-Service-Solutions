@@ -131,7 +131,7 @@ function validateReference(reference: SecretReference, now: Date, allowExpired: 
 function validateCredential(record: CredentialRecord, now: Date): void {
   if (!record || !required(record.id) || !required(record.tenantId) || !required(record.ownerActorId) ||
       !Array.isArray(record.scopes) || record.scopes.length === 0 ||
-      record.scopes.some(scope => !required(scope)) || new Set(record.scopes).size !== record.scopes.length ||
+      record.scopes.some(scope => !required(scope) || !validPermission(scope)) || new Set(record.scopes).size !== record.scopes.length ||
       !Number.isInteger(record.revision) || record.revision < 1 ||
       !["active", "rotation_due", "expired", "revoked"].includes(record.status) ||
       !validTimestamp(record.createdAt) ||
@@ -159,7 +159,10 @@ export async function rotateCredential(
   }
 
   const replay = await dependencies.store.findRotation(input.tenantId, input.idempotencyKey);
-  if (replay) return Object.freeze({ ...replay, reference: Object.freeze({ ...replay.reference }), scopes: Object.freeze([...replay.scopes]) });
+  if (replay) {
+    if (replay.id !== input.credentialId || replay.tenantId !== input.tenantId) fail("CREDENTIAL_IDEMPOTENCY_CONFLICT", "idempotencyKey");
+    return Object.freeze({ ...replay, reference: Object.freeze({ ...replay.reference }), scopes: Object.freeze([...replay.scopes]) });
+  }
 
   const current = await dependencies.store.getCredential(input.tenantId, input.credentialId);
   if (!current) fail("CREDENTIAL_NOT_FOUND", "credentialId");
