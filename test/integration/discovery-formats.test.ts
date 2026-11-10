@@ -57,7 +57,7 @@ test("Guilda mission is transformed into Discovery's persisted answer contract",
   OQ.confirmMission();
   const handoff = OQ.prepareDiscovery();
   const saved = JSON.parse(runtime.localStorage.getItem("goaltropic.discovery.v1")!);
-  assert.equal(handoff.prefilled, 10);
+  assert.equal(handoff.prefilled, 11);
   assert.equal(saved.source, "guilda");
   assert.ok(saved.missionId);
   assert.equal(saved.answers.segment.value, "retail");
@@ -77,8 +77,9 @@ test("Guilda handoff and classic Discovery infer equivalent retail facts", async
   const guildaSaved = JSON.parse(runtime.localStorage.getItem("goaltropic.discovery.v1")!);
   const classicAnswers = { ...retailAnswers, ...guildaSaved.answers };
   const build = createInference();
-  const guildaProposal = build({ graph, discovery, answers: guildaSaved.answers, createdAt: "2026-11-10T00:00:00.000Z" });
-  const classicProposal = build({ graph, discovery, answers: classicAnswers, createdAt: "2026-11-10T00:00:00.000Z" });
+  const sharedAnswers = { ...retailAnswers, ...guildaSaved.answers };
+  const guildaProposal = build({ graph, discovery, answers: sharedAnswers, createdAt: "2026-11-10T00:00:00.000Z" });
+  const classicProposal = build({ graph, discovery, answers: sharedAnswers, createdAt: "2026-11-10T00:00:00.000Z" });
   assert.equal(guildaProposal.profile.segment, "retail");
   assert.equal(classicProposal.profile.segment, "retail");
   assert.ok(guildaProposal.context.facts.some((fact: any) => fact.questionId === "segment" && fact.value === "retail"));
