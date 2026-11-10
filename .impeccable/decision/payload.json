@@ -1,0 +1,171 @@
+{
+  "title": "Mundo visual da página clássica",
+  "question": "A rolagem designou o Laudo de Não Conformidade. Mantém, pega um alternativo ou dá nova rolagem?",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Laudo de Não Conformidade",
+      "kicker": "A ROLAGEM",
+      "lineage": "relatório de não conformidade ISO 9001 (RNC)",
+      "thesis": "A OaaS.Quest abre um laudo contra a distância entre o resultado que a empresa quer e o que a operação entrega hoje — e fecha esse laudo em 90 dias, com evidência. O padrão da categoria para serviço orientado a resultado é um herói escuro com gradiente e três cartões de benefício; esta página é um documento sendo emitido, lido como um laudo da própria operação do visitante.",
+      "palette": [
+        "#F2F3F5",
+        "#FFFFFF",
+        "#0E1116",
+        "#D5D9DE",
+        "#0B3FD1"
+      ],
+      "materials": [
+        "folha pautada de documento",
+        "grade de medição em hairline",
+        "tinta de carimbo"
+      ],
+      "viewport": "Uma folha de documento vista de frente ocupando a tela: bloco de identificação com campos reais do laudo no topo, o achado em Archivo na escala de display, e à direita uma coluna de leituras que reporta método, ciclo de 90 dias e o status do achado em aberto.",
+      "risk": "Lê como formulário em vez de página de venda se a folha não tiver de cara um único achado dominante e um CTA inequívoco.",
+      "raised": [
+        {
+          "from": "Bancada de Osciloscópio",
+          "raise": "Tudo na folha é medido contra uma grade de dez divisões, e as leituras reportam status nas mesmas unidades do texto."
+        },
+        {
+          "from": "Catálogo de Convenção",
+          "raise": "Navegação é espacial: um código e sua posição são a mesma coisa, então o índice abre direto no campo que nomeia."
+        },
+        {
+          "from": "Cartaz Recortado",
+          "raise": "O documento domina a folha; todo o resto do texto apenas confirma o que o documento já disse."
+        },
+        {
+          "from": "Espécime Tipográfico",
+          "raise": "Hierarquia só por escala de tipo, sem ornamento; e com movimento reduzido, o estado salta em vez de interpolar."
+        },
+        {
+          "from": "Brocade de Cartão Perfurado",
+          "raise": "A linha de instrução e o motivo pronto são o mesmo espaço: o formulário em branco e o laudo preenchido dividem uma grade."
+        },
+        {
+          "from": "Cidade na Chuva",
+          "raise": "Uma única cor marca o estado — um carimbo de tinta sobre uma folha monocromática."
+        }
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Livro-Razão",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "livro-razão contábil e DRE impressa",
+      "thesis": "O resultado é uma linha no balancete: parte de uma coluna, chega a outra, e o fechamento do exercício prova o que aconteceu.",
+      "palette": [
+        "#FBFAF6",
+        "#1A1C18",
+        "#B4451F",
+        "#C9C3B4"
+      ],
+      "materials": [
+        "pautado contábil",
+        "tinta de lançamento de fechamento"
+      ],
+      "viewport": "Uma folha pautada com a linha de resultado em destaque e colunas de antes/depois; o balanço como narrativa principal.",
+      "risk": "É onde a maioria das páginas de resultado chega: reconhecível e eficaz, porém previsível."
+    },
+    {
+      "id": "challenger-oscilloscope",
+      "label": "Bancada de Osciloscópio",
+      "verdict": "competitive",
+      "lineage": "osciloscópio CRT em bancada de sinal",
+      "thesis": "O resultado é um sinal: a página mede o objetivo do visitante contra uma grade de dez divisões e mostra a forma de onda travada.",
+      "palette": [
+        "#05090A",
+        "#7CFF4F",
+        "#F5B33C"
+      ],
+      "materials": [
+        "vidro de fósforo",
+        "grade gravada"
+      ],
+      "viewport": "Um painel de instrumento denso: à esquerda a promessa, à direita a forma de onda, o trigger e as leituras de canal.",
+      "case": "Funde muito bem na medição e ganha o eixo de clareza do produto — mas perde o de identificação: um osciloscópio é de laboratório, não de sala de reunião.",
+      "risk": "Espectacular e levemente fora do público: um laboratório não é a sala onde o empresário decide.",
+      "hero": "https://impeccable.style/worlds/cards/scientific-notation-oscilloscope-signal-bench-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/scientific-notation-oscilloscope-signal-bench.webp"
+    },
+    {
+      "id": "challenger-catalog",
+      "label": "Catálogo de Convenção",
+      "verdict": "competitive",
+      "lineage": "catálogo de círculo de convenção impresso em jornal",
+      "thesis": "O índice e o mapa são o mesmo espaço: cada célula numerada é um achado e a rota traçada entre eles é o plano de ação.",
+      "palette": [
+        "#111111",
+        "#E8E4D8",
+        "#1F5FA8"
+      ],
+      "materials": [
+        "jornal",
+        "traço de nanquim em tinta única"
+      ],
+      "viewport": "Uma malha densa de células numeradas com o mapa de salões dobrado na lateral servindo de navegação.",
+      "case": "Funde bem: leva a densidade de índice e a navegação espacial, mas perde a identificação do empresário — vira hobby de impressão.",
+      "risk": "Lê como feira de coleção, não como firma de resultado.",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-doujin-event-catalog-hero.webp"
+    },
+    {
+      "id": "declined-cutpaper",
+      "label": "Cartaz Recortado",
+      "verdict": "declined",
+      "lineage": "cartaz de humor gráfico em papel recortado",
+      "kept": "O documento domina a folha; o texto apenas confirma o que o objeto já disse.",
+      "hero": "https://impeccable.style/worlds/cards/brand-identity-canon-fletcher-wit-poster-hero.webp"
+    },
+    {
+      "id": "declined-specimen",
+      "label": "Espécime Tipográfico",
+      "verdict": "declined",
+      "lineage": "espécime de fonte variável interativo",
+      "kept": "Hierarquia só por escala de tipo, sem ornamento; movimento reduzido que salta entre estados nomeados.",
+      "hero": "https://impeccable.style/worlds/cards/variable-font-specimen-hero.webp"
+    },
+    {
+      "id": "declined-cityscape",
+      "label": "Cidade na Chuva",
+      "verdict": "declined",
+      "lineage": "paisagem urbana da hora azul à noite de chuva",
+      "kept": "Um único acento que muda de luz conforme o estado da página.",
+      "hero": "https://impeccable.style/worlds/cards/light-shadow-caustics-rain-night-cityscape-hero.webp"
+    },
+    {
+      "id": "declined-brocade",
+      "label": "Brocade de Cartão Perfurado",
+      "verdict": "declined",
+      "lineage": "tecido jacquard a partir de cartões perfurados",
+      "kept": "A linha de instrução e o motivo pronto são o mesmo espaço: o formulário e o laudo dividem uma grade.",
+      "hero": "https://impeccable.style/worlds/cards/textiles-weave-drape-fashion-jacquard-punched-brocade-hero.webp"
+    }
+  ],
+  "reroll": {
+    "registers": [
+      "safer",
+      "bolder"
+    ]
+  },
+  "buildPath": {
+    "value": "code"
+  },
+  "canon": true,
+  "canonCard": {
+    "label": "O padrão da categoria",
+    "thesis": "O site institucional de serviços B2B que todo mundo já viu, executado no mais alto nível.",
+    "palette": [
+      "#FFFFFF",
+      "#111827",
+      "#2563EB"
+    ],
+    "materials": [
+      "grade limpa",
+      "fotografia de produto"
+    ],
+    "viewport": "O arranjo que o visitante espera: herói centralizado, três benefícios, faixa de logos, formulário de contato.",
+    "risk": "Indistinguível da concorrência por construção."
+  },
+  "steer": true
+}
