@@ -108,6 +108,7 @@ export function approveContractForSignature(record: ContractRecord, actorId: str
 }
 export async function signContract(record: ContractRecord, signature: AgreementSignature, verifier: SignatureVerifier, now = new Date()): Promise<ContractRecord> {
   if (record.state !== "approved") throw new Error("CONTRACT_NOT_APPROVED_FOR_SIGNATURE");
+  if (signature.documentFingerprint !== record.document.fingerprint) throw new Error("CONTRACT_SIGNATURE_DOCUMENT_MISMATCH");
   if (!record.requiredSigners.includes(signature.signerId)) throw new Error("CONTRACT_SIGNER_NOT_REQUIRED");
   const agreement = await recordAgreementSignature(record.agreement, signature, verifier);
   return nextRecord(record, "approved", now, { agreement });
