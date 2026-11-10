@@ -20,11 +20,11 @@ const evidence: ControlEvidenceObservation[] = [
   { id: "ev-retention", tenantId: "tenant_a", controlId: "privacy-consent", kind: "retention_check", sourceId: "retention-job", capturedAt: "2026-11-10T11:46:00.000Z", contentHash: "c".repeat(64), classification: "internal", result: "passed" },
 ];
 
-function run(overrides: Partial<Parameters<typeof runSecurityPrivacyControls>[0]> = {}) {
+function run(overrides: Partial<Parameters<typeof runSecurityPrivacyControls>[0]> = {}, authorize: (actorId: string, tenantId: string) => boolean = () => true) {
   return runSecurityPrivacyControls({
     tenantId: "tenant_a", actorId: "control_runner", periodStart: "2026-11-10T00:00:00.000Z",
     periodEnd: "2026-11-10T12:00:00.000Z", controls, evidence, now, ...overrides,
-  });
+  }, authorize);
 }
 
 test("runs tenant-scoped security and privacy controls deterministically and records evidence provenance", () => {
@@ -74,7 +74,7 @@ test("rejects invalid controls, period boundaries and unauthorized execution", (
   assert.throws(() => run({ controls: [{ ...controls[0]!, requiredEvidenceKinds: [] }] }), /COMPLIANCE_CONTROL_INVALID/);
   assert.throws(() => run({ periodStart: "2026-11-11T00:00:00.000Z" }), /COMPLIANCE_PERIOD_INVALID/);
   assert.throws(() => run({ tenantId: "tenant_b" }), /COMPLIANCE_CONTROL_NOT_FOUND/);
-  assert.throws(() => run({ authorize: false } as never), /COMPLIANCE_RUN_UNAUTHORIZED/);
+  assert.throws(() => run({}, () => false), /COMPLIANCE_RUN_UNAUTHORIZED/);
 });
 
 test("builds a tamper-evident evidence bundle and requires independent reviewer", () => {
