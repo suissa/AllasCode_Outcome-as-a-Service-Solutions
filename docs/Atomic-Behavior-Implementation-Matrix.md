@@ -104,3 +104,5 @@ These additions increase implementation depth and CI coverage, but do not close 
 | #17–18 | Strict channel capture, normalized request envelope, immutable snapshots and provenance chronology | `src/intent/intent.ts`; `test/intent/intent.test.ts`; `specs/intent-capture/` |
 
 | #19 | Structured outcome/scope/deadline/constraint extraction with confidence and ambiguity gates | `src/intent/intent.ts`; `test/discovery/intake.test.ts`; `specs/intent-extraction/` |
+
+| #20 | Explicit field/ambiguity questions and fail-closed routing before discovery | `src/discovery/intake.ts`; `test/discovery/intake.test.ts`; `specs/intent-clarification/` |
