@@ -21,5 +21,42 @@
     "classicTitle": "Modo Clássico",
     "classicDescription": "Um site institucional clean, com navegação convencional para conhecer a metodologia, produtos, serviços e documentação.",
     "switchNote": "Você pode alternar entre os modos a qualquer momento. Sua jornada e seu histórico ficam salvos neste dispositivo."
+  },
+  "guild": {
+    "countSuffix": " mensagens registradas nesta jornada.",
+    "answerPlaceholder": "Digite sua resposta ou escolha uma opção...",
+    "skipQuestion": "Não sei ainda / pular esta pergunta",
+    "unknownAnswer": "Ainda não sei informar.",
+    "labels": {
+      "segment": "Setor",
+      "teamSize": "Tamanho da operação",
+      "desiredOutcome": "Resultado desejado",
+      "process": "Processo prioritário",
+      "challenge": "Principal obstáculo",
+      "deadline": "Horizonte",
+      "successMetric": "Indicador de sucesso"
+    },
+    "unanswered": "ainda não informado",
+    "reviewPlaceholder": "Você pode escrever uma observação ou pedir para revisar as respostas...",
+    "summaryIntro": "Este é o resumo inicial da sua missão:",
+    "summaryDisclaimer": "Confira as informações. Ainda não é um diagnóstico nem uma proposta; a próxima etapa aprofunda o contexto e procura evidências.",
+    "deepen": "Aprofundar diagnóstico",
+    "review": "Revisar respostas",
+    "restart": "Recomeçar missão",
+    "confirmAndDeepen": "Confirmar missão e aprofundar diagnóstico",
+    "confirmedByUser": "Confirmo o resumo da missão.",
+    "confirmedMessage": "Missão registrada neste navegador. Agora podemos aprofundar o diagnóstico, revisar processos e levantar as evidências necessárias antes de recomendar uma solução.",
+    "discoveryError": "Não foi possível preparar o diagnóstico. Confirme primeiro o resumo da missão.",
+    "restartMessage": "Vamos começar uma nova missão. As respostas anteriores permanecem no histórico desta conversa.",
+    "startBusinessMessage": "Vamos registrar o objetivo em etapas curtas. Você pode responder com suas palavras ou pular qualquer pergunta. Ao final, poderá revisar tudo antes de continuar.",
+    "developerMessage": "A trilha técnica reúne conceitos de OaaS, contratos, arquitetura, integração, automação e agentes. Você pode explorar a documentação e os fundamentos sem preencher o diagnóstico empresarial.",
+    "developerLinkText": "Acesse a área técnica para conhecer contratos, arquitetura e práticas de implementação.",
+    "developerLinkLabel": "Abrir área para desenvolvedores",
+    "aboutQuestion": "Quero saber mais sobre Outcome as a Service.",
+    "aboutAnswer": "Outcome as a Service (OaaS) é uma abordagem orientada a resultados. Você define o resultado esperado; contexto, escopo, indicadores, evidências e condições de aceite são construídos em conjunto antes da execução. A solução pode combinar tecnologia, processos e pessoas.",
+    "reviewObservation": "Sua observação foi registrada na conversa. Use “Revisar respostas” para reiniciar a revisão da missão ou confirme o resumo para aprofundar o diagnóstico.",
+    "chooseBusiness": "Para transformar isso em uma missão, escolha “Sou empresário”. Vou fazer algumas perguntas curtas e você poderá pular o que ainda não souber.",
+    "developer": "Sou desenvolvedor.",
+    "business": "Sou empresário"
   }
 }
