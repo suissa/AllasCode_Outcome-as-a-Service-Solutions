@@ -18,3 +18,9 @@ Regras: não inserir novos textos ou perguntas nos runtimes; compartilhar dados 
 `page-config.js` carrega o manifesto da página indicado por `data-oaas-page`, resolve o descritor do layout e busca somente os arquivos JSON referenciados pela página. As referências são resolvidas e validadas antes de publicar `window.OaaSPage` e `window.OaaSPageReady`. O runtime de conteúdo usa essas fontes já carregadas, evitando uma segunda implementação da seleção de conteúdo. A página de descoberta usa a mesma configuração declarativa, com `data-config-root="../"` por estar em um subdiretório.
 
 Os testes verificam entradas HTML, templates, folhas de estilo externas, integridade dos descritores e resolução de cada `contentRef` contra os arquivos JSON reais.
+
+## Templates físicos
+
+O markup de apresentação foi extraído para `layouts/chooser.html`, `layouts/classic.html`, `layouts/guild.html` e `layouts/discovery.html`. Os arquivos `index.html`, `classico.html`, `guilda.html` e `descoberta/index.html` agora são pontos de entrada: declaram a página, carregam o runtime e oferecem o mount point `#oaas-page-root`. O `page-config.js` busca o template indicado pelo descritor JSON e o monta antes de resolver `OaaSPageReady`. Scripts de interação aguardam essa promessa para não procurar elementos antes da montagem.
+
+O CSS e os runtimes específicos continuam nos pontos de entrada nesta etapa; a extração de estilos e scripts para assets independentes é uma etapa posterior.
