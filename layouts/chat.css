@@ -7,6 +7,7 @@
 
 @import "../fonts/fonts.css";
 @import "./themes.css";
+@import "./motion.css";
 
 /* ---------------------------------------------------------------- base */
 
@@ -33,7 +34,7 @@ body:has(.chat-shell) svg { display: block; max-width: 100%; }
 
 body:has(.chat-shell) a { color: inherit; text-decoration: none; }
 
-body:has(.chat-shell) button {
+:where(body:has(.chat-shell) button) {
   font: inherit;
   color: inherit;
   border: 0;
@@ -97,6 +98,14 @@ body:has(.chat-shell) ::selection {
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+.chat-nav-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-top: 16px;
+  border-top: 1px solid var(--oq-line);
 }
 
 .chat-link {
@@ -322,9 +331,9 @@ body:has(.chat-shell) ::selection {
 
 .chat-choice {
   padding: 10px 16px;
-  border: 1px solid var(--oq-line-strong);
+  border: 1px solid color-mix(in srgb, var(--oq-ink) 26%, transparent);
   border-radius: var(--oq-radius-sm);
-  background: var(--oq-surface);
+  background: var(--oq-surface-2);
   color: var(--oq-ink);
   font-size: 14.5px;
   transition: border-color 0.2s var(--oq-ease), background-color 0.2s var(--oq-ease);
@@ -387,9 +396,9 @@ body:has(.chat-shell) ::selection {
 .chat-action {
   display: inline-block;
   padding: 10px 15px;
-  border: 1px solid var(--oq-line-strong);
+  border: 1px solid color-mix(in srgb, var(--oq-ink) 26%, transparent);
   border-radius: var(--oq-radius-sm);
-  background: var(--oq-surface);
+  background: var(--oq-surface-2);
   color: var(--oq-ink);
   font-size: 14px;
   transition: border-color 0.2s var(--oq-ease), background-color 0.2s var(--oq-ease), color 0.2s var(--oq-ease);
@@ -414,6 +423,8 @@ body:has(.chat-shell) ::selection {
 
 .chat-action[data-variant="ghost"] {
   background: transparent;
+  border-color: color-mix(in srgb, var(--oq-accent) 55%, transparent);
+  color: var(--oq-accent);
 }
 
 .chat-action[data-variant="link"] {
@@ -800,7 +811,9 @@ body:has(.chat-shell) ::selection {
     border-right: 0;
     border-bottom: 1px solid var(--oq-line);
   }
-  .chat-nav { flex-direction: row; flex-wrap: wrap; }
+  .chat-nav,
+  .chat-nav-sections { flex-direction: row; flex-wrap: wrap; }
+  .chat-nav-sections { padding-top: 0; border-top: 0; }
   .chat-mode-switch { margin-top: 0; margin-left: auto; }
 }
 

@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { defineConfig, type Plugin, type ViteDevServer } from "vite";
 
@@ -68,6 +68,56 @@ function oaasHtmlRoutes(): Plugin {
 }
 
 /**
+ * Manifesto de assets por pagina: quais folhas de estilo cada rota carrega.
+ * O roteador client-side usa esse mapa para trocar o CSS junto com o conteudo.
+ * No dev ele e gerado a partir do HTML de entrada; no build, do HTML processado
+ * — onde os arquivos tem nome com hash.
+ */
+function oaasAssetsManifest(): Plugin {
+  const readAssets = (html: string) => ({
+    styles: [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)]
+      .map(match => match[1])
+      .filter((href): href is string => Boolean(href)),
+    scripts: [...html.matchAll(/<script[^>]+src="([^"]+)"/g)]
+      .map(match => match[1])
+      .filter((src): src is string => Boolean(src))
+  });
+  let outDir = "dist";
+  return {
+    name: "oaas-assets-manifest",
+    configResolved(config) {
+      outDir = resolve(config.root, config.build.outDir);
+    },
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use((req, res, next) => {
+        const pathname = (req.url ?? "").split("?")[0];
+        if (pathname !== "/oaas-assets.json") {
+          next();
+          return;
+        }
+        const map: Record<string, { styles: string[]; scripts: string[] }> = {};
+        for (const item of routes) {
+          const entry = resolve(server.config.root, item.entry);
+          if (!existsSync(entry)) continue;
+          map[item.pageId] = readAssets(readFileSync(entry, "utf8"));
+        }
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(map));
+      });
+    },
+    closeBundle() {
+      const map: Record<string, { styles: string[]; scripts: string[] }> = {};
+      for (const item of routes) {
+        const built = resolve(outDir, item.entry);
+        if (!existsSync(built)) continue;
+        map[item.pageId] = readAssets(readFileSync(built, "utf8"));
+      }
+      writeFileSync(resolve(outDir, "oaas-assets.json"), JSON.stringify(map, null, 2));
+    }
+  };
+}
+
+/**
  * O WSL monta /mnt/d via DrvFs, que nao suporta inotify: o watcher do Vite nunca
  * dispara e o hot reload nao acontece. Nesse caso o watcher passa a usar polling.
  */
@@ -76,7 +126,7 @@ const needsPolling = process.platform === "linux" && /^\/mnt\//.test(process.cwd
 
 export default defineConfig({
   appType: "mpa",
-  plugins: [oaasHtmlRoutes()],
+  plugins: [oaasHtmlRoutes(), oaasAssetsManifest()],
   server: {
     port: 5173,
     strictPort: false,

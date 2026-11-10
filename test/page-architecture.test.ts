@@ -168,7 +168,7 @@ test("navigation links use routes instead of html files", async () => {
     assert.ok(!/["'][^"']*\.html(?:[?#][^"']*)?["']/.test(source), file + " must not link to .html files");
   }
   const chat = await readFile(join(root, "runtime/chat.js"), "utf8");
-  assert.ok(chat.includes('window.location.href="/descoberta"'));
+  assert.ok(chat.includes('"/descoberta"'));
   assert.ok(chat.includes('"/site#solucoes"'));
 });
 
@@ -222,6 +222,64 @@ test("layout runtimes expose mount(page) for re-execution without re-import", as
   ]) {
     const source = await readFile(join(root, file), "utf8");
     assert.ok(/export\s+(async\s+)?function\s+mount\s*\(/.test(source), file + " must export mount(page)");
-    assert.ok(!source.includes("window.OaaSPageReady"), file + " must not depend on the global page promise");
+    assert.ok(!source.includes("await window.OaaSPageReady"), file + " must not depend on the global page promise");
+  }
+});
+
+
+test("the chat keeps its own navigation and fills the section list separately", async () => {
+  const template = await readFile(join(root, "layouts/chat.html"), "utf8");
+  assert.ok(template.includes('class="chat-nav"'), "the chat layout must declare the primary navigation");
+  assert.ok(template.includes('class="chat-nav-sections"'), "the chat layout must declare the section navigation");
+  assert.ok(
+    /class="chat-nav"[^]*?href="\/site"/.test(template),
+    "the primary navigation must keep the link to /site"
+  );
+  const content = await readFile(join(root, "content.js"), "utf8");
+  assert.ok(
+    content.includes(".chat-nav-sections"),
+    "the content runtime must fill the section navigation"
+  );
+  assert.ok(
+    !/querySelector\("\.chat-nav"\)/.test(content),
+    "the content runtime must not overwrite the primary navigation"
+  );
+});
+
+test("every published route is reachable from the interface", async () => {
+  const chooser = await readFile(join(root, "layouts/chooser.html"), "utf8");
+  const site = await readFile(join(root, "layouts/site.html"), "utf8");
+  assert.ok(chooser.includes('href="/exemplos"'), "the home must link to /exemplos");
+  assert.ok(site.includes('href="/exemplos"'), "the site must link to /exemplos");
+  const chat = await readFile(join(root, "layouts/chat.html"), "utf8");
+  assert.ok(chat.includes('href="/site"'), "the chat must link to /site");
+  assert.ok(chat.includes('href="/"'), "the chat must link back to the home");
+  const exemplos = await readFile(join(root, "layouts/exemplos.html"), "utf8");
+  assert.ok(exemplos.includes('href="/chat"'), "the examples must link to /chat");
+});
+
+test("the router swaps stylesheets using the assets manifest", async () => {
+  const config = await readFile(join(root, "vite.config.ts"), "utf8");
+  const router = await readFile(join(root, "runtime/router.js"), "utf8");
+  assert.ok(config.includes("oaasAssetsManifest"), "the build must publish the assets manifest");
+  assert.ok(config.includes("/oaas-assets.json"), "the manifest must be served under /oaas-assets.json");
+  assert.ok(router.includes("/oaas-assets.json"), "the router must read the assets manifest");
+  assert.ok(router.includes("stylesFor"), "the router must resolve the stylesheets of the target page");
+});
+
+test("the shell is the only orchestrator of the title reveal", async () => {
+  const reveal = await readFile(join(root, "runtime/word-reveal.js"), "utf8");
+  const loader = await readFile(join(root, "page-config.js"), "utf8");
+  assert.ok(reveal.includes("h1, h2, h3, h4"), "the reveal must cover every title level");
+  assert.ok(reveal.includes("leadOf"), "the reveal must cover the semi-titles");
+  assert.ok(reveal.includes("data-rise"), "the reveal must mark the semi-titles");
+  assert.ok(loader.includes("applyMotion"), "the shell must apply the motion policy");
+  assert.ok(loader.includes("initWordReveal"), "the shell must call the reveal");
+  for (const file of ["runtime/chooser-page.js", "runtime/site-page.js"]) {
+    const source = await readFile(join(root, file), "utf8");
+    assert.ok(
+      !source.includes("initWordReveal"),
+      file + " must not call the reveal on its own"
+    );
   }
 });

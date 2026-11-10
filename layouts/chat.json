@@ -2,9 +2,11 @@
   "id": "chat",
   "name": "Chat de missão",
   "template": "layouts/chat.html",
-  "stylesheet": "styles.css",
+  "stylesheet": "layouts/chat.css",
+  "stylesheets": ["layouts/chat.css"],
+  "bodyClass": "chat-page",
   "shell": "chat-sidebar + chat-main + chat-side",
-  "renderer": "content.js + app.js",
+  "renderer": "content.js + runtime/chat.js",
   "slots": [
     "chat-navigation",
     "welcome",

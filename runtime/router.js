@@ -6,8 +6,9 @@
  * estilo da pagina e reexecuta o runtime do layout — tudo dentro de uma
  * View Transition.
  *
- * As folhas de estilo vem do manifesto do layout (layouts/<id>.json), que e a
- * unica fonte de verdade: nada de manifesto parallelo de assets.
+ * As folhas de estilo vem do manifesto de assets (/oaas-assets.json), porque no
+ * build os arquivos tem nome com hash e o caminho declarado no layout nao
+ * resolve. O campo stylesheets do descritor de layout e apenas reserva.
  */
 
 const TRANSITION_STYLE_ID = "oq-page-transitions";
@@ -60,19 +61,37 @@ export function createRouter({ pages, layouts, renderPage }) {
     document.head.appendChild(style);
   }
 
-  /** Folhas de estilo declaradas pelo layout da pagina. */
-  function stylesFor(pageId) {
+  /**
+   * Manifesto de assets: no build os arquivos tem nome com hash, entao o caminho
+   * declarado no layout so serve como reserva.
+   */
+  let assetsPromise = null;
+
+  function loadAssets() {
+    if (!assetsPromise) {
+      assetsPromise = fetch("/oaas-assets.json", { cache: "no-cache" })
+        .then(response => (response.ok ? response.json() : {}))
+        .catch(() => ({}));
+    }
+    return assetsPromise;
+  }
+
+  /** Folhas de estilo da pagina: do manifesto de assets, com reserva no layout. */
+  async function stylesFor(pageId) {
+    const assets = await loadAssets();
+    const declared = (assets[pageId] && assets[pageId].styles) || [];
+    if (declared.length) return declared;
     const page = byId.get(pageId);
-    if (!page) return [];
-    const layout = layoutById.get(page.layout);
+    const layout = page ? layoutById.get(page.layout) : null;
     if (!layout) return [];
-    const declared = layout.stylesheets || (layout.stylesheet ? [layout.stylesheet] : []);
-    return declared.map(path => "/" + path.replace(/^\/+/, ""));
+    const paths = layout.stylesheets || (layout.stylesheet ? [layout.stylesheet] : []);
+    return paths.map(path => "/" + path.replace(/^\/+/, ""));
   }
 
   /** Carrega as folhas da pagina destino e espera que cheguem ao navegador. */
   async function prepareStyles(pageId) {
-    const links = stylesFor(pageId).map(href => {
+    const hrefs = await stylesFor(pageId);
+    const links = hrefs.map(href => {
       const link = document.createElement("link");
       link.rel = "stylesheet";
       link.href = href;
@@ -155,9 +174,15 @@ export function createRouter({ pages, layouts, renderPage }) {
       injectTransitionStyles();
       currentPageId = initialPageId;
 
-      managedLinks = stylesFor(initialPageId)
-        .map(href => document.querySelector('link[rel="stylesheet"][href="' + href + '"]'))
-        .filter(Boolean);
+      // A folha da pagina inicial ja esta no documento; o gerenciador assume
+      // apenas as folhas do proprio site (mesma origem).
+      managedLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).filter(link => {
+        try {
+          return new URL(link.href, window.location.href).origin === window.location.origin;
+        } catch {
+          return false;
+        }
+      });
 
       document.addEventListener("click", event => {
         if (event.defaultPrevented || event.button !== 0) return;

@@ -331,11 +331,33 @@
   border-top: 1px solid var(--oq-line);
 }
 
+.home-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px clamp(24px, 5vw, 64px);
+}
+
 .home-note {
   font-size: 13.5px;
   line-height: 1.6;
   color: var(--oq-muted);
   max-width: 70ch;
+}
+
+.home-link {
+  flex: 0 0 auto;
+  font-size: 13.5px;
+  color: var(--oq-accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, var(--oq-accent) 45%, transparent);
+  transition: color 0.2s var(--oq-ease);
+}
+
+.home-link:hover {
+  color: var(--oq-ink);
 }
 
 /* ---------------------------------------------------------------- responsivo */

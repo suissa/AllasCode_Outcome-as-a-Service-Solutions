@@ -6,7 +6,6 @@
  * Uma classe semântica por tipo de elemento — as cores vêm dos tokens de tema.
  */
 
-import { initWordReveal } from "./word-reveal.js";
 
 const esc = value =>
   String(value == null ? "" : value).replace(/[&<>"']/g, c => ({
@@ -322,12 +321,7 @@ export function mount(page) {
   const copy = exp.presentation.site;
   const sectors = page.sources["sector-playbooks"]?.sectors || [];
 
-  const nav = document.getElementById("nav-links");
   const strip = document.getElementById("section-strip");
-
-  if (nav) {
-    nav.innerHTML = NAV.map(item => `<a class="topbar-link" href="${item.href}">${esc(copy.navigation[item.key])}</a>`).join("");
-  }
 
   if (strip) {
     strip.innerHTML = NAV.map(item => `<a class="strip-link" href="${item.href}">${esc(copy.navigation[item.key])}</a>`).join("");
@@ -355,12 +349,11 @@ export function mount(page) {
     ].join("");
   }
 
-  initWordReveal(document);
 
   const footerLine = document.getElementById("footer-line");
   if (footerLine) footerLine.textContent = exp.brand.tagline;
 
-  const links = [...(nav ? nav.querySelectorAll(".topbar-link") : []), ...(strip ? strip.querySelectorAll(".strip-link") : [])];
+  const links = [...(strip ? strip.querySelectorAll(".strip-link") : [])];
   if (links.length) watchSections(links);
 
   if (window.OQ) OQ.logInteraction("site", "content-loaded", { sections: 13 });

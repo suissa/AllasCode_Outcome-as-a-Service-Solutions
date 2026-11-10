@@ -184,22 +184,6 @@ function initScrollSpy() {
   for (const target of targets) scrollSpy.observe(target.element);
 }
 
-/** Preenche os links de navegação do header. */
-function initNavLinks(categories) {
-  const nav = document.getElementById("nav-links");
-  if (!nav) return;
-
-  const links = [
-    ...categories.map(category => ({ href: `#cat-${category.id}`, label: category.title })),
-    { href: "#cat-resultado", label: "Resultado" },
-    { href: "#cat-arquitetura", label: "Arquitetura" }
-  ];
-
-  nav.innerHTML = links.map(link =>
-    `<a class="exemplos-nav-link" href="${esc(link.href)}">${esc(link.label)}</a>`
-  ).join("");
-}
-
 /** Monta a página: o shell chama mount(page) a cada render. */
 export async function mount(page) {
   const data = page && page.sources ? page.sources.exemplos : null;
@@ -219,7 +203,6 @@ export async function mount(page) {
     renderArchitecture(data.architecture)
   ].join("");
 
-  initNavLinks(data.categories);
   initScrollSpy();
 
   const footerLine = document.getElementById("footer-line");

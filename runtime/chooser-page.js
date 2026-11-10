@@ -9,7 +9,6 @@
  * nao duplica listeners nem precisa reimportar o modulo.
  */
 
-import { initWordReveal } from "./word-reveal.js";
 
 const resolve = (source, path) =>
   path.split(".").filter(Boolean).reduce((value, key) => (value == null ? undefined : value[key]), source);
@@ -33,7 +32,6 @@ export function mount(page) {
 
   bind(document, "data-page-copy", page.sources);
 
-  initWordReveal(document);
 
   document.querySelectorAll("[data-mode]").forEach(card =>
     card.addEventListener("click", () => {

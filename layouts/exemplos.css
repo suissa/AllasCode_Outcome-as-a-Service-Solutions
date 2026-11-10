@@ -5,6 +5,7 @@
 
 @import "../fonts/fonts.css";
 @import "./themes.css";
+@import "./motion.css";
 
 /* ---------------------------------------------------------------- base
 
@@ -146,45 +147,6 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
   border-left: 1px solid var(--oq-line-strong);
   white-space: nowrap;
 }
-
-.exemplos-nav-links {
-  display: flex;
-  align-items: center;
-  gap: clamp(8px, 1.1vw, 16px);
-  margin-inline-start: auto;
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.exemplos-nav-links::-webkit-scrollbar { display: none; }
-
-.exemplos-nav-link {
-  position: relative;
-  font-size: 13.5px;
-  white-space: nowrap;
-  color: var(--oq-ink-2);
-  padding: 6px 0;
-  transition: color 0.2s var(--oq-ease);
-}
-
-.exemplos-nav-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1.5px;
-  background: var(--oq-accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.28s var(--oq-ease);
-}
-
-.exemplos-nav-link:hover { color: var(--oq-ink); }
-.exemplos-nav-link:hover::after,
-.exemplos-nav-link[aria-current="true"]::after { transform: scaleX(1); }
-.exemplos-nav-link[aria-current="true"] { color: var(--oq-ink); font-weight: 500; }
 
 /* ---------------------------------------------------------------- botões */
 
@@ -695,11 +657,6 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
     row-gap: 8px;
   }
 
-  .exemplos-nav-links {
-    order: 3;
-    width: 100%;
-    margin-inline-start: 0;
-  }
 
   .exemplos-index { position: static; }
   .exemplos-index .exemplos-shell { padding-block: 10px; }

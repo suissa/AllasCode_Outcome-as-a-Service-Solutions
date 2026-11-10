@@ -1,6 +1,6 @@
 :root{color-scheme:light;--ink:#1d252d;--muted:#68727b;--line:#dfe4e7;--paper:#fff;--canvas:#f1f3f3;--accent:#98713f;--soft:#f7f4ee;--green:#e9f2ed}
 *{box-sizing:border-box}
-body{margin:0;background:var(--canvas);color:var(--ink);font-family:Inter,"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
 .proposal-app{max-width:1100px;margin:0 auto;padding:34px 24px 60px}
  .flex{display:flex}.flex-wrap{flex-wrap:wrap}.justify-between{justify-content:space-between}.gap-2{gap:8px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 auto 22px;max-width:1000px}
 .toolbar-brand{font-size:12px;letter-spacing:.18em;font-weight:800;color:var(--accent)}

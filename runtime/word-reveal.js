@@ -7,12 +7,18 @@
  * transicao de .95s em cubic-bezier(.2,.7,.2,1), escalonada 65ms por palavra (--i)
  * e pelo atraso do bloco (--d).
  *
- * Os demais elementos do heroi (subtitulo, acoes) usam o mesmo relogio, com
- * deslocamento vertical de 28ms e atraso em milissegundos (--d).
+ * A revelacao e aplicada a TODOS os titulos (h1-h4) e a todos os semi-titulos
+ * (o paragrafo que segue um titulo). Quem declara data-words/data-reveal no
+ * template mantem o controle: o atributo explicito tem prioridade.
+ *
+ * Os blocos de texto usam o mesmo relogio, com deslocamento vertical de 28px e
+ * atraso em milissegundos (--d).
  */
 
 const MASK_CLASS = "wm";
 const WORD_CLASS = "wm__i";
+const PREPARED = "data-wm-prepared";
+const HEADINGS = "h1, h2, h3, h4";
 
 let observer = null;
 
@@ -46,7 +52,8 @@ function wrapTextNode(node, counter) {
   node.parentNode.replaceChild(fragment, node);
 }
 
-function splitWords(container, counter) {
+function splitWords(container) {
+  const counter = { value: 0 };
   const walk = node => {
     if (node.nodeType === Node.TEXT_NODE) {
       wrapTextNode(node, counter);
@@ -54,9 +61,46 @@ function splitWords(container, counter) {
     }
     if (node.nodeType !== Node.ELEMENT_NODE) return;
     if (/^(SCRIPT|STYLE|BR)$/.test(node.tagName)) return;
+    // Palavras ja mascaradas nao sao reprocessadas.
+    if (node.classList.contains(MASK_CLASS) || node.classList.contains(WORD_CLASS)) return;
     Array.from(node.childNodes).forEach(walk);
   };
   Array.from(container.childNodes).forEach(walk);
+  container.setAttribute(PREPARED, "true");
+}
+
+/** O paragrafo que acompanha um titulo e o seu semi-titulo. */
+function leadOf(heading) {
+  let node = heading.nextElementSibling;
+  while (node && node.tagName !== "P") node = node.nextElementSibling;
+  return node || null;
+}
+
+function collectTargets(root) {
+  const titles = new Set();
+  const texts = new Set();
+
+  // Titulos declarados no template e todos os headings da pagina.
+  root.querySelectorAll("[data-words]").forEach(element => titles.add(element));
+  root.querySelectorAll(HEADINGS).forEach(element => {
+    if (element.hasAttribute(PREPARED)) {
+      titles.add(element);
+      return;
+    }
+    // Heading dentro de um bloco ja declarado fica sob controle do bloco.
+    if (element.closest("[data-words]")) return;
+    titles.add(element);
+  });
+
+  // Semi-titulos: o paragrafo que acompanha um titulo.
+  titles.forEach(title => {
+    const lead = leadOf(title);
+    if (lead) texts.add(lead);
+  });
+
+  root.querySelectorAll("[data-reveal]").forEach(element => texts.add(element));
+
+  return { titles: [...titles], texts: [...texts] };
 }
 
 /**
@@ -70,14 +114,27 @@ export function initWordReveal(root = document) {
     observer = null;
   }
 
-  const titles = Array.from(root.querySelectorAll("[data-words]"));
-  const blocks = Array.from(root.querySelectorAll("[data-reveal]"));
-  if (!titles.length && !blocks.length) return;
+  const { titles, texts } = collectTargets(root);
+  if (!titles.length && !texts.length) return;
 
-  const counter = { value: 0 };
-  titles.forEach(title => splitWords(title, counter));
+  titles.forEach(title => {
+    if (!title.hasAttribute(PREPARED)) splitWords(title);
+    if (!title.hasAttribute("data-words")) title.setAttribute("data-words", "");
+  });
 
-  const targets = titles.concat(blocks);
+  // O bloco ja preparado volta a ser observado: a observacao anterior foi
+  // desmontada no inicio desta chamada.
+  texts.forEach(text => {
+    if (!text.hasAttribute(PREPARED)) {
+      text.setAttribute(PREPARED, "true");
+      if (!text.hasAttribute("data-reveal") && !text.hasAttribute("data-rise")) {
+        text.setAttribute("data-rise", "");
+      }
+    }
+  });
+
+  const targets = titles.concat(texts);
+
   targets.forEach(target => {
     const delay = target.getAttribute("data-delay");
     if (delay) target.style.setProperty("--d", delay);
@@ -97,7 +154,7 @@ export function initWordReveal(root = document) {
         requestAnimationFrame(() => target.classList.add("is-in"));
       });
     },
-    { rootMargin: "0px 0px -10% 0px", threshold: 0.08 }
+    { rootMargin: "0px 0px -8% 0px", threshold: 0.06 }
   );
 
   targets.forEach(target => observer.observe(target));

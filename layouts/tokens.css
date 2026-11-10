@@ -131,26 +131,6 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   height: 26px;
 }
 
-/* ---------------------------------------------------------------- botoes */
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  height: 44px;
-  padding: 0 20px;
-  border: 1px solid transparent;
-  border-radius: var(--oq-radius-sm);
-  background: var(--oq-accent);
-  color: var(--oq-ground);
-  font-size: 15px;
-  font-weight: 500;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: border-color 0.2s var(--oq-ease), color 0.2s var(--oq-ease),
-    background-color 0.2s var(--oq-ease);
-}
-
 /* ---------------------------------------------------------------- rodape */
 
 .footer {

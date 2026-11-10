@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 
@@ -11,17 +12,23 @@ test("Forger emits crawlable HTML and SEO artifacts", () => {
     "site/index.html",
     "chat/index.html",
     "descoberta/index.html",
-    "proposta/index.html",
-    "sitemap.xml",
-    "robots.txt",
-    "llms.txt"
+    "proposta/index.html"
   ]) {
+    assert.ok(existsSync("dist/seo/" + file), "missing dist/seo/" + file);
+  }
+  for (const file of ["sitemap.xml", "robots.txt", "llms.txt"]) {
     assert.ok(existsSync("dist/" + file), "missing dist/" + file);
   }
 });
 
+test("the forger never overwrites the app entries built by Vite", () => {
+  const source = readFileSync("scripts/forger.mjs", "utf8");
+  assert.ok(source.includes("FORGER_COLLIDE"), "the forger must refuse to overwrite an app entry");
+  assert.ok(source.includes('"seo"'), "the forger must write its pages under dist/seo/");
+});
+
 test("generated pages include semantic content and unique canonical metadata", async () => {
-  const html = await readFile("dist/index.html", "utf8");
+  const html = await readFile("dist/seo/index.html", "utf8");
   assert.match(html, /<main>/);
   assert.match(html, /<h1>/);
   assert.match(html, /name="description"/);
@@ -32,14 +39,14 @@ test("generated pages include semantic content and unique canonical metadata", a
 });
 
 test("the site route publishes the institutional presentation copy", async () => {
-  const html = await readFile("dist/site/index.html", "utf8");
+  const html = await readFile("dist/seo/site/index.html", "utf8");
   assert.match(html, /<h1>/);
   assert.ok(html.includes("OaaS.Quest"));
   assert.ok(html.includes("Outcome as a Service"));
 });
 
 test("the chat route publishes the mission copy", async () => {
-  const html = await readFile("dist/chat/index.html", "utf8");
+  const html = await readFile("dist/seo/chat/index.html", "utf8");
   assert.match(html, /<h1>/);
   assert.ok(html.includes("OaaS.Quest"));
 });
@@ -59,7 +66,7 @@ test("chooser template copy bindings resolve against the locale catalog", async 
 });
 
 test("proposal report is included in crawlable SEO and GEO output", async () => {
-  const html = await readFile("dist/proposta/index.html", "utf8");
+  const html = await readFile("dist/seo/proposta/index.html", "utf8");
   const llms = await readFile("dist/llms.txt", "utf8");
   assert.match(html, /<h1>/);
   assert.match(html, /proposta preliminar/i);

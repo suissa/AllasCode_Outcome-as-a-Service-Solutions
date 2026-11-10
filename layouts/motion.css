@@ -20,14 +20,18 @@
 
 [data-words]:not(.is-in) .wm__i { transform: translateY(112%); }
 
-[data-reveal] {
+[data-reveal],
+[data-rise] {
   transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
   transition-delay: calc(var(--d, 0) * 1ms);
 }
 
-[data-reveal]:not(.is-in) { transform: translateY(28px); }
+/* A revelacao por view da pagina de Exemplos tem o proprio relogio. */
+[data-reveal]:not([data-reveal="view"]):not(.is-in),
+[data-rise]:not(.is-in) { transform: translateY(28px); }
 
 @media (prefers-reduced-motion: reduce) {
   [data-words]:not(.is-in) .wm__i,
-  [data-reveal]:not(.is-in) { transform: none; }
+  [data-reveal]:not([data-reveal="view"]):not(.is-in),
+  [data-rise]:not(.is-in) { transform: none; }
 }

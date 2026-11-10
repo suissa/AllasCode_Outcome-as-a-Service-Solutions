@@ -13,6 +13,7 @@
 import { createPageLoader } from "./page-loader.js";
 import { applyStoredTheme, buildThemeSwitcher } from "./runtime/theme.js";
 import { createRouter } from "./runtime/router.js";
+import { initWordReveal } from "./runtime/word-reveal.js";
 
 const pages = import.meta.glob("/pages/pt-BR/*.json", { eager: true, import: "default" });
 const layouts = import.meta.glob("/layouts/*.json", { eager: true, import: "default" });
@@ -67,7 +68,19 @@ async function renderPage(id) {
     new CustomEvent("oaas:page-ready", { detail: { pageId: resolved.page.id, layoutId: resolved.layout.id } })
   );
   await runLayoutScripts(resolved);
+  applyMotion(resolved);
   return resolved;
+}
+
+/**
+ * A revelacao por mascara de palavra e a politica de movimento do site:
+ * vale para todos os titulos e semi-titulos de todas as paginas do novo
+ * sistema. O shell a aplica depois dos runtimes, para que o conteudo
+ * renderizado tambem entre na revelacao.
+ */
+function applyMotion(resolved) {
+  if (!resolved.page.clientNavigation) return;
+  initWordReveal(document);
 }
 
 window.OaaSPageReady = (async () => {
@@ -82,6 +95,7 @@ window.OaaSPageReady = (async () => {
 window.OaaSPageScriptsReady = window.OaaSPageReady
   .then(async resolved => {
     await runLayoutScripts(resolved);
+    applyMotion(resolved);
     if (resolved.page.clientNavigation) {
       buildThemeSwitcher();
       createRouter({ pages, layouts, renderPage }).start(resolved.page.id);

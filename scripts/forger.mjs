@@ -13,6 +13,11 @@ const root = process.cwd();
 const baseUrl = (process.env.SITE_URL || "https://oaas.quest").replace(/\/$/, "");
 const pageDir = resolve(root, "pages/pt-BR");
 const outDir = resolve(root, "dist");
+// As paginas rastreaveis nao podem ocupar os mesmos caminhos das entradas do
+// app: o build do Vite escreve dist/<rota>/index.html, e sobrescrever esse
+// arquivo entrega ao visitante uma pagina sem runtime e sem estilo. As duas
+// saidas sao artefatos distintos, entao o forger grava em dist/seo/.
+const seoDir = resolve(outDir, process.env.SITE_SEO_DIR || "seo");
 // As paginas do forger sao as do manifesto: nenhuma rota fica de fora.
 const pages = (await readdir(pageDir))
   .filter(name => name.endsWith(".json"))
@@ -54,7 +59,26 @@ const extractText = (value, acc = []) => {
   return acc;
 };
 
-await mkdir(outDir, { recursive: true });
+await mkdir(seoDir, { recursive: true });
+
+/**
+ * Nao sobrescreve uma entrada do app: se o destino for o HTML do Vite, o
+ * forger falha em vez de destruir a pagina.
+ */
+async function assertNotAppEntry(target) {
+  try {
+    const current = await readFile(target, "utf8");
+    if (current.includes("oaas-page-root")) {
+      throw new Error(
+        "FORGER_COLLIDE:" + target + " e uma entrada do app; o forger grava em dist/seo/"
+      );
+    }
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "FORGER_COLLIDE") throw error;
+    if (error && typeof error === "object" && error.message && String(error.message).startsWith("FORGER_COLLIDE:")) throw error;
+    // Arquivo inexistente: nada a preservar.
+  }
+}
 
 const sitemap = [];
 
@@ -103,8 +127,10 @@ for (const id of pages) {
   }).replace(/</g, "\\u003c")}</script></head><body>${body}<noscript>OaaS.Quest — Your Goal. Our Quest.</noscript></body></html>`;
 
   const target = page.route === "/" ? "index.html" : page.route.replace(/^\//, "") + "/index.html";
-  await mkdir(dirname(resolve(outDir, target)), { recursive: true });
-  await writeFile(resolve(outDir, target), html);
+  const destination = resolve(seoDir, target);
+  await mkdir(dirname(destination), { recursive: true });
+  await assertNotAppEntry(destination);
+  await writeFile(destination, html);
 
   sitemap.push(`<url><loc>${esc(canonical)}</loc></url>`);
 }

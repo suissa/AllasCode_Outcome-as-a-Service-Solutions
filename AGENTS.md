@@ -37,6 +37,9 @@ inotify): o Vite já liga polling automático nesse caso.
 - `page-loader.js` — resolve fontes por nome; precisa cobrir **todas** as fontes que os
   manifestos declaram, senão a página renderiza em branco em runtime (build e teste passam).
 - `page-config.js` — shell único: monta o template, executa os runtimes, liga o tema e o router.
+- `scripts/forger.mjs` — gera as páginas estáticas de SEO em `dist/seo/`. **Nunca** em
+  `dist/index.html` ou `dist/<rota>/index.html`: esses são do app (Vite). O forger falha com
+  `FORGER_COLLIDE` se detectar uma entrada do app no destino.
 - `docs/CONTENT-AND-LAYOUT-ARCHITECTURE.md` e `DESIGN.md` — arquitetura e sistema visual.
 
 Rotas: `/` (home), `/site`, `/chat`, `/descoberta`, `/exemplos`.
