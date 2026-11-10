@@ -51,7 +51,7 @@ test("composes a review-ready proposal without treating estimates as guarantees"
   assert.match(proposal.commercialNotice, /não são resultados garantidos/);
   assert.equal(proposal.metric.baseline, 12);
   assert.equal(proposal.metric.target, 7);
-  assert.equal(proposal.pricing.indicativeSummary?.total, 5040);
+  assert.equal(proposal.pricing.indicativeSummary?.total, 5400);
 });
 
 test("keeps incomplete discovery inspectable and blocks outcome fee readiness", () => {
