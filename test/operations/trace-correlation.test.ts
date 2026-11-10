@@ -54,7 +54,8 @@ test("rejects duplicate IDs, duplicate span definitions, invalid parent spans an
   const base = { tenantId: "tenant_a", outcomeId: "outcome_1", executionId: "execution_1", now: new Date("2026-11-10T12:01:00.000Z") };
   assert.throws(() => correlateOutcomeSignals({ ...base, signals: [signals[0]!, signals[0]!] }), /CORRELATION_SIGNAL_DUPLICATE/);
   assert.throws(() => correlateOutcomeSignals({ ...base, signals: [signals[2]!, { ...signals[2]!, id: "t2" }] }), /CORRELATION_SPAN_DUPLICATE/);
-  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...signals[2]!, parentSpanId: "bad" }] }), /CORRELATION_SPAN_INVALID/);\n  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [signals[2]!, { ...signals[0]!, context: { ...context, traceId: "c".repeat(32) } }] }), /CORRELATION_TRACE_MISMATCH/);
+  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...signals[2]!, parentSpanId: "bad" }] }), /CORRELATION_SPAN_INVALID/);
+  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [signals[2]!, { ...signals[0]!, context: { ...context, traceId: "c".repeat(32) } }] }), /CORRELATION_TRACE_MISMATCH/);
   assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...signals[2]!, context: { ...context, traceId: "0".repeat(32) } }] }), /TRACE_ID_INVALID/);
 });
 
