@@ -219,7 +219,7 @@ export function aggregateTenantHealth(
   });
 }
 
-export interface TraceContext {
+export interface ValidatedTraceContext {
   traceId: string;
   spanId: string;
   tenantId: string;
@@ -230,7 +230,7 @@ export interface TraceContext {
   behaviorId?: string;
 }
 
-export function validateTraceContext(context: TraceContext): Readonly<TraceContext> {
+export function validateTraceContext(context: ValidatedTraceContext): Readonly<ValidatedTraceContext> {
   if (!context || !/^(?!0{32})[a-f0-9]{32}$/i.test(context.traceId) ||
       !/^(?!0{16})[a-f0-9]{16}$/i.test(context.spanId)) {
     throw new ObservabilityError("TRACE_ID_INVALID", "traceId/spanId");
@@ -252,7 +252,7 @@ export interface TelemetryEventInput {
   attributes: Readonly<Record<string, string | number | boolean | null>>;
 }
 
-export interface CorrelatedTelemetryEvent extends TraceContext {
+export interface CorrelatedTelemetryEvent extends ValidatedTraceContext {
   name: string;
   occurredAt: string;
   attributes: Readonly<Record<string, string | number | boolean | null>>;
@@ -261,7 +261,7 @@ export interface CorrelatedTelemetryEvent extends TraceContext {
 const SENSITIVE_ATTRIBUTE = /(token|secret|password|authorization|cookie|email|phone|address|document|cpf|cnpj|prompt|payload|credential)/i;
 
 export function createTelemetryEvent(
-  context: TraceContext,
+  context: ValidatedTraceContext,
   input: TelemetryEventInput,
 ): Readonly<CorrelatedTelemetryEvent> {
   const safeContext = validateTraceContext(context);
