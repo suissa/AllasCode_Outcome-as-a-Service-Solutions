@@ -158,5 +158,5 @@ export function renderCustomerOutcomeReport(report: CustomerOutcomeReport): stri
     "",
     "Os valores e links refletem as evidências autorizadas no momento da geração. Links temporários expiram; o relatório não substitui o contrato nem uma auditoria independente.",
   ];
-  return lines.join("\\n");
+  return lines.join("\n");
 }
