@@ -124,13 +124,13 @@ export function createGovernedRelease(
       !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/i.test(input.commitSha) ||
       !/^[a-f0-9]{64}$/i.test(input.artifactHash) || !required(input.createdBy) ||
       (input.target !== "staging" && input.target !== "production") ||
-      !Array.isArray(input.rollbackPlan) || input.rollbackPlan.length === 0 ||
-      input.rollbackPlan.some(action => !required(action)) ||
-      new Set(input.rollbackPlan).size !== input.rollbackPlan.length ||
       !input.checks || Object.values(input.checks).some(value => typeof value !== "boolean") ||
       !(now instanceof Date) || !Number.isFinite(now.getTime())) {
     fail("RELEASE_MANIFEST_INVALID", "manifest");
   }
+  if (!Array.isArray(input.rollbackPlan) || input.rollbackPlan.length === 0 ||
+      input.rollbackPlan.some(action => !required(action)) ||
+      new Set(input.rollbackPlan).size !== input.rollbackPlan.length) fail("RELEASE_ROLLBACK_PLAN_REQUIRED", "rollbackPlan");
   validateMigrationPlan(input.migrations);
   return Object.freeze({
     ...input,
