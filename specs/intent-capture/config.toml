@@ -1,0 +1,11 @@
+[capture]
+allowed_channels = ["web", "api", "conversation", "import"]
+require_source_id = true
+require_tenant_and_actor = true
+require_capture_timestamp = true
+require_creation_timestamp = true
+capture_must_not_follow_ingestion = true
+trim_text_fields = true
+reject_blank_list_items = true
+preserve_duplicate_list_items = true
+freeze_normalized_envelope = true
