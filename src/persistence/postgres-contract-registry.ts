@@ -40,6 +40,13 @@ export class PostgresContractRegistryStore implements ContractRegistryStore {
   const result=await this.db.query<ContractRow>("select payload,revision,state from contract_records where tenant_id=$1 and contract_id=$2",[tenantId,contractId]);
   return result.rows[0]?decode(result.rows[0].payload):undefined;
  }
+ async getIdempotentResult(tenantId:string,idempotencyKey:string,fingerprint:string):Promise<ContractRecord|undefined>{
+  if(!tenantId||!idempotencyKey||!/^[a-f0-9]{64}$/.test(fingerprint))throw new Error("CONTRACT_IDEMPOTENCY_LOOKUP_INVALID");
+  const result=await this.db.query<IdempotencyRow>("select fingerprint,result from contract_idempotency where tenant_id=$1 and idempotency_key=$2",[tenantId,idempotencyKey]);
+  const prior=result.rows[0];if(!prior)return undefined;
+  if(prior.fingerprint!==fingerprint)throw new Error("CONTRACT_IDEMPOTENCY_CONFLICT");
+  return decode(prior.result);
+ }
  async commit(command:ContractCommitCommand):Promise<ContractCommitResult>{
   if(!command.tenantId||!command.contractId||!command.idempotencyKey||!/^[a-f0-9]{64}$/.test(command.fingerprint)||!Number.isInteger(command.expectedRevision)||command.value.revision!==command.expectedRevision+1||command.event.revision!==command.value.revision)throw new Error("CONTRACT_COMMAND_INVALID");
   return this.db.transaction(async tx=>{
