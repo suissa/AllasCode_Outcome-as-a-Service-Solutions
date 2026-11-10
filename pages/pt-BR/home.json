@@ -6,7 +6,8 @@
   "locale": "pt-BR",
   "title": "OaaS.Quest — Your Goal. Our Quest.",
   "contentRefs": [
-    "experience.brand"
+    "experience.brand",
+    "ui-copy.chooser"
   ],
   "sections": [
     {
