@@ -5,7 +5,7 @@ const root = process.cwd();
 const baseUrl = (process.env.SITE_URL || "https://oaas.quest").replace(/\/$/, "");
 const pageDir = resolve(root, "pages/pt-BR");
 const outDir = resolve(root, "dist");
-const pages = ["home", "classic", "guild", "discovery"];
+const pages = ["home", "classic", "guild", "discovery", "proposal"];
 const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const json = async path => JSON.parse(await readFile(resolve(root, path), "utf8"));
 const contentFiles = {
@@ -14,6 +14,7 @@ const contentFiles = {
   "agent-team":"content/agent-team.pt-BR.json",
   "mission-steps":"content/mission-steps.pt-BR.json",
   discovery:"content/discovery.pt-BR.json",
+  "proposal-graph":"content/proposal-graph.pt-BR.json",
   "ui-copy":"content/ui-copy.pt-BR.json"
 };
 const get = (obj,path) => path.split(".").filter(Boolean).reduce((v,k)=>v?.[k],obj);
@@ -43,5 +44,5 @@ for (const id of pages) {
 }
 await writeFile(resolve(outDir,"sitemap.xml"),`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sitemap.join("")}</urlset>`);
 await writeFile(resolve(outDir,"robots.txt"),`User-agent: *\nAllow: /\nSitemap: ${baseUrl}/sitemap.xml\n`);
-await writeFile(resolve(outDir,"llms.txt"),`# OaaS.Quest\n\nYour Goal. Our Quest.\n\nOaaS.Quest transforma objetivos em resultados verificáveis por meio de diagnóstico, planejamento, execução e evidências.\n\n## Páginas\n- ${baseUrl}/\n- ${baseUrl}/classico/\n- ${baseUrl}/guilda/\n- ${baseUrl}/descoberta/\n\n## Princípios\n- Objetivos e critérios explícitos.\n- Execução governada por risco e autorização.\n- Evidências, métricas e auditoria para validar resultados.\n`);
+await writeFile(resolve(outDir,"llms.txt"),`# OaaS.Quest\n\nYour Goal. Our Quest.\n\nOaaS.Quest transforma objetivos em resultados verificáveis por meio de diagnóstico, planejamento, execução e evidências.\n\n## Páginas\n- ${baseUrl}/\n- ${baseUrl}/classico/\n- ${baseUrl}/guilda/\n- ${baseUrl}/descoberta/\n- ${baseUrl}/proposta/\n\n## Princípios\n- Objetivos e critérios explícitos.\n- Execução governada por risco e autorização.\n- Evidências, métricas e auditoria para validar resultados.\n`);
 console.log(`Forger: ${pages.length} páginas, sitemap, robots.txt e llms.txt gerados em dist/.`);

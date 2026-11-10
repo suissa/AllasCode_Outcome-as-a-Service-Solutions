@@ -6,7 +6,7 @@ import { existsSync } from "node:fs";
 
 test("Forger emits crawlable HTML and SEO artifacts", () => {
   execFileSync("node", ["scripts/forger.mjs"], { stdio: "pipe" });
-  for (const file of ["index.html","classico/index.html","guilda/index.html","descoberta/index.html","sitemap.xml","robots.txt","llms.txt"]) {
+  for (const file of ["index.html","classico/index.html","guilda/index.html","descoberta/index.html","proposta/index.html","sitemap.xml","robots.txt","llms.txt"]) {
     assert.ok(existsSync("dist/"+file), "missing dist/"+file);
   }
 });
@@ -32,4 +32,13 @@ test("chooser template copy bindings resolve against the locale catalog", async 
   for (const binding of bindings) {
     assert.equal(typeof resolve(binding), "string", `missing localized copy: ${binding}`);
   }
+});
+
+test("proposal report is included in crawlable SEO and GEO output",async()=>{
+ const html=await readFile("dist/proposta/index.html","utf8");
+ const llms=await readFile("dist/llms.txt","utf8");
+ assert.match(html,/<h1>/);
+ assert.match(html,/proposta preliminar/i);
+ assert.match(html,/rel="canonical"/);
+ assert.match(llms,/\/proposta\//);
 });
