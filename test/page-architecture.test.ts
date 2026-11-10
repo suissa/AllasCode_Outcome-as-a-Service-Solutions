@@ -56,7 +56,7 @@ test("HTML entry points boot through the manifest-driven page runtime",async()=>
   for(const [path,id] of [["index.html","home"],["classico.html","classic"],["guilda.html","guild"],["descoberta/index.html","discovery"],["proposta/index.html","proposal"]] as const){
     const html=await readFile(join(root,path),"utf8");
     assert.ok(html.includes('data-oaas-page="'+id+'"'),path+" must declare its page id");
-    assert.ok(html.includes(path==="descoberta/index.html"?"../page-config.js":"page-config.js"),path+" must load the page runtime");
+    assert.ok(html.includes(path.includes("/index.html")?"../page-config.js":"page-config.js"),path+" must load the page runtime");
     assert.ok(html.includes("oaas-page-root"),path+" must expose the template mount point");
     assert.ok(!html.includes("<script>"),path+" must not embed inline runtime scripts");
   }
