@@ -93,7 +93,7 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
         if (!(await options.authorize(actor, "contract." + action))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
         const input = await readBody(request);
         const idempotencyKey = requiredString(request.headers["idempotency-key"], "IDEMPOTENCY_KEY_REQUIRED");
-        const commandFingerprint = contractCommandFingerprint(action, input);
+        const commandFingerprint = contractCommandFingerprint(action + ":" + contractId, input);
         const replay = await registry.getIdempotentResult(actor.tenantId, idempotencyKey, commandFingerprint);
         if (replay) { send(response, 200, { value: replay, replayed: true, correlationId }); return; }
         const at = now(); let next: ContractRecord;
