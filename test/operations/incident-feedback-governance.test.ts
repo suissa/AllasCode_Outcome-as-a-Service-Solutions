@@ -29,7 +29,7 @@ class MemoryIncidentFeedbackStore implements IncidentFeedbackStore {
   feedback = new Map<string, TenantFeedback>();
   async getIncident(tenantId: string, id: string) { return this.incidents.get(tenantId + ":" + id); }
   async findTransition(tenantId: string, key: string) { return this.transitions.get(tenantId + ":" + key); }
-  async commitIncident(updated: GovernedIncident, expectedRevision: number, key: string) {
+  async commitIncident(updated: GovernedIncident, expectedRevision: number, _event: unknown, key: string) {
     const id = updated.tenantId + ":" + updated.id;
     const current = this.incidents.get(id);
     if (!current || current.revision !== expectedRevision) return false;
@@ -151,9 +151,11 @@ test("postmortem rejects missing or unverified evidence and malformed action ite
 
 test("incident severity, timestamps and feedback windows fail closed", () => {
   const invalid = { ...incident, severity: "sev0" as never };
-  assert.throws(() => transitionTenantIncident({ tenantId: "tenant_a", incidentId: "inc_1", actorId: "x", to: "acknowledged", expectedRevision: 1, idempotencyKey: "x", reason: "x", now }, {
-    store: new MemoryIncidentFeedbackStore(), authorize: async () => true,
-  }), /INCIDENT_TIMESTAMP_INVALID|INCIDENT_INVALID/);
+  const invalidStore = new MemoryIncidentFeedbackStore();
+  invalidStore.incidents.set("tenant_a:inc_1", invalid);
+  await assert.rejects(() => transitionTenantIncident({ tenantId: "tenant_a", incidentId: "inc_1", actorId: "x", to: "acknowledged", expectedRevision: 1, idempotencyKey: "x", reason: "x", now }, {
+    store: invalidStore, authorize: async () => true,
+  }), /INCIDENT_INVALID/);
   assert.throws(() => aggregateTenantFeedback("tenant_a", [feedback, feedback], {
     start: "2026-11-10T10:00:00.000Z", end: "2026-11-10T12:00:00.000Z",
   }, now), /FEEDBACK_DUPLICATE/);
