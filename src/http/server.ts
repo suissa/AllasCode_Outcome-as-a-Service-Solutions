@@ -1,6 +1,7 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { randomUUID } from "node:crypto";
 import type { OutcomeCase } from "../application/outcome-case.ts";
+import { mapDiscoveryToOutcomeProposal, type DiscoveryProposalOptions, type DiscoverySnapshot } from "../application/discovery-proposal.ts";
 import { startOutcomeCase, recordOutcomeEvidence, recordObservation, settleOutcomeCase, disputeOutcomeCase, validateOutcomeCase } from "../application/outcome-case.ts";
 import { createAuditEvent } from "../domain/audit.ts";
 import type { EvidenceRecord } from "../evidence/evidence.ts";
