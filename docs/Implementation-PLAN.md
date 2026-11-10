@@ -285,3 +285,18 @@ Each macro becomes one GitHub issue labeled **goal**. Each AB becomes a separate
 ## Definition of Done
 
 Macro completes only when all linked AB issues meet acceptance criteria, contracts/flows are documented, tests pass, security/privacy and observability are covered, failure/recovery verified, and Goal → AB → test → evidence is traceable. Update this plan as scope changes; code existence alone is not completion.
+
+
+## Commercial, contract and sector operating knowledge base
+
+The product and delivery team must use the following documents when qualifying, pricing, proposing, contracting, planning and operating customer outcomes:
+
+- `docs/README.md`: documentation map, source classification and interpretation rules.
+- `docs/Commercial-Model-and-Pricing.md`: fee taxonomy, pricing formulas, cost/margin model, hybrid pricing, pilots and illustrative examples.
+- `docs/Contract-Playbook.md`: agreement structure, outcome charter, annexes, acceptance, responsibilities, dispute, SLA credits, refunds, bonuses and sector examples.
+- `docs/Sector-Solution-Catalog.md`: sector-specific problem patterns, solution candidates, metrics, evidence, commercial fit and guardrails.
+- `docs/Delivery-Operating-Model.md`: intake through diagnosis, proposal, planning, delivery, operations, settlement and evolution.
+- `docs/Outcome-Measurement-and-Evidence.md`: metric definitions, baseline, attribution, evidence provenance, sampling, audit and settlement.
+- `docs/Security-Trust-and-Architecture.md`: identity, authorization, agent authority, tenant isolation, integrations, cryptographic posture, privacy and operational safeguards.
+
+These documents are business/domain specifications, not proof that every described capability is implemented or deployed. Preserve the distinction between implemented behavior, operating guidance, illustrative commercial examples and roadmap items. Any new pricing rule or contract mechanism that affects calculation or settlement must have a versioned domain contract, validation rules, tests and evidence before production use.
