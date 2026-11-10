@@ -1,5 +1,8 @@
 import type { PricingLine, PricingSummary } from "./pricing.ts";
 import { calculatePricing } from "./pricing.ts";
+import type { Agreement } from "./agreement.ts";
+import type { ContractPackage, ContractParty, OutcomeSchedule } from "./contract-composer.ts";
+import { composeContract } from "./contract-composer.ts";
 
 export type ProposalAttribution = "direct" | "contribution" | "experimental" | "pending";
 export type ProposalDependencyStatus = "confirmed" | "pending" | "blocked";
@@ -218,4 +221,77 @@ export function renderOutcomeProposalMarkdown(proposal: OutcomeProposal): string
     `\n## Pendências para revisão\n\n**Bloqueios**\n\n${bulletList(proposal.readiness.blockers)}\n\n**Alertas**\n\n${bulletList(proposal.readiness.warnings)}`,
     `\n---\n${proposal.commercialNotice}`,
   ].join("\n");
+}
+
+export interface ProposalContractDraftInput {
+  proposal: OutcomeProposal;
+  agreement: Agreement;
+  parties: readonly ContractParty[];
+  effectiveDate: string;
+  expiryDate?: string;
+  jurisdiction: string;
+  approvedBy: string;
+  deliveryPlan?: Readonly<Record<string, unknown>>;
+  sla?: Readonly<Record<string, unknown>>;
+  security?: Readonly<Record<string, unknown>>;
+  dataProcessing?: Readonly<Record<string, unknown>>;
+  sectorTerms?: Readonly<Record<string, unknown>>;
+}
+
+export function composeContractFromOutcomeProposal(input: ProposalContractDraftInput, generatedAt = new Date()): ContractPackage {
+  const { proposal, agreement } = input;
+  if (proposal.readiness.status !== "ready_for_review") throw new Error("PROPOSAL_NOT_READY_FOR_CONTRACT");
+  if (agreement.tenantId !== proposal.tenantId) throw new Error("PROPOSAL_CONTRACT_TENANT_MISMATCH");
+  if (agreement.status !== "draft" && agreement.status !== "pending_approval") throw new Error("PROPOSAL_CONTRACT_AGREEMENT_NOT_DRAFT");
+  if (!input.approvedBy.trim()) throw new Error("PROPOSAL_CONTRACT_APPROVAL_REQUIRED");
+  const same = (left: readonly string[], right: readonly string[]) => left.length === right.length && left.every((value, index) => value === right[index]);
+  if (!same(agreement.scope, proposal.scope) || !same(agreement.deliverables, proposal.deliverables) || !same(agreement.exclusions, proposal.exclusions)) {
+    throw new Error("PROPOSAL_CONTRACT_SCOPE_MISMATCH");
+  }
+  const metric = proposal.metric;
+  if (metric.baseline === undefined || metric.target === undefined || !metric.periodStart || !metric.periodEnd || !metric.sourceOfTruth || !metric.population || metric.attribution === "pending") {
+    throw new Error("PROPOSAL_OUTCOME_SCHEDULE_INCOMPLETE");
+  }
+  if (metric.direction === "target") throw new Error("PROPOSAL_OUTCOME_DIRECTION_REQUIRED");
+  const outcome: OutcomeSchedule = {
+    metricId: metric.id,
+    metricName: metric.name,
+    unit: metric.unit,
+    baseline: metric.baseline,
+    target: metric.target,
+    direction: metric.direction,
+    population: metric.population,
+    sourceOfTruth: metric.sourceOfTruth,
+    periodStart: metric.periodStart,
+    periodEnd: metric.periodEnd,
+    attribution: metric.attribution,
+    exclusions: [...metric.exclusions],
+    guardrails: [...metric.guardrails],
+    approvedBy: input.approvedBy,
+  };
+  const deliveryPlan = input.deliveryPlan ?? {
+    deliveryWindowDays: proposal.deliveryWindowDays ?? null,
+    dependencies: proposal.dependencies,
+    responsibilities: proposal.responsibilities,
+    assumptions: proposal.scenario.assumptions,
+    risks: proposal.scenario.risks,
+  };
+  const acceptance = { criteria: proposal.acceptanceCriteria };
+  return composeContract({
+    agreement,
+    parties: input.parties,
+    effectiveDate: input.effectiveDate,
+    ...(input.expiryDate ? { expiryDate: input.expiryDate } : {}),
+    jurisdiction: input.jurisdiction,
+    sector: proposal.customer.sector,
+    projectName: proposal.desiredOutcome,
+    pricingLines: proposal.pricing.lines,
+    outcome,
+    deliveryPlan,
+    acceptance,
+    ...(input.sla ? { sla: input.sla } : {}),
+    ...(input.security ? { security: input.security } : {}),
+    ...(input.dataProcessing ? { dataProcessing: input.dataProcessing } : {}),
+    ...(input.sectorTerms ? { sectorTerms: input.sectorTerms } : {}),
+  }, generatedAt);
 }
