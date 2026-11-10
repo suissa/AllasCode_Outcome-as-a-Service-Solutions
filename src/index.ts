@@ -85,3 +85,4 @@ export * from "./commercial/durable-settlement.ts";
 
 export * from "./commercial/pricing.ts";
 export * from "./commercial/contract-composer.ts";
+export * from "./operations/observability.ts";
