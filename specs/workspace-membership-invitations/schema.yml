@@ -1,0 +1,35 @@
+version: "1.0"
+behavior: workspace-membership-invitations
+invitation:
+  required: [id, tenantId, workspaceId, recipientHash, tokenHash, role, permissions, invitedBy, status, createdAt, expiresAt, revision]
+  role: [admin, member, viewer]
+  status: [pending, accepted, revoked, expired]
+  hashes: sha256
+  rawEmailPersisted: false
+  rawTokenPersisted: false
+  expiresWithinDays: 30
+acceptance:
+  required: [tenantId, workspaceId, actorId, token]
+  requires: [pending, unexpired, recipient_identity_verified, same_tenant, same_workspace]
+  atomicEffects: [mark_invitation_accepted, create_membership]
+membership:
+  status: [pending, active, suspended, revoked]
+  rolePermissions: bounded_by_role
+  revocation:
+    requiresReason: true
+    preservesLastActiveOwner: true
+invariants:
+  - invitation-idempotency
+  - no-plaintext-email-or-token-storage
+  - unique-pending-recipient-per-workspace
+  - no-owner-role-through-invitation
+  - recipient-identity-verification
+  - atomic-invitation-acceptance
+  - last-owner-preservation
+errors:
+  - { code: INVITATION_UNAUTHORIZED, path: actorId }
+  - { code: INVITATION_DUPLICATE_PENDING, path: email }
+  - { code: INVITATION_EXPIRED, path: expiresAt }
+  - { code: INVITATION_RECIPIENT_MISMATCH, path: actorId }
+  - { code: INVITATION_NOT_PENDING, path: status }
+  - { code: MEMBERSHIP_LAST_OWNER_REQUIRED, path: membership.role }

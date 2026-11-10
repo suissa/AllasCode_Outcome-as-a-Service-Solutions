@@ -30,6 +30,9 @@ export interface WorkspaceMembership {
   grantedBy: string;
   grantedAt: string;
   expiresAt?: string;
+  revokedAt?: string;
+  revokedBy?: string;
+  revocationReason?: string;
   revision: number;
 }
 
