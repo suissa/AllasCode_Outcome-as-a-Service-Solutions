@@ -23,7 +23,7 @@
     "switchNote": "Você pode alternar entre os modos a qualquer momento. Sua jornada e seu histórico ficam salvos neste dispositivo."
   },
   "guild": {
-    "countSuffix": "mensagens registradas nesta jornada.",
+    "countSuffix": " mensagens registradas nesta jornada.",
     "answerPlaceholder": "Digite sua resposta ou escolha uma opção...",
     "skipQuestion": "Não sei ainda / pular esta pergunta",
     "unknownAnswer": "Ainda não sei informar.",
@@ -56,6 +56,6 @@
     "aboutAnswer": "Outcome as a Service (OaaS) é uma abordagem orientada a resultados. Você define o resultado esperado; contexto, escopo, indicadores, evidências e condições de aceite são construídos em conjunto antes da execução. A solução pode combinar tecnologia, processos e pessoas.",
     "reviewObservation": "Sua observação foi registrada na conversa. Use “Revisar respostas” para reiniciar a revisão da missão ou confirme o resumo para aprofundar o diagnóstico.",
     "chooseBusiness": "Para transformar isso em uma missão, escolha “Sou empresário”. Vou fazer algumas perguntas curtas e você poderá pular o que ainda não souber.",
-    "countMessage": " mensagens registradas nesta jornada."
+    "developer": "Sou desenvolvedor."
   }
 }
