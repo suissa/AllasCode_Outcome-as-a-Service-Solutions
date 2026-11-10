@@ -55,7 +55,7 @@ test("confirmed mission pre-fills discovery without overwriting existing answers
   for (const answer of ["retail", "2_5", "Aumentar vendas", "Vendas pelo WhatsApp", "Poucos clientes retornam", "90d", "Conversão de 10% para 15%"]) OQ.advanceMission(answer);
   OQ.confirmMission();
   const result = OQ.prepareDiscovery();
-  const saved = JSON.parse(values.get("goaltropic.discovery.v1"));
+  const saved = JSON.parse(values.get("goaltropic.discovery.v1")!);
   assert.equal(result.prefilled >= 8, true);
   assert.equal(saved.answers.segment.value, "health");
   assert.equal(saved.answers.monthly_revenue.value, 5000);
