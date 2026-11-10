@@ -1,0 +1,40 @@
+version: "1.0"
+behavior: release-migration-feature-flag-governance
+release:
+  required: [id, tenantId, version, previousVersion, commitSha, artifactHash, createdBy, target, migrations, rollbackPlan, checks]
+  checks: [ciPassed, testsPassed, securityPassed, migrationsVerified, backupVerified, sloHealthy]
+  states: [draft, approved, deploying, rolling_out, deployed, failed, rolled_back]
+  approvalMustDifferFrom: createdBy
+migration:
+  required: [id, checksum, order, destructive, reversible, recoveryStrategy]
+  checksum: sha256
+  recoveryStrategy: [down_migration, forward_fix, backup_restore]
+  destructiveRequiresRecovery: true
+  appliedSetMustMatchManifest: true
+rollout:
+  percentage: integer_1_to_100
+  monotonic: true
+  requiresAllMigrations: true
+  healthGate: required
+rollback:
+  requiresIndependentOperator: true
+  requiresImmutablePlan: true
+featureFlag:
+  required: [tenantId, key, enabled, percentage, allowlist, denylist, salt, updatedBy, updatedAt]
+  rollout: deterministic_sha256_bucket
+  precedence: [tenant_match, expiry, disabled, denylist, allowlist, percentage]
+invariants:
+  - independent-release-approval
+  - all-quality-gates
+  - migration-order-and-checksum
+  - backup-before-destructive-migration
+  - progressive-rollout-health-gates
+  - independent-rollback-operator
+  - deterministic-tenant-feature-flags
+errors:
+  - { code: RELEASE_GATES_FAILED, path: checks }
+  - { code: RELEASE_MIGRATION_CHECKSUM_DRIFT, path: migration.checksum }
+  - { code: RELEASE_MIGRATIONS_INCOMPLETE, path: completedMigrations }
+  - { code: RELEASE_HEALTH_GATE_FAILED, path: healthPassed }
+  - { code: RELEASE_ROLLBACK_ACTOR_INVALID, path: actor }
+  - { code: FEATURE_FLAG_EXPIRED, path: expiresAt }
