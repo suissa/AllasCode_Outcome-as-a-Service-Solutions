@@ -79,11 +79,11 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
           if (!input.options || typeof input.options !== "object" || Array.isArray(input.options)) throw Object.assign(new Error("PROPOSAL_OPTIONS_REQUIRED"), { statusCode: 400 });
           const safeOptions = { ...(input.options as Partial<DiscoveryProposalOptions>), tenantId: actor.tenantId, proposalId: "proposal_" + randomUUID(), version: 1 } as DiscoveryProposalOptions;
           const composed = mapDiscoveryToOutcomeProposal(input.snapshot as DiscoverySnapshot, safeOptions, now());
-          if (composed.proposal.readiness.status !== "ready_for_review") { send(response, 422, { error: "PROPOSAL_NOT_READY_FOR_REVIEW", value: composed.proposal, source: composed.source, unmapped: composed.unmapped, correlationId }); return; }
           const timestamp = now().toISOString();
-          const value: PersistedProposal = { proposal: composed.proposal, status: "ready_for_review", source: composed.source, createdBy: actor.actorId, updatedBy: actor.actorId, createdAt: timestamp, updatedAt: timestamp };
+          const persistedStatus = composed.proposal.readiness.status === "ready_for_review" ? "ready_for_review" : "draft";
+          const value: PersistedProposal = { proposal: composed.proposal, status: persistedStatus, source: composed.source, createdBy: actor.actorId, updatedBy: actor.actorId, createdAt: timestamp, updatedAt: timestamp };
           const result = await proposalStore.create({ tenantId: actor.tenantId, actorId: actor.actorId, idempotencyKey, fingerprint: fingerprint("proposal.submit", { snapshot: input.snapshot, options: input.options }), value, event: { id: randomUUID(), tenantId: actor.tenantId, proposalId: value.proposal.id, version: 1, actorId: actor.actorId, kind: "submitted", occurredAt: timestamp } });
-          send(response, result.replayed ? 200 : 201, { value: result.value, replayed: result.replayed, correlationId }); return;
+          send(response, result.replayed ? 200 : 201, { value: result.value, replayed: result.replayed, unmapped: composed.unmapped, correlationId }); return;
         }
         if (proposalParts.length === 2 && request.method === "GET") {
           if (!(await options.authorize(actor, "proposal.list"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
