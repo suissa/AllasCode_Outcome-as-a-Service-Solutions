@@ -54,10 +54,8 @@ function buildProposal({graph,discovery,answers,createdAt=new Date().toISOString
   const total=Math.max(1,solution.signals.length);
   return {...solution,hits,matchedSignals:distinct,signalCount:distinct.length,totalSignals:total,signalCoverage:Math.round(distinct.length/total*100),status:distinct.length>=2?"multiple-signals":"single-signal",module:modules.get(solution.moduleId)};
  }).sort((a,b)=>b.signalCount-a.signalCount||b.signalCoverage-a.signalCoverage||a.name.localeCompare(b.name));
- const usedModules=unique([
-  ...[...moduleScores.entries()].filter(([,score])=>score>0).map(([id])=>id),
-  ...candidates.map(candidate=>candidate.moduleId)
- ]).map(id=>({...modules.get(id),contextMentions:moduleScores.get(id)||0,linkedSolutions:candidates.filter(candidate=>candidate.moduleId===id).map(candidate=>candidate.id)}));
+ const relatedModules=unique([...moduleScores.keys()]).map(id=>({id,name:modules.get(id)?.name,contextMentions:moduleScores.get(id)||0}));
+ const usedModules=unique(candidates.map(candidate=>candidate.moduleId)).map(id=>({...modules.get(id),contextMentions:moduleScores.get(id)||0,linkedSolutions:candidates.filter(candidate=>candidate.moduleId===id).map(candidate=>candidate.id)}));
  const getValue=id=>normalizeAnswer(normalized[id]);
  const profile={
   companyName:getValue("company_name")||"Empresa não identificada",
@@ -74,7 +72,7 @@ function buildProposal({graph,discovery,answers,createdAt=new Date().toISOString
  const metrics=unique(candidates.flatMap(candidate=>candidate.metrics||[]).concat(usedModules.flatMap(module=>module.metrics||[])));
  const evidence=unique(candidates.flatMap(candidate=>candidate.evidence||[]).concat(usedModules.flatMap(module=>module.evidence||[])));
  const deliverables=unique(usedModules.flatMap(module=>module.deliverables||[]));
- const knownCount=facts.length,questionCount=questions.length;
+ const knownCount=unique(facts.map(fact=>fact.questionId)).length,questionCount=questions.length;
  const completeness=Math.round(knownCount/questionCount*100);
  const associations=trace.filter(item=>item.kind==="solution-association").length;
  const summary=candidates.length
@@ -83,7 +81,7 @@ function buildProposal({graph,discovery,answers,createdAt=new Date().toISOString
  return {
   schemaVersion:"1.0.0",inferenceMethod:graph.method,createdAt,stage:"pre-data-analysis",profile,
   summary,scope:{modules:usedModules.map(m=>({id:m.id,name:m.name,description:m.description})),deliverables,opportunities:candidates.map(({signals,...candidate})=>candidate),metrics,evidence},
-  context:{facts,unknowns,constraints,completeness,answeredFacts:knownCount,totalQuestions:questionCount},
+  context:{facts,unknowns,constraints,relatedModules,completeness,answeredFacts:knownCount,totalQuestions:questionCount},
   graphTrace:{associationCount:associations,edgesTraversed:trace,dimensionIds:unique(facts.map(f=>f.dimensionId)),moduleIds:usedModules.map(m=>m.id)},
   governance:{status:"preliminary-hypothesis",dataAnalysisPerformed:false,externalDataUsed:false,causalClaims:false,commercialQuote:false,confidenceLabel:candidates.some(c=>c.status==="multiple-signals")?"Múltiplos sinais declarados":"Sinais iniciais ou contexto insuficiente",limitations:[graph.scope.disclaimer,"A força do sinal representa correspondência com regras declaradas, não probabilidade estatística.","Custos, prazos, arquitetura final e ganhos só podem ser definidos após análise de dados, validação técnica e acordo de escopo."]},
   nextPhase:{title:"Análise e validação de evidências",activities:["Validar respostas e corrigir premissas com o cliente","Solicitar somente as fontes de dados necessárias","Estabelecer linha de base e qualidade dos dados","Testar viabilidade, dependências, riscos e custos","Refinar escopo, indicadores e critérios de aceite"]}
