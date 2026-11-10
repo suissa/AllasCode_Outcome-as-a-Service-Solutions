@@ -1,0 +1,38 @@
+version: "1.0"
+behavior: backup-disaster-recovery-export
+backup:
+  required: [id, tenantId, scope, createdAt, formatVersion, contentHash, sizeBytes, region, replicaRegions, encryption, consistencyPoint, retentionUntil, createdBy]
+  contentHash: sha256
+  encryption: [AES-256-GCM, XCHACHA20-POLY1305]
+  consistencyPointMustNotExceed: createdAt
+disasterRecovery:
+  required: [tenantId, rpoSeconds, rtoSeconds, maxRestoreDrillAgeSeconds, requiredReplicaRegions, requireEncryption]
+  status: [ready, degraded, unavailable]
+restore:
+  targets: [staging, production]
+  productionRequiresIndependentApproval: true
+  sequence: [restore_to_staging, verify_hash, validate_tenant_and_scope, promote]
+  failure: rollback
+  idempotency: provider_keyed
+export:
+  required: [tenantId, requestedBy, purpose, classification, includePersonalData, idempotencyKey]
+  personalDataRequiresIndependentApproval: true
+  artifactRequires: [tenantId, classification, contentHash, sizeBytes, createdAt, expiresAt]
+invariants:
+  - tenant-isolation
+  - immutable-backup-integrity
+  - encryption-and-retention
+  - rpo-rto-evaluation
+  - staging-before-production
+  - rollback-on-restore-failure
+  - purpose-bound-export
+  - personal-data-approval
+  - export-integrity-and-expiry
+errors:
+  - { code: BACKUP_MANIFEST_INVALID, path: manifest }
+  - { code: BACKUP_INTEGRITY_FAILED, path: contentHash }
+  - { code: DR_POLICY_INVALID, path: policy }
+  - { code: RESTORE_APPROVAL_REQUIRED, path: approvedBy }
+  - { code: RESTORE_SCOPE_MISMATCH, path: staged.validation }
+  - { code: EXPORT_UNAUTHORIZED, path: requestedBy }
+  - { code: EXPORT_INTEGRITY_FAILED, path: artifact.contentHash }

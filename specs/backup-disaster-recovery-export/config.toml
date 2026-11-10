@@ -1,0 +1,15 @@
+version = "1.0"
+backup_hash_algorithm = "sha256"
+backup_encryption_algorithms = ["AES-256-GCM", "XCHACHA20-POLY1305"]
+require_backup_retention = true
+require_consistency_point = true
+default_rpo_seconds = 3600
+default_rto_seconds = 7200
+restore_target_before_promotion = "staging"
+require_independent_production_restore_approval = true
+rollback_on_restore_failure = true
+require_restore_idempotency = true
+personal_data_export_requires_independent_approval = true
+require_export_purpose = true
+require_export_hash_verification = true
+export_links_expire = true
