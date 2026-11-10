@@ -1,0 +1,33 @@
+{
+  "id": "proposal",
+  "route": "/proposta",
+  "entry": "proposta/index.html",
+  "layout": "proposal",
+  "locale": "pt-BR",
+  "title": "Goaltropic — Proposta preliminar de solução",
+  "contentRefs": [
+    "discovery.stages",
+    "discovery.solutions",
+    "proposal-graph",
+    "ui-copy.proposal"
+  ],
+  "sections": [
+    {
+      "id": "executive-summary",
+      "component": "proposal-summary",
+      "contentRef": "proposal-graph"
+    },
+    {
+      "id": "scope",
+      "component": "proposal-scope",
+      "contentRef": "proposal-graph"
+    },
+    {
+      "id": "traceability",
+      "component": "association-trace",
+      "contentRef": "proposal-graph"
+    }
+  ],
+  "description": "Proposta preliminar gerada a partir das respostas do cliente e de um grafo de associações versionado, antes da análise dos dados.",
+  "heading": "Uma proposta preliminar, baseada no que você informou — sem antecipar conclusões dos dados."
+}

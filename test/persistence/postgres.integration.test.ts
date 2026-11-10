@@ -16,9 +16,11 @@ import { PostgresAuthorizationStore, evaluateAuthorization } from "../../src/sec
 import { PostgresAuditLedger, createAuditEvent, createDecisionRecord } from "../../src/domain/audit.ts";
 import { PostgresPolicyRegistry } from "../../src/domain/policy.ts";
 import { PostgresSettlementWorkflow } from "../../src/commercial/durable-settlement.ts";
+import { PostgresContractRegistryStore } from "../../src/persistence/postgres-contract-registry.ts";
+import type { ContractRecord, ContractEvent } from "../../src/commercial/contract-workflow.ts";
 import { planSettlementActions } from "../../src/commercial/settlement-workflow.ts";
 const databaseUrl = process.env.DATABASE_URL;
-test("PostgreSQL migration and transactional outcome persistence", { skip: !databaseUrl }, async () => {
+test("PostgreSQL migration and transactional outcome persistence", { skip: !databaseUrl, timeout: 30_000 }, async () => {
   const client = postgres(databaseUrl!, { max: 1 });
   const db = new PostgresJsDatabase(client as unknown as PostgresQueryClient);
   const store = new PostgresOutcomeStore(db);
@@ -26,9 +28,9 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
   const tenantId = "tenant_it_" + suffix;
   const caseId = "outcome_it_" + suffix;
   try {
-    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql","0007_authorization_rbac_abac.sql","0008_lifecycle_transition_events.sql","0009_immutable_audit_decision_ledger.sql","0010_calculation_snapshots.sql","0011_policy_registry_version_approvals.sql","0012_durable_settlement_workflow.sql","0013_immutable_intent_versions.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
-    assert.equal((await applyMigrations(db,migrations)).applied.length,13);
-    assert.equal((await applyMigrations(db,migrations)).skipped.length,13);
+    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql","0007_authorization_rbac_abac.sql","0008_lifecycle_transition_events.sql","0009_immutable_audit_decision_ledger.sql","0010_calculation_snapshots.sql","0011_policy_registry_version_approvals.sql","0012_durable_settlement_workflow.sql","0013_immutable_intent_versions.sql","0015_durable_contract_registry.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
+    assert.equal((await applyMigrations(db,migrations)).applied.length,14);
+    assert.equal((await applyMigrations(db,migrations)).skipped.length,14);
     const initial: OutcomeCase = {
       id: caseId, tenantId, stage: "specified",
       spec: { metric: { id: "metric_it_001", name: "Revenue", unit: "BRL" } as never, baseline: 100, target: 150, direction: "increase", periodStart: "2026-01-01", periodEnd: "2026-02-01", attribution: "direct", approvedBy: "actor_it_001" },
@@ -133,6 +135,25 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     assert.equal((await intentVersions.history(tenantId,intentSnapshot.id)).length,1);
     await assert.rejects(()=>client.unsafe("update intent_versions set payload='{}'::jsonb where tenant_id=$1 and intent_id=$2",[tenantId,intentSnapshot.id]),/INTENT_VERSION_APPEND_ONLY/);
     await assert.rejects(()=>client.unsafe("delete from intent_versions where tenant_id=$1 and intent_id=$2",[tenantId,intentSnapshot.id]),/INTENT_VERSION_APPEND_ONLY/);
+    const contractRegistry = new PostgresContractRegistryStore(db);
+    const contractId = "contract_it_" + suffix;
+    const contractTimestamp = new Date("2026-11-10T12:00:00.000Z").toISOString();
+    const contractRecord = { tenantId, id:contractId, proposalId:"proposal_it_"+suffix, proposalVersion:1, agreement:{} as never, document:{fingerprint:"a".repeat(64)} as never, requiredSigners:["signer_it_"+suffix], proposalApproval:{approvedBy:"actor_it_001",approvedAt:contractTimestamp}, state:"draft" as const, revision:1, createdAt:contractTimestamp, updatedAt:contractTimestamp } as ContractRecord;
+    const contractCreatedEvent:ContractEvent = { tenantId, contractId, eventId:"contract_created_"+suffix, revision:1, actorId:"actor_it_001", correlationId:"corr_contract_"+suffix, action:"created", fromState:null, toState:"draft", occurredAt:contractTimestamp, metadata:{documentFingerprint:"a".repeat(64)} };
+    const contractFingerprint = "a".repeat(64);
+    assert.equal((await contractRegistry.createDraft(contractRecord,contractCreatedEvent,"contract_create_"+suffix,contractFingerprint)).replayed,false);
+    assert.equal((await contractRegistry.createDraft(contractRecord,contractCreatedEvent,"contract_create_"+suffix,contractFingerprint)).replayed,true);
+    const reviewedContract = {...contractRecord,state:"in_review" as const,revision:2,updatedAt:contractTimestamp};
+    const reviewEvent:ContractEvent = {...contractCreatedEvent,eventId:"contract_reviewed_"+suffix,revision:2,action:"submitted_for_review",fromState:"draft",toState:"in_review"};
+    const reviewFingerprint = "b".repeat(64);
+    const reviewCommand = {tenantId,contractId,expectedRevision:1,idempotencyKey:"contract_review_"+suffix,fingerprint:reviewFingerprint,value:reviewedContract,event:reviewEvent};
+    assert.equal((await contractRegistry.commit(reviewCommand)).replayed,false);
+    assert.equal((await contractRegistry.commit(reviewCommand)).replayed,true);
+    assert.equal((await contractRegistry.get(tenantId,contractId))?.state,"in_review");
+    assert.equal((await contractRegistry.events(tenantId,contractId)).length,2);
+    await assert.rejects(()=>contractRegistry.commit({...reviewCommand,idempotencyKey:"contract_stale_"+suffix,expectedRevision:1,fingerprint:"c".repeat(64)}),/CONTRACT_REVISION_CONFLICT/);
+    await assert.rejects(()=>client.unsafe("update contract_events set action=$1 where tenant_id=$2 and contract_id=$3",["activated",tenantId,contractId]),/CONTRACT_EVENT_IMMUTABLE/);
+    await assert.rejects(()=>client.unsafe("delete from contract_events where tenant_id=$1 and contract_id=$2",[tenantId,contractId]),/CONTRACT_EVENT_IMMUTABLE/);
   } finally {
     await client.unsafe("delete from authorization_decisions where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from authorization_grants where tenant_id = $1", [tenantId]);

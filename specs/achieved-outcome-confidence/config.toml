@@ -1,0 +1,8 @@
+confidence_level_default = 0.95
+confidence_level_min_exclusive = 0.0
+confidence_level_max_exclusive = 1.0
+max_observations = 10000
+sample_variance = true
+single_observation_interval_width = 0.0
+mutate_input = false
+persist_results = false

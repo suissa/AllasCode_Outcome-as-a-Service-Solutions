@@ -1,0 +1,24 @@
+{
+  "id": "proposal",
+  "name": "Relatório de proposta preliminar",
+  "template": "layouts/proposal.html",
+  "stylesheet": "layouts/proposal.css",
+  "shell": "executive report + scope + evidence + print",
+  "renderer": "answer-only inference report",
+  "slots": [
+    "cover",
+    "executive-summary",
+    "opportunities",
+    "workstreams",
+    "metrics",
+    "evidence",
+    "constraints",
+    "traceability",
+    "next-phase",
+    "print"
+  ],
+  "scripts": [
+    "runtime/proposal-inference.js",
+    "runtime/proposal-report.js"
+  ]
+}

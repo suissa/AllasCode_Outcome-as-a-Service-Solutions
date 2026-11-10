@@ -1,0 +1,10 @@
+version: "1.0"
+behavior: achieved-outcome-confidence
+input:
+  required: [tenantId, outcomeId, executionId, metric, unit, baseline, target, observations]
+  optional: [confidenceLevel]
+  observations: { primitive: finite-number, minItems: 1, maxItems: 10000 }
+  confidenceLevel: { primitive: number, exclusiveMinimum: 0, exclusiveMaximum: 1, default: 0.95 }
+output: [mean, sampleSize, standardDeviation, targetProgress, confidenceLevel, confidenceInterval.lower, confidenceInterval.upper]
+invariants: [tenant-scope-preserved, deterministic-pure-calculation, no-input-mutation, finite-result]
+errors: [OUTCOME_SCOPE_INVALID, OUTCOME_METRIC_INVALID, OUTCOME_UNIT_INVALID, OUTCOME_BASELINE_INVALID, OUTCOME_TARGET_INVALID, OUTCOME_CONFIDENCE_INVALID, OUTCOME_OBSERVATIONS_REQUIRED, OUTCOME_OBSERVATIONS_LIMIT, OUTCOME_OBSERVATION_INVALID, OUTCOME_CALCULATION_OVERFLOW]
