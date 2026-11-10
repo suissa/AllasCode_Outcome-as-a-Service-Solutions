@@ -91,3 +91,4 @@ export * from "./operations/anomaly-detection.ts";
 export * from "./security/credential-governance.ts";
 export * from "./security/compliance-controls.ts";
 export * from "./operations/backup-governance.ts";
+export * from "./operations/release-governance.ts";
