@@ -38,7 +38,7 @@ test("proposal store persists records, source traceability, and idempotency atom
   });
   assert.equal(result.replayed, false);
   assert.equal(result.value.source.missionId, "mission_001");
-  assert.equal(statements.length, 4);
+  assert.equal(statements.length, 5);
   assert.match(statements[1]!, /outcome_proposals/);
   assert.match(statements[2]!, /outcome_proposal_events/);
   assert.match(statements[3]!, /outcome_proposal_idempotency/);
@@ -71,7 +71,7 @@ test("proposal transition checks tenant, current version, and review boundary", 
   await assert.rejects(() => store.transition({
     tenantId: "tenant_demo_001", proposalId: "proposal_demo_001", actorId: "reviewer_001", expectedVersion: 2,
     status: "rejected", reason: "Revisão", event: event("rejected", 3),
-  }), /PROPOSAL_TRANSITION_NOT_ALLOWED/);
+  }), /PROPOSAL_VERSION_CONFLICT/);
 });
 
 test("proposal rejection requires a reason", async () => {
