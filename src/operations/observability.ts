@@ -74,6 +74,7 @@ export function evaluateTenantSlo(
   now = new Date(),
 ): TenantSloResult {
   validatePolicy(policy);
+  if (!Array.isArray(observations)) throw new ObservabilityError("OBSERVATIONS_INVALID", "observations");
   if (!(now instanceof Date) || !Number.isFinite(now.getTime())) {
     throw new ObservabilityError("SLO_CLOCK_INVALID", "now");
   }
@@ -177,6 +178,7 @@ export function aggregateTenantHealth(
   staleAfterMs = 60_000,
 ): TenantHealthResult {
   if (!requiredText(tenantId)) throw new ObservabilityError("HEALTH_TENANT_INVALID", "tenantId");
+  if (!Array.isArray(probes)) throw new ObservabilityError("HEALTH_PROBES_INVALID", "probes");
   if (!(now instanceof Date) || !Number.isFinite(now.getTime()) || !Number.isFinite(staleAfterMs) || staleAfterMs < 1) {
     throw new ObservabilityError("HEALTH_CONFIG_INVALID", "config");
   }
@@ -193,6 +195,7 @@ export function aggregateTenantHealth(
     if (probe.tenantId !== tenantId) throw new ObservabilityError("HEALTH_TENANT_MISMATCH", `${path}.tenantId`);
     if (seen.has(probe.id)) throw new ObservabilityError("HEALTH_PROBE_DUPLICATE", `${path}.id`);
     seen.add(probe.id);
+    if (probe.status !== "healthy" && probe.status !== "degraded" && probe.status !== "unhealthy") throw new ObservabilityError("HEALTH_STATUS_INVALID", `${path}.status`);
     if (!validTimestamp(probe.checkedAt) || Date.parse(probe.checkedAt) > now.getTime()) {
       throw new ObservabilityError("HEALTH_TIMESTAMP_INVALID", `${path}.checkedAt`);
     }
@@ -203,7 +206,7 @@ export function aggregateTenantHealth(
     if (isStale) stale.push(probe.id);
     if (probe.status === "unhealthy" || (isStale && probe.critical)) unhealthy.push(probe.id);
     else if (probe.status === "degraded" || isStale) degraded.push(probe.id);
-    else if (probe.status !== "healthy") throw new ObservabilityError("HEALTH_STATUS_INVALID", `${path}.status`);
+
   }
   const status = !probes.length || unhealthy.length ? "unhealthy" : degraded.length ? "degraded" : "healthy";
   return Object.freeze({
