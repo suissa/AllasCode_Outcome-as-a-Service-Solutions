@@ -120,7 +120,7 @@ export function routeIntent(
     ...clarifications.map((question) => "CLARIFICATION_REQUIRED:" + question.path),
   ])];
   const invalidIdentity = validationErrors.some((error) =>
-    ["id:REQUIRED", "tenantId:REQUIRED", "actorId:REQUIRED", "provenance:REQUIRED"].includes(error),
+    ["id:REQUIRED", "tenantId:REQUIRED", "actorId:REQUIRED", "provenance:REQUIRED", "provenance.sourceId:REQUIRED"].includes(error),
   );
   const invalidStructure = validationErrors.some((error) => error.endsWith(":INVALID"));
   const rejectedByRule = qualificationReasons.some((reason) =>
