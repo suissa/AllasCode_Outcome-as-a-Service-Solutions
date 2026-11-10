@@ -94,10 +94,10 @@ test("proposal preview enforces authorization and required request fields", asyn
 });
 
 
-test("proposal submission requires idempotency, authorization and complete readiness before persistence", async () => {
-  let writes = 0;
+test("proposal submission requires idempotency and authorization, and persists incomplete discovery as a draft", async () => {
+  let writes = 0, persisted: any;
   const proposalStore = {
-    create: async () => { writes++; throw new Error("should_not_persist"); },
+    create: async (command: any) => { writes++; persisted=command.value; return { value: command.value, replayed: false }; },
     get: async () => undefined,
     list: async () => [],
     transition: async () => { throw new Error("not_used"); },
@@ -125,12 +125,14 @@ test("proposal submission requires idempotency, authorization and complete readi
       method: "POST", headers: { "content-type": "application/json", "idempotency-key": "discovery_submit_001" },
       body: JSON.stringify({ snapshot: { source: "guilda", missionId: "mission_001", answers: {} }, options: { tenantId: "tenant_attacker", proposalId: "attacker_id", version: 99 } }),
     });
-    assert.equal(incomplete.status, 422);
-    const payload = await incomplete.json() as { error: string; value: { tenantId: string; readiness: { status: string } } };
-    assert.equal(payload.error, "PROPOSAL_NOT_READY_FOR_REVIEW");
-    assert.equal(payload.value.tenantId, "tenant_secure");
-    assert.equal(payload.value.readiness.status, "incomplete");
-    assert.equal(writes, 0);
+    assert.equal(incomplete.status, 201);
+    const payload = await incomplete.json() as { value: { status: string; proposal: { tenantId: string; id: string; readiness: { status: string } } } };
+    assert.equal(payload.value.status, "draft");
+    assert.equal(payload.value.proposal.tenantId, "tenant_secure");
+    assert.equal(payload.value.proposal.readiness.status, "incomplete");
+    assert.equal(persisted.proposal.tenantId, "tenant_secure");
+    assert.equal(persisted.proposal.id.startsWith("proposal_"), true);
+    assert.equal(writes, 1);
   } finally {
     await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
   }
