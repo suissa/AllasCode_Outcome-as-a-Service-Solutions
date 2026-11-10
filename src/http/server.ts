@@ -56,7 +56,7 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
         const registry = options.contracts;
         if (!registry) { send(response, 503, { error: "CONTRACT_REGISTRY_UNAVAILABLE", correlationId }); return; }
         if (parts.length === 3 && parts[2] === "drafts" && request.method === "POST") {
-          if (!(await options.authorize(actor, "contract.create"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          if (!(await options.authorize(actor, "contract.create")) || !(await options.authorize(actor, "proposal.approve"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
           const input = await readBody(request);
           const idempotencyKey = requiredString(request.headers["idempotency-key"], "IDEMPOTENCY_KEY_REQUIRED");
           if (!Array.isArray(input.requiredSigners) || input.requiredSigners.some(s => typeof s !== "string")) throw Object.assign(new Error("CONTRACT_REQUIRED_SIGNERS_INVALID"), { statusCode: 400 });
@@ -72,7 +72,7 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
             ...(input.sectorTerms && typeof input.sectorTerms === "object" ? { sectorTerms: input.sectorTerms as Record<string, unknown> } : {}),
           };
           const value = createContractRecord(createInput, actor.tenantId, now());
-          const event = createContractEvent({ record: value, actorId: actor.actorId, correlationId, action: "created", fromState: null, now: now() });
+          const event = createContractEvent({ record: value, actorId: actor.actorId, correlationId, action: "created", fromState: null, now: now(), metadata: { proposalId: value.proposalId, proposalVersion: value.proposalVersion, proposalApprovedBy: value.proposalApproval.approvedBy } });
           const result = await registry.createDraft(value, event, idempotencyKey, contractCommandFingerprint("create", createInput));
           send(response, result.replayed ? 200 : 201, { value: result.value, replayed: result.replayed, correlationId }); return;
         }
