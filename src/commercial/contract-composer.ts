@@ -46,7 +46,7 @@ function renderClause(clause: ContractClause): string {
   if (!requiredText(clause.id) || !requiredText(clause.title) || !requiredText(clause.template)) throw new Error("CONTRACT_CLAUSE_INVALID");
   const body = clause.template.replace(/\{\{([a-zA-Z0-9_.-]+)\}\}/g, (_match, key: string) => {
     const value = clause.variables[key];
-    if (!requiredText(value)) throw new Error("CONTRACT_CLAUSE_VARIABLE_MISSING:" + key);
+    if (typeof value !== "string" || !requiredText(value)) throw new Error("CONTRACT_CLAUSE_VARIABLE_MISSING:" + key);
     return value;
   });
   if (/\{\{[^}]+\}\}/.test(body)) throw new Error("CONTRACT_CLAUSE_PLACEHOLDER_UNRESOLVED");
