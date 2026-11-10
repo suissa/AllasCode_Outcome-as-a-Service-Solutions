@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 /**
  * Canonical, namespace-scoped identifiers for Outcome as a Platform.
  * IDs are opaque strings; this module intentionally has no persistence dependency.
@@ -17,6 +19,7 @@ export interface IdentifierIssue {
   message: string;
 }
 
+const ENTITY_KINDS = new Set<EntityKind>(["tenant", "workspace", "organization", "actor", "intent", "outcome", "initiative", "capability", "execution", "evidence", "contract", "policy", "task", "metric"]);
 const ID_PATTERN = /^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/;
 
 export function parseEntityId<K extends EntityKind>(
@@ -24,6 +27,9 @@ export function parseEntityId<K extends EntityKind>(
   value: unknown,
   path = "id",
 ): EntityId<K> {
+  if (!ENTITY_KINDS.has(kind)) {
+    throw new IdentifierValidationError({ code: "ID_KIND_MISMATCH", path: "kind", message: "Entity kind is not supported." });
+  }
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new IdentifierValidationError({
       code: "ID_REQUIRED", path, message: "Identifier must be a non-empty string.",
@@ -59,7 +65,10 @@ export function canonicalId<K extends EntityKind>(
   kind: K,
   externalKey: string,
 ): EntityId<K> {
-  const normalized = externalKey.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase()
+  if (typeof externalKey !== "string") {
+    throw new IdentifierValidationError({ code: "ID_INVALID", path: "externalKey", message: "External key must be a string." });
+  }
+  let normalized = externalKey.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase()
     .replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
   if (normalized.length < 3) {
     throw new IdentifierValidationError({
@@ -67,5 +76,10 @@ export function canonicalId<K extends EntityKind>(
       message: "External key must yield at least three alphanumeric characters.",
     });
   }
-  return parseEntityId(kind, `${kind}_${normalized.slice(0, 64)}`);
+  if (normalized.length > 64) {
+    const digest = createHash("sha256").update(normalized, "utf8").digest("hex").slice(0, 12);
+    const prefix = normalized.slice(0, 51).replace(/_+$/g, "");
+    normalized = `${prefix}_${digest}`;
+  }
+  return parseEntityId(kind, `${kind}_${normalized}`);
 }

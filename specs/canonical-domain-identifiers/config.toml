@@ -1,0 +1,13 @@
+version = "1.0"
+identifier_case = "lowercase"
+identifier_separator = "_"
+identifier_suffix_min_length = 3
+identifier_suffix_max_length = 64
+normalization = "NFKD"
+remove_diacritics = true
+long_key_digest = "sha256"
+validate_entity_kind_at_runtime = true
+require_tenant_scope = true
+require_actor_id = true
+require_correlation_id = true
+cross_tenant_policy = "fail_closed"

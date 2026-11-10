@@ -1,0 +1,30 @@
+version: "1.0"
+behavior: canonical-domain-identifiers
+entityKinds: [tenant, workspace, organization, actor, intent, outcome, initiative, capability, execution, evidence, contract, policy, task, metric]
+identifier:
+  format: namespace_suffix
+  namespace: lowercase_entity_kind
+  suffix:
+    charset: lowercase_alphanumeric_with_underscores
+    minLength: 3
+    maxLength: 64
+generation:
+  normalization: [NFKD, remove_diacritics, lowercase, collapse_separators]
+  longKeyStrategy: sha256_suffix
+tenantScope:
+  required: [tenantId, actorId, correlationId]
+  validateTenantIdAtRuntime: true
+  mismatchMessageLeaksTenantIds: false
+invariants:
+  - kind-prefix-match
+  - canonical-lowercase-format
+  - bounded-suffix
+  - deterministic-generation
+  - long-key-collision-resistance
+  - tenant-scope-required
+  - cross-tenant-fail-closed
+errors:
+  - { code: ID_REQUIRED, path: id }
+  - { code: ID_INVALID, path: id }
+  - { code: ID_KIND_MISMATCH, path: kind }
+  - { code: TENANT_SCOPE_MISMATCH, path: record.tenantId }
