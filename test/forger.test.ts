@@ -6,7 +6,7 @@ import { existsSync } from "node:fs";
 
 test("Forger emits crawlable HTML and SEO artifacts", () => {
   execFileSync("node", ["scripts/forger.mjs"], { stdio: "pipe" });
-  for (const file of ["index.html","classic/index.html","guild/index.html","discovery/index.html","sitemap.xml","robots.txt","llms.txt"]) {
+  for (const file of ["index.html","classico/index.html","guilda/index.html","descoberta/index.html","sitemap.xml","robots.txt","llms.txt"]) {
     assert.ok(existsSync("dist/"+file), "missing dist/"+file);
   }
 });
