@@ -1,0 +1,32 @@
+version: "1.0"
+behavior: intent-capture
+input:
+  id: { type: identifier, required: true }
+  tenantId: { type: identifier, required: true }
+  actorId: { type: identifier, required: true }
+  statement: { type: text, required: true, trim: true, minLength: 1 }
+  desiredOutcome: { type: text, required: true, trim: true, minLength: 1 }
+  scope: { type: array, required: false, itemType: text, trim: true, minItems: 0 }
+  constraints: { type: array, required: false, itemType: text, trim: true, minItems: 0 }
+  channel:
+    type: enum
+    required: true
+    values: [web, api, conversation, import]
+    error: INTENT_CHANNEL_INVALID
+  sourceId: { type: identifier, required: true }
+  capturedAt: { type: timestamp, required: true }
+  createdAt: { type: timestamp, required: true, min: capturedAt }
+output:
+  type: OutcomeIntent
+  status: draft
+  version: 1
+  provenance: immutable
+  scope: immutable
+  constraints: immutable
+errors:
+  - INTENT_CAPTURE_INPUT_INVALID
+  - INTENT_CHANNEL_INVALID
+  - INTENT_SCOPE_INVALID
+  - INTENT_CONSTRAINTS_INVALID
+  - INTENT_INVALID
+  - INTENT_PROVENANCE_INVALID
