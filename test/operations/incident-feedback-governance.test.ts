@@ -123,7 +123,7 @@ test("resolved incident requires evidence-backed independent postmortem and acti
     rootCause: "Provider timeout and retry amplification", impactSummary: "Checkout unavailable for 12 minutes",
     evidenceIds: ["ev_1"], actionItems: [{ id: "act_1", description: "Add retry budget", ownerId: "platform_team", dueAt: "2026-11-20T00:00:00.000Z" }],
     now,
-  }, { authorize: async () => true, verifyEvidence: async id => id === "ev_1" });
+  }, { authorize: async () => true, verifyEvidence: async (_tenant, id) => id === "ev_1" });
   assert.equal(postmortem.incidentId, "inc_1");
   assert.equal(postmortem.actionItems.length, 1);
   assert.ok(Object.isFrozen(postmortem));
