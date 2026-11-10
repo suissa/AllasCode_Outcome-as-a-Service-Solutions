@@ -19,7 +19,7 @@ const current: OperationalMetricSample[] = [
 const executions: ExecutionOutcomeSample[] = [
   { id: "x1", tenantId: "tenant_a", outcomeId: "o1", executionId: "e1", occurredAt: "2026-11-10T11:59:00.000Z", status: "success" },
   { id: "x2", tenantId: "tenant_a", outcomeId: "o2", executionId: "e2", occurredAt: "2026-11-10T11:58:00.000Z", status: "failure", failureCode: "PAYMENT_TIMEOUT" },
-  { id: "x3", tenantId: "tenant_a", outcomeId: "o3", executionId: "e3", occurredAt: "2026-11-10T11:57:00.000Z", status: "failure", failureCode: "PAYMENT_TIMEOUT" },
+  { id: "x3", tenantId: "tenant_a", outcomeId: "o3", executionId: "e3", occurredAt: "2026-11-10T11:58:15.000Z", status: "failure", failureCode: "PAYMENT_TIMEOUT" },
   { id: "x4", tenantId: "tenant_a", outcomeId: "o4", executionId: "e4", occurredAt: "2026-11-10T11:58:30.000Z", status: "success" },
 ];
 
