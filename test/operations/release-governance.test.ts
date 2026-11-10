@@ -105,7 +105,7 @@ test("feature flags use deterministic tenant-scoped percentage buckets with deny
   const flag: GovernedFeatureFlag = {
     tenantId: "tenant_a", key: "new-checkout", enabled: true, percentage: 50,
     allowlist: ["actor_allowed"], denylist: ["actor_denied"], salt: "release-2026-11",
-    updatedBy: "operator", updatedAt: now.toISOString(),
+    updatedBy: "operator", updatedAt: now.toISOString(), activeFrom: now.toISOString(),
   };
   const first = evaluateGovernedFeatureFlag(flag, "tenant_a", "actor_1", now);
   assert.equal(evaluateGovernedFeatureFlag(flag, "tenant_a", "actor_1", now), first);
