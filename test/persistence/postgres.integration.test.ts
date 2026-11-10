@@ -26,9 +26,9 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
   const tenantId = "tenant_it_" + suffix;
   const caseId = "outcome_it_" + suffix;
   try {
-    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql","0007_authorization_rbac_abac.sql","0008_lifecycle_transition_events.sql","0009_immutable_audit_decision_ledger.sql","0010_calculation_snapshots.sql","0011_policy_registry_version_approvals.sql","0012_durable_settlement_workflow.sql","0013_immutable_intent_versions.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
-    assert.equal((await applyMigrations(db,migrations)).applied.length,13);
-    assert.equal((await applyMigrations(db,migrations)).skipped.length,13);
+    const migrations = await Promise.all(["0001_outcome_platform.sql","0002_workflow_tasks.sql","0003_api_keys.sql","0004_usage_ledger.sql","0005_intent_versions.sql","0006_workspaces_memberships.sql","0007_authorization_rbac_abac.sql","0008_lifecycle_transition_events.sql","0009_immutable_audit_decision_ledger.sql","0010_calculation_snapshots.sql","0011_policy_registry_version_approvals.sql","0012_durable_settlement_workflow.sql","0013_immutable_intent_versions.sql","0014_durable_outcome_proposals.sql"].map(async id => ({ id, sql: await readFile(new URL("../../migrations/" + id, import.meta.url), "utf8") })));
+    assert.equal((await applyMigrations(db,migrations)).applied.length,14);
+    assert.equal((await applyMigrations(db,migrations)).skipped.length,14);
     const initial: OutcomeCase = {
       id: caseId, tenantId, stage: "specified",
       spec: { metric: { id: "metric_it_001", name: "Revenue", unit: "BRL" } as never, baseline: 100, target: 150, direction: "increase", periodStart: "2026-01-01", periodEnd: "2026-02-01", attribution: "direct", approvedBy: "actor_it_001" },
@@ -127,6 +127,24 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     assert.equal(completedSettlement.state,"succeeded");
     assert.equal((await settlementWorkflow.events(tenantId,settlementPlan[0]!.id)).length,3);
     await assert.rejects(()=>client.unsafe("update settlement_workflow_events set kind='failed' where tenant_id=$1",[tenantId]),/SETTLEMENT_EVENT_IMMUTABLE/);
+    const proposalStore = new PostgresProposalStore(db);
+    const proposalId = "proposal_it_" + suffix;
+    const proposalNow = new Date().toISOString();
+    const proposalValue = {
+      proposal: { id: proposalId, version: 1, tenantId, status: "draft" as const, generatedAt: proposalNow, customer: { name: "Integration", sector: "Services" }, context: "Context", problem: "Problem", desiredOutcome: "Outcome", diagnosisConfidence: 0, evidence: [], metric: { id: "metric", name: "Revenue", unit: "BRL", direction: "increase" as const, attribution: "pending" as const, guardrails: [], exclusions: [] }, scenario: { id: "scenario", rationale: "Pilot", confidence: 0, assumptions: [], risks: [] }, scope: [], deliverables: [], exclusions: [], dependencies: [], responsibilities: [], acceptanceCriteria: [], pricing: { lines: [] }, readiness: { status: "ready_for_review" as const, blockers: [], warnings: [] }, commercialNotice: "Review only" },
+      status: "ready_for_review" as const, source: { kind: "guilda", missionId: "mission_" + suffix, answerCount: 3, knownAnswerCount: 3 }, createdBy: "actor_it_001", updatedBy: "actor_it_001", createdAt: proposalNow, updatedAt: proposalNow,
+    };
+    const proposalEvent = { id: "proposal_event_" + suffix, tenantId, proposalId, version: 1, actorId: "actor_it_001", kind: "submitted" as const, occurredAt: proposalNow };
+    const proposalCommand = { tenantId, actorId: "actor_it_001", idempotencyKey: "proposal_idem_" + suffix, fingerprint: "proposal_payload_" + suffix, value: proposalValue, event: proposalEvent };
+    assert.equal((await proposalStore.create(proposalCommand)).replayed, false);
+    assert.equal((await proposalStore.create(proposalCommand)).replayed, true);
+    assert.equal((await proposalStore.get(tenantId, proposalId))?.status, "ready_for_review");
+    assert.equal((await proposalStore.list(tenantId)).length, 1);
+    const reviewedProposal = await proposalStore.transition({ tenantId, proposalId, actorId: "actor_reviewer_" + suffix, expectedVersion: 1, status: "approved", event: { ...proposalEvent, id: "proposal_approved_" + suffix, version: 2, actorId: "actor_reviewer_" + suffix, kind: "approved" } });
+    assert.equal(reviewedProposal.status, "approved");
+    assert.equal(reviewedProposal.proposal.version, 2);
+    assert.equal((await proposalStore.events(tenantId, proposalId)).length, 2);
+    await assert.rejects(() => proposalStore.transition({ tenantId, proposalId, actorId: "actor_reviewer_" + suffix, expectedVersion: 1, status: "rejected", reason: "stale", event: { ...proposalEvent, id: "proposal_stale_" + suffix, version: 2, kind: "rejected", reason: "stale" } }), /PROPOSAL_VERSION_CONFLICT/);
     const intentVersions = new PostgresIntentVersionStore(db);
     const intentSnapshot = { id:"intent_it_"+suffix,tenantId,actorId:"actor_it_001",statement:"Improve retention",desiredOutcome:"retention",scope:["onboarding"],constraints:[],status:"draft" as const,version:1,provenance:{channel:"api" as const,sourceId:"api_request",capturedAt:new Date().toISOString()},createdAt:new Date().toISOString() };
     await intentVersions.append({intentId:intentSnapshot.id,version:1,snapshot:intentSnapshot,changedBy:"actor_it_001",changedAt:intentSnapshot.createdAt,changeReason:"captured"});
@@ -134,6 +152,9 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     await assert.rejects(()=>client.unsafe("update intent_versions set payload='{}'::jsonb where tenant_id=$1 and intent_id=$2",[tenantId,intentSnapshot.id]),/INTENT_VERSION_APPEND_ONLY/);
     await assert.rejects(()=>client.unsafe("delete from intent_versions where tenant_id=$1 and intent_id=$2",[tenantId,intentSnapshot.id]),/INTENT_VERSION_APPEND_ONLY/);
   } finally {
+    await client.unsafe("delete from outcome_proposal_idempotency where tenant_id = $1", [tenantId]);
+    await client.unsafe("delete from outcome_proposal_events where tenant_id = $1", [tenantId]);
+    await client.unsafe("delete from outcome_proposals where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from authorization_decisions where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from authorization_grants where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from authorization_roles where tenant_id = $1", [tenantId]);
