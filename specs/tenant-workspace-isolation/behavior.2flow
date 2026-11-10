@@ -1,0 +1,14 @@
+require_workspace_scope -(valid)-> build_tenant_and_workspace_query_filter
+require_workspace_scope -(missing_or_malformed)-> reject_scope
+build_tenant_and_workspace_query_filter -(complete)-> validate_record_scope
+validate_record_scope -(tenant_and_workspace_match)-> allow_record_operation
+validate_record_scope -(tenant_mismatch)-> reject_tenant_access
+validate_record_scope -(workspace_mismatch)-> reject_workspace_access
+validate_collection_scope -(all_records_match)-> allow_atomic_collection_operation
+validate_collection_scope -(any_record_mismatch)-> reject_entire_collection
+authorize_workspace_action -(membership_found)-> validate_membership_scope_and_status
+authorize_workspace_action -(membership_missing)-> deny_action
+validate_membership_scope_and_status -(same_scope_and_active)-> enforce_role_permission_ceiling
+validate_membership_scope_and_status -(mismatch_or_expired_or_inactive)-> deny_action
+enforce_role_permission_ceiling -(role_allows_action)-> allow_action
+enforce_role_permission_ceiling -(role_denies_or_escalation)-> deny_or_reject_membership
