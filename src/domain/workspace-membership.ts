@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { parseEntityId } from "./identifiers.ts";
 import type { WorkspaceMembership, WorkspaceRole } from "./workspace-isolation.ts";
 import type { WorkspaceId, WorkspaceTenantId } from "./workspace-isolation.ts";
 
@@ -81,23 +82,11 @@ function normalizeEmail(value: unknown): string {
 
 function validateScope(tenantId: unknown, workspaceId: unknown): void {
   try {
-    const { parseEntityId } = requireIdentifierParser();
     parseEntityId("tenant", tenantId);
     parseEntityId("workspace", workspaceId);
   } catch {
     fail("INVITATION_SCOPE_INVALID", "tenantId/workspaceId");
   }
-}
-
-// Kept as a local static import indirection to avoid exporting identifier internals from this module.
-function requireIdentifierParser() {
-  return { parseEntityId: (kind: "tenant" | "workspace", value: unknown) => {
-    if (typeof value !== "string" || !/^[a-z][a-z0-9]*(?:_[a-z0-9]+)+$/.test(value)) throw new Error("invalid id");
-    if (!value.startsWith(`${kind}_`)) throw new Error("kind mismatch");
-    const suffix = value.slice(kind.length + 1);
-    if (suffix.length < 3 || suffix.length > 64) throw new Error("invalid length");
-    return value;
-  } };
 }
 
 async function authorize(
@@ -197,7 +186,7 @@ export async function acceptWorkspaceInvitation(
   const invitation = await dependencies.store.findInvitationByTokenHash(input.tenantId, digest(input.token));
   if (!invitation) fail("INVITATION_NOT_FOUND", "token");
   if (invitation.tenantId !== input.tenantId || invitation.workspaceId !== input.workspaceId) {
-    fail("INVITATION_SCOPE_MISMATCH", "invitation.scope");
+    fail("INVITATION_NOT_FOUND", "token");
   }
   if (invitation.status !== "pending") fail("INVITATION_NOT_PENDING", "invitation.status");
   if (Date.parse(invitation.expiresAt) <= now.getTime()) fail("INVITATION_EXPIRED", "invitation.expiresAt");
@@ -282,7 +271,8 @@ export async function revokeWorkspaceMembership(
     if (activeOwners.length <= 1) fail("MEMBERSHIP_LAST_OWNER_REQUIRED", "membership.role");
   }
   const updated: WorkspaceMembership = Object.freeze({
-    ...current, status: "revoked", revision: current.revision + 1,
+    ...current, status: "revoked", revokedAt: now.toISOString(), revokedBy: input.actorId,
+    revocationReason: input.reason, revision: current.revision + 1,
   });
   if (!await dependencies.store.commitMembership(updated, current.revision)) {
     fail("MEMBERSHIP_REVISION_CONFLICT", "membership.revision");
