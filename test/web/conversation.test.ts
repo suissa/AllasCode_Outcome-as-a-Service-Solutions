@@ -70,7 +70,7 @@ test("confirmed mission pre-fills discovery without overwriting existing answers
 });
 
 test("refuses handoff before explicit mission confirmation", async () => {
-  const { OQ } = harness();
+  const { OQ } = await harness();
   OQ.startMission();
   assert.throws(() => OQ.prepareDiscovery(), /MISSION_NOT_CONFIRMED/);
 });
