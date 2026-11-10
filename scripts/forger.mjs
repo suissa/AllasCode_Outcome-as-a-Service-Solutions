@@ -13,7 +13,8 @@ const contentFiles = {
   "sector-playbooks":"content/sector-playbooks.pt-BR.json",
   "agent-team":"content/agent-team.pt-BR.json",
   "mission-steps":"content/mission-steps.pt-BR.json",
-  discovery:"content/discovery.pt-BR.json"
+  discovery:"content/discovery.pt-BR.json",
+  "ui-copy":"content/ui-copy.pt-BR.json"
 };
 const get = (obj,path) => path.split(".").filter(Boolean).reduce((v,k)=>v?.[k],obj);
 const extractText = (value, acc=[]) => {
