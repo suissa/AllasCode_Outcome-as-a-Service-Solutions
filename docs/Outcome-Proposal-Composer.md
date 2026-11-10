@@ -17,7 +17,9 @@ The proposal composer turns a structured business diagnosis into an inspectable 
 ## API
 
 - `assessProposalReadiness(input)` returns blocking conditions and non-blocking warnings.
-- `composeOutcomeProposal(input, generatedAt?)` returns an immutable draft and an indicative pricing summary when the supplied pricing lines are valid.
+- `composeOutcomeProposal(input, generatedAt?)` returns a draft and an indicative pricing summary when the supplied pricing lines are valid.
+- `renderOutcomeProposalMarkdown(proposal)` renders a readable customer-facing proposal draft.
+- `composeContractFromOutcomeProposal(input, generatedAt?)` passes a review-ready proposal into the existing contract composer after explicit approval, tenant and scope consistency checks.
 
 A proposal is `ready_for_review` only when the required metric and commercial details are present. This is not customer acceptance, contract activation or authorization to execute.
 
