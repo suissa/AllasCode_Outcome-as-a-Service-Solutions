@@ -96,6 +96,15 @@
     "recordedAnswers": "Respostas registradas",
     "reviewAnswers": "Revisar respostas",
     "exportJson": "Exportar JSON",
-    "confirmReset": "Apagar todas as respostas salvas desta descoberta?"
+    "confirmReset": "Apagar todas as respostas salvas desta descoberta?",
+    "proposalEyebrow": "PROPOSTA PRELIMINAR · BASEADA NAS RESPOSTAS",
+    "proposalScopeTitle": "Escopo inicial a validar",
+    "proposalBasis": "Esta modelagem utiliza somente as respostas declaradas e o grafo de associações configurado. Nenhuma base operacional, financeira ou fonte externa foi analisada.",
+    "declaredGoal": "Objetivo declarado",
+    "successIndicator": "Indicador de sucesso",
+    "target": "Meta desejada",
+    "deadline": "Prazo",
+    "validationSteps": "Próximas etapas para transformar hipótese em proposta validada",
+    "savePdf": "Salvar proposta em PDF"
   }
 }
