@@ -1,0 +1,18 @@
+version: "1.0"
+behavior: intent-clarification
+input:
+  intent: { type: OutcomeIntent, required: true }
+  ambiguities: { type: array, required: false, itemType: text, nonEmptyItems: true }
+output:
+  clarifications:
+    type: array
+    items:
+      path: { type: identifier, required: true }
+      question: { type: text, required: true }
+      reason: { type: text, required: true }
+  route: { type: enum, values: [clarification, discovery] }
+  status: { type: enum, values: [needs_clarification, qualified] }
+errors:
+  - INTENT_CLARIFICATION_INPUT_INVALID
+  - INTENT_AMBIGUITY_INVALID
+  - INTENT_NOT_QUALIFIED
