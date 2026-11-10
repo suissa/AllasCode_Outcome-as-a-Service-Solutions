@@ -18,7 +18,7 @@
     const phases = exp["90DayMethod"].phases || [], metrics = exp.measurement;
     const commercial = exp.commercialModel, faq = exp.faq || [];
     const nav = document.querySelector(guild ? ".guild-nav" : ".classic-links");
-    const ids = {method:"metodo",solutions:"especialidades",ninetyDays:"jornada-90",measurement:"orbe",sectors:"reinos",faq:"perguntas"};
+    const ids = guild ? {method:"metodo",solutions:"especialidades",ninetyDays:"jornada-90",measurement:"orbe",sectors:"reinos",faq:"perguntas"} : {method:"metodo",solutions:"solucoes",ninetyDays:"jornada-90",measurement:"orbe",sectors:"especialidades",faq:"perguntas"};
     if (nav) nav.innerHTML = Object.keys(copy.navigation).map(k => '<a href="#' + ids[k] + '">' + esc(copy.navigation[k]) + '</a>').join("");
     if (!guild) {
       document.title = "OaaS.Quest — " + exp.brand.category;
@@ -27,7 +27,7 @@
         '<section class="classic-hero"><div class="classic-eyebrow">' + esc(copy.hero.eyebrow) + '</div><h1>' + esc(copy.hero.title) + '<br><em>' + esc(copy.hero.titleEmphasis) + '</em></h1><p>' + esc(copy.hero.body) + '</p><div class="classic-actions"><a href="#empresarios">' + esc(copy.hero.primaryCta) + '</a><a href="#metodo">' + esc(copy.hero.secondaryCta) + '</a></div></section>' +
         classicSection("metodo",copy.method.title,copy.method.body,'<div class="journey-grid">' + journey.map((s,i)=>feature(String(i+1).padStart(2,"0") + " · " + s.title,s.description)).join("") + '</div>') +
         classicSection("jornada-90",copy.ninetyDays.title,copy.ninetyDays.body,'<div class="timeline-grid">' + phases.map(p=>'<article class="timeline-card"><small>' + esc(p.period) + '</small><h3>' + esc(p.name) + '</h3><p>' + esc(p.goal) + '</p><strong>Entregas</strong><ul>' + li(p.deliverables) + '</ul></article>').join("") + '</div><p class="content-disclaimer">' + esc(copy.ninetyDays.disclaimer) + '</p>') +
-        classicSection("solucoes",copy.custom.title,copy.custom.body,'<div class="feature-grid">' + exp.solutionPrinciples.map((p,i)=>feature(p.title || ("Princípio " + (i+1)),p.description || p)).join("") + '</div>') +
+        classicSection("solucoes",copy.custom.title,copy.custom.body,'<p class="solution-approach">' + esc(exp.solutionPrinciples.approach) + '</p><div class="feature-grid">' + exp.solutionPrinciples.buildingBlocks.map((p,i)=>feature("Capacidade " + (i+1),p)).join("") + '</div><div class="decision-rules"><strong>Como escolhemos a solução</strong><ul>' + li(exp.solutionPrinciples.decisionRules) + '</ul></div>') +
         classicSection("especialidades","Conhecimento aplicado a diferentes setores","A missão é adaptada ao contexto, às regras e aos indicadores de cada operação.",'<div class="sector-grid">' + sectors.map(s=>'<article class="sector-card"><h3>' + esc(s.name) + '</h3><strong>Resultados buscados</strong><ul>' + li(s.outcomes.slice(0,3)) + '</ul><strong>Indicadores</strong><p>' + esc(s.metrics.slice(0,5).join(" · ")) + '</p></article>').join("") + '</div>') +
         classicSection("orbe",copy.measurement.title,copy.measurement.body,'<div class="feature-grid">' + metrics.dashboardMetrics.map((m,i)=>feature("Indicador " + (i+1),m)).join("") + '</div><p class="content-disclaimer">' + esc(metrics.integrity) + '</p>') +
         classicSection("modelo-comercial",commercial.headline,commercial.principle,'<div class="commercial-grid">' + commercial.components.map(c=>feature(c.name,c.description)).join("") + '</div><p class="content-disclaimer">' + esc(commercial.trustStatement) + '</p>') +
