@@ -1,0 +1,16 @@
+validate_entity_kind -(supported)-> normalize_external_key
+validate_entity_kind -(unsupported)-> reject_kind_mismatch
+normalize_external_key -(non_empty)-> enforce_suffix_bounds
+normalize_external_key -(empty)-> reject_identifier
+enforce_suffix_bounds -(within_limit)-> compose_namespaced_identifier
+enforce_suffix_bounds -(too_long)-> append_stable_digest_suffix
+compose_namespaced_identifier -(valid)-> parse_and_return_typed_id
+append_stable_digest_suffix -(valid)-> parse_and_return_typed_id
+parse_and_return_typed_id -(kind_matches)-> return_canonical_identifier
+parse_and_return_typed_id -(invalid)-> reject_with_stable_code_and_path
+require_tenant_scope -(valid)-> parse_runtime_tenant_id
+require_tenant_scope -(missing_or_malformed)-> reject_scope
+parse_runtime_tenant_id -(valid)-> compare_record_tenant
+parse_runtime_tenant_id -(invalid)-> reject_scope
+compare_record_tenant -(matches)-> allow_scoped_access
+compare_record_tenant -(mismatch)-> reject_without_disclosing_tenant_ids
