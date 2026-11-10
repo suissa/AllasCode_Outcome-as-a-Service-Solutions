@@ -144,7 +144,7 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     assert.equal(reviewedProposal.status, "approved");
     assert.equal(reviewedProposal.proposal.version, 2);
     assert.equal((await proposalStore.events(tenantId, proposalId)).length, 2);
-    await assert.rejects(() => proposalStore.transition({ tenantId, proposalId, actorId: "actor_reviewer_" + suffix, expectedVersion: 1, status: "rejected", reason: "stale", event: { ...proposalEvent, id: "proposal_stale_" + suffix, version: 2, kind: "rejected", reason: "stale" } }), /PROPOSAL_VERSION_CONFLICT/);
+    await assert.rejects(() => proposalStore.transition({ tenantId, proposalId, actorId: "actor_reviewer_" + suffix, expectedVersion: 1, status: "rejected", reason: "stale", event: { ...proposalEvent, id: "proposal_stale_" + suffix, version: 2, kind: "rejected", actorId: "actor_reviewer_" + suffix, reason: "stale" } }), /PROPOSAL_VERSION_CONFLICT/);
     const intentVersions = new PostgresIntentVersionStore(db);
     const intentSnapshot = { id:"intent_it_"+suffix,tenantId,actorId:"actor_it_001",statement:"Improve retention",desiredOutcome:"retention",scope:["onboarding"],constraints:[],status:"draft" as const,version:1,provenance:{channel:"api" as const,sourceId:"api_request",capturedAt:new Date().toISOString()},createdAt:new Date().toISOString() };
     await intentVersions.append({intentId:intentSnapshot.id,version:1,snapshot:intentSnapshot,changedBy:"actor_it_001",changedAt:intentSnapshot.createdAt,changeReason:"captured"});
