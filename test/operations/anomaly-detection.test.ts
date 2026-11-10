@@ -20,7 +20,7 @@ const executions: ExecutionOutcomeSample[] = [
   { id: "x1", tenantId: "tenant_a", outcomeId: "o1", executionId: "e1", occurredAt: "2026-11-10T11:59:00.000Z", status: "success" },
   { id: "x2", tenantId: "tenant_a", outcomeId: "o2", executionId: "e2", occurredAt: "2026-11-10T11:58:00.000Z", status: "failure", failureCode: "PAYMENT_TIMEOUT" },
   { id: "x3", tenantId: "tenant_a", outcomeId: "o3", executionId: "e3", occurredAt: "2026-11-10T11:57:00.000Z", status: "failure", failureCode: "PAYMENT_TIMEOUT" },
-  { id: "x4", tenantId: "tenant_a", outcomeId: "o4", executionId: "e4", occurredAt: "2026-11-10T11:56:00.000Z", status: "success" },
+  { id: "x4", tenantId: "tenant_a", outcomeId: "o4", executionId: "e4", occurredAt: "2026-11-10T11:58:30.000Z", status: "success" },
 ];
 
 function input(overrides: Partial<AnomalyDetectionInput> = {}): AnomalyDetectionInput {
@@ -123,7 +123,7 @@ test("does not flag insufficient baselines or execution windows below minimum sa
   assert.equal(result.anomalies.some(item => item.kind === "metric"), false);
   assert.equal(result.anomalies.some(item => item.kind === "failure_rate"), false);
   assert.equal(result.insufficientData.baselineMetrics.includes("checkout.latency_ms"), true);
-  assert.equal(result.insufficientData.executionSamples, 2);
+  assert.equal(result.insufficientData.executionSamples, 1);
 });
 
 test("deduplicates identical findings and freezes the result without mutating source input", () => {
