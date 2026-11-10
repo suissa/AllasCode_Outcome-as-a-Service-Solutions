@@ -82,6 +82,6 @@ test("proposal rejection requires a reason", async () => {
   const db: SqlDatabase = { query: tx.query, transaction: async work => work(tx) };
   await assert.rejects(() => new PostgresProposalStore(db).transition({
     tenantId: "tenant_demo_001", proposalId: "proposal_demo_001", actorId: "reviewer_001", expectedVersion: 1,
-    status: "rejected", event: event("rejected", 2),
+    status: "rejected", event: { ...event("rejected", 2), actorId: "reviewer_001" },
   }), /PROPOSAL_REJECTION_REASON_REQUIRED/);
 });
