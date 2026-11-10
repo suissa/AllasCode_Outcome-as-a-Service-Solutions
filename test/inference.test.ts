@@ -5,14 +5,14 @@ import assert from "node:assert/strict";
 import { runInNewContext } from "node:vm";
 
 const root=process.cwd();
-const read=async path=>JSON.parse(await readFile(join(root,path),"utf8"));
+const read=async (path:string)=>JSON.parse(await readFile(join(root,path),"utf8"));
 async function fixture(){
  const [config,graph,source]=await Promise.all([
   read("content/discovery.pt-BR.json"),
   read("content/inference-graph.pt-BR.json"),
   readFile(join(root,"runtime/inference.js"),"utf8")
  ]);
- const sandbox={};
+ const sandbox:Record<string,any>={};
  runInNewContext(source,{globalThis:sandbox});
  return {config,graph,infer:sandbox.OaaSInference.infer};
 }
