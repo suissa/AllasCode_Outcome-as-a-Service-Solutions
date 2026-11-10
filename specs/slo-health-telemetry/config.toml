@@ -1,0 +1,11 @@
+version = "1.0"
+max_slo_window_seconds = 2678400
+max_observation_latency_ms = 86400000
+max_minimum_samples = 1000000
+stale_probe_after_ms = 60000
+max_telemetry_attributes = 32
+max_telemetry_string_length = 256
+redact_sensitive_attribute_keys = true
+require_tenant_scope = true
+require_w3c_trace_ids = true
+emit_alerts_from_domain = false
