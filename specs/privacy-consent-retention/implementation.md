@@ -1,9 +1,10 @@
 # Implementation notes
 
-validateDataHandling is a pure guard. It rejects unknown classifications, blank purposes, missing lawful basis for personal/sensitive data, invalid retention timestamps and expired retention. The optional now parameter makes boundary tests deterministic.
+Implemented by `src/domain/privacy-governance.ts`.
 
-consentIsValid is fail-closed: malformed records/timestamps, future capture, purpose mismatch, expired consent or any withdrawal make the record invalid. Tenant and subject identifiers must be present; callers must additionally compare them with the authenticated request context before using a consent record.
-
-withdrawConsent validates capture/withdrawal chronology and returns a frozen copy with granted=false. It does not persist the record or create an audit event; the application service must do both atomically with its business operation.
-
-Errors are stable machine-readable codes. No coercive parsing, silent repair, default legal basis or automatic retention extension is permitted.
+- `classifyData` applies conservative precedence and defaults ambiguous data to internal.
+- `recordPrivacyConsent` stores a versioned consent decision with tenant, subject, purpose, categories, source and evidence hash. Idempotency prevents duplicate consent records.
+- `withdrawPrivacyConsent` requires authorization and expected revision, and records who withdrew consent, when and why.
+- `validateDataProcessingBasis` enforces legal basis and matches consent tenant, subject, purpose, category, status, expiry and grant time.
+- `assessRetention` derives due dates from policy or explicit metadata and marks legal-hold records as on_hold.
+- Consent evidence storage, legal-basis verification, retention deletion and legal-hold source checks remain host adapters.
