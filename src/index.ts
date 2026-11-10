@@ -98,3 +98,5 @@ export * from "./solutions/capability-knowledge-governance.ts";
 export * from "./domain/workspace-isolation.ts";
 export * from "./domain/workspace-membership.ts";
 export * from "./domain/privacy-governance.ts";
+
+export * from "./commercial/proposal.ts";
