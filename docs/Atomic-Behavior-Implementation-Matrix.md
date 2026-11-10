@@ -61,7 +61,7 @@ This matrix ties each open atomic issue to the code entry point and automated te
 | #83 | Customer-facing outcome reports with tenant-scoped, preflight-authorized, short-lived HTTPS evidence links and safe Markdown rendering | `src/reporting/report.ts`; `test/reporting/customer-outcome-report.test.ts`; `specs/customer-outcome-report/`
 | #84 | Acceptance/payment/bonus/refund/dispute flow | `src/commercial/settlement-workflow.ts`, `src/commercial/durable-settlement.ts`; `migrations/0012_durable_settlement_workflow.sql`; unit and PostgreSQL integration tests |
 | #85 | Reproducible snapshots/audit | `src/reporting/snapshot.ts` |
-| #86 | SLO/health/telemetry | `src/operations/health.ts`, `src/operations/telemetry.ts` |
+| #86 | Tenant-scoped SLO evaluation, stale/critical health aggregation, validated trace context and privacy-redacted telemetry events | `src/operations/observability.ts`; `test/operations/observability.test.ts`; `specs/slo-health-telemetry/` |
 | #87 | Trace/log/metric correlation | `src/operations/telemetry.ts` |
 | #88 | Anomaly/failure/SLO breach | `src/operations/health.ts` |
 | #89 | Secrets/rotation/access review | `src/security/secret-reference.ts`, `src/security/access-review.ts` |
