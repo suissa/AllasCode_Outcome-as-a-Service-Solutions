@@ -60,3 +60,20 @@
     throw error;
   });
 })();
+
+window.OaaSPageScriptsReady = window.OaaSPageReady.then(async page => {
+  for (const path of page.layout.scripts || []) {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = new URL(root + path, document.baseURI).href;
+      script.dataset.oaasLayoutScript = path;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error("LAYOUT_SCRIPT_FETCH_FAILED:" + path));
+      document.body.append(script);
+    });
+  }
+  return page;
+}).catch(error => {
+  console.error("Falha ao carregar os runtimes do layout OaaS.Quest", error);
+  throw error;
+});
