@@ -12,7 +12,9 @@ export const SOURCE_FILES = {
   "sector-playbooks": "sector-playbooks.pt-BR.json",
   "agent-team": "agent-team.pt-BR.json",
   "mission-steps": "mission-steps.pt-BR.json",
-  discovery: "discovery.pt-BR.json"
+  discovery: "discovery.pt-BR.json",
+  "ui-copy": "ui-copy.pt-BR.json",
+  "proposal-graph": "proposal-graph.pt-BR.json"
 };
 
 /**
