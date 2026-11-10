@@ -1,0 +1,12 @@
+version = "1.0"
+require_tenant_scope = true
+require_outcome_scope = true
+require_execution_scope = true
+require_w3c_trace_context = true
+reject_future_timestamps = true
+max_telemetry_attributes = 32
+max_telemetry_string_length = 256
+redact_sensitive_attribute_keys = true
+allow_arbitrary_log_messages = false
+sort_signals_deterministically = true
+persist_from_domain = false
