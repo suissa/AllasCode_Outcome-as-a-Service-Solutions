@@ -116,13 +116,14 @@ export function validateGovernedBackupManifest(manifest: GovernedBackupManifest,
       new Set(manifest.scope).size !== manifest.scope.length ||
       !Array.isArray(manifest.replicaRegions) || manifest.replicaRegions.some(region => !required(region)) ||
       new Set(manifest.replicaRegions).size !== manifest.replicaRegions.length ||
-      !/^[a-f0-9]{64}$/i.test(manifest.contentHash) ||
       !Number.isSafeInteger(manifest.sizeBytes) || manifest.sizeBytes < 1 ||
-      !manifest.encryption || !["AES-256-GCM", "XCHACHA20-POLY1305"].includes(manifest.encryption.algorithm) ||
-      !required(manifest.encryption.keyReference) ||
       !validTimestamp(manifest.createdAt) || !validTimestamp(manifest.consistencyPoint) ||
       !validTimestamp(manifest.retentionUntil) || !(now instanceof Date) || !Number.isFinite(now.getTime())) {
     fail("BACKUP_MANIFEST_INVALID", "manifest");
+  }
+  if (!/^[a-f0-9]{64}$/i.test(manifest.contentHash)) fail("BACKUP_HASH_INVALID", "contentHash");
+  if (!manifest.encryption || !["AES-256-GCM", "XCHACHA20-POLY1305"].includes(manifest.encryption.algorithm) || !required(manifest.encryption.keyReference)) {
+    fail("BACKUP_ENCRYPTION_INVALID", "encryption");
   }
   if (Date.parse(manifest.createdAt) > now.getTime() ||
       Date.parse(manifest.consistencyPoint) > Date.parse(manifest.createdAt)) {
