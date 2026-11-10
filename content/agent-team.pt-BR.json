@@ -1,0 +1,237 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "Outcome Delivery Swarm",
+  "description": "Equipe multiagente coordenada por missão. Os agentes trabalham em paralelo quando as dependências permitem, compartilham artefatos versionados e não substituem a responsabilidade humana.",
+  "coordination": {
+    "orchestrator": "Outcome Mission Lead",
+    "executionStyle": "parallel-by-dependency",
+    "sourceOfTruth": "Mission workspace with versioned decisions, plans, evidence and contracts",
+    "humanApprovalRequiredFor": [
+      "Mudança de escopo ou contrato",
+      "Acesso a dados sensíveis",
+      "Ações financeiras ou transacionais irreversíveis",
+      "Decisões reguladas ou de alto impacto",
+      "Publicação em produção fora da janela aprovada",
+      "Alteração de baseline, meta ou regra de apuração"
+    ],
+    "safetyRules": [
+      "Cada agente recebe apenas o contexto necessário à sua função.",
+      "Toda afirmação relevante deve apontar para dado, fonte ou hipótese identificada.",
+      "Nenhum agente pode alterar critérios contratuais retroativamente.",
+      "Ações externas usam permissões, limites, idempotência e trilha de auditoria.",
+      "Conflitos entre agentes são encaminhados ao coordenador; não são resolvidos por suposição.",
+      "A equipe deve parar e solicitar esclarecimento quando faltar autoridade, evidência ou requisito crítico."
+    ]
+  },
+  "roles": [
+    {
+      "id": "mission-lead",
+      "name": "Líder da Missão",
+      "guildaName": "Mestre da Guilda",
+      "purpose": "Coordena a missão, controla dependências, decisões, riscos, comunicação e progresso.",
+      "outputs": [
+        "Plano integrado",
+        "Registro de decisões",
+        "Relatório de progresso",
+        "Escalonamentos"
+      ]
+    },
+    {
+      "id": "business-analyst",
+      "name": "Analista de Negócio",
+      "guildaName": "Cartógrafo do Reino",
+      "purpose": "Investiga modelo de negócio, jornada, processos, unidades, papéis e restrições.",
+      "outputs": [
+        "Mapa de contexto",
+        "Processo atual",
+        "Hipóteses de causa",
+        "Requisitos de negócio"
+      ]
+    },
+    {
+      "id": "financial-analyst",
+      "name": "Analista Financeiro",
+      "guildaName": "Guardião do Tesouro",
+      "purpose": "Analisa receitas, custos, margens, fluxo de caixa, economia potencial e viabilidade financeira.",
+      "outputs": [
+        "Baseline financeiro",
+        "Modelo de impacto",
+        "Cenários de ROI",
+        "Memória de cálculo"
+      ]
+    },
+    {
+      "id": "data-analyst",
+      "name": "Analista de Dados",
+      "guildaName": "Oráculo dos Dados",
+      "purpose": "Avalia fontes, qualidade, sazonalidade, indicadores, atribuição e confiança estatística.",
+      "outputs": [
+        "Inventário de dados",
+        "Definições de métricas",
+        "Baseline validada",
+        "Plano de evidências"
+      ]
+    },
+    {
+      "id": "solution-architect",
+      "name": "Arquiteto de Solução",
+      "guildaName": "Arquiteto de Artefatos",
+      "purpose": "Desenha a solução mínima adequada, integrações, segurança, operação e reversibilidade.",
+      "outputs": [
+        "Arquitetura alvo",
+        "Mapa de integrações",
+        "Decisões técnicas",
+        "Plano de implantação"
+      ]
+    },
+    {
+      "id": "software-engineer",
+      "name": "Engenharia de Software",
+      "guildaName": "Forjadores de Sistemas",
+      "purpose": "Constrói software, APIs, interfaces e componentes específicos para o escopo aprovado.",
+      "outputs": [
+        "Código e componentes",
+        "Testes",
+        "Documentação técnica",
+        "Pacotes de implantação"
+      ]
+    },
+    {
+      "id": "integration-engineer",
+      "name": "Engenharia de Integração",
+      "guildaName": "Tecelões de Conexões",
+      "purpose": "Conecta sistemas existentes, dados, eventos e serviços externos com segurança.",
+      "outputs": [
+        "Conectores",
+        "Mapeamentos",
+        "Contratos de integração",
+        "Testes de interoperabilidade"
+      ]
+    },
+    {
+      "id": "agent-engineer",
+      "name": "Engenharia de Agentes e Automação",
+      "guildaName": "Invocadores de Autômatos",
+      "purpose": "Projeta agentes e workflows com ferramentas delimitadas, avaliação, supervisão e fallback.",
+      "outputs": [
+        "Definições de agentes",
+        "Workflows",
+        "Avaliações",
+        "Políticas de execução"
+      ]
+    },
+    {
+      "id": "security-reviewer",
+      "name": "Segurança e Privacidade",
+      "guildaName": "Sentinela da Guilda",
+      "purpose": "Avalia identidade, autorização, dados, ameaças, conformidade e controles operacionais.",
+      "outputs": [
+        "Threat model",
+        "Matriz de acesso",
+        "Controles e evidências",
+        "Recomendações de risco"
+      ]
+    },
+    {
+      "id": "quality-engineer",
+      "name": "Qualidade e Validação",
+      "guildaName": "Guardião das Provas",
+      "purpose": "Valida requisitos, testes, métricas, comportamento esperado e critérios de aceite.",
+      "outputs": [
+        "Plano de testes",
+        "Resultados de validação",
+        "Matriz requisito-evidência",
+        "Relatório de aceite"
+      ]
+    },
+    {
+      "id": "observability-engineer",
+      "name": "Observabilidade e Operações",
+      "guildaName": "Vigia do Observatório",
+      "purpose": "Instrumenta métricas técnicas e de negócio, alertas, SLOs, custos e acompanhamento operacional.",
+      "outputs": [
+        "Painéis",
+        "Alertas",
+        "SLOs",
+        "Runbooks",
+        "Relatórios de operação"
+      ]
+    },
+    {
+      "id": "human-domain-expert",
+      "name": "Especialista Humano de Domínio",
+      "guildaName": "Mestre de Ofício",
+      "purpose": "Valida decisões que exigem experiência profissional, conhecimento regulatório ou autoridade do cliente.",
+      "outputs": [
+        "Parecer especializado",
+        "Aprovações",
+        "Exceções justificadas",
+        "Orientação operacional"
+      ]
+    }
+  ],
+  "workflow": [
+    {
+      "stage": "discovery",
+      "parallelRoles": [
+        "business-analyst",
+        "financial-analyst",
+        "data-analyst"
+      ],
+      "coordinator": "mission-lead",
+      "gate": "Diagnóstico revisado e fontes identificadas"
+    },
+    {
+      "stage": "outcome-design",
+      "parallelRoles": [
+        "financial-analyst",
+        "data-analyst",
+        "business-analyst"
+      ],
+      "coordinator": "mission-lead",
+      "gate": "Baseline, meta, guardrails e atribuição aprovados"
+    },
+    {
+      "stage": "solution-design",
+      "parallelRoles": [
+        "solution-architect",
+        "security-reviewer",
+        "integration-engineer"
+      ],
+      "coordinator": "mission-lead",
+      "gate": "Arquitetura, custo, riscos e plano aprovados"
+    },
+    {
+      "stage": "build",
+      "parallelRoles": [
+        "software-engineer",
+        "integration-engineer",
+        "agent-engineer",
+        "quality-engineer"
+      ],
+      "coordinator": "solution-architect",
+      "gate": "Versão piloto testada e instrumentada"
+    },
+    {
+      "stage": "pilot",
+      "parallelRoles": [
+        "quality-engineer",
+        "observability-engineer",
+        "human-domain-expert"
+      ],
+      "coordinator": "mission-lead",
+      "gate": "Critérios de piloto e guardrails avaliados"
+    },
+    {
+      "stage": "operate-and-prove",
+      "parallelRoles": [
+        "observability-engineer",
+        "data-analyst",
+        "quality-engineer",
+        "financial-analyst"
+      ],
+      "coordinator": "mission-lead",
+      "gate": "Resultado e evidências apurados"
+    }
+  ]
+}

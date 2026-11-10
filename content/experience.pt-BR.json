@@ -1,0 +1,516 @@
+{
+  "schemaVersion": "1.0.0",
+  "locale": "pt-BR",
+  "brand": {
+    "name": "OaaS.Quest",
+    "category": "Outcome as a Service Platform",
+    "tagline": "Seu objetivo. Nossa missão. Resultados mensuráveis.",
+    "shortDescription": "Uma plataforma que entende o contexto da sua empresa, identifica oportunidades, planeja e desenvolve soluções sob medida e acompanha os resultados.",
+    "promise": "Você não precisa escolher um software nem saber qual tecnologia contratar. Conte o que deseja melhorar. A OaaS.Quest investiga o cenário, propõe um caminho, coordena a execução e mede o que mudou.",
+    "principles": [
+      "Começar pelo objetivo de negócio, não pela tecnologia.",
+      "Entender a operação real antes de recomendar mudanças.",
+      "Reaproveitar sistemas e dados existentes sempre que fizer sentido.",
+      "Construir somente o que for necessário para o resultado acordado.",
+      "Definir métricas, linha de base e critérios de validação antes da execução.",
+      "Manter pessoas responsáveis nas decisões de maior impacto.",
+      "Cobrar de forma transparente e relacionar a remuneração ao valor verificável."
+    ]
+  },
+  "positioning": {
+    "headline": "Sua empresa tem um objetivo. Nós construímos o caminho para alcançá-lo.",
+    "subheadline": "Diagnóstico, planejamento, desenvolvimento e evolução contínua em uma única jornada orientada a resultados.",
+    "audiences": [
+      "Pequenas e médias empresas que precisam melhorar sua operação sem montar uma equipe técnica própria.",
+      "Empresas em crescimento que precisam integrar sistemas, automatizar processos ou criar capacidades digitais específicas.",
+      "Organizações que já possuem ferramentas, mas não conseguem transformar dados e tecnologia em resultados operacionais."
+    ],
+    "not": [
+      "Não é um catálogo fechado de softwares iguais para todas as empresas.",
+      "Não é uma consultoria que entrega somente um relatório.",
+      "Não é uma fábrica que mede sucesso apenas por horas ou funcionalidades entregues.",
+      "Não é uma promessa de resultado sem diagnóstico, dados e critérios de atribuição."
+    ]
+  },
+  "customerJourney": [
+    {
+      "id": "quest",
+      "order": 1,
+      "title": "Conte o que deseja conquistar",
+      "description": "Descreva seu objetivo, dificuldade ou oportunidade com suas próprias palavras. Você pode começar sem conhecer a solução.",
+      "customerReceives": [
+        "Registro do objetivo",
+        "Perguntas de esclarecimento",
+        "Próximos passos da descoberta"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "order": 2,
+      "title": "Entendemos sua empresa",
+      "description": "Analisamos o contexto, os processos, os números disponíveis, os sistemas utilizados, as pessoas envolvidas e os fatores externos relevantes.",
+      "customerReceives": [
+        "Diagnóstico executivo",
+        "Mapa do processo atual",
+        "Inventário de sistemas e dados",
+        "Oportunidades e gargalos identificados",
+        "Lacunas de informação"
+      ]
+    },
+    {
+      "id": "opportunity",
+      "order": 3,
+      "title": "Descobrimos onde agir primeiro",
+      "description": "Comparamos oportunidades por impacto potencial, esforço, custo, risco, urgência e capacidade de comprovação.",
+      "customerReceives": [
+        "Oportunidades priorizadas",
+        "Hipóteses e evidências",
+        "Cenários de melhoria",
+        "Estimativa de impacto e confiança"
+      ]
+    },
+    {
+      "id": "plan",
+      "order": 4,
+      "title": "Apresentamos o plano de resultado",
+      "description": "Definimos o resultado-alvo, os indicadores, a linha de base, as etapas, os responsáveis, os investimentos e as condições de sucesso.",
+      "customerReceives": [
+        "Plano de 90 dias ou cronograma justificado",
+        "KPIs e metas propostas",
+        "Escopo e entregáveis",
+        "Orçamento e modelo comercial",
+        "Critérios de aceite e medição"
+      ]
+    },
+    {
+      "id": "build",
+      "order": 5,
+      "title": "Construímos a solução para sua realidade",
+      "description": "Uma equipe coordenada combina software sob medida, integrações, automações, agentes de IA, ferramentas existentes e mudanças de processo conforme a necessidade.",
+      "customerReceives": [
+        "Solução configurada para sua operação",
+        "Integrações necessárias",
+        "Testes e documentação",
+        "Treinamento e plano de transição"
+      ]
+    },
+    {
+      "id": "operate",
+      "order": 6,
+      "title": "Acompanhamos a operação",
+      "description": "Monitoramos indicadores, estabilidade, custos, adoção, qualidade e exceções. O plano pode ser ajustado com transparência e aprovação.",
+      "customerReceives": [
+        "Painel de acompanhamento",
+        "Alertas e relatórios",
+        "Revisões periódicas",
+        "Registro de decisões e mudanças"
+      ]
+    },
+    {
+      "id": "prove",
+      "order": 7,
+      "title": "Comprovamos o que mudou",
+      "description": "Comparamos os resultados com a linha de base e aplicamos as regras de atribuição e aceite definidas no contrato.",
+      "customerReceives": [
+        "Relatório de resultado",
+        "Evidências rastreáveis",
+        "Cálculo comercial auditável",
+        "Próximo ciclo de evolução"
+      ]
+    }
+  ],
+  "90DayMethod": {
+    "name": "Ciclo de Resultado em 90 Dias",
+    "shortName": "Plano 90 dias",
+    "promise": "Um ciclo estruturado para sair do diagnóstico e chegar a uma primeira melhoria operacional mensurável, com entregas progressivas e validação ao longo do caminho.",
+    "qualificationNote": "90 dias é uma janela de planejamento e execução, não uma garantia universal. O prazo e o resultado dependem de escopo, disponibilidade de dados, integrações, aprovações, riscos, sazonalidade e dependências externas. Projetos maiores podem ser divididos em ciclos.",
+    "phases": [
+      {
+        "id": "days-01-10",
+        "period": "Dias 1–10",
+        "name": "Conhecer e medir",
+        "goal": "Entender o negócio e estabelecer uma visão confiável da situação atual.",
+        "activities": [
+          "Entrevistas com responsáveis e usuários dos processos.",
+          "Levantamento de jornada, rotinas, exceções e pontos de atrito.",
+          "Inventário de sistemas, integrações, dados e permissões.",
+          "Análise de indicadores históricos e qualidade das fontes.",
+          "Identificação de riscos, restrições e dependências."
+        ],
+        "deliverables": [
+          "Diagnóstico inicial",
+          "Mapa do processo atual",
+          "Inventário de dados e sistemas",
+          "Linha de base preliminar com nível de confiança"
+        ],
+        "exitCriteria": [
+          "Patrocinador e responsáveis identificados",
+          "Fontes de dados mapeadas",
+          "Problema prioritário delimitado",
+          "Lacunas e riscos registrados"
+        ]
+      },
+      {
+        "id": "days-11-20",
+        "period": "Dias 11–20",
+        "name": "Definir o resultado e o plano",
+        "goal": "Transformar o diagnóstico em um compromisso claro, mensurável e executável.",
+        "activities": [
+          "Priorizar oportunidades pelo impacto, esforço, custo e risco.",
+          "Definir métrica principal, indicadores auxiliares e guardrails.",
+          "Validar baseline, meta, janela de apuração e fonte de verdade.",
+          "Comparar alternativas de solução e estimar investimento.",
+          "Fechar escopo, responsabilidades, cronograma e contrato."
+        ],
+        "deliverables": [
+          "Plano de resultado",
+          "Mapa de métricas e evidências",
+          "Arquitetura de solução",
+          "Proposta e contrato versionados",
+          "Backlog priorizado"
+        ],
+        "exitCriteria": [
+          "Baseline e método de medição aprovados",
+          "Meta negociada e não presumida",
+          "Escopo e exclusões acordados",
+          "Acessos e aprovações planejados"
+        ]
+      },
+      {
+        "id": "days-21-45",
+        "period": "Dias 21–45",
+        "name": "Construir a primeira capacidade",
+        "goal": "Implementar os componentes necessários para testar a solução em ambiente controlado.",
+        "activities": [
+          "Preparar ambientes, acessos e integrações.",
+          "Desenvolver ou configurar software e automações sob medida.",
+          "Construir agentes especializados quando houver caso de uso adequado.",
+          "Instrumentar eventos, logs, métricas e trilhas de auditoria.",
+          "Executar testes funcionais, de segurança e de recuperação."
+        ],
+        "deliverables": [
+          "Versão piloto",
+          "Integrações prioritárias",
+          "Instrumentação de observabilidade",
+          "Plano de testes e recuperação",
+          "Documentação inicial"
+        ],
+        "exitCriteria": [
+          "Fluxo principal executável",
+          "Testes críticos aprovados",
+          "Aprovações humanas configuradas",
+          "Telemetria disponível",
+          "Fallback definido"
+        ]
+      },
+      {
+        "id": "days-46-70",
+        "period": "Dias 46–70",
+        "name": "Operar o piloto e aprender",
+        "goal": "Validar a solução em condições reais controladas e corrigir desvios antes da expansão.",
+        "activities": [
+          "Liberar piloto por unidade, equipe, canal ou grupo elegível.",
+          "Acompanhar adoção, qualidade, custos e indicadores de negócio.",
+          "Analisar exceções, falhas, falsos positivos e retrabalho.",
+          "Coletar feedback de usuários e responsáveis.",
+          "Ajustar fluxos com controle de versão e aprovação."
+        ],
+        "deliverables": [
+          "Relatório de piloto",
+          "Painel de métricas atualizado",
+          "Registro de incidentes e correções",
+          "Recomendação de expansão ou revisão"
+        ],
+        "exitCriteria": [
+          "Critérios mínimos do piloto avaliados",
+          "Riscos críticos tratados",
+          "Qualidade dentro dos limites acordados",
+          "Decisão documentada sobre expansão"
+        ]
+      },
+      {
+        "id": "days-71-90",
+        "period": "Dias 71–90",
+        "name": "Expandir, validar e evoluir",
+        "goal": "Consolidar a capacidade aprovada, validar os resultados e preparar a próxima etapa.",
+        "activities": [
+          "Expandir gradualmente para o escopo aprovado.",
+          "Treinar responsáveis e formalizar procedimentos operacionais.",
+          "Comparar indicadores observados com baseline e meta.",
+          "Verificar atribuição, fatores externos e guardrails.",
+          "Apurar o resultado contratual e priorizar o próximo ciclo."
+        ],
+        "deliverables": [
+          "Solução operacional no escopo acordado",
+          "Relatório de resultado e evidências",
+          "Runbook e transferência operacional",
+          "Apuração comercial",
+          "Roadmap do próximo ciclo"
+        ],
+        "exitCriteria": [
+          "Aceite dos entregáveis ou exceções registradas",
+          "Resultado apurado ou limitações documentadas",
+          "Operação e suporte definidos",
+          "Próximos passos aprovados"
+        ]
+      }
+    ],
+    "extensionRules": [
+      "Se o diagnóstico revelar risco regulatório, de segurança ou de integridade, pausar o avanço até a validação adequada.",
+      "Se dados ou acessos essenciais não estiverem disponíveis, replanejar o escopo e registrar o impacto no prazo.",
+      "Se o resultado depender de sazonalidade ou de ciclo comercial superior a 90 dias, usar um indicador antecedente no primeiro ciclo e manter a apuração final na janela adequada.",
+      "Se a solução exigir substituição de sistemas centrais, mudanças físicas ou múltiplas unidades complexas, dividir em ciclos de 90 dias com marcos verificáveis."
+    ]
+  },
+  "solutionPrinciples": {
+    "approach": "Compor a menor solução capaz de produzir o resultado contratado, priorizando integração e evolução incremental em vez de substituição tecnológica desnecessária.",
+    "buildingBlocks": [
+      "Software desenvolvido sob medida",
+      "Integração com ERP, CRM, sistemas financeiros, agendas, plataformas de venda e ferramentas existentes",
+      "Agentes de IA e equipes multiagente com responsabilidades delimitadas",
+      "Automação de processos e workflows",
+      "Dashboards, analytics e observabilidade",
+      "Mudanças operacionais, treinamento e documentação",
+      "Serviços especializados e revisão humana"
+    ],
+    "decisionRules": [
+      "Reutilizar sistemas existentes quando atendem aos requisitos de segurança, custo e confiabilidade.",
+      "Comprar ou integrar uma ferramenta quando isso for mais eficiente do que desenvolver.",
+      "Desenvolver software específico quando a necessidade não for atendida adequadamente por opções existentes.",
+      "Usar agentes de IA para tarefas adequadas, com limites, avaliação, supervisão e fallback.",
+      "Não automatizar decisões de alto impacto sem governança e autoridade humana apropriadas."
+    ]
+  },
+  "measurement": {
+    "requiredBeforeExecution": [
+      "Métrica principal e unidade de medida",
+      "Definição operacional do indicador",
+      "Baseline, período e população observada",
+      "Meta e direção esperada",
+      "Fonte de verdade e responsável pelos dados",
+      "Janela de apuração e amostra mínima",
+      "Guardrails de qualidade, segurança e experiência",
+      "Método de atribuição e fatores externos",
+      "Regras para dados ausentes, duplicados, cancelamentos e exceções",
+      "Evento de aceite e condição de remuneração"
+    ],
+    "dashboardMetrics": [
+      "Valor atual, baseline e meta",
+      "Progresso e tendência",
+      "Cobertura e confiança dos dados",
+      "Resultado bruto e resultado atribuível",
+      "Qualidade, satisfação e taxa de exceção",
+      "Disponibilidade, latência e falhas",
+      "Custo operacional e custo por unidade",
+      "Adoção e utilização",
+      "Riscos, incidentes e decisões pendentes"
+    ],
+    "cadence": {
+      "daily": "Saúde técnica, falhas, filas, exceções e bloqueios.",
+      "weekly": "Progresso, qualidade, riscos, dependências e plano de ação.",
+      "monthly": "Resultados, custos, SLA, evidências e apuração comercial.",
+      "quarterly": "Revisão de metas, capacidade, segurança e evolução."
+    },
+    "integrity": "Nenhuma métrica deve ser apresentada como resultado comprovado sem fonte, período, definição e limitações. Estimativas, projeções e hipóteses devem permanecer identificadas como tais."
+  },
+  "commercialModel": {
+    "headline": "O modelo de cobrança acompanha a natureza do resultado.",
+    "principle": "Sempre que a medição e a atribuição forem viáveis, a remuneração variável deve estar vinculada a resultados elegíveis e verificáveis. Custos de mobilização, capacidade reservada, infraestrutura ou dependências fora do controle da plataforma podem exigir componentes fixos transparentes.",
+    "components": [
+      {
+        "id": "assessment",
+        "name": "Diagnóstico",
+        "description": "Análise aprofundada, levantamento de dados e desenho da oportunidade."
+      },
+      {
+        "id": "implementation",
+        "name": "Implantação",
+        "description": "Construção, integração, migração, configuração e entrada em operação."
+      },
+      {
+        "id": "capacity",
+        "name": "Operação e capacidade",
+        "description": "Monitoramento, suporte, manutenção e capacidade reservada."
+      },
+      {
+        "id": "usage",
+        "name": "Uso elegível",
+        "description": "Cobrança por unidade processada ou evento válido, com regras de deduplicação."
+      },
+      {
+        "id": "milestone",
+        "name": "Marcos aceitos",
+        "description": "Pagamento após entregáveis objetivos e verificáveis."
+      },
+      {
+        "id": "outcome",
+        "name": "Resultado",
+        "description": "Remuneração vinculada ao indicador e à regra de atribuição contratados."
+      },
+      {
+        "id": "gainshare",
+        "name": "Economia compartilhada",
+        "description": "Participação na economia líquida validada contra baseline."
+      },
+      {
+        "id": "revenueShare",
+        "name": "Receita incremental",
+        "description": "Participação na receita incremental elegível, descontadas as regras acordadas."
+      }
+    ],
+    "trustStatement": "O contrato define antecipadamente o que conta como resultado, como será medido, quais fatores estão fora do controle da equipe e como divergências serão tratadas."
+  },
+  "differentiators": [
+    {
+      "id": "business-first",
+      "title": "Começa pelo negócio, não pela ferramenta",
+      "description": "O cliente apresenta o objetivo e a plataforma investiga o contexto antes de recomendar qualquer tecnologia."
+    },
+    {
+      "id": "custom-fit",
+      "title": "Solução desenhada para cada operação",
+      "description": "Cada projeto combina componentes existentes e desenvolvimento específico conforme os processos, sistemas, dados e restrições da empresa."
+    },
+    {
+      "id": "90-day-cycle",
+      "title": "Ciclos de execução de 90 dias",
+      "description": "Um método de trabalho com etapas, entregáveis e critérios de saída para reduzir incerteza e demonstrar progresso cedo."
+    },
+    {
+      "id": "agent-swarm",
+      "title": "Equipe coordenada de especialistas e agentes",
+      "description": "Papéis especializados trabalham em paralelo sob uma coordenação central, com revisão humana e responsabilidade definida."
+    },
+    {
+      "id": "live-observability",
+      "title": "Acompanhamento contínuo",
+      "description": "Indicadores de negócio e saúde técnica ficam conectados à execução, permitindo identificar desvios e agir antes que virem problemas maiores."
+    },
+    {
+      "id": "evidence-led",
+      "title": "Resultado sustentado por evidências",
+      "description": "A apuração considera baseline, fonte de verdade, qualidade dos dados, atribuição e critérios contratuais."
+    },
+    {
+      "id": "evolution",
+      "title": "Evolui com a empresa",
+      "description": "Depois da primeira entrega, a plataforma identifica novas oportunidades e organiza ciclos sucessivos de melhoria."
+    }
+  ],
+  "presentation": {
+    "classic": {
+      "navigation": {
+        "method": "Como funciona",
+        "solutions": "Soluções sob medida",
+        "ninetyDays": "Ciclo de 90 dias",
+        "measurement": "Resultados e métricas",
+        "sectors": "Setores atendidos",
+        "faq": "Dúvidas"
+      },
+      "hero": {
+        "eyebrow": "OUTCOME AS A SERVICE",
+        "title": "Sua empresa tem um objetivo.",
+        "titleEmphasis": "Nós construímos o caminho.",
+        "body": "Conte o que precisa melhorar. Analisamos sua operação, identificamos oportunidades, desenhamos uma solução para sua realidade e acompanhamos os resultados.",
+        "primaryCta": "Quero alcançar um resultado",
+        "secondaryCta": "Conhecer o método"
+      },
+      "method": {
+        "title": "Da primeira conversa à melhoria comprovada",
+        "body": "Uma jornada que conecta diagnóstico, estratégia, desenvolvimento, operação e mensuração. Você acompanha as decisões e sabe o que está sendo feito e por quê."
+      },
+      "ninetyDays": {
+        "title": "Um primeiro ciclo de 90 dias, com direção e evidências",
+        "body": "Em até 90 dias, buscamos colocar em operação uma primeira solução mensurável dentro do escopo aprovado. O plano é ajustado à complexidade, aos dados e às dependências de cada empresa.",
+        "disclaimer": "O ciclo de 90 dias é uma referência de execução, não uma garantia automática de resultado. Escopo, metas e prazos são definidos após a descoberta."
+      },
+      "custom": {
+        "title": "Sua empresa não precisa caber em um software pronto",
+        "body": "A solução pode integrar o que você já usa, automatizar processos, criar ferramentas específicas e combinar agentes de IA com especialistas humanos. Só construímos o que fizer sentido para o objetivo."
+      },
+      "measurement": {
+        "title": "O que importa é acompanhado",
+        "body": "Definimos a situação inicial, os indicadores, as metas e as fontes de dados. O painel acompanha a evolução, a qualidade e os custos, enquanto as evidências sustentam a apuração do resultado."
+      },
+      "closing": {
+        "title": "Qual resultado faria diferença na sua empresa?",
+        "body": "Comece contando o que deseja mudar. A descoberta ajuda a transformar essa intenção em uma missão clara e viável.",
+        "cta": "Começar minha descoberta"
+      }
+    },
+    "guilda": {
+      "navigation": {
+        "method": "Como funciona a Guilda",
+        "solutions": "Especialidades",
+        "ninetyDays": "Jornada de 90 dias",
+        "measurement": "Orbe de métricas",
+        "sectors": "Reinos e ofícios",
+        "faq": "Perguntas ao Mestre"
+      },
+      "hero": {
+        "eyebrow": "SALÃO DA GUILDA · OaaS.QUEST",
+        "title": "Toda conquista começa com um objetivo.",
+        "titleEmphasis": "Sua missão, nossa expedição.",
+        "body": "Conte ao Mestre da Guilda o que sua empresa precisa conquistar. Nossa equipe investigará o cenário, traçará a estratégia, reunirá as especialidades necessárias e acompanhará cada avanço.",
+        "primaryCta": "Registrar minha missão",
+        "secondaryCta": "Conhecer a jornada"
+      },
+      "method": {
+        "title": "Do quadro de missões à conquista comprovada",
+        "body": "Cada missão passa por investigação, estratégia, preparação, expedição, monitoramento e validação. Você acompanha o diário da jornada e as evidências de cada marco."
+      },
+      "ninetyDays": {
+        "title": "Uma expedição de até 90 dias",
+        "body": "Organizamos a jornada em quatro capítulos: conhecer o terreno, traçar a estratégia, construir e testar os recursos, e consolidar a conquista. O escopo é definido para a realidade de cada missão.",
+        "disclaimer": "Nem toda missão pode ser concluída em 90 dias. O Mestre apresenta o prazo viável depois de avaliar complexidade, riscos, dados e dependências."
+      },
+      "custom": {
+        "title": "Nenhuma missão recebe um equipamento genérico",
+        "body": "A Guilda reúne ferramentas, engenheiros, estrategistas e agentes especializados para criar a combinação adequada ao desafio de cada companhia."
+      },
+      "measurement": {
+        "title": "O Orbe de Métricas revela o progresso real",
+        "body": "Acompanhamos indicadores, metas, custos, qualidade e evidências. O diário registra o que avançou, o que está bloqueado e quais resultados foram efetivamente validados."
+      },
+      "closing": {
+        "title": "Qual conquista sua companhia busca?",
+        "body": "Apresente seu objetivo ao Mestre da Guilda. A primeira etapa é compreender a missão antes de escolher os aventureiros e ferramentas.",
+        "cta": "Iniciar minha missão"
+      }
+    }
+  },
+  "faq": [
+    {
+      "question": "Preciso saber qual software ou tecnologia minha empresa precisa?",
+      "answer": "Não. Você começa descrevendo o objetivo ou problema. A equipe analisa o contexto e recomenda a combinação de processos, integrações, software e pessoas mais adequada."
+    },
+    {
+      "question": "A solução será exclusiva para minha empresa?",
+      "answer": "O desenho é específico para seu contexto. Componentes reutilizáveis podem acelerar a entrega, mas escopo, integrações, regras e indicadores são definidos para sua operação."
+    },
+    {
+      "question": "Tudo fica pronto em 90 dias?",
+      "answer": "O ciclo de 90 dias organiza uma primeira entrega mensurável. A viabilidade depende da complexidade, disponibilidade de dados, acessos, aprovações e dependências. Transformações maiores são divididas em ciclos."
+    },
+    {
+      "question": "Vocês substituem os sistemas que já utilizo?",
+      "answer": "Não necessariamente. A preferência é aproveitar e integrar o que já funciona. Uma substituição só é recomendada quando houver justificativa técnica e econômica."
+    },
+    {
+      "question": "Como sei que o resultado aconteceu?",
+      "answer": "Antes da execução, definimos baseline, indicadores, fontes de dados, período, regras de atribuição e critérios de aceite. A apuração apresenta evidências e limitações."
+    },
+    {
+      "question": "Só pago quando houver resultado?",
+      "answer": "O contrato pode priorizar remuneração por resultado quando houver medição e atribuição confiáveis. Diagnóstico, implantação, infraestrutura e capacidade reservada podem exigir componentes próprios, sempre discriminados e acordados antes."
+    },
+    {
+      "question": "Quais tipos de empresa podem participar?",
+      "answer": "Empresas de comércio, serviços, indústria, saúde, alimentação, logística, educação, construção, tecnologia e outros segmentos. A solução depende da viabilidade e das regras de cada setor."
+    },
+    {
+      "question": "Vou acompanhar o projeto?",
+      "answer": "Sim. O acompanhamento inclui etapas, responsáveis, indicadores, custos, riscos, decisões, evidências e revisões combinadas."
+    }
+  ]
+}
