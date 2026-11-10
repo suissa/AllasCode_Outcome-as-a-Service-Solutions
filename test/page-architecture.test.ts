@@ -96,7 +96,7 @@ test("page loader mounts templates and loads layout scripts from nested entries"
     "content/discovery.pt-BR.json":{stages:[]}
   };
   const fetch=async(input:unknown)=>{
-    const path=new URL(String(input)).pathname.replace(/^\\//,"");
+    const path=new URL(String(input)).pathname.slice(1);
     const value=path==="layouts/discovery.html"?"<main>Loaded</main>":payloads[path];
     return {ok:value!==undefined,json:async()=>value,text:async()=>String(value)};
   };
