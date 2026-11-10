@@ -1,14 +1,9 @@
-(function () {
+window.OQReady = (async function () {
+  const STEPS = await fetch("content/mission-steps.pt-BR.json").then(response => {
+    if (!response.ok) throw new Error("MISSION_STEPS_UNAVAILABLE");
+    return response.json();
+  });
   const KEY="oaas.quest.v1",DISCOVERY_KEY="goaltropic.discovery.v1";
-  const STEPS=[
-    {id:"segment",prompt:"Em qual setor sua empresa atua?",options:[{value:"retail",label:"Comércio"},{value:"services",label:"Serviços"},{value:"industry",label:"Indústria"},{value:"technology",label:"Tecnologia"},{value:"food",label:"Alimentação"},{value:"health",label:"Saúde"},{value:"logistics",label:"Logística"},{value:"education",label:"Educação"},{value:"other",label:"Outro"}]},
-    {id:"teamSize",prompt:"Qual é o tamanho aproximado da operação?",options:[{value:"solo",label:"Somente eu"},{value:"2_5",label:"2–5 pessoas"},{value:"6_15",label:"6–15 pessoas"},{value:"16_50",label:"16–50 pessoas"},{value:"gt50",label:"Mais de 50"},{value:"unknown",label:"Não sei informar"}]},
-    {id:"desiredOutcome",prompt:"Qual resultado você mais deseja alcançar? Descreva com suas palavras.",freeText:true,placeholder:"Ex.: aumentar as vendas sem aumentar a equipe"},
-    {id:"process",prompt:"Qual área ou processo precisa mudar primeiro?",freeText:true,placeholder:"Ex.: vendas, atendimento, estoque, financeiro, produção..."},
-    {id:"challenge",prompt:"O que mais impede esse resultado hoje?",freeText:true,placeholder:"Conte brevemente o principal obstáculo"},
-    {id:"deadline",prompt:"Em quanto tempo gostaria de perceber uma primeira melhoria?",options:[{value:"30d",label:"Até 30 dias"},{value:"60d",label:"Até 60 dias"},{value:"90d",label:"Até 90 dias"},{value:"6m",label:"Até 6 meses"},{value:"flexible",label:"Prazo flexível"}]},
-    {id:"successMetric",prompt:"Como você saberia que a missão deu certo? Informe um indicador ou deixe para definir depois.",freeText:true,placeholder:"Ex.: aumentar conversão de 10% para 15%"}
-  ];
   const empty=()=>({version:2,mode:null,events:[],conversations:{guilda:[],classico:[]},mission:null});
   function read(){try{const raw=JSON.parse(localStorage.getItem(KEY)||"null");if(!raw||typeof raw!=="object")return empty();return {...empty(),...raw,version:2,events:Array.isArray(raw.events)?raw.events:[],conversations:{guilda:[],classico:[],...(raw.conversations||{})}}}catch{return empty()}}
   let state=read();
@@ -39,4 +34,5 @@
     localStorage.setItem(DISCOVERY_KEY,JSON.stringify(handoff));event("mission-handed-to-discovery",{missionId:m.id,prefilled:Object.keys(answers).length});return {key:DISCOVERY_KEY,prefilled:Object.keys(answers).length}
   }
   window.OQ={state,getState:()=>read(),setMode,logMessage,logInteraction,history,getMission,startMission,currentMissionStep,advanceMission,reviseMission,confirmMission,prepareDiscovery,missionSteps:()=>STEPS.map(s=>({...s,options:s.options?.map(o=>({...o}))}))};
+  return window.OQ;
 })();
