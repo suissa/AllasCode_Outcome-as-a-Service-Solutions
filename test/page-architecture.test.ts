@@ -138,3 +138,16 @@ test("Discovery runtime reads interface copy from the localized catalog",async()
   const page=await load<{contentRefs:string[]}>("pages/pt-BR/discovery.json");
   assert.ok(page.contentRefs.includes("ui-copy.discovery"));
 });
+
+test("Discovery proposal inference graph is registered and loaded before the page runtime",async()=>{
+ const page=await load<{contentRefs:string[]}>("pages/pt-BR/discovery.json");
+ assert.ok(page.contentRefs.includes("inference-graph"));
+ const graph=await load<{answerNodes:unknown[];solutionNodes:unknown[];edges:unknown[]}>("content/inference-graph.pt-BR.json");
+ assert.ok(graph.answerNodes.length>0&&graph.solutionNodes.length>0&&graph.edges.length>0);
+ const layout=await load<{scripts:string[]}>("layouts/discovery.json");
+ assert.deepEqual(layout.scripts,["runtime/inference.js","runtime/discovery.js"]);
+ new Script(await readFile(join(root,"runtime/inference.js"),"utf8"));
+ new Script(await readFile(join(root,"runtime/discovery.js"),"utf8"));
+ const loader=await readFile(join(root,"page-config.js"),"utf8");
+ assert.ok(loader.includes('"inference-graph": "inference-graph.pt-BR.json"'));
+});
