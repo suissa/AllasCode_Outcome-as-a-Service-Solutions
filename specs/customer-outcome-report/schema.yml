@@ -1,0 +1,35 @@
+version: "1.0"
+behavior: customer-outcome-report
+input:
+  id: { type: Identifier, required: true, error: REPORT_METADATA_INVALID }
+  tenantId: { type: Identifier, required: true, error: REPORT_METADATA_INVALID }
+  outcomeId: { type: Identifier, required: true, error: REPORT_METADATA_INVALID }
+  metric: { type: Object, required: true, fields: [id, name, unit], error: REPORT_METRIC_INVALID }
+  period: { type: DateRange, required: true, startInclusive: true, endExclusive: false, error: REPORT_PERIOD_INVALID }
+  result: { type: OutcomeResult, required: true, confidenceRange: [0, 1], targetProgressRange: [0, 1], error: REPORT_RESULT_INVALID }
+  evidenceIds: { type: Array<Identifier>, required: true, minItems: 1, unique: true, error: REPORT_EVIDENCE_DUPLICATE }
+  methodology: { type: Text, required: true, minLength: 1, error: REPORT_METHOD_REQUIRED }
+  attribution: { type: Text, required: true, minLength: 1, error: REPORT_ATTRIBUTION_REQUIRED }
+  limitations: { type: Array<Text>, required: true }
+  guardrails: { type: Array<Guardrail>, required: true }
+output:
+  generatedAt: Timestamp
+  evidenceLinks:
+    type: Array
+    item: { evidenceId: Identifier, url: HTTPS_URL, expiresAt: Timestamp }
+    linkTtlSeconds: 900
+invariants:
+  - tenantId == access.tenantId
+  - every evidenceId resolves to one record in the same tenant
+  - evidence sourceId, SHA-256 contentHash and capturedAt are valid
+  - evidence classification is allowed for the actor and purpose
+  - confidential or personal evidence has independent verification
+  - all evidence is authorized before any link signer is invoked
+  - URLs use HTTPS and contain no embedded username/password or fragment
+  - no evidence payload or secret is embedded in the report
+errors:
+  - { code: REPORT_TENANT_MISMATCH, path: tenantId }
+  - { code: REPORT_EVIDENCE_NOT_FOUND, path: evidenceIds }
+  - { code: REPORT_EVIDENCE_INTEGRITY_INVALID, path: evidenceIds }
+  - { code: REPORT_EVIDENCE_ACCESS_DENIED, path: evidenceIds }
+  - { code: REPORT_EVIDENCE_LINK_INVALID, path: evidenceLinks }
