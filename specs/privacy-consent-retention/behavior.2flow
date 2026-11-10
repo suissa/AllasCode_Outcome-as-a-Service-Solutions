@@ -1,0 +1,16 @@
+validate_data_handling -(check_classification)-> validate_purpose
+validate_purpose -(check_non_empty)-> validate_privacy_basis
+validate_privacy_basis -(require_consent_or_legal_basis_for_personal_data)-> validate_retention
+validate_retention -(check_parseable_and_future)-> accepted
+validate_retention -(invalid_or_expired)-> reject_with_stable_error
+
+consent_is_valid -(validate_record_metadata)-> validate_capture_timestamp
+validate_capture_timestamp -(check_not_future)-> validate_purpose_and_grant
+validate_purpose_and_grant -(exact_purpose_and_granted)-> validate_expiry_and_withdrawal
+validate_purpose_and_grant -(mismatch_or_withdrawn)-> invalid
+validate_expiry_and_withdrawal -(valid)-> valid
+validate_expiry_and_withdrawal -(invalid_or_expired)-> invalid
+
+withdraw_consent -(validate_record_and_timestamp)-> check_withdrawal_chronology
+check_withdrawal_chronology -(valid)-> return_immutable_withdrawn_record
+check_withdrawal_chronology -(invalid_or_already_withdrawn)-> reject_with_stable_error
