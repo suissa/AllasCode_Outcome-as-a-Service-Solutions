@@ -14,7 +14,8 @@
     "experience.faq",
     "agent-team.roles",
     "sector-playbooks.sectors",
-    "mission-steps"
+    "mission-steps",
+    "ui-copy.guild"
   ],
   "sections": [
     {
