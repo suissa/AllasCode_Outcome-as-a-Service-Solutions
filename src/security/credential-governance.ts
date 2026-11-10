@@ -202,10 +202,12 @@ export async function reviewCredentialAccess(
 }>> {
   if (!input || !required(input.tenantId) || !required(input.grantId) || !required(input.reviewerId) ||
       (input.decision !== "retain" && input.decision !== "revoke") ||
-      !required(input.reasonCode) || !required(input.rationale) ||
-      input.reasonCode.length > 128 || input.rationale.length > 2000 ||
       !Number.isInteger(input.expectedRevision) || input.expectedRevision < 1) {
     fail("ACCESS_REVIEW_INPUT_INVALID", "input");
+  }
+  if (!required(input.reasonCode) || !required(input.rationale) ||
+      input.reasonCode.length > 128 || input.rationale.length > 2000) {
+    fail("ACCESS_REVIEW_REASON_REQUIRED", "reasonCode/rationale");
   }
   const now = input.now ?? new Date();
   if (!(now instanceof Date) || !Number.isFinite(now.getTime())) fail("CREDENTIAL_CLOCK_INVALID", "now");
