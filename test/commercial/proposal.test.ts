@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { assessProposalReadiness, composeOutcomeProposal, type OutcomeProposalInput } from "../../src/commercial/proposal.ts";
+import { assessProposalReadiness, composeOutcomeProposal, renderOutcomeProposalMarkdown, type OutcomeProposalInput } from "../../src/commercial/proposal.ts";
 
 const valid: OutcomeProposalInput = {
   id: "proposal_001",
@@ -52,6 +52,10 @@ test("composes a review-ready proposal without treating estimates as guarantees"
   assert.equal(proposal.metric.baseline, 12);
   assert.equal(proposal.metric.target, 7);
   assert.equal(proposal.pricing.indicativeSummary?.total, 5400);
+  const markdown = renderOutcomeProposalMarkdown(proposal);
+  assert.match(markdown, /## Métrica de resultado/);
+  assert.match(markdown, /Baseline: 12 %/);
+  assert.match(markdown, /não são resultados garantidos/);
 });
 
 test("keeps incomplete discovery inspectable and blocks outcome fee readiness", () => {
@@ -80,6 +84,12 @@ test("rejects malformed price lines and invalid scenario estimates", () => {
   const readiness = assessProposalReadiness(malformed);
   assert.ok(readiness.blockers.includes("SCENARIO_ESTIMATE_INVALID"));
   assert.ok(readiness.blockers.some(code => code.includes("PRICING")));
+});
+
+test("rejects a malformed proposal timestamp without losing the draft", () => {
+  const proposal = composeOutcomeProposal({ ...valid, generatedAt: "not-a-date" });
+  assert.equal(proposal.readiness.status, "incomplete");
+  assert.ok(proposal.readiness.blockers.includes("PROPOSAL_TIMESTAMP_INVALID"));
 });
 
 test("requires a valid generation clock", () => {
