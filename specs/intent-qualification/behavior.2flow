@@ -1,0 +1,9 @@
+qualify_intent -(validate_input_and_rule)-> validate_required_fields
+validate_required_fields -(missing_fields)-> return_unqualified_with_missing
+validate_required_fields -(complete)-> validate_scope
+validate_scope -(invalid_or_too_small)-> return_unqualified_with_reason
+validate_scope -(valid)-> validate_domain
+validate_domain -(not_allowed)-> return_unqualified_with_reason
+validate_domain -(allowed_or_unrestricted)-> validate_deadline
+validate_deadline -(invalid_or_out_of_range)-> return_unqualified_with_reason
+validate_deadline -(valid_or_not_configured)-> return_qualification_decision
