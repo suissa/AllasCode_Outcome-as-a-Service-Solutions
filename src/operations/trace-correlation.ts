@@ -117,7 +117,7 @@ export function correlateOutcomeSignals(input: CorrelationInput): Readonly<Outco
     if (signal.context?.outcomeId !== input.outcomeId) fail("CORRELATION_OUTCOME_MISMATCH", `${path}.context.outcomeId`);
     if (signal.context?.executionId !== input.executionId) fail("CORRELATION_EXECUTION_MISMATCH", `${path}.context.executionId`);
 
-    const context = validateTraceContext(signal.context);
+    const context = validateTraceContext(signal.context) as Readonly<OutcomeSignalContext>;
     if (!requiredText(context.outcomeId) || !requiredText(context.executionId)) {
       fail("CORRELATION_CONTEXT_INVALID", `${path}.context`);
     }
