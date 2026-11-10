@@ -203,7 +203,7 @@ export async function extractIntentFields(
   const rawExtraction = await extractor(input.statement.trim(), signal);
   const extracted = normalizeExtraction(rawExtraction);
   const desiredOutcome = input.desiredOutcome.trim() || extracted.desiredOutcome || "";
-  const scope = input.scope?.length ? input.scope : extracted.scope;
+  const scope = input.scope?.length ? input.scope : extracted.scope ?? [];
   const questions: string[] = [];
 
   if (extracted.confidence < minConfidence) {
@@ -228,7 +228,7 @@ export async function extractIntentFields(
     statement: input.statement.trim(),
     desiredOutcome,
     scope,
-    constraints: [...(input.constraints ?? []), ...extracted.constraints],
+    constraints: [...(input.constraints ?? []), ...(extracted.constraints ?? [])],
     ...(deadline !== undefined ? { deadline } : {}),
   });
   return Object.freeze({ status: "captured", intent, extraction: extracted });
