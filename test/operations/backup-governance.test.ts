@@ -46,7 +46,7 @@ test("assesses RPO, RTO, replica coverage and restore-drill freshness", () => {
   assert.equal(degraded.status, "degraded");
   assert.ok(degraded.reasons.includes("RESTORE_DRILL_MISSING"));
   assert.ok(degraded.reasons.includes("REPLICA_REGION_MISSING"));
-  const unavailable = assessDisasterRecovery(policy, [{ ...backup, createdAt: "2026-11-10T10:00:00.000Z" }], [], now);
+  const unavailable = assessDisasterRecovery(policy, [{ ...backup, createdAt: "2026-11-10T10:00:00.000Z", consistencyPoint: "2026-11-10T09:59:59.000Z" }], [], now);
   assert.equal(unavailable.status, "unavailable");
   assert.ok(unavailable.reasons.includes("RPO_BREACHED"));
 });
