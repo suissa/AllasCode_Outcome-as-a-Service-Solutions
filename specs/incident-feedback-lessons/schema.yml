@@ -1,0 +1,39 @@
+version: "1.0"
+behavior: incident-feedback-lessons
+feedback:
+  required: [id, tenantId, subjectId, actorId, rating, category, submittedAt, idempotencyKey]
+  rating: integer_1_to_5
+  comment:
+    maxLength: 2000
+    piiRedaction: [email, phone, bearer_token]
+  analytics:
+    requiredWindow: [start, end]
+    tenantIsolation: true
+incident:
+  required: [id, tenantId, severity, summary, status, openedAt, updatedAt, revision]
+  severity: [sev1, sev2, sev3, sev4]
+  states: [open, acknowledged, investigating, mitigated, resolved, closed]
+  resolutionRequires: [resolutionSummary, evidenceIds]
+  transitionRequires: [actorId, reason, expectedRevision, idempotencyKey]
+postmortem:
+  required: [incident, preparedBy, reviewerId, rootCause, impactSummary, evidenceIds, actionItems]
+  reviewerMustDifferFrom: preparedBy
+  evidenceMustBeVerified: true
+  actionItemRequires: [id, description, ownerId, dueAt]
+invariants:
+  - tenant-isolation
+  - feedback-idempotency
+  - bounded-and-redacted-comments
+  - monotonic-incident-revisions
+  - valid-incident-state-transitions
+  - evidence-backed-resolution
+  - independent-postmortem-review
+  - owned-corrective-actions
+errors:
+  - { code: FEEDBACK_UNAUTHORIZED, path: actorId }
+  - { code: FEEDBACK_TENANT_MISMATCH, path: tenantId }
+  - { code: INCIDENT_TRANSITION_INVALID, path: to }
+  - { code: INCIDENT_REVISION_CONFLICT, path: expectedRevision }
+  - { code: INCIDENT_RESOLUTION_EVIDENCE_REQUIRED, path: resolutionSummary/evidenceIds }
+  - { code: POSTMORTEM_EVIDENCE_UNVERIFIED, path: evidenceIds }
+  - { code: POSTMORTEM_INDEPENDENT_REVIEW_REQUIRED, path: reviewerId }

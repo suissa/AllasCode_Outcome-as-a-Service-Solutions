@@ -1,0 +1,16 @@
+version = "1.0"
+feedback_rating_min = 1
+feedback_rating_max = 5
+feedback_comment_max_length = 2000
+redact_email = true
+redact_phone = true
+redact_bearer_tokens = true
+require_feedback_idempotency = true
+require_tenant_scoped_analytics = true
+require_incident_transition_reason = true
+require_incident_expected_revision = true
+require_resolution_evidence = true
+require_independent_postmortem_review = true
+require_verified_postmortem_evidence = true
+require_action_owner = true
+require_action_due_date = true
