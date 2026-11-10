@@ -1,0 +1,13 @@
+validate_correlation_scope -(valid)-> validate_signal_collection
+validate_correlation_scope -(invalid)-> reject_scope_with_stable_error
+validate_signal_collection -(non_empty)-> validate_signal_identity_and_timestamp
+validate_signal_collection -(empty)-> reject_signals_required
+validate_signal_identity_and_timestamp -(valid)-> validate_tenant_outcome_execution_context
+validate_signal_identity_and_timestamp -(invalid)-> reject_signal_without_side_effect
+validate_tenant_outcome_execution_context -(valid)-> validate_trace_and_span_relationship
+validate_tenant_outcome_execution_context -(cross_tenant_or_outcome_or_execution)-> reject_scope_mismatch
+validate_trace_and_span_relationship -(single_trace_and_valid_spans)-> sanitize_structured_attributes
+validate_trace_and_span_relationship -(mixed_trace_or_invalid_span)-> reject_trace_correlation
+sanitize_structured_attributes -(valid)-> normalize_and_sort_signals
+sanitize_structured_attributes -(invalid)-> reject_telemetry_payload
+normalize_and_sort_signals -(complete)-> return_correlated_outcome_telemetry
