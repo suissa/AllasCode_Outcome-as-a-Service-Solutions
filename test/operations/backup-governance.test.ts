@@ -6,16 +6,16 @@ import {
   authorizeDataExport,
   executeBackupRestore,
   planBackupRestore,
-  validateBackupManifest,
+  validateGovernedBackupManifest,
   verifyBackupArtifact,
   verifyExportArtifact,
-  type BackupManifest,
+  type GovernedBackupManifest,
   type DisasterRecoveryPolicy,
   type RestoreProvider,
 } from "../../src/operations/backup-governance.ts";
 
 const now = new Date("2026-11-10T12:00:00.000Z");
-const backup: BackupManifest = {
+const backup: GovernedBackupManifest = {
   id: "backup_1", tenantId: "tenant_a", scope: ["outcomes", "evidence"], createdAt: "2026-11-10T11:30:00.000Z",
   formatVersion: "1.0", contentHash: "a".repeat(64), sizeBytes: 1024, region: "sa-east-1",
   replicaRegions: ["us-east-1"], encryption: { algorithm: "AES-256-GCM", keyReference: "vault:backup/key-v4" },
@@ -27,11 +27,11 @@ const policy: DisasterRecoveryPolicy = {
 };
 
 test("validates encrypted backup manifests and verifies content integrity", () => {
-  assert.doesNotThrow(() => validateBackupManifest(backup, now));
+  assert.doesNotThrow(() => validateGovernedBackupManifest(backup, now));
   assert.equal(verifyBackupArtifact(backup, "a".repeat(64), now), true);
   assert.equal(verifyBackupArtifact(backup, "b".repeat(64), now), false);
-  assert.throws(() => validateBackupManifest({ ...backup, contentHash: "bad" }, now), /BACKUP_HASH_INVALID/);
-  assert.throws(() => validateBackupManifest({ ...backup, encryption: { algorithm: "none" as never, keyReference: "" } }, now), /BACKUP_ENCRYPTION_INVALID/);
+  assert.throws(() => validateGovernedBackupManifest({ ...backup, contentHash: "bad" }, now), /BACKUP_HASH_INVALID/);
+  assert.throws(() => validateGovernedBackupManifest({ ...backup, encryption: { algorithm: "none" as never, keyReference: "" } }, now), /BACKUP_ENCRYPTION_INVALID/);
 });
 
 test("assesses RPO, RTO, replica coverage and restore-drill freshness", () => {
@@ -52,10 +52,10 @@ test("assesses RPO, RTO, replica coverage and restore-drill freshness", () => {
 });
 
 test("rejects cross-tenant, malformed, expired and duplicate backup metadata", () => {
-  assert.throws(() => validateBackupManifest({ ...backup, tenantId: " " }, now), /BACKUP_MANIFEST_INVALID/);
+  assert.throws(() => validateGovernedBackupManifest({ ...backup, tenantId: " " }, now), /BACKUP_MANIFEST_INVALID/);
   assert.throws(() => assessDisasterRecovery(policy, [{ ...backup, tenantId: "tenant_b" }], [], now), /BACKUP_TENANT_MISMATCH/);
   assert.throws(() => assessDisasterRecovery(policy, [backup, backup], [], now), /BACKUP_DUPLICATE/);
-  assert.throws(() => validateBackupManifest({ ...backup, retentionUntil: "2026-11-10T11:00:00.000Z" }, now), /BACKUP_RETENTION_EXPIRED/);
+  assert.throws(() => validateGovernedBackupManifest({ ...backup, retentionUntil: "2026-11-10T11:00:00.000Z" }, now), /BACKUP_RETENTION_EXPIRED/);
 });
 
 test("restore planning requires tenant authorization, integrity and independent production approval", () => {
