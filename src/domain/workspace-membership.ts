@@ -106,7 +106,7 @@ export async function createWorkspaceInvitation(
     tenantId: WorkspaceTenantId;
     workspaceId: WorkspaceId;
     email: string;
-    role: Exclude<WorkspaceRole, "owner">;
+    role: WorkspaceRole;
     invitedBy: string;
     token: string;
     expiresAt: string;
