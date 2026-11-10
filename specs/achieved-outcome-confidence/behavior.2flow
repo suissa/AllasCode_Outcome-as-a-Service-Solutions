@@ -1,0 +1,12 @@
+validate_outcome_scope -(valid)-> validate_metric_and_unit
+validate_outcome_scope -(invalid)-> reject_scope
+validate_metric_and_unit -(valid)-> validate_baseline_target_confidence
+validate_metric_and_unit -(invalid)-> reject_metric_or_unit
+validate_baseline_target_confidence -(valid)-> validate_observation_collection
+validate_baseline_target_confidence -(invalid)-> reject_numeric_configuration
+validate_observation_collection -(valid)-> calculate_sample_statistics
+validate_observation_collection -(empty_or_invalid_or_over_limit)-> reject_observations
+calculate_sample_statistics -(finite)-> calculate_confidence_interval_and_target_progress
+calculate_sample_statistics -(overflow)-> reject_calculation
+calculate_confidence_interval_and_target_progress -(valid)-> return_immutable_result
+calculate_confidence_interval_and_target_progress -(invalid)-> reject_calculation
