@@ -13,5 +13,10 @@
     "composer",
     "quest-journal",
     "content-sections"
+  ],
+  "scripts": [
+    "app.js",
+    "content.js",
+    "runtime/guild.js"
   ]
 }
