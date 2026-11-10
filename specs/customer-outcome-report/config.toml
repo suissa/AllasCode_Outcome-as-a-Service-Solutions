@@ -1,0 +1,10 @@
+version = "1.0"
+link_ttl_seconds = 900
+require_https = true
+allow_url_credentials = false
+allow_url_fragment = false
+require_evidence_hash = true
+require_evidence_provenance = true
+require_independent_verification_for = ["confidential", "personal"]
+include_raw_evidence = false
+log_signed_urls = false
