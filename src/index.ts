@@ -82,3 +82,6 @@ export * from "./platform/postgres-workspace-store.ts";
 export * from "./security/authorization.ts";
 
 export * from "./commercial/durable-settlement.ts";
+
+export * from "./commercial/pricing.ts";
+export * from "./commercial/contract-composer.ts";
