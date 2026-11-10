@@ -1,0 +1,13 @@
+validate_knowledge_improvement -(valid)-> authorize_author_and_reviewer
+validate_knowledge_improvement -(invalid)-> reject_input
+authorize_author_and_reviewer -(allowed_and_independent)-> verify_evidence_references
+authorize_author_and_reviewer -(denied_or_self_review)-> reject_without_mutation
+verify_evidence_references -(all_verified_same_tenant_and_current)-> load_current_version
+verify_evidence_references -(missing_expired_or_cross_tenant)-> reject_publication
+load_current_version -(expected_version_matches)-> validate_capability_playbook_or_template
+load_current_version -(stale_or_missing)-> reject_version_conflict
+validate_capability_playbook_or_template -(valid)-> build_immutable_next_version
+validate_capability_playbook_or_template -(invalid_schema_or_range)-> reject_invalid_knowledge
+build_immutable_next_version -(complete)-> atomically_commit_with_idempotency
+atomically_commit_with_idempotency -(committed)-> return_published_reference
+atomically_commit_with_idempotency -(conflict)-> return_version_conflict
