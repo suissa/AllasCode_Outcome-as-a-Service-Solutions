@@ -30,5 +30,7 @@ jobs:
         run: npm run typecheck
       - name: Test
         run: npm test
+      - name: Proposal inference graph coverage
+        run: npm run test:inference
       - name: Forger SEO/GEO artifacts
         run: npm run seo:check
