@@ -3,10 +3,10 @@ const pageRuntime=await window.OaaSPageReady;
 const config=pageRuntime.sources.discovery;
 const root=document.getElementById('app');let index=0,answers={},transitioning=false,showResults=false;
 const key=config.engine.storageKey;
-let handoffSource=null;
-try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(saved&&saved.answers){answers=saved.answers;index=Math.min(saved.index||0,config.stages.length-1);if(saved.source==='guilda')handoffSource=saved.missionId||'guilda'}}catch{}
+let handoffSource=null,handoffMissionSummary=null;
+try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(saved&&saved.answers){answers=saved.answers;index=Math.min(saved.index||0,config.stages.length-1);if(saved.source==='guilda'){handoffSource=saved.missionId||'guilda';handoffMissionSummary=saved.missionSummary||null}}}catch{}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const save=()=>{try{localStorage.setItem(key,JSON.stringify({index,answers,updatedAt:new Date().toISOString()}))}catch{}};
+const save=()=>{try{localStorage.setItem(key,JSON.stringify({index,answers,updatedAt:new Date().toISOString(),source:handoffSource?'guilda':'discovery',...(handoffSource?{missionId:handoffSource,missionSummary:handoffMissionSummary}: {})}))}catch{}};
 const stage=config.stages[index];
 function getValue(id){return answers[id]?.value}
 function setAnswer(q,value){answers[q.id]={value,status:value===''||value===null?'unknown':'provided',updatedAt:new Date().toISOString()};save()}
