@@ -43,6 +43,11 @@ create or replace function reject_outcome_proposal_event_mutation() returns trig
 language plpgsql
 as $$
 begin
+  if current_setting('app.allow_outcome_proposal_event_purge', true) = 'on' then
+    if tg_op = 'DELETE' then return old; end if;
+    if tg_op = 'UPDATE' then return new; end if;
+    return null;
+  end if;
   raise exception 'OUTCOME_PROPOSAL_EVENT_IMMUTABLE';
 end;
 $$;
