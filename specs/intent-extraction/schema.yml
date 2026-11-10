@@ -1,0 +1,22 @@
+version: "1.0"
+behavior: intent-extraction
+input:
+  statement: { type: text, required: true, minLength: 1 }
+  minConfidence: { type: decimal, required: true, min: 0, max: 1, default: 0.75 }
+output:
+  desiredOutcome: { type: text, required: false }
+  scope: { type: array, required: false, itemType: text, nonEmptyItems: true }
+  constraints: { type: array, required: false, itemType: text, nonEmptyItems: true }
+  deadline: { type: timestamp, required: false }
+  domain: { type: text, required: false }
+  confidence: { type: decimal, required: true, min: 0, max: 1 }
+  ambiguities: { type: array, required: true, itemType: text, nonEmptyItems: true }
+errors:
+  - INTENT_EXTRACTION_INPUT_INVALID
+  - INTENT_EXTRACTION_RESULT_INVALID
+  - INTENT_EXTRACTION_CONFIDENCE_INVALID
+  - INTENT_EXTRACTION_OUTCOME_INVALID
+  - INTENT_EXTRACTION_SCOPE_INVALID
+  - INTENT_EXTRACTION_CONSTRAINTS_INVALID
+  - INTENT_EXTRACTION_DEADLINE_INVALID
+  - INTENT_EXTRACTION_AMBIGUITY_INVALID

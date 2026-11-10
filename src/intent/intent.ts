@@ -150,6 +150,45 @@ export type IntentExtractionOutcome =
   | { status: "captured"; intent: OutcomeIntent; extraction: IntentExtractionResult }
   | { status: "needs_clarification"; questions: readonly string[]; extraction: IntentExtractionResult };
 
+function normalizeExtraction(result: IntentExtractionResult): IntentExtractionResult {
+  if (!result || typeof result !== "object") throw new Error("INTENT_EXTRACTION_RESULT_INVALID");
+  if (!Number.isFinite(result.confidence) || result.confidence < 0 || result.confidence > 1) {
+    throw new Error("INTENT_EXTRACTION_CONFIDENCE_INVALID");
+  }
+
+  const normalizeOptionalText = (value: unknown, errorCode: string): string | undefined => {
+    if (value === undefined) return undefined;
+    if (typeof value !== "string") throw new Error(errorCode);
+    return value.trim();
+  };
+  const desiredOutcome = normalizeOptionalText(result.desiredOutcome, "INTENT_EXTRACTION_OUTCOME_INVALID");
+  const domain = normalizeOptionalText(result.domain, "INTENT_EXTRACTION_DOMAIN_INVALID");
+  const normalizeItems = (values: readonly string[] | undefined, errorCode: string): readonly string[] => {
+    if (values === undefined) return Object.freeze([]);
+    if (!Array.isArray(values) || values.some((value) => !nonEmpty(value))) throw new Error(errorCode);
+    return Object.freeze([...new Set(values.map((value) => value.trim()))]);
+  };
+
+  const scope = normalizeItems(result.scope, "INTENT_EXTRACTION_SCOPE_INVALID");
+  const constraints = normalizeItems(result.constraints, "INTENT_EXTRACTION_CONSTRAINTS_INVALID");
+  if (result.deadline !== undefined && parsedTimestamp(result.deadline) === undefined) {
+    throw new Error("INTENT_EXTRACTION_DEADLINE_INVALID");
+  }
+  if (!Array.isArray(result.ambiguities) || result.ambiguities.some((value) => !nonEmpty(value))) {
+    throw new Error("INTENT_EXTRACTION_AMBIGUITY_INVALID");
+  }
+
+  return Object.freeze({
+    ...(desiredOutcome !== undefined ? { desiredOutcome } : {}),
+    scope,
+    constraints,
+    ...(result.deadline !== undefined ? { deadline: result.deadline } : {}),
+    ...(domain !== undefined ? { domain } : {}),
+    confidence: result.confidence,
+    ambiguities: Object.freeze(result.ambiguities.map((value) => value.trim())),
+  });
+}
+
 export async function extractIntentFields(
   input: IntentCaptureInput,
   extractor: IntentExtractor,
@@ -159,19 +198,21 @@ export async function extractIntentFields(
   if (!Number.isFinite(minConfidence) || minConfidence < 0 || minConfidence > 1) {
     throw new Error("INTENT_CONFIDENCE_THRESHOLD_INVALID");
   }
-  const extracted = await extractor(input.statement, signal);
-  if (!extracted || !Number.isFinite(extracted.confidence) || extracted.confidence < 0 || extracted.confidence > 1) {
-    throw new Error("INTENT_EXTRACTION_CONFIDENCE_INVALID");
-  }
+  if (!input || !nonEmpty(input.statement)) throw new Error("INTENT_EXTRACTION_INPUT_INVALID");
 
-  const desiredOutcome = input.desiredOutcome.trim() || extracted.desiredOutcome?.trim() || "";
+  const rawExtraction = await extractor(input.statement.trim(), signal);
+  const extracted = normalizeExtraction(rawExtraction);
+  const desiredOutcome = input.desiredOutcome.trim() || extracted.desiredOutcome || "";
   const scope = input.scope?.length ? input.scope : extracted.scope ?? [];
   const questions: string[] = [];
-  if (extracted.confidence < minConfidence) questions.push("Please confirm the interpretation of the requested outcome.");
+
+  if (extracted.confidence < minConfidence) {
+    questions.push("Please confirm the interpretation of the requested outcome.");
+  }
   if (!desiredOutcome) questions.push("What measurable result should change?");
   if (!scope.length) questions.push("Which process, team or customer segment is in scope?");
   if (!input.deadline && !extracted.deadline) questions.push("By when should this result be achieved?");
-  for (const ambiguity of extracted.ambiguities ?? []) questions.push("Clarify: " + ambiguity);
+  for (const ambiguity of extracted.ambiguities) questions.push("Clarify: " + ambiguity);
 
   if (questions.length) {
     return Object.freeze({
@@ -180,9 +221,11 @@ export async function extractIntentFields(
       extraction: extracted,
     });
   }
+
   const deadline = input.deadline ?? extracted.deadline;
   const intent = captureIntent({
     ...input,
+    statement: input.statement.trim(),
     desiredOutcome,
     scope,
     constraints: [...(input.constraints ?? []), ...(extracted.constraints ?? [])],

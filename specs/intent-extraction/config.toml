@@ -1,0 +1,11 @@
+[extraction]
+minimum_confidence = 0.75
+confidence_minimum = 0.0
+confidence_maximum = 1.0
+require_ambiguity_array = true
+reject_blank_list_items = true
+normalize_text_by_trimming = true
+deduplicate_list_values = true
+invalid_deadline_policy = "reject"
+low_confidence_policy = "clarify"
+ambiguity_policy = "clarify"
