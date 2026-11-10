@@ -1,0 +1,24 @@
+{
+  "id": "discovery",
+  "route": "/descoberta",
+  "entry": "descoberta/index.html",
+  "layout": "discovery",
+  "locale": "pt-BR",
+  "title": "Goaltropic Discovery",
+  "contentRefs": [
+    "discovery.stages",
+    "discovery.solutions"
+  ],
+  "sections": [
+    {
+      "id": "progressive-discovery",
+      "component": "discovery-engine",
+      "contentRef": "discovery.stages"
+    },
+    {
+      "id": "diagnostic",
+      "component": "opportunity-diagnostic",
+      "contentRef": "discovery.solutions"
+    }
+  ]
+}

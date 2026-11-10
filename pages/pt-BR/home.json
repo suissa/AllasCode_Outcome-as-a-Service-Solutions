@@ -1,0 +1,18 @@
+{
+  "id": "home",
+  "route": "/",
+  "entry": "index.html",
+  "layout": "chooser",
+  "locale": "pt-BR",
+  "title": "OaaS.Quest — Escolha sua experiência",
+  "contentRefs": [
+    "experience.brand"
+  ],
+  "sections": [
+    {
+      "id": "experience-selection",
+      "component": "experience-selector",
+      "contentRef": "experience.brand"
+    }
+  ]
+}

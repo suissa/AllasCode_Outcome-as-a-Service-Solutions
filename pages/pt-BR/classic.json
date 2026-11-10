@@ -1,0 +1,60 @@
+{
+  "id": "classic",
+  "route": "/classico",
+  "entry": "classico.html",
+  "layout": "classic",
+  "locale": "pt-BR",
+  "title": "OaaS.Quest — Outcome as a Service",
+  "contentRefs": [
+    "experience.presentation.classic",
+    "experience.customerJourney",
+    "experience.90DayMethod",
+    "experience.solutionPrinciples",
+    "experience.measurement",
+    "experience.commercialModel",
+    "experience.faq",
+    "sector-playbooks.sectors"
+  ],
+  "sections": [
+    {
+      "id": "hero",
+      "component": "hero",
+      "contentRef": "experience.presentation.classic.hero"
+    },
+    {
+      "id": "method",
+      "component": "journey",
+      "contentRef": "experience.customerJourney"
+    },
+    {
+      "id": "90-day-method",
+      "component": "timeline",
+      "contentRef": "experience.90DayMethod"
+    },
+    {
+      "id": "solutions",
+      "component": "solution-principles",
+      "contentRef": "experience.solutionPrinciples"
+    },
+    {
+      "id": "sectors",
+      "component": "sector-grid",
+      "contentRef": "sector-playbooks.sectors"
+    },
+    {
+      "id": "measurement",
+      "component": "metrics",
+      "contentRef": "experience.measurement"
+    },
+    {
+      "id": "commercial-model",
+      "component": "commercial-model",
+      "contentRef": "experience.commercialModel"
+    },
+    {
+      "id": "faq",
+      "component": "faq",
+      "contentRef": "experience.faq"
+    }
+  ]
+}

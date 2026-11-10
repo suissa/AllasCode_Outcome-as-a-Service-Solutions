@@ -1,17 +1,14 @@
 (function () {
-  const base = "content/";
   const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const li = xs => (xs || []).map(x => "<li>" + esc(x) + "</li>").join("");
   const feature = (title, body) => '<article class="feature"><h3>' + esc(title) + '</h3><p>' + esc(body) + '</p></article>';
   const classicSection = (id,title,lead,body) => '<section class="classic-section content-section" id="' + id + '"><h2>' + esc(title) + '</h2><p class="section-lead">' + esc(lead || "") + '</p>' + body + '</section>';
   const guildSection = (id,title,lead,body) => '<section class="guild-content-section" id="' + id + '"><div class="guild-section-heading"><small>REGISTRO DA GUILDA</small><h2>' + esc(title) + '</h2><p>' + esc(lead || "") + '</p></div>' + body + '</section>';
   async function start() {
-    const results = await Promise.all([
-      fetch(base + "experience.pt-BR.json").then(r => { if (!r.ok) throw Error("experience"); return r.json(); }),
-      fetch(base + "sector-playbooks.pt-BR.json").then(r => { if (!r.ok) throw Error("sectors"); return r.json(); }),
-      fetch(base + "agent-team.pt-BR.json").then(r => { if (!r.ok) throw Error("team"); return r.json(); })
-    ]);
-    const exp = results[0], sectors = results[1].sectors || [], team = results[2];
+    const pageRuntime = await window.OaaSPageReady;
+    const exp = pageRuntime.sources.experience;
+    const sectors = pageRuntime.sources["sector-playbooks"]?.sectors || [];
+    const team = pageRuntime.sources["agent-team"] || { roles: [] };
     const guild = document.body.classList.contains("guild-page");
     const mode = guild ? "guilda" : "classic";
     const copy = exp.presentation[mode], journey = exp.customerJourney || [];
@@ -58,8 +55,10 @@
     document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",()=>{if(window.OQ) OQ.logInteraction(mode,"content-navigation",{target:a.getAttribute("href")});}));
     if (window.OQ) OQ.logInteraction(mode,"content-loaded",{schemaVersion:exp.schemaVersion,sectorCount:sectors.length,roleCount:team.roles.length});
   }
-  document.addEventListener("DOMContentLoaded",()=>start().catch(error=>{
+  const boot=()=>Promise.all([window.OQReady,window.OaaSPageReady]).then(()=>start()).catch(error=>{
     console.error("Falha ao carregar conteúdo OaaS.Quest",error);
     const host=document.getElementById("oq-guild-content"); if(host) host.textContent="Não foi possível carregar os registros da Guilda. Atualize a página para tentar novamente.";
-  }));
+  });
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot,{once:true});
+  else boot();
 })();

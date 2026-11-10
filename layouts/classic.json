@@ -1,0 +1,19 @@
+{
+  "id": "classic",
+  "name": "Institucional clássico",
+  "template": "layouts/classic.html",
+  "stylesheet": "styles.css",
+  "shell": "classic-nav + main + classic-footer",
+  "renderer": "content.js",
+  "slots": [
+    "navigation",
+    "hero",
+    "sections",
+    "closing-cta"
+  ],
+  "scripts": [
+    "app.js",
+    "content.js",
+    "runtime/classic.js"
+  ]
+}

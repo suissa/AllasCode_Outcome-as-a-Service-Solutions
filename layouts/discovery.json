@@ -1,0 +1,18 @@
+{
+  "id": "discovery",
+  "name": "Discovery Engine",
+  "template": "layouts/discovery.html",
+  "stylesheet": "layouts/discovery.css",
+  "shell": "progressive discovery + diagnostic",
+  "renderer": "discovery config-driven runtime",
+  "slots": [
+    "progress",
+    "stage",
+    "questions",
+    "diagnostic",
+    "export"
+  ],
+  "scripts": [
+    "runtime/discovery.js"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "id": "guild",
+  "route": "/guilda",
+  "entry": "guilda.html",
+  "layout": "guild",
+  "locale": "pt-BR",
+  "title": "OaaS.Quest — Modo Guilda",
+  "contentRefs": [
+    "experience.presentation.guilda",
+    "experience.customerJourney",
+    "experience.90DayMethod",
+    "experience.measurement",
+    "experience.commercialModel",
+    "experience.faq",
+    "agent-team.roles",
+    "sector-playbooks.sectors",
+    "mission-steps"
+  ],
+  "sections": [
+    {
+      "id": "welcome",
+      "component": "guild-welcome",
+      "contentRef": "experience.presentation.guilda.hero"
+    },
+    {
+      "id": "mission",
+      "component": "mission-flow",
+      "contentRef": "mission-steps"
+    },
+    {
+      "id": "journey",
+      "component": "quest-journey",
+      "contentRef": "experience.customerJourney"
+    },
+    {
+      "id": "guild-roles",
+      "component": "role-grid",
+      "contentRef": "agent-team.roles"
+    },
+    {
+      "id": "sectors",
+      "component": "realm-grid",
+      "contentRef": "sector-playbooks.sectors"
+    },
+    {
+      "id": "measurement",
+      "component": "orb-metrics",
+      "contentRef": "experience.measurement"
+    },
+    {
+      "id": "rewards",
+      "component": "commercial-model",
+      "contentRef": "experience.commercialModel"
+    },
+    {
+      "id": "faq",
+      "component": "guild-faq",
+      "contentRef": "experience.faq"
+    }
+  ]
+}
