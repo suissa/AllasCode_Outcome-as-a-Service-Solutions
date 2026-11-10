@@ -143,7 +143,7 @@ export async function createWorkspaceInvitation(
   }
   const invitation: GovernedWorkspaceInvitation = Object.freeze({
     id: input.id, tenantId: input.tenantId, workspaceId: input.workspaceId,
-    recipientHash, tokenHash: digest(input.token), role: input.role,
+    recipientHash, tokenHash: digest(input.token), role: input.role as Exclude<WorkspaceRole, "owner">,
     permissions: Object.freeze([...ROLE_PERMISSIONS[input.role]]),
     invitedBy: input.invitedBy, status: "pending",
     createdAt: now.toISOString(), expiresAt: input.expiresAt, revision: 1,
