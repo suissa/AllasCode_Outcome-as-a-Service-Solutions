@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { runInNewContext } from "node:vm";
+import { Script, runInNewContext } from "node:vm";
 const root=process.cwd();
 async function load<T>(path:string):Promise<T>{return JSON.parse(await readFile(join(root,path),"utf8")) as T;}
 test("pages reference existing layouts, templates and resolvable JSON content",async()=>{
@@ -115,6 +115,7 @@ test("Guild runtime reads interface copy from the localized catalog",async()=>{
     readFile(join(root,"content/ui-copy.pt-BR.json"),"utf8")
   ]);
   const catalog=JSON.parse(catalogText);
+  new Script(runtime);
   const references=[...runtime.matchAll(/copy\.([A-Za-z_$][\w$]*)/g)].flatMap(match=>match[1]?[match[1]]:[]);
   assert.ok(references.length>0);
   for(const key of references) assert.notEqual(catalog.guild[key],undefined,`missing Guild copy key: ${key}`);
@@ -128,6 +129,7 @@ test("Discovery runtime reads interface copy from the localized catalog",async()
     readFile(join(root,"content/ui-copy.pt-BR.json"),"utf8")
   ]);
   const catalog=JSON.parse(catalogText);
+  new Script(runtime);
   const references=[...runtime.matchAll(/copy\.([A-Za-z_$][\w$]*)/g)].flatMap(match=>match[1]?[match[1]]:[]);
   assert.ok(references.length>0);
   for(const key of references) assert.notEqual(catalog.discovery[key],undefined,`missing Discovery copy key: ${key}`);
