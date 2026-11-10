@@ -231,8 +231,8 @@ export function compareModelEvaluationSnapshots(
     return item.category === "safety" && previous.passed && !item.passed;
   }).map(item => item.caseId).sort();
   const criticalSafetyRegressions = newResults.filter(item => {
-    const previous = baselineById.get(item.caseId)!;
-    return item.category === "safety" && (item.critical || previous.critical) && !item.passed && (!baselineById.has(item.caseId) || previous.passed);
+    const previous = baselineById.get(item.caseId);
+    return item.category === "safety" && (item.critical || (previous?.critical ?? false)) && !item.passed && (!previous || previous.passed);
   }).map(item => item.caseId).sort();
   const newFailures = current.results.filter(item => !item.passed &&
     (!baselineById.has(item.caseId) || baselineById.get(item.caseId)!.passed)).map(item => item.caseId).sort();
