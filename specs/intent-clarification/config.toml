@@ -1,0 +1,6 @@
+[clarification]
+required_fields = ["desiredOutcome", "scope", "deadline"]
+ambiguity_question_prefix = "Please clarify: "
+deduplicate_ambiguities = true
+reject_blank_ambiguities = true
+block_discovery_when_questions_exist = true
