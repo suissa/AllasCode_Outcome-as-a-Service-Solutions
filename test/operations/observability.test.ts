@@ -53,8 +53,8 @@ test("SLO rejects invalid policies, malformed events, duplicate IDs and cross-te
     error instanceof ObservabilityError && error.code === "SLO_POLICY_INVALID" && error.path === "availabilityTarget");
   assert.throws(() => evaluateTenantSlo(policy, [{ ...observations[0]!, tenantId: "tenant_b" }]), /OBSERVATION_TENANT_MISMATCH/);
   assert.throws(() => evaluateTenantSlo(policy, [{ ...observations[0]!, occurredAt: "yesterday" }]), /OBSERVATION_TIMESTAMP_INVALID/);
-  assert.throws(() => evaluateTenantSlo(policy, [observations[0]!, observations[0]!]), /OBSERVATION_ID_DUPLICATE/);
-  assert.throws(() => evaluateTenantSlo(policy, [{ ...observations[0]!, latencyMs: -1 }]), /OBSERVATION_LATENCY_INVALID/);
+  assert.throws(() => evaluateTenantSlo(policy, [observations[0]!, observations[0]!], new Date("2026-11-10T12:00:00.000Z")), /OBSERVATION_ID_DUPLICATE/);
+  assert.throws(() => evaluateTenantSlo(policy, [{ ...observations[0]!, latencyMs: -1 }], new Date("2026-11-10T12:00:00.000Z")), /OBSERVATION_LATENCY_INVALID/);
   assert.throws(() => evaluateTenantSlo(policy, [{ ...observations[0]!, occurredAt: "2026-11-10T12:01:00.000Z" }], new Date("2026-11-10T12:00:00.000Z")), /OBSERVATION_FROM_FUTURE/);
 });
 
