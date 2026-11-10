@@ -19,7 +19,7 @@ async function completeDiscovery(page: any) {
   await expect(page.getByText("Diagnóstico preliminar")).toBeVisible();
   await page.getByRole("button", { name: /montar proposta preliminar/i }).click();
   await expect(page).toHaveURL(/\/proposta/);
-  await expect(page.getByText("Mercado E2E")).toBeVisible();
+  await expect(page.getByText("Mercado E2E").first()).toBeVisible();
 }
 
 test("Guilda confirms a retail mission, hands off to Discovery and persists the proposal", async ({ page }) => {
@@ -52,7 +52,7 @@ test("Guilda confirms a retail mission, hands off to Discovery and persists the 
   }, retailAnswers);
   await completeDiscovery(page);
   await page.reload();
-  await expect(page.getByText("Mercado E2E")).toBeVisible();
+  await expect(page.getByText("Mercado E2E").first()).toBeVisible();
 });
 
 test("Classic Discovery builds and persists the same retail proposal", async ({ page }) => {
@@ -63,5 +63,5 @@ test("Classic Discovery builds and persists the same retail proposal", async ({ 
   await page.reload();
   await completeDiscovery(page);
   await page.reload();
-  await expect(page.getByText("Mercado E2E")).toBeVisible();
+  await expect(page.getByText("Mercado E2E").first()).toBeVisible();
 });
