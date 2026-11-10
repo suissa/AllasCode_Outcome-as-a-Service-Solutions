@@ -1,0 +1,63 @@
+schema_version: "1.0"
+package: OaaS.SyntropicAntifragility
+objects:
+  Disruption:
+    required: [id, tenant_id, occurred_at, category, severity, recurrence_key, evidence]
+    properties:
+      id: { type: Identifier, meaning: "Immutable disruption identifier", privacy: internal }
+      tenant_id: { type: Identifier, meaning: "Owning tenant; immutable", privacy: restricted }
+      occurred_at: { type: Timestamp, meaning: "Occurrence time in UTC", privacy: internal }
+      category: { type: Enum, meaning: "Normalized failure class", privacy: internal }
+      severity: { type: Enum, values: [low, medium, high, critical], privacy: internal }
+      recurrence_key: { type: Identifier, meaning: "Tenant-scoped normalized failure signature", privacy: internal }
+      evidence: { type: Array<EvidenceReference>, min_items: 1, tenant_scope: same_as_parent }
+  EvidenceReference:
+    required: [id, tenant_id, digest, captured_at, source]
+    properties:
+      id: { type: Identifier, privacy: internal }
+      tenant_id: { type: Identifier, privacy: restricted }
+      digest: { type: Digest, algorithm: "approved-by-crypto-policy", privacy: internal }
+      captured_at: { type: Timestamp, privacy: internal }
+      source: { type: Identifier, privacy: internal }
+      payload: { type: OpaqueReference, meaning: "Reference only; never inline sensitive payload", privacy: restricted }
+  EvolutionProposal:
+    required: [id, tenant_id, source_disruption_ids, hypothesis, controls, regression_tests, requires_formal_proof, requires_human_approval, rollback_plan]
+    properties:
+      id: { type: Identifier, privacy: internal }
+      tenant_id: { type: Identifier, privacy: restricted }
+      source_disruption_ids: { type: Array<Identifier>, min_items: 1 }
+      hypothesis: { type: Text, max_length: 4000, privacy: internal }
+      controls: { type: Array<Text>, min_items: 1 }
+      regression_tests: { type: Array<Identifier>, min_items: 1 }
+      requires_formal_proof: { type: Boolean }
+      requires_human_approval: { type: Boolean }
+      rollback_plan: { type: Text, min_length: 1 }
+  PromotionAssessment:
+    required: [evidence_integrity_verified, root_cause_reviewed, tests_passed, formal_proof_status, policy_approved, blast_radius_bounded, rollback_verified, human_approved]
+    properties:
+      evidence_integrity_verified: { type: Boolean }
+      root_cause_reviewed: { type: Boolean }
+      tests_passed: { type: Boolean }
+      formal_proof_status: { type: Enum, values: [passed, not-required, failed, missing] }
+      policy_approved: { type: Boolean }
+      blast_radius_bounded: { type: Boolean }
+      rollback_verified: { type: Boolean }
+      human_approved: { type: Boolean }
+  EvolutionMetric:
+    required: [name, before, after, lower_is_better]
+    properties:
+      name: { type: Identifier }
+      before: { type: Decimal }
+      after: { type: Decimal }
+      lower_is_better: { type: Boolean }
+      tolerance: { type: Decimal, minimum: 0, default: 0 }
+errors:
+  SYN-DISRUPTION-REQUIRED-FIELD: "Required disruption field is empty"
+  SYN-DISRUPTION-INVALID-TIMESTAMP: "Occurrence timestamp is invalid"
+  SYN-DISRUPTION-EVIDENCE-REQUIRED: "At least one evidence reference is required"
+  SYN-EVIDENCE-INCOMPLETE: "Evidence reference is incomplete"
+  SYN-EVIDENCE-CROSS-TENANT: "Evidence belongs to another tenant"
+  SYN-EVIDENCE-INVALID-TIMESTAMP: "Evidence timestamp is invalid"
+  SYN-EVOLUTION-METRICS-REQUIRED: "At least one evolution metric is required"
+  SYN-EVOLUTION-METRIC-INVALID: "Evolution metric is invalid"
+  SYN-EVOLUTION-TOLERANCE-INVALID: "Evolution tolerance must be non-negative"
