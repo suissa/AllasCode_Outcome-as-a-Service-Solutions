@@ -137,3 +137,16 @@ test("blocks contract composition when proposal is incomplete or agreement scope
     effectiveDate: "2026-11-10", jurisdiction: "Brasil", approvedBy: "customer_admin",
   }), /PROPOSAL_CONTRACT_SCOPE_MISMATCH/);
 });
+
+test("blocks target values that contradict the declared metric direction", () => {
+  const increaseWithLowerTarget: OutcomeProposalInput = {
+    ...valid,
+    metric: { ...valid.metric, baseline: 12, target: 7, direction: "increase" },
+  };
+  const missingDirection: OutcomeProposalInput = {
+    ...valid,
+    metric: { ...valid.metric, direction: "target" },
+  };
+  assert.ok(assessProposalReadiness(increaseWithLowerTarget).blockers.includes("TARGET_DIRECTION_MISMATCH"));
+  assert.ok(assessProposalReadiness(missingDirection).blockers.includes("METRIC_DIRECTION_NOT_DEFINED"));
+});
