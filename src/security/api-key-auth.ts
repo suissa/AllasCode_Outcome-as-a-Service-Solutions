@@ -23,7 +23,7 @@ export function createApiKeyAuthenticator(store:ApiKeyStore,now=()=>new Date()):
 }
 export function createScopeAuthorizer():Authorize {
   return (actor,action,resource)=>{
-    if(resource&&resource.tenantId!==actor.tenantId)return false;
+    if(resource&&("tenantId" in resource ? resource.tenantId : resource.proposal.tenantId)!==actor.tenantId)return false;
     return actor.roles.includes("*")||actor.roles.includes(action)||actor.roles.includes(action.split(".")[0]+".*");
   };
 }
