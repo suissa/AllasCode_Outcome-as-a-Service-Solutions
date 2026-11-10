@@ -10,7 +10,8 @@ describe("Zig runtime protocol v1",()=>{
     assert.equal((await invokeZigRuntime(transport,request,new AbortController().signal)).status,"completed");
   });
   it("rejects runtime-injected unknown commands",async()=>{
-    const unsafe={...request,command:"run-shell"} as typeof request;
+    // Simulate an untrusted payload crossing the typed boundary.
+    const unsafe={...request,command:"run-shell"} as unknown as typeof request;
     await assert.rejects(invokeZigRuntime({invoke:async()=>{throw new Error("must not dispatch");}},unsafe,new AbortController().signal),/ZIG-CONTRACT-UNKNOWN-COMMAND/);
   });
   it("rejects invalid proof references before dispatch",async()=>{
