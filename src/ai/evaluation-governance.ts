@@ -143,10 +143,11 @@ export function createModelEvaluationSnapshot(
 ): Readonly<ModelEvaluationSnapshot> {
   if (!input || !required(input.id) || !required(input.tenantId) || !required(input.modelId) ||
       !required(input.modelVersion) || !required(input.promptVersion) || !required(input.datasetVersion) ||
-      !validTimestamp(input.createdAt) || !Array.isArray(input.results) || input.results.length === 0 ||
+      !Array.isArray(input.results) || input.results.length === 0 ||
       !(now instanceof Date) || !Number.isFinite(now.getTime())) {
     fail("EVALUATION_SNAPSHOT_INVALID", "input");
   }
+  if (!validTimestamp(input.createdAt)) fail("EVALUATION_TIMESTAMP_INVALID", "createdAt");
   if (Date.parse(input.createdAt) > now.getTime()) fail("EVALUATION_TIMESTAMP_FUTURE", "createdAt");
   const ids = new Set<string>();
   const results = input.results.map((item, index) => {
