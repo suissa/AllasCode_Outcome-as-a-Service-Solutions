@@ -58,6 +58,7 @@ export interface ContractCommitResult { value: ContractRecord; replayed: boolean
 export interface ContractRegistryStore {
   createDraft(value: ContractRecord, event: ContractEvent, idempotencyKey: string, fingerprint: string): Promise<ContractCommitResult>;
   get(tenantId: string, contractId: string): Promise<ContractRecord | undefined>;
+  getIdempotentResult(tenantId: string, idempotencyKey: string, fingerprint: string): Promise<ContractRecord | undefined>;
   commit(command: ContractCommitCommand): Promise<ContractCommitResult>;
   events(tenantId: string, contractId: string): Promise<readonly ContractEvent[]>;
 }
