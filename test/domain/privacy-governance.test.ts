@@ -44,7 +44,7 @@ const dependencies = (store: MemoryConsentStore) => ({
 const processing: DataProcessingRecord = {
   id: "processing_1", tenantId, dataSubjectId: "person_1", category: "contact",
   classification: "personal", purpose: "appointment reminders", legalBasis: "consent",
-  consentId: "consent_1", createdAt: "2026-11-10T11:00:00.000Z",
+  consentId: "consent_1", createdAt: "2026-11-10T12:00:00.000Z",
   retentionUntil: "2027-11-10T11:00:00.000Z",
 };
 
