@@ -1,0 +1,35 @@
+{
+  "id": "exemplos",
+  "route": "/exemplos",
+  "entry": "exemplos.html",
+  "layout": "exemplos",
+  "locale": "pt-BR",
+  "title": "OaaS.Quest — Exemplos práticos de agentes autônomos",
+  "contentRefs": [
+    "exemplos"
+  ],
+  "sections": [
+    {
+      "id": "hero",
+      "component": "exemplos-hero",
+      "contentRef": "exemplos.meta"
+    },
+    {
+      "id": "categories",
+      "component": "exemplos-categories",
+      "contentRef": "exemplos.categories"
+    },
+    {
+      "id": "outcome-definition",
+      "component": "exemplos-outcomes",
+      "contentRef": "exemplos.outcomeDefinition"
+    },
+    {
+      "id": "architecture",
+      "component": "exemplos-architecture",
+      "contentRef": "exemplos.architecture"
+    }
+  ],
+  "description": "Exemplos práticos de agentes autônomos que executam fluxos reais e são medidos por resultados verificáveis — atendimento, vendas, cobrança, logística, finanças, engenharia e segurança.",
+  "heading": "Agentes autônomos com resultados verificáveis: exemplos reais de OaaS em operação."
+}

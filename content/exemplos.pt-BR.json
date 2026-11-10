@@ -1,0 +1,295 @@
+{
+  "meta": {
+    "title": "Exemplos práticos de agentes autônomos",
+    "description": "Agentes que recebem um objetivo, executam um fluxo com ferramentas e sistemas reais, e são medidos por um resultado verificável.",
+    "intro": "Exemplos práticos são agentes que recebem um objetivo, executam um fluxo com ferramentas e sistemas reais, e são medidos por um resultado verificável — não apenas por \"responder bem\". Os casos mais maduros envolvem atendimento, vendas, cobrança, logística, finanças, recrutamento e segurança.",
+    "introSources": [
+      { "label": "SAP", "url": "https://www.sap.com/brazil/resources/ai-agents-use-cases" },
+      { "label": "AI Multiple", "url": "https://aimultiple.com/pt/agentic-ai" },
+      { "label": "Agentic Affairs", "url": "https://agentic-affairs.com/autonomous-guided-ai-agents/" }
+    ]
+  },
+  "categories": [
+    {
+      "id": "atendimento",
+      "title": "Atendimento e suporte",
+      "icon": "headset",
+      "agents": [
+        {
+          "name": "Resolução de ticket",
+          "action": "Lê o chamado, consulta CRM/ERP, verifica política, emite reembolso, atualiza o pedido e confirma com o cliente.",
+          "outcome": "Ticket resolvido sem intervenção humana",
+          "sources": [
+            { "label": "Agentic Affairs", "url": "https://agentic-affairs.com/autonomous-guided-ai-agents/" }
+          ]
+        },
+        {
+          "name": "Recuperação de entrega",
+          "action": "Detecta atraso, consulta rota e estoque, propõe nova data, comunica o cliente e reagenda se necessário.",
+          "outcome": "Entrega recuperada / redução de churn",
+          "sources": [
+            { "label": "Treinamentos AF", "url": "https://treinamentosaf.com.br/agentes-autonomos-7-ias-que-ja-trabalham-sozinhas-em-2025/" }
+          ]
+        },
+        {
+          "name": "Suporte técnico nível 1",
+          "action": "Coleta sintomas, executa diagnósticos, aplica correções conhecidas e escala com contexto quando necessário.",
+          "outcome": "Caso resolvido no primeiro contato",
+          "sources": [
+            { "label": "AI Multiple", "url": "https://aimultiple.com/pt/agentic-ai" }
+          ]
+        },
+        {
+          "name": "Atendimento de candidatos",
+          "action": "Conversa com candidato, responde dúvidas, coleta dados, agenda entrevista e envia oferta após aprovação do gestor. A Chipotle usa a \"Ava Cado\", da Paradox, nesse formato.",
+          "outcome": "Entrevista agendada / contratação concluída",
+          "sources": [
+            { "label": "AI Multiple", "url": "https://aimultiple.com/pt/agentic-ai" }
+          ]
+        }
+      ],
+      "insight": "O modelo mais direto de cobrança é por resolução: por exemplo, R$ 8 por ticket resolvido com confirmação do cliente, desde que a resolução passe por regras de qualidade e auditoria."
+    },
+    {
+      "id": "vendas",
+      "title": "Vendas e receita",
+      "icon": "trending-up",
+      "agents": [
+        {
+          "name": "Prospecção B2B",
+          "action": "Identifica contas compatíveis com o ICP, enriquece dados, personaliza abordagem, envia contato e agenda reunião no calendário do vendedor.",
+          "outcome": "Reunião qualificada agendada",
+          "sources": [
+            { "label": "Treinamentos AF", "url": "https://treinamentosaf.com.br/agentes-autonomos-7-ias-que-ja-trabalham-sozinhas-em-2025/" }
+          ]
+        },
+        {
+          "name": "Qualificação de leads",
+          "action": "Conversa no WhatsApp/site, valida fit, orçamento, urgência e intenção; cria oportunidade no CRM e encaminha ao closer.",
+          "outcome": "Lead qualificado / SQL",
+          "sources": [
+            { "label": "Treinamentos AF", "url": "https://treinamentosaf.com.br/agentes-autonomos-7-ias-que-ja-trabalham-sozinhas-em-2025/" }
+          ]
+        },
+        {
+          "name": "Recuperação de carrinho",
+          "action": "Detecta abandono, identifica objeção, oferece condição dentro de limites e conduz até a conclusão da compra.",
+          "outcome": "Pedido recuperado / receita incremental",
+          "sources": [
+            { "label": "Vida", "url": "https://vida.io/press/vida-introduces-outcome-based-billing-for-ai-agents" }
+          ]
+        },
+        {
+          "name": "Renovação B2B",
+          "action": "Monitora uso, risco de churn e contrato; prepara proposta, negocia dentro de limites e agenda reunião de renovação.",
+          "outcome": "Contrato renovado / upsell fechado",
+          "sources": [
+            { "label": "SAP", "url": "https://www.sap.com/brazil/resources/ai-agents-use-cases" }
+          ]
+        },
+        {
+          "name": "Vendedor digital",
+          "action": "Negocia condições em tempo real, propõe alternativas e fecha venda conforme parâmetros da empresa.",
+          "outcome": "Venda concluída / margem preservada",
+          "sources": [
+            { "label": "Vida", "url": "https://vida.io/press/vida-introduces-outcome-based-billing-for-ai-agents" }
+          ]
+        }
+      ],
+      "insight": "Aqui o resultado não deve ser \"lead enviado\", mas reunião realizada com critérios de qualificação, oportunidade criada com dados completos ou receita incremental atribuída."
+    },
+    {
+      "id": "financeiro",
+      "title": "Financeiro e back-office",
+      "icon": "wallet",
+      "agents": [
+        {
+          "name": "Cobrança inteligente",
+          "action": "Identifica fatura vencida, escolhe canal e tom, negocia parcelamento dentro de regras, emite boleto e registra o acordo.",
+          "outcome": "Pagamento recuperado",
+          "sources": [
+            { "label": "Treinamentos AF", "url": "https://treinamentosaf.com.br/agentes-autonomos-7-ias-que-ja-trabalham-sozinhas-em-2025/" }
+          ]
+        },
+        {
+          "name": "Conciliação financeira",
+          "action": "Cruza extrato, ERP, gateway e contabilidade; identifica divergências, propõe lançamento e encaminha exceções.",
+          "outcome": "Divergência resolvida / conciliação fechada",
+          "sources": [
+            { "label": "SAP", "url": "https://www.sap.com/brazil/resources/ai-agents-use-cases" }
+          ]
+        },
+        {
+          "name": "Contas a pagar",
+          "action": "Recebe nota/fatura, valida impostos e centro de custo, faz three-way match, agenda pagamento e arquiva documentos.",
+          "outcome": "Fatura processada sem erro",
+          "sources": [
+            { "label": "SAP", "url": "https://www.sap.com/brazil/resources/ai-agents-use-cases" }
+          ]
+        },
+        {
+          "name": "Prevenção a fraude",
+          "action": "Monitora transações, identifica padrões suspeitos, bloqueia casos de baixo risco e escala os complexos.",
+          "outcome": "Fraude evitada / perda evitada",
+          "sources": [
+            { "label": "Treinamentos AF", "url": "https://treinamentosaf.com.br/agentes-autonomos-7-ias-que-ja-trabalham-sozinhas-em-2025/" }
+          ]
+        },
+        {
+          "name": "Análise de sinistros",
+          "action": "Revisa documentos, valida cobertura, detecta inconsistências e apoia ou automatiza a aprovação.",
+          "outcome": "Sinistro processado / fraude detectada",
+          "sources": [
+            { "label": "AI Multiple", "url": "https://aimultiple.com/pt/agentic-ai" }
+          ]
+        }
+      ],
+      "insight": "Para cobrança, uma métrica forte é valor recuperado líquido: pagamento efetivo menos descontos, custos de operação e estornos posteriores."
+    },
+    {
+      "id": "operacoes",
+      "title": "Operações e supply chain",
+      "icon": "boxes",
+      "agents": [
+        {
+          "name": "Compras e sourcing",
+          "action": "Detecta necessidade, pesquisa fornecedores, compara cotações, inicia RFP e recompra dentro de limites. A SAP cita agentes que identificam oportunidades de sourcing e iniciam RFPs.",
+          "outcome": "Economia de compra / lead time reduzido",
+          "sources": [
+            { "label": "SAP", "url": "https://www.sap.com/brazil/resources/ai-agents-use-cases" }
+          ]
+        },
+        {
+          "name": "Planejamento de estoque",
+          "action": "Cruza demanda, sazonalidade, lead time e rupturas; gera pedidos e aciona exceções.",
+          "outcome": "Ruptura evitada / capital de giro liberado",
+          "sources": [
+            { "label": "SAP", "url": "https://www.sap.com/brazil/resources/ai-agents-use-cases" }
+          ]
+        },
+        {
+          "name": "Logística preditiva",
+          "action": "Acompanha remessas, prevê atraso por tráfego/clima, reprograma rota e avisa o cliente proativamente.",
+          "outcome": "Entrega no prazo / SLA cumprido",
+          "sources": [
+            { "label": "Treinamentos AF", "url": "https://treinamentosaf.com.br/agentes-autonomos-7-ias-que-ja-trabalham-sozinhas-em-2025/" }
+          ]
+        },
+        {
+          "name": "Manutenção preditiva",
+          "action": "Monitora telemetria, prevê falha, agenda peça e técnico, e emite ordem de serviço.",
+          "outcome": "Parada evitada / disponibilidade aumentada",
+          "sources": [
+            { "label": "AI Multiple", "url": "https://aimultiple.com/pt/agentic-ai" }
+          ]
+        },
+        {
+          "name": "Qualidade industrial",
+          "action": "Analisa imagens e dados de linha, classifica defeito, bloqueia lote e abre ação corretiva.",
+          "outcome": "Defeito contido / retrabalho reduzido",
+          "sources": []
+        }
+      ],
+      "insight": null
+    },
+    {
+      "id": "engenharia",
+      "title": "Engenharia e segurança",
+      "icon": "shield-check",
+      "agents": [
+        {
+          "name": "Triagem de incidentes de segurança",
+          "action": "Correlaciona alertas, investiga evidências, classifica severidade e executa contenções de baixo risco; a CrowdStrike usa o Charlotte AI Detection Triage com autonomia limitada definida pelo cliente.",
+          "outcome": "Incidente contido / tempo de resposta reduzido",
+          "sources": [
+            { "label": "AI Multiple", "url": "https://aimultiple.com/pt/agentic-ai" }
+          ]
+        },
+        {
+          "name": "Geração e correção de testes",
+          "action": "A Uber criou o AutoCover, sistema multiagente integrado ao pipeline de build para descobrir artefatos e dependências e gerar testes.",
+          "outcome": "Cobertura de testes ampliada / regressão evitada",
+          "sources": [
+            { "label": "AI Multiple", "url": "https://aimultiple.com/pt/agentic-ai" }
+          ]
+        },
+        {
+          "name": "Desenvolvimento assistido por agentes",
+          "action": "Agentes podem ler requisitos, criar código, executar testes e corrigir falhas; o resultado cobrável pode ser \"bug corrigido sem regressão\" ou \"história entregue em produção\".",
+          "outcome": "Bug corrigido / história entregue",
+          "sources": [
+            { "label": "AI Multiple", "url": "https://aimultiple.com/pt/agentic-ai" },
+            { "label": "FlexPrice", "url": "https://flexprice.io/blog/best-outcome-based-billing-software-for-ai-companies" }
+          ]
+        },
+        {
+          "name": "Investigação de ameaças",
+          "action": "A TÜV SÜD e a Elanco usam Microsoft Security Copilot para acelerar investigação e análise de ameaças.",
+          "outcome": "Ameaça neutralizada / tempo de investigação reduzido",
+          "sources": [
+            { "label": "AI Multiple", "url": "https://aimultiple.com/pt/agentic-ai" }
+          ]
+        }
+      ],
+      "insight": null
+    }
+  ],
+  "outcomeDefinition": {
+    "title": "Como definir o resultado",
+    "intro": "Um bom contrato de OaaS precisa transformar o objetivo vago em um evento auditável:",
+    "rows": [
+      {
+        "objective": "Reduzir chamados de suporte",
+        "measurable": "Ticket resolvido e confirmado pelo cliente, sem reabertura em 7 dias",
+        "source": "Zendesk/Intercom + CRM"
+      },
+      {
+        "objective": "Aumentar vendas",
+        "measurable": "Reunião qualificada realizada, com ICP, orçamento e próxima etapa definida",
+        "source": "CRM + calendário"
+      },
+      {
+        "objective": "Reduzir inadimplência",
+        "measurable": "Pagamento recebido ou acordo cumprido",
+        "source": "ERP/financeiro"
+      },
+      {
+        "objective": "Melhorar entrega",
+        "measurable": "Pedido entregue dentro da janela prometida",
+        "source": "TMS/WMS + transportadora"
+      },
+      {
+        "objective": "Reduzir custo de compras",
+        "measurable": "Economia validada contra preço de referência e aprovação de compra",
+        "source": "ERP + e-procurement"
+      }
+    ]
+  },
+  "architecture": {
+    "title": "Arquitetura mínima",
+    "intro": "Para cada agente, eu separaria quatro camadas:",
+    "layers": [
+      {
+        "id": "objetivo",
+        "name": "Objetivo e política",
+        "description": "Meta, restrições, limites de decisão, exceções e critérios de escalonamento humano."
+      },
+      {
+        "id": "execucao",
+        "name": "Execução",
+        "description": "LLM/planner, ferramentas, integrações, memória de trabalho e ações permitidas."
+      },
+      {
+        "id": "verificacao",
+        "name": "Verificação",
+        "description": "Validação determinística do resultado, evidências, trilha de auditoria e controle de qualidade."
+      },
+      {
+        "id": "observabilidade",
+        "name": "Observabilidade e billing",
+        "description": "Eventos de negócio, custo por execução, atribuição de resultado, dashboards em tempo real e faturamento por evento."
+      }
+    ],
+    "closing": "O ponto central é que o agente deve provar o resultado — por exemplo, gravar a confirmação do cliente, o evento no ERP, o pagamento conciliado ou a entrega concluída — antes de gerar a cobrança. Sem essa prova, \"cobrar por resultado\" vira uma promessa comercial, não um modelo operacional."
+  }
+}

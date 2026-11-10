@@ -3,8 +3,8 @@
   "name": "Seletor de experiência",
   "template": "layouts/chooser.html",
   "stylesheet": "layouts/chooser.css",
-  "shell": "topbar + mode-grid + site-footer",
-  "renderer": "static-html",
+  "shell": "nav + home-intro + home-modes + footer",
+  "renderer": "runtime/chooser-page.js",
   "slots": [
     "brand",
     "experience-options",
@@ -12,6 +12,6 @@
   ],
   "scripts": [
     "app.js",
-    "runtime/chooser.js"
+    "runtime/chooser-page.js"
   ]
 }

@@ -5,6 +5,11 @@
 
 
 
+/* a nav classica carrega seis secoes e um CTA: a assinatura "Outcome as a Service"
+   fica no rodape, e o logo nunca e espremido para caber. */
+
+.nav .nav__meta { display: none; }
+
 /* ---------------------------------------------------------------- herói */
 
 .hero {
@@ -27,7 +32,9 @@
   margin-bottom: 22px;
 }
 
-.hero__title span { display: block; color: var(--accent); }
+.hero__title > span { display: block; }
+
+.hero__title__accent { color: var(--accent); }
 
 .hero__body {
   font-size: 17.5px;

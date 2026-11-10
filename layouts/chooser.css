@@ -8,13 +8,14 @@
 
 /* ---------------------------------------------------------------- introdução */
 
-.home__intro {
+.home__intro { border-bottom: 1px solid var(--line); }
+
+.home__intro__grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
   gap: clamp(24px, 5vw, 72px);
   align-items: end;
   padding-block: clamp(48px, 7vw, 104px) clamp(30px, 4vw, 52px);
-  border-bottom: 1px solid var(--line);
 }
 
 .home__title {
@@ -24,7 +25,9 @@
   font-weight: 600;
 }
 
-.home__title span { display: block; color: var(--accent); }
+.home__title > span { display: block; }
+
+.home__title__accent { color: var(--accent); }
 
 .home__lead {
   font-size: 16.5px;
@@ -82,6 +85,19 @@
   font-size: 14.5px;
   font-weight: 500;
 }
+
+.mode__hint {
+  display: block;
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.26s var(--ease), transform 0.26s var(--ease);
+}
+
+.mode:hover .mode__hint,
+.mode:focus-visible .mode__hint { opacity: 1; transform: none; }
 
 .mode__cta svg { transition: transform 0.26s var(--ease); }
 .mode:hover .mode__cta svg,
@@ -231,7 +247,9 @@
   max-width: 22ch;
 }
 
-.shot__title span { display: block; color: var(--accent); }
+.shot__title span { display: block; }
+
+.shot__title__accent { color: var(--accent); }
 
 .shot__sub {
   margin-top: 10px;
@@ -292,7 +310,7 @@
 /* ---------------------------------------------------------------- responsivo */
 
 @media (max-width: 900px) {
-  .home__intro { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .home__intro__grid { grid-template-columns: minmax(0, 1fr); align-items: start; }
   .home__lead { max-width: 58ch; }
   .mode { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .shot { max-width: 520px; }

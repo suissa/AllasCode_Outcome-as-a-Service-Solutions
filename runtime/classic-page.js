@@ -5,6 +5,8 @@
  * A copy vem inteira do manifesto; o runtime só estrutura e mede.
  */
 
+import { initWordReveal } from "./word-reveal.js";
+
 const esc = value =>
   String(value == null ? "" : value).replace(/[&<>"']/g, c => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -30,13 +32,13 @@ function renderHero(exp, copy) {
   return `<section class="hero">
     <div class="hero__grid shell">
       <div class="hero__copy">
-        <h1 class="hero__title">${esc(copy.hero.title)}<span>${esc(copy.hero.titleEmphasis)}</span></h1>
-        <p class="hero__body">${esc(copy.hero.body)}</p>
-        <div class="hero__actions">
+        <h1 class="hero__title" data-words><span class="hero__title__lead">${esc(copy.hero.title)}</span><span class="hero__title__accent">${esc(copy.hero.titleEmphasis)}</span></h1>
+        <p class="hero__body" data-reveal data-delay="350">${esc(copy.hero.body)}</p>
+        <div class="hero__actions" data-reveal data-delay="500">
           <a class="btn btn--primary" href="/guilda">${esc(copy.hero.primaryCta)}${ARROW}</a>
           <a class="btn btn--ghost" href="#metodo">${esc(copy.hero.secondaryCta)}</a>
         </div>
-        <p class="hero__note">${esc(exp.brand.promise)}</p>
+        <p class="hero__note" data-reveal data-delay="620">${esc(exp.brand.promise)}</p>
       </div>
       <aside class="panel">
         <div class="panel__head">
@@ -319,6 +321,8 @@ Promise.all([window.OQReady, window.OaaSPageReady]).then(() => {
       renderClosing(exp, copy)
     ].join("");
   }
+
+  initWordReveal(document);
 
   const footerLine = document.getElementById("footer-line");
   if (footerLine) footerLine.textContent = exp.brand.tagline;

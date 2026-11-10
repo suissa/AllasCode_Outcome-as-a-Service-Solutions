@@ -7,6 +7,7 @@
   "title": "OaaS.Quest — Your Goal. Our Quest.",
   "contentRefs": [
     "experience.brand",
+    "experience.presentation.classic",
     "ui-copy.chooser"
   ],
   "sections": [

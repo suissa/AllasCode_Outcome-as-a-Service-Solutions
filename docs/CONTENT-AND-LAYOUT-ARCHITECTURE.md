@@ -52,7 +52,29 @@ O markup de apresentação foi extraído para `layouts/chooser.html`, `layouts/c
 
 ## Folhas de estilo
 
-Os modos Seletor, Clássico e Guilda reutilizam `styles.css`; o Discovery Engine utiliza `layouts/discovery.css`. A folha de estilo é declarada estaticamente na entrada HTML, para que o Vite a empacote com hash e aplique hot reload sem recarregar a página. O descritor do layout continua sendo a fonte de verdade: o teste `each entry HTML links the stylesheet declared by its layout` garante que a entrada e o descritor não divirjam.
+Cada layout tem sua própria folha, e o descritor do layout é a fonte de verdade: o teste `each entry HTML links the stylesheet declared by its layout` garante que a entrada e o descritor não divirjam.
+
+| Layout | Folha | Natureza |
+|---|---|---|
+| chooser (home) | `layouts/chooser.css` | sistema canônico da home |
+| classic | `layouts/classic.css` | sistema canônico do Modo Clássico |
+| guild (Guilda) | `styles.css` | mundo visual próprio da Guilda, intocado |
+| discovery | `layouts/discovery.css` | motor de descoberta |
+
+`layouts/tokens.css` é a base compartilhada pela home e pelo Modo Clássico: tokens de cor e tipografia, chrome comum (navegação, botões, rodapé), a classe `.band` para as faixas azuis e a barra de progresso de leitura. As fontes (Archivo e Spline Sans Mono) são self-hosted em `fonts/`, sem requisição externa.
+
+O sistema de design está documentado em [DESIGN.md](../DESIGN.md).
+
+## Copy: onde o texto mora
+
+Nenhum texto de produto é escrito dentro dos runtimes. A copy da home vive em `content/ui-copy.pt-BR.json`, no bloco `chooser`; a do Modo Clássico, em `experience.presentation.classic`.
+
+O template declara o vínculo com o texto, e o runtime resolve:
+
+- `data-copy="chooser.heading"` aponta para o catálogo de locale (`content/ui-copy.pt-BR.json`). O teste `chooser template copy bindings resolve against the locale catalog` valida que todo vínculo aponta para uma string existente.
+- `data-page-copy="experience.presentation.classic.hero.title"` aponta para as fontes do manifesto da própria página.
+
+O texto embutido no template é o fallback sem JavaScript; com o runtime carregado, o valor do catálogo substitui o fallback. Nenhuma das duas rotas inventa texto: uma lê o catálogo de locale, a outra lê as fontes do manifesto.
 
 ## Runtimes por layout
 

@@ -1,0 +1,20 @@
+{
+  "id": "exemplos",
+  "name": "Exemplos práticos de agentes autônomos",
+  "template": "layouts/exemplos.html",
+  "stylesheet": "layouts/exemplos.css",
+  "shell": "exemplos-nav + main + exemplos-footer",
+  "renderer": "runtime/exemplos-page.js",
+  "slots": [
+    "navigation",
+    "hero",
+    "categories",
+    "outcome-definition",
+    "architecture",
+    "closing-cta"
+  ],
+  "scripts": [
+    "app.js",
+    "runtime/exemplos-page.js"
+  ]
+}

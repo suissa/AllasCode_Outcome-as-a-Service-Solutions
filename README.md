@@ -26,4 +26,8 @@ bun run typecheck  # typecheck do dominio e da config do Vite
 
 O nome do arquivo HTML é o nome da rota. Detalhes em [docs/CONTENT-AND-LAYOUT-ARCHITECTURE.md](docs/CONTENT-AND-LAYOUT-ARCHITECTURE.md).
 
+## Design
+
+A home e o Modo Clássico usam o mesmo sistema canônico: tokens em `layouts/tokens.css`, tipografia self-hosted (Archivo + Spline Sans Mono) e faixas azuis de seção. O sistema está documentado em [DESIGN.md](DESIGN.md), o contexto de produto em [PRODUCT.md](PRODUCT.md). O Modo Guilda mantém o próprio mundo visual em `styles.css`.
+
 No WSL, o projeto fica em /mnt/d (DrvFs) e nao suporta inotify; o vite.config.ts liga o watcher em polling automaticamente nesse caso.
