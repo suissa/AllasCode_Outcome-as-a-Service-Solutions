@@ -10,6 +10,7 @@
 - The declared goal, operational priority, team size, sales context and systems context are summarized without generating financial conclusions.
 - Baseline and target are accepted only as finite numbers or unformatted numeric strings. Values such as `12%`, `R$ 12.000` or other formatted text remain unresolved until a reviewer supplies an unambiguous numeric value and unit.
 - A selected measurement-source category (for example, "system") is not treated as a concrete source of truth. The exact system, report, query or owner must be supplied separately.
+- Metric direction must be explicit and consistent with the target: an increase target must exceed baseline; a decrease target must be lower.
 - Unknown answers are treated as absent even if an old value remains in the browser record.
 - No answer is converted into evidence, causal attribution, an approved metric, a committed scope, a delivery obligation or a price.
 
