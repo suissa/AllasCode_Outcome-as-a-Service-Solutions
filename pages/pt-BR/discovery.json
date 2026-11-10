@@ -8,7 +8,8 @@
   "contentRefs": [
     "discovery.stages",
     "discovery.solutions",
-    "ui-copy.discovery"
+    "ui-copy.discovery",
+    "proposal-graph"
   ],
   "sections": [
     {
