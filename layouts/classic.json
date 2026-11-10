@@ -10,5 +10,10 @@
     "hero",
     "sections",
     "closing-cta"
+  ],
+  "scripts": [
+    "app.js",
+    "content.js",
+    "runtime/classic.js"
   ]
 }

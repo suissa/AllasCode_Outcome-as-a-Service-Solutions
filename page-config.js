@@ -7,7 +7,9 @@
     "sector-playbooks": "sector-playbooks.pt-BR.json",
     "agent-team": "agent-team.pt-BR.json",
     "mission-steps": "mission-steps.pt-BR.json",
-    discovery: "discovery.pt-BR.json"
+    discovery: "discovery.pt-BR.json",
+    "proposal-graph": "proposal-graph.pt-BR.json",
+    "ui-copy": "ui-copy.pt-BR.json"
   };
   const readJson = async path => {
     const response = await fetch(new URL(root + path, document.baseURI));
@@ -20,6 +22,15 @@
     const page = await readJson("pages/pt-BR/" + pageId + ".json");
     const layout = await readJson("layouts/" + page.layout + ".json");
     if (page.id !== pageId || layout.id !== page.layout) throw new Error("PAGE_LAYOUT_ID_MISMATCH");
+    const stylesheet = document.createElement("link");
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = new URL(root + layout.stylesheet, document.baseURI).href;
+    stylesheet.dataset.oaasLayoutStylesheet = layout.id;
+    await new Promise((resolve, reject) => {
+      stylesheet.onload = resolve;
+      stylesheet.onerror = () => reject(new Error("LAYOUT_STYLESHEET_FETCH_FAILED:" + layout.stylesheet));
+      document.head.append(stylesheet);
+    });
     const templateResponse = await fetch(new URL(root + layout.template, document.baseURI));
     if (!templateResponse.ok) throw new Error("LAYOUT_TEMPLATE_FETCH_FAILED:" + layout.template);
     const rootElement = document.getElementById("oaas-page-root");
@@ -40,6 +51,17 @@
       if (value === undefined) throw new Error("CONTENT_REFERENCE_NOT_FOUND:" + ref);
       content[ref] = value;
     }
+    const copy = sources["ui-copy"] || {};
+    rootElement.querySelectorAll("[data-copy]").forEach(element => {
+      const value = getPath(copy, element.dataset.copy);
+      if (value === undefined) throw new Error("UI_COPY_REFERENCE_NOT_FOUND:" + element.dataset.copy);
+      element.textContent = String(value);
+    });
+    rootElement.querySelectorAll("[data-copy-aria-label]").forEach(element => {
+      const value = getPath(copy, element.dataset.copyAriaLabel);
+      if (value === undefined) throw new Error("UI_COPY_REFERENCE_NOT_FOUND:" + element.dataset.copyAriaLabel);
+      element.setAttribute("aria-label", String(value));
+    });
     document.documentElement.dataset.pageId = page.id;
     document.documentElement.dataset.layoutId = layout.id;
     document.title = page.title;
@@ -51,3 +73,21 @@
     throw error;
   });
 })();
+
+const configRoot = document.body.dataset.configRoot || "./";
+window.OaaSPageScriptsReady = window.OaaSPageReady.then(async page => {
+  for (const path of page.layout.scripts || []) {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = new URL(configRoot + path, document.baseURI).href;
+      script.dataset.oaasLayoutScript = path;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error("LAYOUT_SCRIPT_FETCH_FAILED:" + path));
+      document.body.append(script);
+    });
+  }
+  return page;
+}).catch(error => {
+  console.error("Falha ao carregar os runtimes do layout OaaS.Quest", error);
+  throw error;
+});

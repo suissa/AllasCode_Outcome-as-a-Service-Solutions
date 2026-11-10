@@ -4,9 +4,10 @@
   "entry": "index.html",
   "layout": "chooser",
   "locale": "pt-BR",
-  "title": "OaaS.Quest — Escolha sua experiência",
+  "title": "OaaS.Quest — Your Goal. Our Quest.",
   "contentRefs": [
-    "experience.brand"
+    "experience.brand",
+    "ui-copy.chooser"
   ],
   "sections": [
     {
@@ -14,5 +15,7 @@
       "component": "experience-selector",
       "contentRef": "experience.brand"
     }
-  ]
+  ],
+  "description": "OaaS.Quest conecta objetivos empresariais a diagnóstico, soluções, execução e resultados verificáveis.",
+  "heading": "Escolha como explorar a plataforma OaaS.Quest."
 }

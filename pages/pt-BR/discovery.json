@@ -4,10 +4,12 @@
   "entry": "descoberta/index.html",
   "layout": "discovery",
   "locale": "pt-BR",
-  "title": "Goaltropic Discovery",
+  "title": "OaaS.Quest — Descoberta de objetivos",
   "contentRefs": [
     "discovery.stages",
-    "discovery.solutions"
+    "discovery.solutions",
+    "ui-copy.discovery",
+    "proposal-graph"
   ],
   "sections": [
     {
@@ -20,5 +22,7 @@
       "component": "opportunity-diagnostic",
       "contentRef": "discovery.solutions"
     }
-  ]
+  ],
+  "description": "Descoberta adaptativa de contexto empresarial, oportunidades, requisitos e soluções OaaS.Quest.",
+  "heading": "Diagnóstico estruturado para identificar oportunidades e recomendar soluções fundamentadas."
 }

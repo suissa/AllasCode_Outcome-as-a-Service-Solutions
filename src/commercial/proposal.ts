@@ -243,7 +243,19 @@ export interface ProposalContractDraftInput {
 
 export function composeContractFromOutcomeProposal(input: ProposalContractDraftInput, generatedAt = new Date()): ContractPackage {
   const { proposal, agreement } = input;
-  if (proposal.readiness.status !== "ready_for_review") throw new Error("PROPOSAL_NOT_READY_FOR_CONTRACT");
+  const readiness = assessProposalReadiness({
+    id: proposal.id, version: proposal.version, tenantId: proposal.tenantId,
+    customerName: proposal.customer.name, sector: proposal.customer.sector,
+    context: proposal.context, problem: proposal.problem, desiredOutcome: proposal.desiredOutcome,
+    diagnosisConfidence: proposal.diagnosisConfidence, evidence: proposal.evidence,
+    metric: proposal.metric, scenario: proposal.scenario, scope: proposal.scope,
+    deliverables: proposal.deliverables, exclusions: proposal.exclusions,
+    dependencies: proposal.dependencies, responsibilities: proposal.responsibilities,
+    acceptanceCriteria: proposal.acceptanceCriteria, pricingLines: proposal.pricing.lines,
+    ...(proposal.deliveryWindowDays !== undefined ? { deliveryWindowDays: proposal.deliveryWindowDays } : {}),
+    generatedAt: proposal.generatedAt,
+  });
+  if (readiness.status !== "ready_for_review") throw new Error("PROPOSAL_NOT_READY_FOR_CONTRACT:" + readiness.blockers.join(","));
   if (agreement.tenantId !== proposal.tenantId) throw new Error("PROPOSAL_CONTRACT_TENANT_MISMATCH");
   if (agreement.status !== "draft" && agreement.status !== "pending_approval") throw new Error("PROPOSAL_CONTRACT_AGREEMENT_NOT_DRAFT");
   if (!input.approvedBy.trim()) throw new Error("PROPOSAL_CONTRACT_APPROVAL_REQUIRED");

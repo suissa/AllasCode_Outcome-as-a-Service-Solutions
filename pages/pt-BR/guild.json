@@ -14,7 +14,8 @@
     "experience.faq",
     "agent-team.roles",
     "sector-playbooks.sectors",
-    "mission-steps"
+    "mission-steps",
+    "ui-copy.guild"
   ],
   "sections": [
     {
@@ -57,5 +58,7 @@
       "component": "guild-faq",
       "contentRef": "experience.faq"
     }
-  ]
+  ],
+  "description": "Entre na Guilda OaaS.Quest: descreva seu objetivo e conduza uma quest empresarial com diagnóstico, plano e validação.",
+  "heading": "Sua missão empresarial começa com um objetivo. A Guilda investiga contexto, propõe soluções e acompanha evidências."
 }

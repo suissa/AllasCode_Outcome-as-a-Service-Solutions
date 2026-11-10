@@ -131,6 +131,10 @@ test("blocks contract composition when proposal is incomplete or agreement scope
   assert.throws(() => composeContractFromOutcomeProposal({
     proposal, agreement, parties, effectiveDate: "2026-11-10", jurisdiction: "Brasil", approvedBy: "customer_admin",
   }), /PROPOSAL_NOT_READY_FOR_CONTRACT/);
+  const forgedReady = { ...proposal, readiness: { status: "ready_for_review" as const, blockers: [], warnings: [] } };
+  assert.throws(() => composeContractFromOutcomeProposal({
+    proposal: forgedReady, agreement, parties, effectiveDate: "2026-11-10", jurisdiction: "Brasil", approvedBy: "customer_admin",
+  }), /PROPOSAL_NOT_READY_FOR_CONTRACT/);
   const ready = composeOutcomeProposal(valid);
   assert.throws(() => composeContractFromOutcomeProposal({
     proposal: ready, agreement: { ...agreement, scope: ["Outro escopo"] }, parties,
