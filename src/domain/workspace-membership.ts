@@ -158,7 +158,9 @@ export async function createWorkspaceInvitation(
       ...invitation, status: "revoked" as const, revokedAt: now.toISOString(),
       revokedBy: input.invitedBy, revocationReason: "DELIVERY_FAILED", revision: invitation.revision + 1,
     });
-    await dependencies.store.commitInvitation(revoked, invitation.revision);
+    if (!await dependencies.store.commitInvitation(revoked, invitation.revision)) {
+      fail("INVITATION_DELIVERY_RECOVERY_REQUIRED", "invitation.revision");
+    }
     fail("INVITATION_DELIVERY_FAILED", "delivery");
   }
   return invitation;
