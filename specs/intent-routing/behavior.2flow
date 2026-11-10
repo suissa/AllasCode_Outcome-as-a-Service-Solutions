@@ -1,0 +1,7 @@
+route_intent -(validate_structure)-> evaluate_qualification_rule
+ evaluate_qualification_rule -(invalid_structure_or_disallowed_rule)-> rejected_with_explanations
+evaluate_qualification_rule -(missing_required_fields_or_scope)-> build_clarifications
+build_clarifications -(questions_exist_or_ambiguity)-> clarification_with_explanations
+build_clarifications -(complete_and_unambiguous)-> discovery
+create_discovery_for_qualified_intent -(route_discovery)-> create_tasks
+create_discovery_for_qualified_intent -(route_not_discovery)-> reject_INTENT_NOT_QUALIFIED

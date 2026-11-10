@@ -110,3 +110,5 @@ These additions increase implementation depth and CI coverage, but do not close 
 | #21 | Strict completeness/rule validation, scope/domain/deadline constraints and immutable diagnostics | `src/discovery/qualification.ts`; `test/discovery/intake.test.ts`; `specs/intent-qualification/` |
 
 | #22 | Validated contiguous tenant-scoped intent history, immutable snapshots and DB append-only protection | `src/intent/versioning.ts`; `src/intent/postgres-version-store.ts`; `migrations/0013_immutable_intent_versions.sql`; `test/intent/postgres-version-store.test.ts`; `test/persistence/postgres.integration.test.ts`; `specs/intent-versioning/`; `docs/ADR-005-immutable-intent-history.md` |
+
+| #23 | Three-way routing (discovery/clarification/rejected) with stable reasons and safe explanations | `src/discovery/intake.ts`; `src/discovery/qualification.ts`; `test/discovery/intake.test.ts`; `specs/intent-routing/` |
