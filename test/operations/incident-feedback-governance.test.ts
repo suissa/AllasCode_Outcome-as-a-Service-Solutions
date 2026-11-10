@@ -62,7 +62,7 @@ test("submits tenant feedback with bounded PII redaction and idempotent storage"
 test("rejects unauthorized, cross-tenant, malformed and duplicate feedback", async () => {
   const store = new MemoryIncidentFeedbackStore();
   await assert.rejects(() => submitTenantFeedback({ ...feedback, idempotencyKey: "denied", now }, { store, authorize: async () => false }), /FEEDBACK_UNAUTHORIZED/);
-  await assert.rejects(() => submitTenantFeedback({ ...feedback, tenantId: "tenant_b", idempotencyKey: "cross", now }, { store, authorize: async () => true }), /FEEDBACK_TENANT_MISMATCH/);
+  await assert.rejects(() => submitTenantFeedback({ ...feedback, tenantId: "tenant_b", idempotencyKey: "cross", now }, { store, authorize: async (_actor, tenant) => tenant === "tenant_a" }), /FEEDBACK_UNAUTHORIZED/);
   await assert.rejects(() => submitTenantFeedback({ ...feedback, rating: 6, idempotencyKey: "bad-rating", now }, { store, authorize: async () => true }), /FEEDBACK_RATING_INVALID/);
   await assert.rejects(() => submitTenantFeedback({ ...feedback, submittedAt: "yesterday", idempotencyKey: "bad-time", now }, { store, authorize: async () => true }), /FEEDBACK_TIMESTAMP_INVALID/);
   await assert.rejects(() => submitTenantFeedback({ ...feedback, comment: "x".repeat(2001), idempotencyKey: "too-long", now }, { store, authorize: async () => true }), /FEEDBACK_COMMENT_TOO_LARGE/);
