@@ -1,16 +1,21 @@
-validate_data_handling -(check_classification)-> validate_purpose
-validate_purpose -(check_non_empty)-> validate_privacy_basis
-validate_privacy_basis -(require_consent_or_legal_basis_for_personal_data)-> validate_retention
-validate_retention -(check_parseable_and_future)-> accepted
-validate_retention -(invalid_or_expired)-> reject_with_stable_error
-
-consent_is_valid -(validate_record_metadata)-> validate_capture_timestamp
-validate_capture_timestamp -(check_not_future)-> validate_purpose_and_grant
-validate_purpose_and_grant -(exact_purpose_and_granted)-> validate_expiry_and_withdrawal
-validate_purpose_and_grant -(mismatch_or_withdrawn)-> invalid
-validate_expiry_and_withdrawal -(valid)-> valid
-validate_expiry_and_withdrawal -(invalid_or_expired)-> invalid
-
-withdraw_consent -(validate_record_and_timestamp)-> check_withdrawal_chronology
-check_withdrawal_chronology -(valid)-> return_immutable_withdrawn_record
-check_withdrawal_chronology -(invalid_or_already_withdrawn)-> reject_with_stable_error
+classify_data_signals -(valid)-> apply_conservative_classification_precedence
+classify_data_signals -(invalid)-> reject_classification
+record_privacy_consent -(valid)-> authorize_consent_actor
+record_privacy_consent -(invalid)-> reject_consent
+authorize_consent_actor -(allowed)-> validate_evidence_hash_and_scope
+authorize_consent_actor -(denied)-> reject_without_mutation
+validate_evidence_hash_and_scope -(valid)-> store_versioned_idempotent_consent
+validate_evidence_hash_and_scope -(invalid)-> reject_consent
+withdraw_privacy_consent -(authorized_and_current_revision)-> mark_withdrawn_and_audit
+withdraw_privacy_consent -(denied_or_stale)-> reject_withdrawal
+validate_processing_basis -(valid)-> verify_legal_basis
+validate_processing_basis -(invalid)-> reject_processing
+verify_legal_basis -(consent)-> match_active_consent_scope_and_time
+verify_legal_basis -(non_consent_basis)-> validate_documented_basis
+match_active_consent_scope_and_time -(match)-> allow_processing
+match_active_consent_scope_and_time -(missing_withdrawn_expired_or_mismatch)-> reject_processing
+assess_retention -(policy_valid)-> calculate_retention_deadline
+assess_retention -(policy_invalid)-> reject_retention_assessment
+calculate_retention_deadline -(legal_hold)-> mark_on_hold
+calculate_retention_deadline -(before_due_date)-> mark_retained
+calculate_retention_deadline -(past_due_date)-> mark_deletion_due
