@@ -82,6 +82,7 @@ test("rotation is idempotent, scoped and requires authorization and revision mat
   const first = await rotateCredential(command, deps);
   const replay = await rotateCredential(command, deps);
   assert.deepEqual(replay, first);
+  await assert.rejects(() => rotateCredential({ ...command, credentialId: "other" }, deps), /CREDENTIAL_IDEMPOTENCY_CONFLICT/);
   assert.equal(rotations, 1);
   await assert.rejects(() => rotateCredential({ ...command, tenantId: "tenant_b" }, deps), /CREDENTIAL_NOT_FOUND/);
   await assert.rejects(() => rotateCredential({ ...command, actorId: "intruder", idempotencyKey: "idem-denied" }, {
