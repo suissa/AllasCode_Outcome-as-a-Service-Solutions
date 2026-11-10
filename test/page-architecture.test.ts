@@ -15,6 +15,10 @@ const ENTRIES = [
   ["chat.html", "chat", "/chat"],
   ["exemplos.html", "exemplos", "/exemplos"],
   ["descoberta/index.html", "discovery", "/descoberta"]
+  ["classico.html", "classic", "/classico"],
+  ["guilda.html", "guild", "/guilda"],
+  ["descoberta/index.html", "discovery", "/descoberta"],
+  ["proposta/index.html", "proposal", "/proposta"]
 ] as const;
 
 const PAGE_IDS = ["home", "site", "chat", "exemplos", "discovery"] as const;
@@ -22,6 +26,7 @@ const LAYOUT_IDS = ["chooser", "site", "chat", "exemplos", "discovery", "proposa
 
 test("pages reference existing layouts, templates and resolvable JSON content", async () => {
   for (const id of PAGE_IDS) {
+  for (const id of ["home", "classic", "guild", "discovery", "proposal"]) {
     const page = await load<{ id: string; entry: string; layout: string; contentRefs: string[]; sections: { id: string; contentRef: string }[] }>(`pages/pt-BR/${id}.json`);
     assert.equal(page.id, id);
     await readFile(join(root, page.entry), "utf8");
@@ -57,6 +62,7 @@ test("mission and discovery content are externalized and complete", async () => 
 
 test("layout descriptors define template, stylesheet and renderer", async () => {
   for (const id of LAYOUT_IDS) {
+  for (const id of ["chooser", "classic", "guild", "discovery", "proposal"]) {
     const layout = await load<{ id: string; template: string; stylesheet: string; renderer: string; slots: string[] }>(`layouts/${id}.json`);
     assert.equal(layout.id, id);
     assert.ok(layout.template && layout.stylesheet && layout.renderer && layout.slots.length > 0);

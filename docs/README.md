@@ -20,6 +20,9 @@ Esta pasta reúne as definições de produto, operação, engenharia, contratos 
 | [Runtime Usage](./Runtime-Usage.md) | Estado e limites atuais do runtime de referência |
 | [Syntropic Antifragility](./syntropic-antifragility/manifest.md) | Atomic Behaviors, contratos, fluxo 2flow, implementação e governança do ciclo de evolução sintropicamente antifrágil |
 | [ADR-004 — Syntropic Antifragility](./ADR-004-syntropic-antifragility.md) | Decisão arquitetural e alternativas rejeitadas |
+| [Zig Runtime Contract](./syntropic-antifragility/runtime-zig-contract.md) | Envelope, autoridade, fluxo de execução e falhas do adapter Zig |
+| [Syntropic Ledger Migration](../migrations/001_syntropic_evidence_ledger.sql) | Modelo PostgreSQL append-only de eventos e provas |
+| [PostgreSQL Evidence Ledger](../src/operations/postgres-evidence-ledger.ts) | Adapter durável com append transacional, isolamento por tenant e verificação da cadeia de hashes |
 | [ADRs](.) | Decisões arquiteturais registradas |
 
 ## Princípio central

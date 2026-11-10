@@ -1,0 +1,34 @@
+name: Zig runtime contract
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "runtime/zig/**"
+      - "src/operations/zig-runtime-contract.ts"
+      - "test/operations/zig-runtime-contract.test.ts"
+      - ".github/workflows/zig-runtime.yml"
+  push:
+    branches: [main]
+    paths:
+      - "runtime/zig/**"
+      - "src/operations/zig-runtime-contract.ts"
+      - "test/operations/zig-runtime-contract.test.ts"
+      - ".github/workflows/zig-runtime.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  zig-contract:
+    name: Zig 0.16 contract tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+      - name: Verify Zig compiler version
+        run: zig version
+      - name: Run protocol contract tests
+        run: zig test runtime/zig/zig_runtime_contract.zig
