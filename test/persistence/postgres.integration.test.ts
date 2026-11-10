@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import postgres from "postgres";
 import { PostgresJsDatabase, PostgresOutcomeStore, type PostgresQueryClient } from "../../src/persistence/postgres-outcome-store.ts";
+import { PostgresProposalStore } from "../../src/persistence/postgres-proposal-store.ts";
 import type { OutcomeCase } from "../../src/application/outcome-case.ts";
 import { PostgresWorkflowTaskStore, type DurableTask } from "../../src/execution/durable-runtime.ts";
 import { PostgresApiKeyStore, hashApiKeySecret } from "../../src/security/api-key-auth.ts";
