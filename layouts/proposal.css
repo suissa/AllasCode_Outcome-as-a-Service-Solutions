@@ -2,7 +2,7 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--canvas);color:var(--ink);font-family:Inter,"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55}
 .proposal-app{max-width:1100px;margin:0 auto;padding:34px 24px 60px}
-.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 auto 22px;max-width:1000px}
+ .flex{display:flex}.flex-wrap{flex-wrap:wrap}.justify-between{justify-content:space-between}.gap-2{gap:8px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 auto 22px;max-width:1000px}
 .toolbar-brand{font-size:12px;letter-spacing:.18em;font-weight:800;color:var(--accent)}
 .toolbar-actions{display:flex;gap:8px;flex-wrap:wrap}
 .action{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:10px 14px;font-weight:650;cursor:pointer}
