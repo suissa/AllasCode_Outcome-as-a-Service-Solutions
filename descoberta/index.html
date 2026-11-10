@@ -92,6 +92,38 @@ function showDiagnostic(){
  shell('<div class="space-y-5"><section class="panel p-5 md:p-7"><span class="pill">RESULTADO DA DESCOBERTA</span><h1 class="text-2xl md:text-3xl font-semibold mt-3">Diagnóstico preliminar</h1><p class="muted mt-2">As recomendações abaixo são hipóteses baseadas nas respostas registradas. Não representam resultados comprovados nem substituem a validação das fontes.</p><div class="grid grid-cols-3 gap-3 mt-6"><div class="p-3 rounded-xl" style="background:var(--surface-2)"><div class="text-2xl font-semibold">'+known.length+'</div><div class="text-xs muted">Respostas preenchidas</div></div><div class="p-3 rounded-xl" style="background:var(--surface-2)"><div class="text-2xl font-semibold">'+unknown.length+'</div><div class="text-xs muted">Marcadas desconhecidas</div></div><div class="p-3 rounded-xl" style="background:var(--surface-2)"><div class="text-2xl font-semibold">'+results.length+'</div><div class="text-xs muted">Oportunidades sinalizadas</div></div></div></section><section class="panel p-5 md:p-7"><h2 class="text-xl font-semibold mb-4">Soluções possíveis</h2><div class="grid gap-3">'+solutionCards+'</div></section><section class="panel p-5 md:p-7"><h2 class="text-xl font-semibold mb-3">Respostas registradas</h2>'+responseRows+'</section><div class="flex flex-wrap justify-between gap-3"><button class="button button-secondary" id="review">Revisar respostas</button><button class="button button-primary" id="export">Exportar JSON</button></div></div>');
  document.getElementById('review').onclick=async()=>{showResults=false;index=config.stages.length-1;save();renderStage();await animate(document.getElementById('screen'),config.animations.enter,config.animations.enterDurationMs)};
  document.getElementById('export').onclick=()=>{const payload={schemaVersion:config.version,createdAt:new Date().toISOString(),source:handoffSource?'guilda':'discovery',missionId:handoffSource||undefined,answers,opportunities:results.map(({id,name,status,score,hits,metrics,evidence})=>({id,name,status,score,matchedSignals:hits,metrics,evidence}))};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='goaltropic-discovery.json';a.click();URL.revokeObjectURL(url)};
+ const proposalPanel=document.createElement('section');proposalPanel.className='panel p-5 md:p-7';
+ proposalPanel.innerHTML='<h2 class="text-xl font-semibold">Proposta de resultado</h2><p class="muted text-sm mt-2">Transmita suas respostas somente após consentir. O envio exige autenticação configurada pela aplicação; nenhuma credencial será salva neste navegador.</p><label class="option mt-4"><input id="proposalConsent" type="checkbox"><span><strong>Autorizo o envio das respostas desta descoberta para gerar uma proposta de resultado e submetê-la à revisão comercial.</strong><span class="block text-xs muted mt-1">As respostas serão enviadas ao servidor configurado. Não inclua dados sensíveis ou credenciais.</span></span></label><div class="flex flex-wrap gap-2 mt-4"><button class="button button-secondary" id="proposalPreview">Verificar prontidão</button><button class="button button-primary" id="proposalSubmit" disabled>Enviar proposta para revisão</button></div><div id="proposalStatus" class="text-sm mt-3" role="status" aria-live="polite"></div>';
+ document.getElementById('screen').appendChild(proposalPanel);
+ const consent=document.getElementById('proposalConsent'),previewButton=document.getElementById('proposalPreview'),submitButton=document.getElementById('proposalSubmit'),status=document.getElementById('proposalStatus');
+ const proposalConfig=window.OaaSProposalConfig;
+ const canConnect=!!(proposalConfig&&typeof proposalConfig.baseUrl==='string'&&typeof proposalConfig.getAccessToken==='function');
+ const snapshot={source:handoffSource?'guilda':'discovery',missionId:handoffSource||undefined,updatedAt:new Date().toISOString(),answers};
+ let readiness=null;
+ const setStatus=(message,error=false)=>{status.textContent=message;status.className='text-sm mt-3 '+(error?'text-red-400':'muted')};
+ const authorizedFetch=async(path,body,method='POST')=>{
+  const token=await proposalConfig.getAccessToken();
+  if(typeof token!=='string'||!token.trim())throw new Error('AUTHENTICATION_REQUIRED');
+  const headers={'content-type':'application/json','authorization':'Bearer '+token};
+  if(path==='/v1/proposals')headers['idempotency-key']=crypto.randomUUID();
+  return fetch(new URL(path,proposalConfig.baseUrl),{method,headers,body:body?JSON.stringify(body):undefined,credentials:'omit',cache:'no-store'});
+ };
+ consent.addEventListener('change',()=>{submitButton.disabled=!consent.checked||!canConnect;readiness=null;setStatus(consent.checked?(canConnect?'Consentimento ativo nesta sessão. Verifique a prontidão antes de enviar.':'API/auth não configuradas nesta aplicação.'):'Nenhum dado será enviado sem consentimento.');});
+ if(!canConnect){previewButton.disabled=true;submitButton.disabled=true;setStatus('Envio remoto desabilitado: configure window.OaaSProposalConfig.baseUrl e getAccessToken() no host autenticado.');}
+ previewButton.onclick=async()=>{
+  if(!consent.checked){setStatus('Marque o consentimento explícito antes de transmitir.',true);return}
+  previewButton.disabled=true;submitButton.disabled=true;setStatus('Verificando a proposta…');
+  try{const response=await authorizedFetch('/v1/proposals/preview',{snapshot,options:{}});const data=await response.json();if(!response.ok)throw new Error(data.error||'PROPOSAL_PREVIEW_FAILED');readiness=data.value.readiness;const blockers=readiness?.blockers||[];setStatus(readiness?.status==='ready_for_review'?'Pronta para submissão à revisão humana.':('Ainda incompleta. Bloqueios: '+blockers.map(x=>x.code||x.message||String(x)).join('; ')));submitButton.disabled=readiness?.status!=='ready_for_review'||!consent.checked;
+  }catch(error){readiness=null;setStatus('Não foi possível verificar: '+(error.message||'erro de rede'),true)}
+  finally{previewButton.disabled=false}
+ };
+ submitButton.onclick=async()=>{
+  if(!consent.checked||readiness?.status!=='ready_for_review'){setStatus('Consentimento e prontidão são obrigatórios.',true);return}
+  submitButton.disabled=true;previewButton.disabled=true;setStatus('Enviando proposta…');
+  try{const response=await authorizedFetch('/v1/proposals',{snapshot,options:{}});const data=await response.json();if(!response.ok)throw new Error(data.error||'PROPOSAL_SUBMIT_FAILED');setStatus('Proposta enviada para revisão humana. ID: '+data.value.proposal.id+(data.replayed?' (envio idempotente)':''));consent.checked=false;readiness=null;
+  }catch(error){setStatus('Falha no envio: '+(error.message||'erro de rede'),true)}
+  finally{previewButton.disabled=false;submitButton.disabled=true}
+ };
 }
 function toggleTheme(){const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;document.body.dataset.theme=next;const t=next==='dark'?{bg:'#080B0F',surface:'#11161D',surface2:'#191F28',text:'#F2F2F0',muted:'#929AA5',accent:'#BC8E4F',border:'#29313C'}:{bg:'#F5F6F8',surface:'#FFFFFF',surface2:'#EDF0F4',text:'#171A20',muted:'#68717D',accent:'#92672D',border:'#D9DEE5'};const r=document.documentElement.style;r.setProperty('--bg',t.bg);r.setProperty('--surface',t.surface);r.setProperty('--surface-2',t.surface2);r.setProperty('--text',t.text);r.setProperty('--muted',t.muted);r.setProperty('--accent',t.accent);r.setProperty('--border',t.border)}
 function reset(){if(!confirm('Apagar todas as respostas salvas desta descoberta?'))return;answers={};index=0;showResults=false;localStorage.removeItem(key);renderStage()}
