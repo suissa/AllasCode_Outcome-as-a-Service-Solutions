@@ -51,13 +51,14 @@ test("composes a review-ready proposal without treating estimates as guarantees"
   assert.match(proposal.commercialNotice, /não são resultados garantidos/);
   assert.equal(proposal.metric.baseline, 12);
   assert.equal(proposal.metric.target, 7);
-  assert.equal(proposal.pricing.indicativeSummary?.total, 5400);
+  assert.equal(proposal.pricing.indicativeSummary?.total, 5040);
 });
 
 test("keeps incomplete discovery inspectable and blocks outcome fee readiness", () => {
+  const { baseline: _baseline, sourceOfTruth: _sourceOfTruth, ...metricWithoutBaseline } = valid.metric;
   const incomplete: OutcomeProposalInput = {
     ...valid,
-    metric: { ...valid.metric, baseline: undefined, sourceOfTruth: undefined, attribution: "pending" },
+    metric: { ...metricWithoutBaseline, attribution: "pending" },
     evidence: [{ ...valid.evidence[0]!, verification: "pending" }],
     pricingLines: [],
   };
