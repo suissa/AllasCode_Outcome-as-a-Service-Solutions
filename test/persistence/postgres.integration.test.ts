@@ -20,7 +20,7 @@ import { PostgresContractRegistryStore } from "../../src/persistence/postgres-co
 import type { ContractRecord, ContractEvent } from "../../src/commercial/contract-workflow.ts";
 import { planSettlementActions } from "../../src/commercial/settlement-workflow.ts";
 const databaseUrl = process.env.DATABASE_URL;
-test("PostgreSQL migration and transactional outcome persistence", { skip: !databaseUrl }, async () => {
+test("PostgreSQL migration and transactional outcome persistence", { skip: !databaseUrl, timeout: 30_000 }, async () => {
   const client = postgres(databaseUrl!, { max: 1 });
   const db = new PostgresJsDatabase(client as unknown as PostgresQueryClient);
   const store = new PostgresOutcomeStore(db);
