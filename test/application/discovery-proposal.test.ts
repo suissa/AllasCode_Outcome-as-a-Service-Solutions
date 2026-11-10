@@ -63,7 +63,8 @@ test("accepts strict numeric values but does not invent a measurement source fro
 });
 
 test("can produce a review-ready draft when required enrichment is explicitly supplied", () => {
-  const result = mapDiscoveryToOutcomeProposal(snapshot, {
+  const readySnapshot = { ...snapshot, answers: { ...snapshot.answers, baseline_value: { value: 12 }, target_value: { value: 18 } } };
+  const result = mapDiscoveryToOutcomeProposal(readySnapshot, {
     tenantId: "tenant_001", proposalId: "proposal_003", version: 1,
     metric: {
       unit: "%", direction: "increase", periodStart: "2026-11-10", periodEnd: "2027-02-08",
