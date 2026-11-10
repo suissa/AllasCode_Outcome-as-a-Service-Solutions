@@ -29,22 +29,27 @@ inotify): o Vite já liga polling automático nesse caso.
 
 ## Estrutura
 
-- `pages/pt-BR/*.json` — manifesto por rota (`route`, `entry`, `layout`, `contentRefs`).
+- `pages/pt-BR/*.json` — manifesto por rota (`route`, `entry`, `layout`, `contentRefs`,
+  `clientNavigation`).
 - `layouts/*.json` + `layouts/*.html` + `layouts/*.css` — template, folha e renderer de cada layout.
-- `runtime/*.js` — runtimes de página (renderers, scroll-spy, revelações).
+- `runtime/*.js` — runtimes de página. Todo runtime exporta `mount(page)`.
 - `content/*.json` — **toda** a copy. O runtime formata; nunca inventa texto.
 - `page-loader.js` — resolve fontes por nome; precisa cobrir **todas** as fontes que os
   manifestos declaram, senão a página renderiza em branco em runtime (build e teste passam).
+- `page-config.js` — shell único: monta o template, executa os runtimes, liga o tema e o router.
 - `docs/CONTENT-AND-LAYOUT-ARCHITECTURE.md` e `DESIGN.md` — arquitetura e sistema visual.
 
-Rotas: `/` (home), `/guilda`, `/classico`, `/descoberta`, `/exemplos`.
+Rotas: `/` (home), `/site`, `/chat`, `/descoberta`, `/exemplos`.
 
 ## Regras do projeto
 
 1. A copy vem de `content/*.json`. Sem cliente, número, depoimento, preço ou foto inventados.
-2. Modo Guilda (`/guilda`) e Discovery (`/descoberta`) não podem regredir.
-3. Sistema visual único: `layouts/tokens.css` é a base da home e do Modo Clássico;
-   `styles.css` é exclusivo da Guilda.
-4. Um único momento de movimento autorado por página, sempre a partir de um estado já visível.
-5. Ao mexer numa affordance, `grep` o `data-testid` dela nos testes antes — o único sinal
+2. Chat (`/chat`) e Discovery (`/descoberta`) não podem regredir.
+3. Sistema visual único: `layouts/themes.css` define os tokens `--oq-*` e as classes de tema
+   (`oq-theme-abyss|carbon|ember|paper`) no wrapper global (`<html>`). Nenhuma página define
+   cor literal fora desse contrato.
+4. Uma única classe semântica por elemento. Variante é atributo (`data-variant`,
+   `data-density`), nunca classe modificadora.
+5. Um único momento de movimento autorado por página, sempre a partir de um estado já visível.
+6. Ao mexer numa affordance, `grep` o `data-testid` dela nos testes antes — o único sinal
    de quebra é o e2e, o TypeScript continua verde.

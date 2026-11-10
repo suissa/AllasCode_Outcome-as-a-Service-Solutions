@@ -398,7 +398,7 @@
     }
   ],
   "presentation": {
-    "classic": {
+    "site": {
       "navigation": {
         "method": "Como funciona",
         "solutions": "Soluções sob medida",
@@ -438,9 +438,9 @@
         "cta": "Começar minha descoberta"
       }
     },
-    "guilda": {
+    "chat": {
       "navigation": {
-        "method": "Como funciona a Guilda",
+        "method": "Como funciona o Chat",
         "solutions": "Especialidades",
         "ninetyDays": "Jornada de 90 dias",
         "measurement": "Orbe de métricas",

@@ -4,6 +4,9 @@
  * A copy da home vive em content/ui-copy.pt-BR.json. O template declara os bindings
  * com data-copy (catalogo de locale) e data-page-copy (fontes do manifesto da pagina);
  * aqui eles sao resolvidos, com o texto do template servindo de fallback sem JS.
+ *
+ * Exporta mount(page): o shell chama a cada render, entao a navegacao client-side
+ * nao duplica listeners nem precisa reimportar o modulo.
  */
 
 import { initWordReveal } from "./word-reveal.js";
@@ -20,8 +23,7 @@ function bind(root, attribute, source) {
   });
 }
 
-Promise.all([window.OQReady, window.OaaSPageReady]).then(() => {
-  const page = window.OaaSPage;
+export function mount(page) {
   const catalog = page.sources["ui-copy"];
 
   if (catalog) {
@@ -40,4 +42,4 @@ Promise.all([window.OQReady, window.OaaSPageReady]).then(() => {
   );
 
   if (window.OQ) OQ.logInteraction("home", "content-loaded", { modes: document.querySelectorAll("[data-mode]").length });
-});
+}

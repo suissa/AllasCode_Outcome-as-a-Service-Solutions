@@ -3,6 +3,7 @@
   "route": "/exemplos",
   "entry": "exemplos.html",
   "layout": "exemplos",
+  "clientNavigation": true,
   "locale": "pt-BR",
   "title": "OaaS.Quest — Exemplos práticos de agentes autônomos",
   "contentRefs": [

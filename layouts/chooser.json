@@ -3,6 +3,10 @@
   "name": "Seletor de experiência",
   "template": "layouts/chooser.html",
   "stylesheet": "layouts/chooser.css",
+  "stylesheets": [
+    "layouts/chooser.css"
+  ],
+  "bodyClass": "chooser-page",
   "shell": "nav + home-intro + home-modes + footer",
   "renderer": "runtime/chooser-page.js",
   "slots": [

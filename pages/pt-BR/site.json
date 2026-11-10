@@ -1,12 +1,13 @@
 {
-  "id": "classic",
-  "route": "/classico",
-  "entry": "classico.html",
-  "layout": "classic",
+  "id": "site",
+  "route": "/site",
+  "entry": "site.html",
+  "layout": "site",
+  "clientNavigation": true,
   "locale": "pt-BR",
   "title": "OaaS.Quest — Outcome as a Service",
   "contentRefs": [
-    "experience.presentation.classic",
+    "experience.presentation.site",
     "experience.customerJourney",
     "experience.90DayMethod",
     "experience.solutionPrinciples",
@@ -19,7 +20,7 @@
     {
       "id": "hero",
       "component": "hero",
-      "contentRef": "experience.presentation.classic.hero"
+      "contentRef": "experience.presentation.site.hero"
     },
     {
       "id": "method",

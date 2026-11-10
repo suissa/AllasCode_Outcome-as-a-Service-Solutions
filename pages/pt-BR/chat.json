@@ -1,12 +1,13 @@
 {
-  "id": "guild",
-  "route": "/guilda",
-  "entry": "guilda.html",
-  "layout": "guild",
+  "id": "chat",
+  "route": "/chat",
+  "entry": "chat.html",
+  "layout": "chat",
+  "clientNavigation": true,
   "locale": "pt-BR",
-  "title": "OaaS.Quest — Modo Guilda",
+  "title": "OaaS.Quest — Chat",
   "contentRefs": [
-    "experience.presentation.guilda",
+    "experience.presentation.chat",
     "experience.customerJourney",
     "experience.90DayMethod",
     "experience.measurement",
@@ -15,13 +16,13 @@
     "agent-team.roles",
     "sector-playbooks.sectors",
     "mission-steps",
-    "ui-copy.guild"
+    "ui-copy.chat"
   ],
   "sections": [
     {
       "id": "welcome",
       "component": "guild-welcome",
-      "contentRef": "experience.presentation.guilda.hero"
+      "contentRef": "experience.presentation.chat.hero"
     },
     {
       "id": "mission",

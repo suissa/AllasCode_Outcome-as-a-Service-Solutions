@@ -6,18 +6,42 @@ import { existsSync } from "node:fs";
 
 test("Forger emits crawlable HTML and SEO artifacts", () => {
   execFileSync("node", ["scripts/forger.mjs"], { stdio: "pipe" });
-  for (const file of ["index.html","classico/index.html","guilda/index.html","descoberta/index.html","proposta/index.html","sitemap.xml","robots.txt","llms.txt"]) {
-    assert.ok(existsSync("dist/"+file), "missing dist/"+file);
+  for (const file of [
+    "index.html",
+    "site/index.html",
+    "chat/index.html",
+    "descoberta/index.html",
+    "proposta/index.html",
+    "sitemap.xml",
+    "robots.txt",
+    "llms.txt"
+  ]) {
+    assert.ok(existsSync("dist/" + file), "missing dist/" + file);
   }
 });
+
 test("generated pages include semantic content and unique canonical metadata", async () => {
-  const html=await readFile("dist/index.html","utf8");
-  assert.match(html,/<main>/); assert.match(html,/<h1>/); assert.match(html,/name="description"/);
-  assert.match(html,/rel="canonical"/); assert.match(html,/application\/ld\+json/);
-  assert.ok(html.includes('OaaS.Quest'));
-  assert.ok(html.includes('UMA NOVA FORMA DE CONQUISTAR RESULTADOS'));
-  assert.ok(html.includes('Modo Guilda'));
-  assert.ok(html.includes('Modo Clássico'));
+  const html = await readFile("dist/index.html", "utf8");
+  assert.match(html, /<main>/);
+  assert.match(html, /<h1>/);
+  assert.match(html, /name="description"/);
+  assert.match(html, /rel="canonical"/);
+  assert.match(html, /application\/ld\+json/);
+  assert.ok(html.includes("OaaS.Quest"));
+  assert.ok(html.includes("UMA NOVA FORMA DE CONQUISTAR RESULTADOS"));
+});
+
+test("the site route publishes the institutional presentation copy", async () => {
+  const html = await readFile("dist/site/index.html", "utf8");
+  assert.match(html, /<h1>/);
+  assert.ok(html.includes("OaaS.Quest"));
+  assert.ok(html.includes("Outcome as a Service"));
+});
+
+test("the chat route publishes the mission copy", async () => {
+  const html = await readFile("dist/chat/index.html", "utf8");
+  assert.match(html, /<h1>/);
+  assert.ok(html.includes("OaaS.Quest"));
 });
 
 test("chooser template copy bindings resolve against the locale catalog", async () => {
@@ -34,11 +58,11 @@ test("chooser template copy bindings resolve against the locale catalog", async 
   }
 });
 
-test("proposal report is included in crawlable SEO and GEO output",async()=>{
- const html=await readFile("dist/proposta/index.html","utf8");
- const llms=await readFile("dist/llms.txt","utf8");
- assert.match(html,/<h1>/);
- assert.match(html,/proposta preliminar/i);
- assert.match(html,/rel="canonical"/);
- assert.match(llms,/\/proposta\//);
+test("proposal report is included in crawlable SEO and GEO output", async () => {
+  const html = await readFile("dist/proposta/index.html", "utf8");
+  const llms = await readFile("dist/llms.txt", "utf8");
+  assert.match(html, /<h1>/);
+  assert.match(html, /proposta preliminar/i);
+  assert.match(html, /rel="canonical"/);
+  assert.match(llms, /\/proposta\//);
 });

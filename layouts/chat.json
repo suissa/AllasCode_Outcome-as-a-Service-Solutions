@@ -1,12 +1,12 @@
 {
-  "id": "guild",
-  "name": "Guilda conversacional",
-  "template": "layouts/guild.html",
+  "id": "chat",
+  "name": "Chat de missão",
+  "template": "layouts/chat.html",
   "stylesheet": "styles.css",
-  "shell": "guild-sidebar + guild-main + guild-side",
+  "shell": "chat-sidebar + chat-main + chat-side",
   "renderer": "content.js + app.js",
   "slots": [
-    "guild-navigation",
+    "chat-navigation",
     "welcome",
     "conversation",
     "mission-controls",
@@ -17,6 +17,6 @@
   "scripts": [
     "app.js",
     "content.js",
-    "runtime/guild.js"
+    "runtime/chat.js"
   ]
 }

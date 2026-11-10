@@ -1,0 +1,212 @@
+/* OaaS.Quest — temas globais.
+
+   O wrapper global (<html>) carrega UMA classe de tema por vez: o seletor
+   remove a classe atual e adiciona a nova. Nenhum CSS precisa ser reescrito —
+   as paginas consomem apenas as variaveis --oq-*.
+
+   Contrato de cor: fundo --oq-ground, superficie --oq-surface, texto
+   --oq-ink, apoio --oq-ink-2, apoio secundario --oq-muted, acento
+   --oq-accent. Qualquer cor literal fora desse conjunto e um desvio. */
+
+:root,
+.oq-theme-abyss {
+  --oq-ground: #0a0e1a;
+  --oq-ground-2: #0f1424;
+  --oq-surface: #141a2e;
+  --oq-surface-2: #1a2240;
+  --oq-surface-3: #1f2a4d;
+  --oq-ink: #e8ecf4;
+  --oq-ink-2: #b3bbcf;
+  --oq-muted: #7d89a8;
+  --oq-line: rgba(122, 152, 224, 0.16);
+  --oq-line-strong: rgba(122, 152, 224, 0.32);
+  --oq-accent: #35dcf5;
+  --oq-accent-2: #0aa7c9;
+  --oq-accent-soft: rgba(53, 220, 245, 0.12);
+  --oq-positive: #4ade80;
+  --oq-warning: #fbbf24;
+  --oq-critical: #fb7185;
+  --oq-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.oq-theme-carbon {
+  --oq-ground: #0b0b11;
+  --oq-ground-2: #12121b;
+  --oq-surface: #171722;
+  --oq-surface-2: #1f1f2e;
+  --oq-surface-3: #2a2a3d;
+  --oq-ink: #ece9f6;
+  --oq-ink-2: #bdb7d2;
+  --oq-muted: #8b86a6;
+  --oq-line: rgba(167, 139, 250, 0.18);
+  --oq-line-strong: rgba(167, 139, 250, 0.36);
+  --oq-accent: #b79bff;
+  --oq-accent-2: #7c5cf5;
+  --oq-accent-soft: rgba(167, 139, 250, 0.14);
+  --oq-positive: #4ade80;
+  --oq-warning: #fbbf24;
+  --oq-critical: #fb7185;
+  --oq-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.oq-theme-ember {
+  --oq-ground: #12100e;
+  --oq-ground-2: #191512;
+  --oq-surface: #201a15;
+  --oq-surface-2: #2a221b;
+  --oq-surface-3: #362b21;
+  --oq-ink: #f4ece2;
+  --oq-ink-2: #d0c0ad;
+  --oq-muted: #9c8d7c;
+  --oq-line: rgba(251, 191, 36, 0.16);
+  --oq-line-strong: rgba(251, 191, 36, 0.34);
+  --oq-accent: #fbbf24;
+  --oq-accent-2: #d97706;
+  --oq-accent-soft: rgba(251, 191, 36, 0.12);
+  --oq-positive: #4ade80;
+  --oq-warning: #fb923c;
+  --oq-critical: #fb7185;
+  --oq-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.oq-theme-paper {
+  --oq-ground: #f4f5f9;
+  --oq-ground-2: #ffffff;
+  --oq-surface: #ffffff;
+  --oq-surface-2: #eef0f6;
+  --oq-surface-3: #e2e6f0;
+  --oq-ink: #0b0e14;
+  --oq-ink-2: #39424f;
+  --oq-muted: #5f6a7a;
+  --oq-line: rgba(15, 23, 42, 0.14);
+  --oq-line-strong: rgba(15, 23, 42, 0.28);
+  --oq-accent: #2f49e0;
+  --oq-accent-2: #1e31a8;
+  --oq-accent-soft: rgba(47, 73, 224, 0.1);
+  --oq-positive: #0f7a44;
+  --oq-warning: #9a5b00;
+  --oq-critical: #c02536;
+  --oq-shadow: 0 18px 44px rgba(11, 14, 20, 0.12);
+}
+
+:root {
+  --oq-font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --oq-mono: "Spline Sans Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --oq-radius: 12px;
+  --oq-radius-sm: 8px;
+  --oq-radius-lg: 16px;
+  --oq-max: 1180px;
+  --oq-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------------------------------------------------------------- seletor de tema */
+
+.theme-switcher {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--oq-line-strong);
+  border-radius: 999px;
+  background: var(--oq-surface);
+  color: var(--oq-ink-2);
+  font-family: var(--oq-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--oq-shadow);
+  transition: color 0.2s var(--oq-ease), border-color 0.2s var(--oq-ease),
+    transform 0.2s var(--oq-ease);
+}
+
+.theme-toggle:hover {
+  color: var(--oq-ink);
+  border-color: var(--oq-accent);
+  transform: translateY(-1px);
+}
+
+.theme-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.theme-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.theme-panel {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 190px;
+  padding: 10px;
+  border: 1px solid var(--oq-line-strong);
+  border-radius: 14px;
+  background: var(--oq-surface);
+  box-shadow: var(--oq-shadow);
+}
+
+.theme-panel[data-open="true"] {
+  display: flex;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--oq-ink-2);
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.18s var(--oq-ease), color 0.18s var(--oq-ease);
+}
+
+.theme-option:hover {
+  background: var(--oq-accent-soft);
+  color: var(--oq-ink);
+}
+
+.theme-option[aria-pressed="true"] {
+  color: var(--oq-ink);
+  background: var(--oq-accent-soft);
+}
+
+.theme-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid var(--oq-line-strong);
+  flex: 0 0 auto;
+}
+
+.theme-name {
+  flex: 1 1 auto;
+}
+
+@media (max-width: 700px) {
+  .theme-switcher {
+    right: 14px;
+    bottom: 14px;
+  }
+}

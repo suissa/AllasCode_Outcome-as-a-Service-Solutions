@@ -1,47 +1,31 @@
-/* OaaS.Quest — sistema base (Modo Clássico e home).
-   Um único sistema tipográfico, um único acento, divisórias por filete. */
+/* OaaS.Quest — sistema base da home (seletor de experiencia).
+
+   Uma tipografia, um acento, divisoes por filete. Toda cor vem dos tokens de
+   tema globais (--oq-*): a home segue o tema escolhido pelo usuario — abyss
+   (padrao), carbon, ember ou paper — sem nenhuma cor literal.
+
+   O wrapper global (<html>) carrega UMA classe de tema por vez; este arquivo
+   apenas consome o contrato. */
 
 @import "../fonts/fonts.css";
+@import "./themes.css";
+@import "./motion.css";
 
-:root {
-  --ground: #FFFFFF;
-  --panel: #F7F8FA;
-  --panel-2: #EFF1F5;
-  --ink: #0B0E14;
-  --ink-2: #333B48;
-  --muted: #5C6575;
-  --line: #E4E7EC;
-  --line-2: #CFD4DC;
-  --accent: #2F49E0;
-  --accent-deep: #1E31A8;
-  --accent-wash: #EEF1FE;
-  --band: #141C4E;
-  --band-deep: #0A1033;
-  --band-bright: #1E31A8;
-  --tick: var(--accent);
-
-  --radius: 10px;
-  --radius-sm: 8px;
-  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: "Spline Sans Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --max: 1180px;
-  --gutter: 24px;
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-}
+/* ---------------------------------------------------------------- base */
 
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scrollbar-color: var(--line-2) var(--ground);
+  scrollbar-color: var(--oq-line-strong) var(--oq-ground);
 }
 
 body {
   margin: 0;
-  background: var(--ground);
-  color: var(--ink);
-  font-family: var(--font);
+  background: var(--oq-ground);
+  color: var(--oq-ink);
+  font-family: var(--oq-font);
   font-size: 16px;
   line-height: 1.65;
   letter-spacing: -0.011em;
@@ -53,62 +37,35 @@ body {
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; }
-h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.025em; text-wrap: balance; }
+h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.028em; text-wrap: balance; }
 p { margin: 0; }
 ul, ol { margin: 0; padding: 0; list-style: none; }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--oq-accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
 
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--oq-accent); color: var(--oq-ground); }
 
-/* ---------------------------------------------------------------- faixa azul */
+/* ---------------------------------------------------------------- caixa de layout
 
-.band {
-  --line: rgba(255, 255, 255, 0.16);
-  --line-2: rgba(255, 255, 255, 0.3);
-  --muted: rgba(255, 255, 255, 0.74);
-  --ink-2: rgba(255, 255, 255, 0.9);
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel-2: rgba(255, 255, 255, 0.1);
-  --tick: #8FB0FF;
-  background: var(--band);
-  color: #fff;
+   Max-width e recuo lateral resolvidos aqui: cada elemento carrega uma unica
+   classe semantica, sem utilitario de layout acumulado. */
+
+.nav-inner,
+.home-intro-grid,
+.home-modes,
+.home-foot,
+.footer-inner {
+  width: 100%;
+  max-width: var(--oq-max);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 5vw, 40px);
 }
 
-.band .btn--ghost { --btn-fg: #fff; border-color: rgba(255, 255, 255, 0.34); }
-.band .btn--ghost:hover {
-  --btn-fg: #fff;
-  border-color: #fff;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.band .section__title,
-.band .section__lead,
-.band .closing__title { color: #fff; }
-
-.band .btn--primary { --btn-bg: #fff; --btn-fg: var(--ink); }
-.band .btn--primary:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28); }
-
-.nav.band {
-  background: rgba(20, 28, 78, 0.94);
-  border-bottom-color: rgba(255, 255, 255, 0.12);
-}
-
-.nav.band .nav__meta { border-left-color: rgba(255, 255, 255, 0.18); }
-
-.band .home__title__accent { color: #8FB0FF; }
-
-.band .diff:hover,
-.band .nots li:hover,
-.band .blocks li:hover,
-.band .measure__list li:hover,
-.band .commercial__item:hover { color: #fff; }
-
-/* barra de progresso de leitura */
+/* ---------------------------------------------------------------- progresso de leitura */
 
 .scroll-progress { display: none; }
 
@@ -120,7 +77,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
       inset: 0 0 auto 0;
       height: 2px;
       z-index: 90;
-      background: #6E8BFF;
+      background: var(--oq-accent);
       transform: scaleX(0);
       transform-origin: 0 50%;
       animation: progress-grow linear both;
@@ -133,44 +90,75 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   }
 }
 
-/* ---------------------------------------------------------------- revelacao por mascara de palavra
+/* ---------------------------------------------------------------- navegacao */
 
-   Formato do heroi do bubble.io: cada palavra sobe de baixo de uma mascara
-   (overflow hidden), escalonada 65ms por palavra. Transicao de .95s em
-   cubic-bezier(.2, .7, .2, 1). O bloco recebe .is-in quando entra na viewport. */
-
-.wm {
-  display: inline-block;
-  vertical-align: top;
-  overflow: hidden;
-  padding: 0 0.05em 0.14em;
-  margin: 0 -0.05em -0.14em;
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: color-mix(in srgb, var(--oq-surface-2) 86%, transparent);
+  backdrop-filter: saturate(1.4) blur(16px);
+  border-bottom: 1px solid var(--oq-line);
 }
 
-.wm__i {
-  display: inline-block;
-  transition: transform 0.95s cubic-bezier(0.2, 0.7, 0.2, 1);
-  transition-delay: calc(var(--i, 0) * 65ms + var(--d, 0) * 1ms);
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 1.8vw, 26px);
+  min-height: 66px;
 }
 
-[data-words]:not(.is-in) .wm__i { transform: translateY(112%); }
-
-[data-reveal] {
-  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
-  transition-delay: calc(var(--d, 0) * 1ms);
+.nav-meta {
+  color: var(--oq-accent);
+  font-family: var(--oq-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-[data-reveal]:not(.is-in) { transform: translateY(28px); }
+.nav-meta[data-align="end"] { margin-left: auto; }
 
-@media (prefers-reduced-motion: reduce) {
-  [data-words]:not(.is-in) .wm__i,
-  [data-reveal]:not(.is-in) { transform: none; }
+.wordmark {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
 }
 
-/* ---------------------------------------------------------------- rodapé */
+.wordmark-logo {
+  display: block;
+  width: auto;
+  height: 26px;
+}
 
-.footer { background: var(--ground); border-top: 1px solid var(--line); }
-.footer__inner {
+/* ---------------------------------------------------------------- botoes */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 20px;
+  border: 1px solid transparent;
+  border-radius: var(--oq-radius-sm);
+  background: var(--oq-accent);
+  color: var(--oq-ground);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.2s var(--oq-ease), color 0.2s var(--oq-ease),
+    background-color 0.2s var(--oq-ease);
+}
+
+/* ---------------------------------------------------------------- rodape */
+
+.footer {
+  background: var(--oq-ground-2);
+  border-top: 1px solid var(--oq-line);
+}
+
+.footer-inner {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -178,179 +166,22 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   padding-block: 34px;
 }
 
-.footer__brand { min-width: 180px; }
-.footer__tagline { font-size: 13px; color: var(--muted); margin-top: 4px; }
-.footer__line { font-size: 13.5px; color: var(--muted); }
-.footer__switch { margin-left: auto; font-size: 13.5px; color: var(--accent); }
-.footer__switch:hover { text-decoration: underline; text-underline-offset: 4px; }
+.footer-brand { min-width: 180px; }
 
-.shell {
-  width: 100%;
-  max-width: var(--max);
-  margin-inline: auto;
-  padding-inline: clamp(20px, 5vw, 40px);
+.footer-brand .wordmark-logo { height: 24px; }
+
+.footer-tagline {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--oq-muted);
 }
 
-.mono {
-  font-family: var(--mono);
-  font-variant-numeric: tabular-nums;
-  font-size: 0.8125rem;
-  letter-spacing: 0;
+.footer-line {
+  font-size: 13.5px;
+  color: var(--oq-muted);
 }
 
-/* ---------------------------------------------------------------- navegação */
-
-.nav {
-  position: sticky;
-  top: 0;
-  z-index: 60;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: saturate(1.6) blur(14px);
-  border-bottom: 1px solid var(--line);
-}
-
-.nav__inner {
-  display: flex;
-  align-items: center;
-  gap: clamp(14px, 1.8vw, 26px);
-  min-height: 68px;
-}
-
-.nav__meta {
-  color: var(--muted);
-  font-size: 11.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding-left: 16px;
-  border-left: 1px solid var(--line);
-  white-space: nowrap;
-}
-
-.nav__meta--push { margin-left: auto; border-left: 0; padding-left: 0; }
-
-.wordmark {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: baseline;
-  font-size: 19px;
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  color: var(--ink);
-  white-space: nowrap;
-}
-
-.wordmark__dot { color: var(--accent); }
-.wordmark__rest { color: var(--ink-2); font-weight: 500; }
-
-.wordmark__logo {
-  display: block;
-  width: auto;
-  height: 26px;
-}
-
-.footer__brand .wordmark__logo { height: 24px; }
-
-.nav__links {
-  display: flex;
-  align-items: center;
-  gap: clamp(8px, 1.1vw, 16px);
-  margin-inline-start: auto;
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.nav__links::-webkit-scrollbar { display: none; }
-
-.nav__link {
-  position: relative;
-  font-size: 14px;
-  white-space: nowrap;
-  color: var(--ink-2);
-  padding: 6px 0;
-  transition: color 0.2s var(--ease);
-}
-
-.nav__link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1.5px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.28s var(--ease);
-}
-
-.nav__link:hover { color: var(--ink); }
-.nav__link:hover::after,
-.nav__link[aria-current="true"]::after { transform: scaleX(1); }
-.nav__link[aria-current="true"] { color: var(--ink); font-weight: 500; }
-
-/* ---------------------------------------------------------------- botões */
-
-.btn {
-  --btn-bg: var(--accent);
-  --btn-fg: #fff;
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  height: 48px;
-  padding: 0 22px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  background: var(--btn-bg);
-  color: var(--btn-fg);
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: -0.012em;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease),
-    background-color 0.22s var(--ease), border-color 0.22s var(--ease), color 0.22s var(--ease);
-  box-shadow: 0 1px 2px rgba(11, 14, 20, 0.08);
-}
-
-.btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(47, 73, 224, 0.22); }
-.btn:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(11, 14, 20, 0.1); }
-.btn svg { transition: transform 0.24s var(--ease); }
-.btn:hover svg { transform: translateX(3px); }
-
-.btn--ghost {
-  --btn-bg: transparent;
-  --btn-fg: var(--ink);
-  border-color: var(--line-2);
-  box-shadow: none;
-}
-
-.btn--ghost:hover {
-  --btn-fg: var(--accent-deep);
-  border-color: var(--accent);
-  background: var(--accent-wash);
-  box-shadow: none;
-}
-
-.btn--sm { height: 42px; padding: 0 14px; font-size: 13px; }
-.btn--light { --btn-bg: #fff; --btn-fg: var(--ink); }
-.btn--light:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22); }
-
-@media (max-width: 900px) {
-  .nav__meta { display: none; }
-  .nav__inner { flex-wrap: wrap; justify-content: space-between; padding-block: 12px; row-gap: 10px; }
-  .nav__links {
-    order: 3;
-    width: 100%;
-    margin-inline-start: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 2px;
-  }
-  .nav__links::-webkit-scrollbar { display: none; }
-  .nav__link { padding: 4px 0; }
-}
+/* ---------------------------------------------------------------- movimento reduzido */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

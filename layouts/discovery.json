@@ -3,6 +3,10 @@
   "name": "Discovery Engine",
   "template": "layouts/discovery.html",
   "stylesheet": "layouts/discovery.css",
+  "stylesheets": [
+    "layouts/discovery.css"
+  ],
+  "bodyClass": "discovery-page",
   "shell": "progressive discovery + diagnostic",
   "renderer": "discovery config-driven runtime",
   "slots": [

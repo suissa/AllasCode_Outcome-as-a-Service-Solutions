@@ -2,7 +2,7 @@
 
 ## OaaS.Quest
 
-Plataforma OaaS.Quest: site institucional (Modo Clássico), jornada conversacional (Modo Guilda) e motor de descoberta (Discovery Engine).
+Plataforma OaaS.Quest: site institucional (Site), jornada conversacional (Chat) e motor de descoberta (Discovery Engine).
 
 ## Desenvolvimento
 
@@ -20,14 +20,22 @@ bun run typecheck  # typecheck do dominio e da config do Vite
 | Rota | Entrada | Página |
 |---|---|---|
 | / | index.html | Home (seletor de experiencia) |
-| /guilda | guilda.html | Modo Guilda |
-| /classico | classico.html | Modo Clássico |
+| /site | site.html | Site institucional |
+| /chat | chat.html | Chat de missão |
+| /exemplos | exemplos.html | Exemplos práticos |
 | /descoberta | descoberta/index.html | Discovery Engine |
 
 O nome do arquivo HTML é o nome da rota. Detalhes em [docs/CONTENT-AND-LAYOUT-ARCHITECTURE.md](docs/CONTENT-AND-LAYOUT-ARCHITECTURE.md).
 
 ## Design
 
-A home e o Modo Clássico usam o mesmo sistema canônico: tokens em `layouts/tokens.css`, tipografia self-hosted (Archivo + Spline Sans Mono) e faixas azuis de seção. O sistema está documentado em [DESIGN.md](DESIGN.md), o contexto de produto em [PRODUCT.md](PRODUCT.md). O Modo Guilda mantém o próprio mundo visual em `styles.css`.
+Todas as páginas consomem os mesmos tokens de tema (`--oq-*`) definidos em `layouts/themes.css`.
+O wrapper global (`<html>`) carrega **uma** classe de tema por vez (`oq-theme-abyss`,
+`oq-theme-carbon`, `oq-theme-ember`, `oq-theme-paper`); o seletor flutuante troca de tema
+removendo a classe atual e adicionando a nova. Tipografia self-hosted (Archivo + Spline Sans Mono).
+O sistema está documentado em [DESIGN.md](DESIGN.md), o contexto de produto em [PRODUCT.md](PRODUCT.md).
+
+A navegação entre `/`, `/site`, `/chat` e `/exemplos` é client-side (View Transitions API):
+o documento não recarrega, o runtime troca o conteúdo e as folhas de estilo.
 
 No WSL, o projeto fica em /mnt/d (DrvFs) e nao suporta inotify; o vite.config.ts liga o watcher em polling automaticamente nesse caso.

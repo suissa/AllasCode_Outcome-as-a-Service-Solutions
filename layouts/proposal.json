@@ -3,6 +3,10 @@
   "name": "Relatório de proposta preliminar",
   "template": "layouts/proposal.html",
   "stylesheet": "layouts/proposal.css",
+  "stylesheets": [
+    "layouts/proposal.css"
+  ],
+  "bodyClass": "proposal-page",
   "shell": "executive report + scope + evidence + print",
   "renderer": "answer-only inference report",
   "slots": [

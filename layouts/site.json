@@ -1,0 +1,23 @@
+{
+  "id": "site",
+  "name": "Site institucional",
+  "template": "layouts/site.html",
+  "stylesheet": "layouts/site.css",
+  "stylesheets": [
+    "layouts/site.css"
+  ],
+  "bodyClass": "site-page",
+  "shell": "site-nav + main + site-footer",
+  "renderer": "runtime/site-page.js",
+  "slots": [
+    "navigation",
+    "hero",
+    "sections",
+    "closing-cta"
+  ],
+  "scripts": [
+    "app.js",
+    "runtime/site-page.js",
+    "runtime/site.js"
+  ]
+}

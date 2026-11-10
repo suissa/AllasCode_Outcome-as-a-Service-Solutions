@@ -8,15 +8,20 @@ const root = process.cwd();
 async function load<T>(path: string): Promise<T> {
   return JSON.parse(await readFile(join(root, path), "utf8")) as T;
 }
+
 const ENTRIES = [
   ["index.html", "home", "/"],
-  ["classico.html", "classic", "/classico"],
-  ["guilda.html", "guild", "/guilda"],
+  ["site.html", "site", "/site"],
+  ["chat.html", "chat", "/chat"],
+  ["exemplos.html", "exemplos", "/exemplos"],
   ["descoberta/index.html", "discovery", "/descoberta"]
 ] as const;
 
+const PAGE_IDS = ["home", "site", "chat", "exemplos", "discovery"] as const;
+const LAYOUT_IDS = ["chooser", "site", "chat", "exemplos", "discovery", "proposal"] as const;
+
 test("pages reference existing layouts, templates and resolvable JSON content", async () => {
-  for (const id of ["home", "classic", "guild", "discovery"]) {
+  for (const id of PAGE_IDS) {
     const page = await load<{ id: string; entry: string; layout: string; contentRefs: string[]; sections: { id: string; contentRef: string }[] }>(`pages/pt-BR/${id}.json`);
     assert.equal(page.id, id);
     await readFile(join(root, page.entry), "utf8");
@@ -51,10 +56,20 @@ test("mission and discovery content are externalized and complete", async () => 
 });
 
 test("layout descriptors define template, stylesheet and renderer", async () => {
-  for (const id of ["chooser", "classic", "guild", "discovery"]) {
+  for (const id of LAYOUT_IDS) {
     const layout = await load<{ id: string; template: string; stylesheet: string; renderer: string; slots: string[] }>(`layouts/${id}.json`);
     assert.equal(layout.id, id);
     assert.ok(layout.template && layout.stylesheet && layout.renderer && layout.slots.length > 0);
+  }
+});
+
+test("layouts declare the body class and the stylesheets the router swaps", async () => {
+  for (const id of LAYOUT_IDS) {
+    const layout = await load<{ bodyClass?: string; stylesheets?: string[]; stylesheet: string }>(`layouts/${id}.json`);
+    assert.ok(layout.bodyClass, `${id} must declare a bodyClass for the global wrapper`);
+    assert.ok(Array.isArray(layout.stylesheets) && layout.stylesheets.length > 0, `${id} must declare stylesheets`);
+    assert.ok(layout.stylesheets.includes(layout.stylesheet), `${id} stylesheets must include the primary stylesheet`);
+    for (const stylesheet of layout.stylesheets) await readFile(join(root, stylesheet), "utf8");
   }
 });
 
@@ -72,7 +87,7 @@ test("HTML entry points boot through the manifest-driven page runtime", async ()
     const html = await readFile(join(root, path), "utf8");
     assert.ok(html.includes('data-oaas-page="' + id + '"'), path + " must declare its page id");
     assert.ok(html.includes('type="module"'), path + " must load the page runtime as a module");
-    assert.ok(html.includes('src="/page-config.js"'), path + " must load the page runtime");
+    assert.ok(html.includes('src="/page-config.js"') || html.includes('src="../page-config.js"'), path + " must load the page runtime");
     assert.ok(html.includes("oaas-page-root"), path + " must expose the template mount point");
     assert.ok(!html.includes("<script>"), path + " must not embed inline runtime scripts");
   }
@@ -87,7 +102,7 @@ test("layout stylesheets are external assets, not embedded in the discovery entr
 });
 
 test("entry HTML delegates behavior to scripts declared by the layout", async () => {
-  for (const id of ["chooser", "classic", "guild", "discovery"]) {
+  for (const id of LAYOUT_IDS) {
     const layout = await load<{ scripts?: string[] }>(`layouts/${id}.json`);
     assert.ok(layout.scripts && layout.scripts.length > 0, `${id} must declare runtime scripts`);
     for (const script of layout.scripts || []) await readFile(join(root, script), "utf8");
@@ -138,11 +153,75 @@ test("each entry HTML links the stylesheet declared by its layout", async () => 
 });
 
 test("navigation links use routes instead of html files", async () => {
-  for (const file of ["layouts/chooser.html", "layouts/guild.html", "layouts/classic.html", "content.js", "runtime/guild.js", "runtime/classic.js"]) {
+  const files = [
+    "layouts/chooser.html",
+    "layouts/chat.html",
+    "layouts/site.html",
+    "layouts/exemplos.html",
+    "content.js",
+    "runtime/chat.js",
+    "runtime/site-page.js",
+    "runtime/site.js"
+  ];
+  for (const file of files) {
     const source = await readFile(join(root, file), "utf8");
     assert.ok(!/["'][^"']*\.html(?:[?#][^"']*)?["']/.test(source), file + " must not link to .html files");
   }
-  const guild = await readFile(join(root, "runtime/guild.js"), "utf8");
-  assert.ok(guild.includes('window.location.href="/descoberta"'));
-  assert.ok(guild.includes('"/classico#desenvolvedores"'));
+  const chat = await readFile(join(root, "runtime/chat.js"), "utf8");
+  assert.ok(chat.includes('window.location.href="/descoberta"'));
+  assert.ok(chat.includes('"/site#solucoes"'));
+});
+
+test("every layout template uses the dark logo", async () => {
+  for (const id of ["chooser", "site", "chat", "exemplos"]) {
+    const layout = await load<{ template: string }>(`layouts/${id}.json`);
+    const template = await readFile(join(root, layout.template), "utf8");
+    assert.ok(template.includes("/logo-dark.png"), layout.template + " must use /logo-dark.png");
+    assert.ok(!template.includes("logo-white.png"), layout.template + " must not use the light logo");
+    assert.ok(!template.includes("logo-black.png"), layout.template + " must not use the black logo");
+  }
+});
+
+test("the global theme defines one class per theme on the html wrapper", async () => {
+  const themes = await readFile(join(root, "layouts/themes.css"), "utf8");
+  const runtime = await readFile(join(root, "runtime/theme.js"), "utf8");
+  for (const id of ["abyss", "carbon", "ember", "paper"]) {
+    assert.ok(themes.includes(".oq-theme-" + id), "themes.css must define the theme " + id);
+  }
+  for (const token of ["--oq-ground", "--oq-surface", "--oq-ink", "--oq-muted", "--oq-line", "--oq-accent"]) {
+    assert.ok(themes.includes(token), "themes.css must define " + token);
+  }
+  assert.ok(runtime.includes("root.classList.remove"), "trocar de tema e remover a classe atual");
+  assert.ok(runtime.includes("root.classList.add"), "trocar de tema e adicionar a classe nova");
+  assert.ok(runtime.includes("document.documentElement") || runtime.includes("documentElement"));
+});
+
+test("the client-side router swaps pages without reloading the document", async () => {
+  const router = await readFile(join(root, "runtime/router.js"), "utf8");
+  assert.ok(router.includes("startViewTransition"));
+  assert.ok(router.includes("pushState"));
+  assert.ok(router.includes("popstate"));
+  assert.ok(router.includes("clientNavigation"));
+  const loader = await readFile(join(root, "page-config.js"), "utf8");
+  assert.ok(loader.includes("createRouter"));
+  assert.ok(loader.includes("buildThemeSwitcher"));
+  for (const id of ["home", "site", "chat", "exemplos"]) {
+    const page = await load<{ clientNavigation?: boolean }>(`pages/pt-BR/${id}.json`);
+    assert.equal(page.clientNavigation, true, `${id} must opt into client-side navigation`);
+  }
+});
+
+test("layout runtimes expose mount(page) for re-execution without re-import", async () => {
+  for (const file of [
+    "runtime/chooser-page.js",
+    "runtime/site-page.js",
+    "runtime/site.js",
+    "runtime/chat.js",
+    "content.js",
+    "runtime/exemplos-page.js"
+  ]) {
+    const source = await readFile(join(root, file), "utf8");
+    assert.ok(/export\s+(async\s+)?function\s+mount\s*\(/.test(source), file + " must export mount(page)");
+    assert.ok(!source.includes("window.OaaSPageReady"), file + " must not depend on the global page promise");
+  }
 });

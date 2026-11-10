@@ -1,13 +1,13 @@
 (function () {
   const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const li = xs => (xs || []).map(x => "<li>" + esc(x) + "</li>").join("");
-  const guildSection = (id,title,lead,body) => '<section class="guild-content-section" id="' + id + '"><div class="guild-section-heading"><small>REGISTRO DA GUILDA</small><h2>' + esc(title) + '</h2><p>' + esc(lead || "") + '</p></div>' + body + '</section>';
+  const guildSection = (id,title,lead,body) => '<section class="guild-content-section" id="' + id + '"><div class="guild-section-heading"><small>REGISTRO DO CHAT</small><h2>' + esc(title) + '</h2><p>' + esc(lead || "") + '</p></div>' + body + '</section>';
   async function start() {
     const pageRuntime = await window.OaaSPageReady;
     const exp = pageRuntime.sources.experience;
     const sectors = pageRuntime.sources["sector-playbooks"]?.sectors || [];
     const team = pageRuntime.sources["agent-team"] || { roles: [] };
-    const mode = "guilda";
+    const mode = "chat";
     const copy = exp.presentation[mode], journey = exp.customerJourney || [];
     const phases = exp["90DayMethod"].phases || [], metrics = exp.measurement;
     const commercial = exp.commercialModel, faq = exp.faq || [];
@@ -19,7 +19,7 @@
     const jt = document.querySelector(".journal-title"); if (jt) jt.textContent = "Diário da Jornada";
     const jc = document.querySelectorAll(".guild-side .journal-card");
     if (jc[0]) jc[0].querySelector("small").textContent = "MISSÃO ATUAL";
-    if (jc[1]) { jc[1].querySelector("small").textContent = "CAMINHOS DA GUILDA"; jc[1].querySelector("p").textContent = "Explore especialidades, ofícios e recursos reunidos para cada missão."; }
+    if (jc[1]) { jc[1].querySelector("small").textContent = "CAMINHOS DO CHAT"; jc[1].querySelector("p").textContent = "Explore especialidades, ofícios e recursos reunidos para cada missão."; }
     const host = document.getElementById("oq-guild-content");
     if (host) {
       const questNames = ["Chamado da Missão","Reconhecimento do Território","Busca por Oportunidades","Mapa da Jornada","Forjaria da Solução","Vigília da Expedição","Provas da Conquista"];
@@ -27,8 +27,8 @@
       host.innerHTML =
         guildSection("metodo",copy.method.title,copy.method.body,'<div class="guild-journey-list">' + journey.map((s,i)=>'<article class="guild-journey-card"><span class="quest-number">' + String(i+1).padStart(2,"0") + '</span><div><h3>' + esc(questNames[i] || s.title) + '</h3><p>' + esc(s.description) + '</p><small>REGISTROS: ' + esc(s.customerReceives.join(" · ")) + '</small></div></article>').join("") + '</div>') +
         guildSection("jornada-90",copy.ninetyDays.title,copy.ninetyDays.body,'<div class="guild-timeline">' + phases.map((p,i)=>'<article class="guild-phase"><small>' + esc(p.period) + '</small><h3>' + esc(chapterNames[i] || p.name) + '</h3><p>' + esc(p.goal) + '</p><strong>Artefatos da etapa</strong><ul>' + li(p.deliverables) + '</ul></article>').join("") + '</div><p class="content-disclaimer">' + esc(copy.ninetyDays.disclaimer) + '</p>') +
-        guildSection("especialidades","Os ofícios da Guilda","Cada desafio convoca uma combinação diferente de conhecimentos e ferramentas.",'<div class="guild-role-grid">' + team.roles.map(r=>'<article class="guild-role-card"><small>' + esc(r.id.replace(/-/g," ").toUpperCase()) + '</small><h3>' + esc(r.guildaName || r.name) + '</h3><p>' + esc(r.purpose) + '</p><strong>Artefatos entregues</strong><ul>' + li(r.outputs.slice(0,3)) + '</ul></article>').join("") + '</div>') +
-        guildSection("reinos","Reinos e ofícios atendidos","A Guilda adapta sua estratégia às características de cada setor.",'<div class="guild-sector-grid">' + sectors.map(s=>'<article class="guild-sector-card"><h3>' + esc(s.guildaName || s.name) + '</h3><p class="sector-real-name">' + esc(s.name) + '</p><strong>Conquistas possíveis</strong><ul>' + li(s.outcomes.slice(0,3)) + '</ul><strong>Orbe de métricas</strong><p>' + esc(s.metrics.slice(0,5).join(" · ")) + '</p></article>').join("") + '</div>') +
+        guildSection("especialidades","As especialidades do Chat","Cada desafio convoca uma combinação diferente de conhecimentos e ferramentas.",'<div class="guild-role-grid">' + team.roles.map(r=>'<article class="guild-role-card"><small>' + esc(r.id.replace(/-/g," ").toUpperCase()) + '</small><h3>' + esc(r.guildaName || r.name) + '</h3><p>' + esc(r.purpose) + '</p><strong>Artefatos entregues</strong><ul>' + li(r.outputs.slice(0,3)) + '</ul></article>').join("") + '</div>') +
+        guildSection("reinos","Reinos e ofícios atendidos","O Chat adapta sua estratégia às características de cada setor.",'<div class="guild-sector-grid">' + sectors.map(s=>'<article class="guild-sector-card"><h3>' + esc(s.guildaName || s.name) + '</h3><p class="sector-real-name">' + esc(s.name) + '</p><strong>Conquistas possíveis</strong><ul>' + li(s.outcomes.slice(0,3)) + '</ul><strong>Orbe de métricas</strong><p>' + esc(s.metrics.slice(0,5).join(" · ")) + '</p></article>').join("") + '</div>') +
         guildSection("orbe",copy.measurement.title,copy.measurement.body,'<div class="guild-orb-grid">' + metrics.dashboardMetrics.map(m=>'<div class="orb-item"><span>✧</span>' + esc(m) + '</div>').join("") + '</div><p class="content-disclaimer">' + esc(metrics.integrity) + '</p>') +
         guildSection("tesouro","Acordos e recompensas",commercial.principle,'<div class="guild-role-grid">' + commercial.components.map(c=>'<article class="guild-role-card"><h3>' + esc(c.name) + '</h3><p>' + esc(c.description) + '</p></article>').join("") + '</div><p class="content-disclaimer">' + esc(commercial.trustStatement) + '</p>') +
         guildSection("perguntas","Perguntas ao Mestre","Informações importantes antes de aceitar uma missão.",'<div class="faq-grid">' + faq.map(f=>'<details class="faq-item"><summary>' + esc(f.question) + '</summary><p>' + esc(f.answer) + '</p></details>').join("") + '</div>') +
@@ -39,7 +39,7 @@
   }
   const boot=()=>Promise.all([window.OQReady,window.OaaSPageReady]).then(()=>start()).catch(error=>{
     console.error("Falha ao carregar conteúdo OaaS.Quest",error);
-    const host=document.getElementById("oq-guild-content"); if(host) host.textContent="Não foi possível carregar os registros da Guilda. Atualize a página para tentar novamente.";
+    const host=document.getElementById("oq-guild-content"); if(host) host.textContent="Não foi possível carregar os registros do Chat. Atualize a página para tentar novamente.";
   });
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot,{once:true});
   else boot();

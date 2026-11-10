@@ -3,11 +3,12 @@
   "route": "/",
   "entry": "index.html",
   "layout": "chooser",
+  "clientNavigation": true,
   "locale": "pt-BR",
   "title": "OaaS.Quest — Your Goal. Our Quest.",
   "contentRefs": [
     "experience.brand",
-    "experience.presentation.classic",
+    "experience.presentation.site",
     "ui-copy.chooser"
   ],
   "sections": [

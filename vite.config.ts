@@ -5,8 +5,8 @@ import { defineConfig, type Plugin, type ViteDevServer } from "vite";
 /**
  * OaaS.Quest - mapa de rotas.
  *
- * O nome do arquivo HTML e o nome da rota: index.html -> /, guilda.html -> /guilda,
- * classico.html -> /classico e descoberta/index.html -> /descoberta.
+ * O nome do arquivo HTML e o nome da rota: index.html -> /, chat.html -> /chat,
+ * site.html -> /site e descoberta/index.html -> /descoberta.
  * A mesma fonte de verdade alimenta o servidor de desenvolvimento, o build e os testes.
  */
 export interface OaasRoute {
@@ -17,8 +17,8 @@ export interface OaasRoute {
 
 export const routes: readonly OaasRoute[] = [
   { route: "/", entry: "index.html", pageId: "home" },
-  { route: "/guilda", entry: "guilda.html", pageId: "guild" },
-  { route: "/classico", entry: "classico.html", pageId: "classic" },
+  { route: "/chat", entry: "chat.html", pageId: "chat" },
+  { route: "/site", entry: "site.html", pageId: "site" },
   { route: "/descoberta", entry: "descoberta/index.html", pageId: "discovery" },
   { route: "/exemplos", entry: "exemplos.html", pageId: "exemplos" }
 ];
@@ -27,7 +27,7 @@ const routeEntries = new Map<string, string>(routes.map(item => [item.route, ite
 
 /**
  * Serve as rotas limpas no dev server e publica um diretorio por rota no build,
- * de modo que /guilda funcione em qualquer hospedagem estatica sem regra de rewrite.
+ * de modo que /chat funcione em qualquer hospedagem estatica sem regra de rewrite.
  */
 function oaasHtmlRoutes(): Plugin {
   let outDir = "dist";
@@ -72,6 +72,7 @@ function oaasHtmlRoutes(): Plugin {
  * dispara e o hot reload nao acontece. Nesse caso o watcher passa a usar polling.
  */
 const needsPolling = process.platform === "linux" && /^\/mnt\//.test(process.cwd());
+
 
 export default defineConfig({
   appType: "mpa",

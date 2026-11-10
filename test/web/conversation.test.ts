@@ -23,8 +23,8 @@ test("migrates previous browser state without dropping conversation history", as
   const previous = { version: 1, mode: "guilda", events: [], conversations: { guilda: [{ role: "user", text: "Minha missão" }] } };
   const { OQ } = await harness({ "oaas.quest.v1": JSON.stringify(previous) });
   assert.equal(OQ.getState().version, 2);
-  assert.equal(OQ.history("guilda").length, 1);
-  assert.equal(OQ.history("guilda")[0].text, "Minha missão");
+  assert.equal(OQ.history("chat").length, 1);
+  assert.equal(OQ.history("chat")[0].text, "Minha missão");
 });
 
 test("collects the guided mission progressively and reaches review", async () => {
@@ -65,7 +65,7 @@ test("confirmed mission pre-fills discovery without overwriting existing answers
   assert.equal(saved.answers.team_size.value, "2_5");
   assert.equal(saved.answers.goal_target.value, "Aumentar vendas");
   assert.equal(saved.answers.primary_kpi.value, "conversion");
-  assert.equal(saved.source, "guilda");
+  assert.equal(saved.source, "chat");
   assert.equal(OQ.getMission().status, "ready_for_discovery");
 });
 
