@@ -1,0 +1,6 @@
+route_intent -(validate_intent)-> collect_missing_field_questions
+collect_missing_field_questions -(append_explicit_ambiguity_questions)-> evaluate_clarifications
+evaluate_clarifications -(one_or_more_questions)-> set_needs_clarification_and_route_to_human
+ evaluate_clarifications -(no_questions_and_valid_intent)-> set_qualified_and_route_to_discovery
+create_discovery_for_qualified_intent -(route_is_discovery)-> create_discovery_tasks
+create_discovery_for_qualified_intent -(route_is_clarification)-> reject_INTENT_NOT_QUALIFIED
