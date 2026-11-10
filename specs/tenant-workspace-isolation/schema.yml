@@ -1,0 +1,33 @@
+version: "1.0"
+behavior: tenant-workspace-isolation
+scope:
+  required: [tenantId, workspaceId, actorId, correlationId]
+  tenantId: canonical-tenant-id
+  workspaceId: canonical-workspace-id
+record:
+  required: [id, tenantId, workspaceId]
+  checks: [tenantId_matches_scope, workspaceId_matches_scope]
+collection:
+  policy: reject_entire_collection_on_any_scope_mismatch
+membership:
+  required: [id, tenantId, workspaceId, actorId, role, permissions, status, grantedBy, grantedAt, revision]
+  roles: [owner, admin, member, viewer]
+  status: [pending, active, suspended, revoked]
+  permissionPolicy: role_bounded
+  expiry: enforced
+authorization:
+  inputs: [scope, membership, action]
+  requires: [active_membership, same_tenant, same_workspace, same_actor, role_permission]
+invariants:
+  - tenant-and-workspace-isolation
+  - no-unscoped-query-fallback
+  - no-partial-bulk-processing
+  - role-permission-ceiling
+  - expired-membership-denied
+  - non-disclosing-isolation-errors
+errors:
+  - { code: WORKSPACE_SCOPE_INVALID, path: scope }
+  - { code: WORKSPACE_TENANT_MISMATCH, path: record.tenantId }
+  - { code: WORKSPACE_BOUNDARY_MISMATCH, path: record.workspaceId }
+  - { code: WORKSPACE_MEMBERSHIP_MISMATCH, path: membership.scope }
+  - { code: WORKSPACE_MEMBERSHIP_INVALID, path: membership }
