@@ -1,0 +1,15 @@
+{
+  "id": "discovery",
+  "name": "Discovery Engine",
+  "template": "descoberta/index.html",
+  "stylesheet": "descoberta inline design system",
+  "shell": "progressive discovery + diagnostic",
+  "renderer": "discovery config-driven runtime",
+  "slots": [
+    "progress",
+    "stage",
+    "questions",
+    "diagnostic",
+    "export"
+  ]
+}
