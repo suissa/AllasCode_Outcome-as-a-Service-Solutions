@@ -8,6 +8,7 @@ Esta pasta reúne as definições de produto, operação, engenharia, contratos 
 |---|---|
 | [Commercial Model & Pricing](./Commercial-Model-and-Pricing.md) | Modelos de cobrança, composição de preço, fórmulas, exemplos e regras de margem |
 | [Contract Playbook](./Contract-Playbook.md) | Estrutura contratual, cláusulas, anexos, regras de aceite, cobrança, bônus, créditos, reembolso e disputa |
+| [Contract Composer](./Contract-Composer.md) | Motor executável para compor minutas, calcular preços, parametrizar cláusulas e gerar anexos |
 | [Sector Solution Catalog](./Sector-Solution-Catalog.md) | Problemas, soluções, métricas, evidências e modelos comerciais por setor |
 | [Delivery & Project Operating Model](./Delivery-Operating-Model.md) | Diagnóstico, proposta, planejamento, execução, gerenciamento, implantação e evolução |
 | [Outcome Measurement & Evidence](./Outcome-Measurement-and-Evidence.md) | Baseline, metas, atribuição, qualidade de dados, prova, auditoria e liquidação |
