@@ -1,0 +1,25 @@
+{
+  "chooser": {
+    "topNote": "OUTCOME AS A SERVICE",
+    "eyebrow": "UMA NOVA FORMA DE CONQUISTAR RESULTADOS",
+    "heading": "Como você prefere",
+    "headingEmphasis": "começar sua jornada?",
+    "intro": "O mesmo OaaS.Quest, duas formas de explorar. Escolha a experiência que combina com você — e poderá trocar de modo quando quiser.",
+    "guildAriaLabel": "Entrar no Modo Guilda",
+    "guildPreviewStatus": "GUILD MASTER · ONLINE",
+    "guildPreviewPrompt": "Qual resultado você deseja alcançar?",
+    "business": "Sou empresário",
+    "developer": "Sou desenvolvedor",
+    "guildKicker": "EXPERIÊNCIA IMERSIVA",
+    "guildTitle": "Modo Guilda",
+    "guildDescription": "Uma jornada conversacional inspirada em RPGs de fantasia. Defina seu objetivo, converse com o Guild Master e descubra o caminho.",
+    "hoverHint": "Passe o cursor para visualizar",
+    "classicAriaLabel": "Explorar o Modo Clássico",
+    "contact": "Fale conosco",
+    "classicPreviewDescription": "Transformamos desafios empresariais em resultados concretos.",
+    "classicKicker": "EXPERIÊNCIA TRADICIONAL",
+    "classicTitle": "Modo Clássico",
+    "classicDescription": "Um site institucional clean, com navegação convencional para conhecer a metodologia, produtos, serviços e documentação.",
+    "switchNote": "Você pode alternar entre os modos a qualquer momento. Sua jornada e seu histórico ficam salvos neste dispositivo."
+  }
+}
