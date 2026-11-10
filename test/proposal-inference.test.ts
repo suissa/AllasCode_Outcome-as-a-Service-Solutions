@@ -107,11 +107,15 @@ test("every solution signal is reachable from its exact customer answer",()=>{
 test("all pairs of distinct signal answers combine without losing traceability",()=>{
  const signals=graph.solutions.flatMap(solution=>solution.signals.map(signal=>({solutionId:solution.id,signal})));
  for(let i=0;i<signals.length;i++)for(let j=i+1;j<signals.length;j++){
-  const first=signals[i]!,second=signals[j]!;
+  const first=signals.at(i),second=signals.at(j);
+  if(!first||!second)continue;
   const split=(signal:string):[string,string]=>{const at=signal.indexOf(":");return [signal.slice(0,at),signal.slice(at+1)]};
-  const [q1,v1]=split(first.signal),[q2,v2]=split(second.signal);
+  const firstParts=split(first.signal),secondParts=split(second.signal);
+  const q1:string=firstParts[0],v1:string=firstParts[1],q2:string=secondParts[0],v2:string=secondParts[1];
   if(q1===q2&&v1!==v2)continue;
-  const proposal=make({[q1]:{value:v1},[q2]:{value:v2}});
+  const answerSet:Record<string,unknown>={};
+  answerSet[q1]={value:v1};answerSet[q2]={value:v2};
+  const proposal=make(answerSet);
   assertValidProposal(proposal);
   assert.ok(proposal.graphTrace.edgesTraversed.length>=2);
   assert.ok(proposal.context.facts.length>=1);
