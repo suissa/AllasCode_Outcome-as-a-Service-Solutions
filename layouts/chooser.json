@@ -9,5 +9,9 @@
     "brand",
     "experience-options",
     "footer"
+  ],
+  "scripts": [
+    "app.js",
+    "runtime/chooser.js"
   ]
 }
