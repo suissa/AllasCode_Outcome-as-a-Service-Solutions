@@ -1,7 +1,7 @@
 {
   "id": "classic",
   "name": "Institucional clássico",
-  "template": "classico.html",
+  "template": "layouts/classic.html",
   "stylesheet": "styles.css",
   "shell": "classic-nav + main + classic-footer",
   "renderer": "content.js",

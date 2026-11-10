@@ -20,6 +20,11 @@
     const page = await readJson("pages/pt-BR/" + pageId + ".json");
     const layout = await readJson("layouts/" + page.layout + ".json");
     if (page.id !== pageId || layout.id !== page.layout) throw new Error("PAGE_LAYOUT_ID_MISMATCH");
+    const templateResponse = await fetch(new URL(root + layout.template, document.baseURI));
+    if (!templateResponse.ok) throw new Error("LAYOUT_TEMPLATE_FETCH_FAILED:" + layout.template);
+    const rootElement = document.getElementById("oaas-page-root");
+    if (!rootElement) throw new Error("PAGE_ROOT_MISSING");
+    rootElement.innerHTML = await templateResponse.text();
     const refs = [...new Set([...(page.contentRefs || []), ...(page.sections || []).map(section => section.contentRef)])];
     const sourceNames = [...new Set(refs.map(ref => ref.split(".")[0]))];
     const sources = {};

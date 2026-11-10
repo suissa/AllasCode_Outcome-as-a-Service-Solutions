@@ -1,7 +1,7 @@
 {
   "id": "guild",
   "name": "Guilda conversacional",
-  "template": "guilda.html",
+  "template": "layouts/guild.html",
   "stylesheet": "styles.css",
   "shell": "guild-sidebar + guild-main + guild-side",
   "renderer": "content.js + app.js",

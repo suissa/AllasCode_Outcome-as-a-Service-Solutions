@@ -40,6 +40,7 @@ test("HTML entry points boot through the manifest-driven page runtime",async()=>
   const loader=await readFile(join(root,"page-config.js"),"utf8");
   const renderer=await readFile(join(root,"content.js"),"utf8");
   assert.ok(loader.includes("window.OaaSPageReady"));
+  assert.ok(loader.includes("rootElement.innerHTML"));
   assert.ok(loader.includes("CONTENT_REFERENCE_NOT_FOUND"));
   assert.ok(renderer.includes("window.OaaSPageReady"));
   assert.ok(renderer.includes("pageRuntime.sources.experience"));
@@ -47,5 +48,6 @@ test("HTML entry points boot through the manifest-driven page runtime",async()=>
     const html=await readFile(join(root,path),"utf8");
     assert.ok(html.includes('data-oaas-page="'+id+'"'),path+" must declare its page id");
     assert.ok(html.includes(path==="descoberta/index.html"?"../page-config.js":"page-config.js"),path+" must load the page runtime");
+    assert.ok(html.includes("oaas-page-root"),path+" must expose the template mount point");
   }
 });
