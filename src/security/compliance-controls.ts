@@ -185,6 +185,9 @@ export function runSecurityPrivacyControls(
         (!required(item.consentId) && !required(item.legalBasis))) {
       fail("COMPLIANCE_PRIVACY_BASIS_REQUIRED", `${path}.consentId/legalBasis`);
     }
+    if ((item.classification === "confidential" || item.classification === "personal" || item.classification === "sensitive") && !required(item.verifiedBy)) {
+      fail("COMPLIANCE_PRIVACY_VERIFICATION_REQUIRED", `${path}.verifiedBy`);
+    }
     if (item.verifiedBy !== undefined && (!required(item.verifiedBy) || item.verifiedBy === item.preparedBy)) {
       fail("COMPLIANCE_REVIEW_INDEPENDENT_REQUIRED", `${path}.verifiedBy`);
     }
@@ -285,5 +288,10 @@ export function reviewComplianceEvidenceBundle(
   }
   if (!required(reviewerId)) fail("COMPLIANCE_REVIEWER_REQUIRED", "reviewerId");
   if (reviewerId === bundle.preparedBy) fail("COMPLIANCE_REVIEW_INDEPENDENT_REQUIRED", "reviewerId");
+  const expectedHash = snapshotHash({
+    tenantId: bundle.tenantId, preparedBy: bundle.preparedBy, periodStart: bundle.periodStart,
+    periodEnd: bundle.periodEnd, generatedAt: bundle.generatedAt, controls: bundle.controls,
+  });
+  if (expectedHash !== bundle.snapshotHash) fail("COMPLIANCE_BUNDLE_HASH_MISMATCH", "snapshotHash");
   return Object.freeze({ ...bundle, reviewedBy: reviewerId, reviewedAt: now.toISOString() });
 }
