@@ -1,0 +1,13 @@
+version = "1.0"
+require_verified_evidence = true
+require_evidence_sha256 = true
+require_evidence_tenant_match = true
+reject_expired_evidence = true
+evidence_verifier_must_differ_from_author = true
+require_independent_reviewer = true
+require_action_specific_authorization = true
+capability_publish_strategy = "compare_and_swap"
+playbook_publish_strategy = "compare_and_swap"
+template_publish_strategy = "compare_and_swap"
+require_idempotency_key = true
+store_raw_evidence = false
