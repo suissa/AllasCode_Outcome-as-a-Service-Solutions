@@ -121,3 +121,16 @@ test("Guild runtime reads interface copy from the localized catalog",async()=>{
   const page=await load<{contentRefs:string[]}>("pages/pt-BR/guild.json");
   assert.ok(page.contentRefs.includes("ui-copy.guild"));
 });
+
+test("Discovery runtime reads interface copy from the localized catalog",async()=>{
+  const [runtime,catalogText]=await Promise.all([
+    readFile(join(root,"runtime/discovery.js"),"utf8"),
+    readFile(join(root,"content/ui-copy.pt-BR.json"),"utf8")
+  ]);
+  const catalog=JSON.parse(catalogText);
+  const references=[...runtime.matchAll(/copy\.([A-Za-z_$][\w$]*)/g)].flatMap(match=>match[1]?[match[1]]:[]);
+  assert.ok(references.length>0);
+  for(const key of references) assert.notEqual(catalog.discovery[key],undefined,`missing Discovery copy key: ${key}`);
+  const page=await load<{contentRefs:string[]}>("pages/pt-BR/discovery.json");
+  assert.ok(page.contentRefs.includes("ui-copy.discovery"));
+});
