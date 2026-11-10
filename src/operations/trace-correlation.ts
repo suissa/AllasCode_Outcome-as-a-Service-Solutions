@@ -157,10 +157,16 @@ export function correlateOutcomeSignals(input: CorrelationInput): Readonly<Outco
       context: Object.freeze({ ...context }) as Readonly<OutcomeSignalContext>,
       attributes: safeEvent.attributes,
     };
-    if (signal.kind === "trace") normalized.push(Object.freeze({ ...base, name: signal.name, ...(signal.parentSpanId ? { parentSpanId: signal.parentSpanId } : {}) }));
-    else if (signal.kind === "log") normalized.push(Object.freeze({ ...base, level: signal.level, event: signal.event }));
-    else normalized.push(Object.freeze({ ...base, name: signal.name, value: signal.value, unit: signal.unit }));
-    counts[signal.kind] += 1;
+    if (signal.kind === "trace") {
+      normalized.push(Object.freeze({ ...base, name: signal.name, ...(signal.parentSpanId ? { parentSpanId: signal.parentSpanId } : {}) }));
+      counts.trace += 1;
+    } else if (signal.kind === "log") {
+      normalized.push(Object.freeze({ ...base, level: signal.level, event: signal.event }));
+      counts.log += 1;
+    } else {
+      normalized.push(Object.freeze({ ...base, name: signal.name, value: signal.value, unit: signal.unit }));
+      counts.metric += 1;
+    }
   }
 
   normalized.sort((a, b) =>
