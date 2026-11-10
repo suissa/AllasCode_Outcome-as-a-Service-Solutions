@@ -256,10 +256,12 @@ export function assessRetention(
 ): Readonly<RetentionAssessment> {
   if (!record || !required(record.id) || !required(record.category) ||
       !DATA_CLASSES.has(record.classification) || !validTimestamp(record.createdAt) ||
-      !policy || !Number.isInteger(policy.retentionDays) || policy.retentionDays < 1 ||
-      policy.retentionDays > 36500 || typeof policy.legalHold !== "boolean" ||
+      !policy || typeof policy.legalHold !== "boolean" ||
       !(now instanceof Date) || !Number.isFinite(now.getTime())) {
     fail("RETENTION_RECORD_INVALID", "record");
+  }
+  if (!Number.isInteger(policy.retentionDays) || policy.retentionDays < 1 || policy.retentionDays > 36500) {
+    fail("RETENTION_POLICY_INVALID", "retentionDays");
   }
   validateTenantId(record.tenantId);
   validateTenantId(policy.tenantId);
