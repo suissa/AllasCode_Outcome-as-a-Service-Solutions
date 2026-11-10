@@ -1,0 +1,14 @@
+[privacy]
+allowed_classifications = ["public", "internal", "confidential", "personal", "sensitive"]
+require_purpose = true
+require_basis_for = ["personal", "sensitive"]
+basis_options = ["consent_id", "legal_basis"]
+retention_must_be_future = true
+
+[consent]
+purpose_match = "exact"
+require_tenant_id = true
+require_subject_id = true
+reject_future_capture = true
+reject_expired = true
+withdrawal_is_immutable = true
