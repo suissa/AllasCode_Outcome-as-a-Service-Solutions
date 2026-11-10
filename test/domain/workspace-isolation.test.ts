@@ -75,8 +75,11 @@ test("rejects inactive, expired, future-dated and malformed membership records",
 });
 
 test("fails closed for malformed records and does not disclose tenant/workspace identifiers", () => {
-  const error = assert.throws(() => assertWorkspaceRecordScope(scope, { id: "x", tenantId: "tenant_bad!" as never, workspaceId }),
-    WorkspaceIsolationError);
-  assert.equal(error.message.includes("tenant_alpha"), false);
-  assert.equal(error.message.includes("tenant_bad"), false);
+  assert.throws(() => assertWorkspaceRecordScope(scope, { id: "x", tenantId: "tenant_bad!" as never, workspaceId }),
+    (error: unknown) => {
+      assert.ok(error instanceof WorkspaceIsolationError);
+      assert.equal(error.message.includes("tenant_alpha"), false);
+      assert.equal(error.message.includes("tenant_bad"), false);
+      return true;
+    });
 });
