@@ -38,3 +38,19 @@ create table if not exists outcome_proposal_idempotency (
   primary key (tenant_id, idempotency_key),
   foreign key (tenant_id, proposal_id) references outcome_proposals (tenant_id, proposal_id)
 );
+
+create or replace function reject_outcome_proposal_event_mutation() returns trigger
+language plpgsql
+as $$
+begin
+  raise exception 'OUTCOME_PROPOSAL_EVENT_IMMUTABLE';
+end;
+$$;
+drop trigger if exists outcome_proposal_events_no_update_delete on outcome_proposal_events;
+create trigger outcome_proposal_events_no_update_delete
+before update or delete on outcome_proposal_events
+for each row execute function reject_outcome_proposal_event_mutation();
+drop trigger if exists outcome_proposal_events_no_truncate on outcome_proposal_events;
+create trigger outcome_proposal_events_no_truncate
+before truncate on outcome_proposal_events
+for each statement execute function reject_outcome_proposal_event_mutation();
