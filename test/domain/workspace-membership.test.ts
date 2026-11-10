@@ -159,6 +159,8 @@ test("invitation revocation is authorized, revisioned and idempotency-safe", asy
   }, { store, authorize: auth });
   assert.equal(result.status, "revoked");
   assert.equal(result.revision, 2);
+  assert.equal(result.revokedBy, "owner");
+  assert.equal(result.revocationReason, "Access removed");
   await assert.rejects(() => revokeWorkspaceInvitation({
     tenantId, workspaceId, invitationId: "inv_revoke", actorId: "owner",
     expectedRevision: 1, reason: "Duplicate", now,
@@ -193,7 +195,7 @@ test("rejects malformed invitee email, invalid role, unauthorized creation and u
   const store = new MemoryMembershipStore();
   const base = {
     id: "inv_bad", tenantId, workspaceId, email: "not-an-email", role: "member" as const,
-    invitedBy: "owner", token: "tiny", expiresAt: "2026-11-17T12:00:00.000Z", idempotencyKey: "bad", now,
+    invitedBy: "owner", token: "long-enough-token-12345678901234567890", expiresAt: "2026-11-17T12:00:00.000Z", idempotencyKey: "bad", now,
   };
   await assert.rejects(() => createWorkspaceInvitation(base, { store, authorize: auth, deliver: async () => undefined }), /INVITATION_EMAIL_INVALID/);
   await assert.rejects(() => createWorkspaceInvitation({ ...base, email: "person@example.com", role: "owner" as never }, { store, authorize: auth, deliver: async () => undefined }), /INVITATION_ROLE_INVALID/);
