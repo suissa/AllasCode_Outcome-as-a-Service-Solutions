@@ -8816,24 +8816,6 @@
       "weight": 0.25
     },
     {
-      "from": "answer:conversion_tracking:unknown",
-      "to": "solution:SOL-SALES-001",
-      "type": "evidence-signal",
-      "weight": 1
-    },
-    {
-      "from": "answer:conversion_tracking:unknown",
-      "to": "solution:SOL-SALES-002",
-      "type": "evidence-signal",
-      "weight": 1
-    },
-    {
-      "from": "answer:conversion_tracking:unknown",
-      "to": "solution:SOL-OPS-003",
-      "type": "evidence-signal",
-      "weight": 1
-    },
-    {
       "from": "answer:abandonment_frequency:often",
       "to": "dimension:conversion-loss",
       "type": "context",
