@@ -35,5 +35,5 @@ test("rejects malformed runtime tenant IDs and incomplete correlation metadata",
   assert.throws(() => requireTenantScope({ tenantId: tenantA, actorId: "actor_owner_001", correlationId: " " }),
     TenantIsolationError);
   assert.throws(() => assertTenantScope(scope, { tenantId: "tenant_invalid!" as never }),
-    /ID_INVALID/);
+    (error: unknown) => error instanceof IdentifierValidationError && error.issue.code === "ID_INVALID");
 });
