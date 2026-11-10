@@ -1,0 +1,36 @@
+version: "1.0"
+behavior: security-privacy-control-evidence
+scope:
+  required: [tenantId, actorId, periodStart, periodEnd]
+control:
+  required: [id, tenantId, name, category, requiredEvidenceKinds, minimumEvidencePerKind, maxEvidenceAgeSeconds, severity, enabled]
+  categories: [access, privacy, retention, secrets, encryption, audit, governance]
+evidence:
+  required: [id, tenantId, controlId, kind, sourceId, capturedAt, contentHash, classification, result]
+  contentHash: sha256
+  result: [passed, failed]
+  classification: [public, internal, confidential, personal, sensitive]
+  personalBasis: [consentId, legalBasis]
+  protectedEvidenceRequiresIndependentVerification: true
+controlResult:
+  status: [passed, failed, not_evidenced, not_applicable]
+bundle:
+  hash: sha256-canonical-snapshot
+  reviewerMustDifferFrom: preparedBy
+invariants:
+  - tenant-isolation
+  - evidence-provenance
+  - unique-evidence-identifiers
+  - strict-period-boundaries
+  - evidence-freshness
+  - missing-evidence-is-not-pass
+  - tamper-evident-bundle
+  - independent-review
+  - no-raw-evidence-or-secret-payloads
+errors:
+  - { code: COMPLIANCE_RUN_UNAUTHORIZED, path: actorId }
+  - { code: COMPLIANCE_TENANT_MISMATCH, path: evidence.tenantId }
+  - { code: COMPLIANCE_EVIDENCE_HASH_INVALID, path: evidence.contentHash }
+  - { code: COMPLIANCE_PRIVACY_BASIS_REQUIRED, path: evidence.consentId/legalBasis }
+  - { code: COMPLIANCE_REVIEW_INDEPENDENT_REQUIRED, path: reviewerId }
+  - { code: COMPLIANCE_BUNDLE_HASH_MISMATCH, path: snapshotHash }
