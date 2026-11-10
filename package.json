@@ -8,9 +8,11 @@
     "typecheck": "tsc --noEmit",
     "forger": "node scripts/forger.mjs",
     "seo:check": "npm run forger && node --test test/forger.test.ts",
-    "test:inference": "tsx --test test/proposal-inference.test.ts"
+    "test:inference": "tsx --test test/proposal-inference.test.ts",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "@types/node": "^24.10.0"
