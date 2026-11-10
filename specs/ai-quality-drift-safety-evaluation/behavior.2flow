@@ -1,0 +1,16 @@
+validate_evaluation_snapshot -(valid)-> verify_snapshot_hash
+validate_evaluation_snapshot -(invalid)-> reject_evaluation
+verify_snapshot_hash -(valid)-> validate_comparison_scope_and_thresholds
+verify_snapshot_hash -(mismatch)-> reject_tampered_snapshot
+validate_comparison_scope_and_thresholds -(valid)-> match_baseline_and_current_cases
+validate_comparison_scope_and_thresholds -(tenant_model_or_dataset_mismatch)-> reject_comparison
+match_baseline_and_current_cases -(coverage_sufficient)-> calculate_overall_and_category_scores
+match_baseline_and_current_cases -(coverage_insufficient)-> block_comparison
+calculate_overall_and_category_scores -(regression)-> emit_quality_drift
+calculate_overall_and_category_scores -(stable)-> evaluate_safety_results
+evaluate_safety_results -(critical_regression)-> block_release
+evaluate_safety_results -(safety_pass_rate_below_minimum)-> block_release
+evaluate_safety_results -(within_threshold)-> report_comparison
+emit_quality_drift -(complete)-> evaluate_safety_results
+block_release -(complete)-> return_release_block_decision
+report_comparison -(complete)-> return_evaluation_drift_report
