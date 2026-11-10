@@ -97,3 +97,24 @@ test("rejects invalid identity and generation timestamps", () => {
     tenantId: "tenant_001", proposalId: "proposal_004", version: 1,
   }, new Date("invalid")), /DISCOVERY_PROPOSAL_CLOCK_INVALID/);
 });
+
+test("does not reuse a stale value marked unknown and reports missing company context", () => {
+  const stale = {
+    source: "discovery",
+    answers: {
+      company_name: { value: "Nome antigo", status: "unknown" as const },
+      segment: { value: "retail", status: "unknown" as const },
+      goal_target: { value: "Objetivo anterior", status: "unknown" as const },
+      baseline_value: { value: 10, status: "unknown" as const },
+    },
+  };
+  const result = mapDiscoveryToOutcomeProposal(stale, {
+    tenantId: "tenant_001", proposalId: "proposal_005", version: 1,
+  });
+  assert.equal(result.proposal.customer.name, "");
+  assert.equal(result.proposal.customer.sector, "");
+  assert.equal(result.proposal.desiredOutcome, "");
+  assert.equal(result.proposal.metric.baseline, undefined);
+  assert.ok(result.unmapped.includes("company_name"));
+  assert.ok(result.unmapped.includes("segment"));
+});
