@@ -21,6 +21,8 @@ const signals: OutcomeSignal[] = [
   { kind: "log", id: "l1", occurredAt: "2026-11-10T12:00:02.000Z", context, level: "info", event: "workflow.task.completed", attributes: { task: "settlement", customerEmail: "private@example.com" } },
   { kind: "trace", id: "t1", occurredAt: "2026-11-10T12:00:01.000Z", context, name: "outcome.execute" },
 ];
+const traceSignal = signals[2]! as Extract<OutcomeSignal, { kind: "trace" }>;
+const metricSignal = signals[0]! as Extract<OutcomeSignal, { kind: "metric" }>;
 
 test("correlates trace, log and metric signals by tenant, outcome, execution and W3C trace", () => {
   const result = correlateOutcomeSignals({
@@ -53,18 +55,18 @@ test("rejects cross-tenant and mismatched outcome or execution signals with stab
 test("rejects duplicate IDs, duplicate span definitions, invalid parent spans and mixed traces", () => {
   const base = { tenantId: "tenant_a", outcomeId: "outcome_1", executionId: "execution_1", now: new Date("2026-11-10T12:01:00.000Z") };
   assert.throws(() => correlateOutcomeSignals({ ...base, signals: [signals[0]!, signals[0]!] }), /CORRELATION_SIGNAL_DUPLICATE/);
-  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [signals[2]!, { ...signals[2]!, id: "t2" }] }), /CORRELATION_SPAN_DUPLICATE/);
-  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...signals[2]!, parentSpanId: "bad" }] }), /CORRELATION_SPAN_INVALID/);
-  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [signals[2]!, { ...signals[0]!, context: { ...context, traceId: "c".repeat(32) } }] }), /CORRELATION_TRACE_MISMATCH/);
-  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...signals[2]!, context: { ...context, traceId: "0".repeat(32) } }] }), /TRACE_ID_INVALID/);
+  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [traceSignal, { ...traceSignal, id: "t2" }] }), /CORRELATION_SPAN_DUPLICATE/);
+  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...traceSignal, parentSpanId: "bad" }] }), /CORRELATION_SPAN_INVALID/);
+  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [traceSignal, { ...metricSignal, context: { ...context, traceId: "c".repeat(32) } }] }), /CORRELATION_TRACE_MISMATCH/);
+  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...traceSignal, context: { ...context, traceId: "0".repeat(32) } }] }), /TRACE_ID_INVALID/);
 });
 
 test("rejects malformed, future and out-of-scope signals and invalid metric values", () => {
   const base = { tenantId: "tenant_a", outcomeId: "outcome_1", executionId: "execution_1", now: new Date("2026-11-10T12:01:00.000Z") };
   assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...signals[0]!, occurredAt: "yesterday" }] }), /CORRELATION_TIMESTAMP_INVALID/);
   assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...signals[0]!, occurredAt: "2026-11-10T12:02:00.000Z" }] }), /CORRELATION_TIMESTAMP_FUTURE/);
-  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...signals[0]!, value: Number.NaN }] }), /CORRELATION_METRIC_VALUE_INVALID/);
-  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...signals[0]!, name: " " }] }), /CORRELATION_SIGNAL_INVALID/);
+  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...metricSignal, value: Number.NaN }] }), /CORRELATION_METRIC_VALUE_INVALID/);
+  assert.throws(() => correlateOutcomeSignals({ ...base, signals: [{ ...metricSignal, name: " " }] }), /CORRELATION_SIGNAL_INVALID/);
 });
 
 test("requires at least one signal and refuses empty or invalid correlation scope", () => {
