@@ -11,7 +11,7 @@ import { mapDiscoveryToOutcomeProposal, type DiscoverySnapshot, type DiscoveryPr
 
 export interface AuthenticatedActor { tenantId: string; actorId: string; roles: readonly string[] }
 export type Authenticate = (request: IncomingMessage) => Promise<AuthenticatedActor | undefined>;
-export type Authorize = (actor: AuthenticatedActor, action: string, resource?: OutcomeCase) => boolean | Promise<boolean>;
+export type Authorize = (actor: AuthenticatedActor, action: string, resource?: OutcomeCase | PersistedProposal) => boolean | Promise<boolean>;
 export interface OutcomeHttpOptions { store: OutcomeStore; proposalStore?: ProposalStore; authenticate: Authenticate; authorize: Authorize; now?: () => Date }
 type JsonObject = Record<string, unknown>;
 
@@ -96,18 +96,18 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
         const currentProposal = await proposalStore.get(actor.tenantId, proposalId);
         if (!currentProposal) { send(response, 404, { error: "PROPOSAL_NOT_FOUND", correlationId }); return; }
         if (proposalParts.length === 3 && request.method === "GET") {
-          if (!(await options.authorize(actor, "proposal.read"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          if (!(await options.authorize(actor, "proposal.read", currentProposal))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
           send(response, 200, { value: currentProposal, correlationId }); return;
         }
         if (proposalParts[3] === "events" && request.method === "GET") {
-          if (!(await options.authorize(actor, "proposal.audit.read"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          if (!(await options.authorize(actor, "proposal.audit.read", currentProposal))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
           send(response, 200, { value: await proposalStore.events(actor.tenantId, proposalId), correlationId }); return;
         }
         if (proposalParts[3] === "review" && request.method === "POST" && proposalParts.length === 4) {
           const input = await readBody(request);
           if (input.decision !== "approve" && input.decision !== "reject") throw Object.assign(new Error("PROPOSAL_REVIEW_DECISION_INVALID"), { statusCode: 400 });
           const action = input.decision === "approve" ? "proposal.approve" : "proposal.reject";
-          if (!(await options.authorize(actor, action))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          if (!(await options.authorize(actor, action, currentProposal))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
           if (typeof input.expectedVersion !== "number" || !Number.isInteger(input.expectedVersion) || input.expectedVersion < 1) throw Object.assign(new Error("PROPOSAL_EXPECTED_VERSION_REQUIRED"), { statusCode: 400 });
           const reason = input.decision === "reject" ? requiredString(input.reason, "PROPOSAL_REJECTION_REASON_REQUIRED") : undefined;
           const timestamp = now().toISOString();
