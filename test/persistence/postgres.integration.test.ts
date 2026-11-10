@@ -153,7 +153,10 @@ test("PostgreSQL migration and transactional outcome persistence", { skip: !data
     await assert.rejects(()=>client.unsafe("delete from intent_versions where tenant_id=$1 and intent_id=$2",[tenantId,intentSnapshot.id]),/INTENT_VERSION_APPEND_ONLY/);
   } finally {
     await client.unsafe("delete from outcome_proposal_idempotency where tenant_id = $1", [tenantId]);
-    await client.unsafe("delete from outcome_proposal_events where tenant_id = $1", [tenantId]);
+    await client.begin(async tx => {
+      await tx.unsafe("select set_config($1, $2, true)", ["app.allow_outcome_proposal_event_purge", "on"]);
+      await tx.unsafe("delete from outcome_proposal_events where tenant_id = $1", [tenantId]);
+    });
     await client.unsafe("delete from outcome_proposals where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from authorization_decisions where tenant_id = $1", [tenantId]);
     await client.unsafe("delete from authorization_grants where tenant_id = $1", [tenantId]);
