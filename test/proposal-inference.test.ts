@@ -107,8 +107,8 @@ test("every solution signal is reachable from its exact customer answer",()=>{
 test("all pairs of distinct signal answers combine without losing traceability",()=>{
  const signals=graph.solutions.flatMap(solution=>solution.signals.map(signal=>({solutionId:solution.id,signal})));
  for(let i=0;i<signals.length;i++)for(let j=i+1;j<signals.length;j++){
-  const first=signals[i],second=signals[j];
-  const split=(signal:string)=>{const at=signal.indexOf(":");return [signal.slice(0,at),signal.slice(at+1)]};
+  const first=signals[i]!,second=signals[j]!;
+  const split=(signal:string):[string,string]=>{const at=signal.indexOf(":");return [signal.slice(0,at),signal.slice(at+1)]};
   const [q1,v1]=split(first.signal),[q2,v2]=split(second.signal);
   if(q1===q2&&v1!==v2)continue;
   const proposal=make({[q1]:{value:v1},[q2]:{value:v2}});
