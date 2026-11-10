@@ -1,0 +1,15 @@
+validate_slo_policy -(valid)-> validate_tenant_observations
+validate_slo_policy -(invalid)-> reject_with_stable_error
+validate_tenant_observations -(valid)-> select_window_and_check_sample_floor
+validate_tenant_observations -(invalid_or_cross_tenant)-> reject_without_side_effect
+select_window_and_check_sample_floor -(enough_samples)-> calculate_availability_error_rate_and_p95
+select_window_and_check_sample_floor -(insufficient_samples)-> return_insufficient_data
+calculate_availability_error_rate_and_p95 -(within_targets)-> return_healthy
+calculate_availability_error_rate_and_p95 -(target_breach)-> return_breached
+validate_health_probes -(valid)-> aggregate_freshness_and_criticality
+validate_health_probes -(invalid_or_cross_tenant)-> reject_with_stable_error
+aggregate_freshness_and_criticality -(complete)-> return_health_status
+validate_trace_context -(valid)-> redact_and_bound_telemetry_attributes
+validate_trace_context -(invalid)-> reject_trace_event
+redact_and_bound_telemetry_attributes -(valid)-> return_immutable_correlated_event
+redact_and_bound_telemetry_attributes -(invalid)-> reject_telemetry_event
