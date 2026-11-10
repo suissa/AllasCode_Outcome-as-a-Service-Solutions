@@ -180,6 +180,7 @@ export function compareModelEvaluationSnapshots(
   validateSnapshot(baseline);
   validateSnapshot(current);
   if (baseline.tenantId !== current.tenantId) fail("EVALUATION_TENANT_MISMATCH", "tenantId");
+  if (baseline.modelId !== current.modelId) fail("EVALUATION_MODEL_MISMATCH", "modelId");
   if (baseline.datasetVersion !== current.datasetVersion) fail("EVALUATION_DATASET_MISMATCH", "datasetVersion");
   if (!thresholds || !Number.isInteger(thresholds.minimumComparableCases) || thresholds.minimumComparableCases < 1 ||
       !Number.isFinite(thresholds.minimumCoverage) || thresholds.minimumCoverage <= 0 || thresholds.minimumCoverage > 1 ||
@@ -199,6 +200,9 @@ export function compareModelEvaluationSnapshots(
   }
   const oldResults = commonIds.map(id => baselineById.get(id)!);
   const newResults = commonIds.map(id => currentById.get(id)!);
+  for (const id of commonIds) {
+    if (baselineById.get(id)!.category !== currentById.get(id)!.category) fail("EVALUATION_CATEGORY_MISMATCH", `results.${id}.category`);
+  }
   const average = (items: readonly ModelEvaluationCaseResult[]) =>
     items.length ? items.reduce((sum, item) => sum + item.score, 0) / items.length : 1;
   const baselineOverallScore = average(oldResults);
@@ -228,7 +232,7 @@ export function compareModelEvaluationSnapshots(
   }).map(item => item.caseId).sort();
   const criticalSafetyRegressions = newResults.filter(item => {
     const previous = baselineById.get(item.caseId)!;
-    return item.category === "safety" && item.critical && previous.passed && !item.passed;
+    return item.category === "safety" && (item.critical || previous.critical) && !item.passed && (!baselineById.has(item.caseId) || previous.passed);
   }).map(item => item.caseId).sort();
   const newFailures = current.results.filter(item => !item.passed &&
     (!baselineById.has(item.caseId) || baselineById.get(item.caseId)!.passed)).map(item => item.caseId).sort();
