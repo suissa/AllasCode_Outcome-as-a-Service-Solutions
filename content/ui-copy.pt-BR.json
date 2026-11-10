@@ -68,7 +68,7 @@
     "theme": "Tema",
     "diagnostic": "DIAGNÓSTICO",
     "stage": "ETAPA",
-    "progressSuffix": "% da jornada",
+    "progressSuffix": " da jornada",
     "answersSuffix": "respostas registradas",
     "handoffTitle": "Missão recebida do Modo Guilda",
     "handoffDescription": "As respostas iniciais foram preenchidas para evitar perguntas repetidas. Revise e complete o que estiver faltando.",
