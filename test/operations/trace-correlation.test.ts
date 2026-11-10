@@ -85,5 +85,6 @@ test("bounds and sanitizes structured attributes without changing source records
   assert.throws(() => correlateOutcomeSignals({
     tenantId: "tenant_a", outcomeId: "outcome_1", executionId: "execution_1",
     signals: [{ ...input, attributes: Object.fromEntries(Array.from({ length: 33 }, (_, i) => ["k" + i, i])) }],
+    now: new Date("2026-11-10T12:01:00.000Z"),
   }), /TELEMETRY_ATTRIBUTES_LIMIT/);
 });
