@@ -1,0 +1,12 @@
+version = "1.0"
+require_tenant_id = true
+require_workspace_id = true
+require_actor_id = true
+require_correlation_id = true
+always_scope_queries_by_tenant = true
+always_scope_queries_by_workspace = true
+reject_mixed_scope_collections = true
+require_active_membership = true
+enforce_membership_expiry = true
+enforce_role_permission_ceiling = true
+reveal_scope_ids_in_errors = false
