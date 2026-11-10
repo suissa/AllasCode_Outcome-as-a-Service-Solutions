@@ -106,3 +106,5 @@ These additions increase implementation depth and CI coverage, but do not close 
 | #19 | Structured outcome/scope/deadline/constraint extraction with confidence and ambiguity gates | `src/intent/intent.ts`; `test/discovery/intake.test.ts`; `specs/intent-extraction/` |
 
 | #20 | Explicit field/ambiguity questions and fail-closed routing before discovery | `src/discovery/intake.ts`; `test/discovery/intake.test.ts`; `specs/intent-clarification/` |
+
+| #21 | Strict completeness/rule validation, scope/domain/deadline constraints and immutable diagnostics | `src/discovery/qualification.ts`; `test/discovery/intake.test.ts`; `specs/intent-qualification/` |

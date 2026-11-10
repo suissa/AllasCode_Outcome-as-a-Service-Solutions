@@ -1,0 +1,9 @@
+[qualification]
+reject_blank_required_fields = true
+scope_minimum_default = 0
+reject_malformed_scope = true
+domain_matching = "exact"
+reject_unknown_domain = true
+validate_deadline_when_max_configured = true
+reject_past_deadlines = true
+reject_deadlines_beyond_max = true

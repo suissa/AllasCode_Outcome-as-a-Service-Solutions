@@ -1,0 +1,28 @@
+version: "1.0"
+behavior: intent-qualification
+input:
+  intent: { type: object, required: true }
+  rule:
+    type: object
+    required: true
+    properties:
+      id: { type: identifier, required: true }
+      requiredFields: { type: array, itemType: identifier }
+      minimumScopeItems: { type: integer, minimum: 0 }
+      allowedDomains: { type: array, itemType: text }
+      maxDeadlineDays: { type: decimal, minimum: 0, required: false }
+output:
+  qualified: { type: boolean }
+  missing: { type: array, itemType: identifier }
+  reasons: { type: array, itemType: error-code }
+  ruleId: { type: identifier }
+errors:
+  - QUALIFICATION_INPUT_INVALID
+  - QUALIFICATION_RULE_INVALID
+  - QUALIFICATION_CLOCK_INVALID
+  - SCOPE_INVALID
+  - SCOPE_ITEM_INVALID
+  - SCOPE_TOO_SMALL
+  - DOMAIN_NOT_ALLOWED
+  - DEADLINE_INVALID
+  - DEADLINE_OUT_OF_RANGE
