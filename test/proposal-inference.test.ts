@@ -56,6 +56,7 @@ test("graph nodes and every association edge resolve to existing nodes",()=>{
   assert.ok(nodeIds.has(edge.from),`missing edge source ${edge.from}`);
   assert.ok(nodeIds.has(edge.to),`missing edge target ${edge.to}`);
  }
+ for(const edge of graph.edges)assert.ok(!(edge.type==="evidence-signal"&&/:unknown$/i.test(edge.from)),"unknown answer cannot connect to a solution");
  for(const mapping of graph.answerMappings){
   for(const [value,association] of Object.entries(mapping.values)){
    assert.ok(graph.dimensions.some(dimension=>dimension.id===association.dimensionId),`unknown dimension ${mapping.questionId}=${value}`);
