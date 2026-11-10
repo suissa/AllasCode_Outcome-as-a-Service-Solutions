@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { runInNewContext } from "node:vm";
 const root=process.cwd();
 async function load<T>(path:string):Promise<T>{return JSON.parse(await readFile(join(root,path),"utf8")) as T;}
 test("pages reference existing layouts, templates and resolvable JSON content",async()=>{
@@ -72,4 +73,37 @@ test("entry HTML delegates behavior to scripts declared by the layout",async()=>
     assert.ok(layout.scripts && layout.scripts.length>0,`${id} must declare runtime scripts`);
     for(const script of layout.scripts||[]) await readFile(join(root,script),"utf8");
   }
+});
+
+test("page loader mounts templates and loads layout scripts from nested entries",async()=>{
+  const loader=await readFile(join(root,"page-config.js"),"utf8");
+  const window:Record<string,any>={};
+  const mounted:{innerHTML:string}={innerHTML:""};
+  const scriptUrls:string[]=[];
+  const document:any={
+    baseURI:"https://example.test/descoberta/index.html",
+    body:{dataset:{oaasPage:"discovery",configRoot:"../"},append:(element:any)=>{scriptUrls.push(element.src);element.onload?.();}},
+    head:{append:(element:any)=>element.onload?.()},
+    documentElement:{dataset:{}},
+    title:"",
+    getElementById:(id:string)=>id==="oaas-page-root"?mounted:null,
+    createElement:(tag:string)=>({tag,dataset:{}}),
+    dispatchEvent:()=>true
+  };
+  const payloads:Record<string,any>={
+    "pages/pt-BR/discovery.json":{id:"discovery",layout:"discovery",title:"Discovery",contentRefs:["discovery.stages"],sections:[]},
+    "layouts/discovery.json":{id:"discovery",template:"layouts/discovery.html",stylesheet:"layouts/discovery.css",scripts:["runtime/discovery.js"]},
+    "content/discovery.pt-BR.json":{stages:[]}
+  };
+  const fetch=async(input:unknown)=>{
+    const path=new URL(String(input)).pathname.slice(1);
+    const value=path==="layouts/discovery.html"?"<main>Loaded</main>":payloads[path];
+    return {ok:value!==undefined,json:async()=>value,text:async()=>String(value)};
+  };
+  runInNewContext(loader,{window,document,fetch,URL,CustomEvent:class{constructor(public type:string,public init?:unknown){}},console});
+  await window.OaaSPageReady;
+  await window.OaaSPageScriptsReady;
+  assert.equal(mounted.innerHTML,"<main>Loaded</main>");
+  assert.equal(document.title,"Discovery");
+  assert.deepEqual(scriptUrls,["https://example.test/runtime/discovery.js"]);
 });
