@@ -20,6 +20,10 @@ The caller supplies tenant and proposal identity. A reviewer or later workflow m
 
 Missing enrichment is represented in the proposal readiness blockers and the bridge's `unmapped` list. A draft may become `ready_for_review` only when the existing proposal readiness rules are satisfied. This status is not acceptance or authorization to execute.
 
+## HTTP preview endpoint
+
+The HTTP server exposes `POST /v1/proposals/preview`. It requires an authenticated actor and the `proposal.preview` authorization action. The server overrides any client-supplied tenant ID, proposal ID and version with the authenticated tenant and a generated preview identity. It returns the draft, source traceability and missing enrichment fields. The endpoint is a non-persistent preview: it does not save customer answers or proposals.
+
 ## Current integration boundary
 
-This is a domain-level adapter and is exported from the package entry point. It does not yet read browser localStorage, persist proposals, expose an authenticated proposal API, or transmit customer Discovery data. The browser flow continues to store its answers locally until a separately reviewed server-side intake and persistence path is implemented.
+The domain adapter and authenticated preview endpoint are implemented. The browser page still stores answers in localStorage and is not yet configured to transmit them to this endpoint. Persistent proposal storage, a browser consent/submit flow and a customer-facing proposal review screen remain separate steps.
