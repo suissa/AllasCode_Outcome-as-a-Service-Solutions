@@ -149,7 +149,7 @@ test("postmortem rejects missing or unverified evidence and malformed action ite
   }, { authorize: async () => true, verifyEvidence: async () => true }), /POSTMORTEM_ACTION_INVALID/);
 });
 
-test("incident severity, timestamps and feedback windows fail closed", () => {
+test("incident severity, timestamps and feedback windows fail closed", async () => {
   const invalid = { ...incident, severity: "sev0" as never };
   const invalidStore = new MemoryIncidentFeedbackStore();
   invalidStore.incidents.set("tenant_a:inc_1", invalid);
