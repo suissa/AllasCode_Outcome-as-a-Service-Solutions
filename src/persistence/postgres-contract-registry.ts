@@ -9,7 +9,7 @@ const canonical = (value: unknown): string => {
  if(value===null||typeof value!=="object")return JSON.stringify(value)??"null";
  if(Array.isArray(value))return "["+value.map(canonical).join(",")+"]";
  const object=value as Record<string,unknown>;
- return "{"+Object.keys(object).sort().map(k=>JSON.stringify(k)+":"+canonical(object[k])).join(",")+"}";
+ return "{"+Object.keys(object).filter(k=>object[k]!==undefined).sort().map(k=>JSON.stringify(k)+":"+canonical(object[k])).join(",")+"}";
 };
 const toEvent = (row: EventRow): ContractEvent => row.payload ? decode(row.payload) : ({
  tenantId:row.tenant_id,contractId:row.contract_id,eventId:row.event_id,revision:Number(row.revision),
