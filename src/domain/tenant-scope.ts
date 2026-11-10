@@ -45,6 +45,6 @@ export function requireTenantScope(scope: TenantScope | null | undefined): Tenan
       /\\s/.test(scope.actorId) || /\\s/.test(scope.correlationId)) {
     throw new TenantIsolationError("scope", "tenant_missing" as TenantId, "record_missing" as TenantId);
   }
-  const tenantId = parseEntityId("tenant", scope.tenantId, "scope.tenantId");
-  return Object.freeze({ ...scope, tenantId });
+  parseEntityId("tenant", scope.tenantId, "scope.tenantId");
+  return scope;
 }
