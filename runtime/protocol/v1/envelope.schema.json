@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oaas.quest/protocol/runtime/v1/envelope.schema.json",
+  "title": "OaaS Quest Runtime Protocol v1",
+  "oneOf": [
+    { "$ref": "#/$defs/request" },
+    { "$ref": "#/$defs/response" }
+  ],
+  "$defs": {
+    "referenceList": {
+      "type": "array",
+      "maxItems": 128,
+      "items": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "\\S" }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocolVersion", "tenantId", "executionId", "behaviorId", "command", "inputDigest", "policyDigest", "proofRefs"],
+      "properties": {
+        "protocolVersion": { "const": "1" },
+        "tenantId": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "\\S" },
+        "executionId": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "\\S" },
+        "behaviorId": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "\\S" },
+        "command": { "enum": ["validate-contract", "evaluate-policy", "execute-approved-behavior", "verify-invariant"] },
+        "inputDigest": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "\\S" },
+        "policyDigest": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "\\S" },
+        "proofRefs": { "$ref": "#/$defs/referenceList" }
+      }
+    },
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protocolVersion", "executionId", "status", "evidenceRefs"],
+      "properties": {
+        "protocolVersion": { "const": "1" },
+        "executionId": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "\\S" },
+        "status": { "enum": ["accepted", "rejected", "completed", "failed"] },
+        "outputDigest": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "\\S" },
+        "evidenceRefs": { "$ref": "#/$defs/referenceList" },
+        "errorCode": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "\\S" }
+      },
+      "allOf": [
+        { "if": { "properties": { "status": { "const": "completed" } }, "required": ["status"] }, "then": { "required": ["outputDigest"] } },
+        { "if": { "properties": { "status": { "const": "failed" } }, "required": ["status"] }, "then": { "required": ["errorCode"] } }
+      ]
+    }
+  }
+}
