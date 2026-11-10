@@ -8,8 +8,8 @@ export interface QualificationRule {
 
 export interface QualificationDecision {
   qualified: boolean;
-  missing: string[];
-  reasons: string[];
+  missing: readonly string[];
+  reasons: readonly string[];
   ruleId: string;
 }
 
