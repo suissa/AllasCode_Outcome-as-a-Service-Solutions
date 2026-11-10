@@ -160,6 +160,10 @@
     "downloadHint": "No diálogo de impressão, escolha “Salvar como PDF”.",
     "emptyState": "Nenhuma resposta da descoberta foi encontrada neste navegador. Volte à descoberta e gere a proposta novamente.",
     "printDate": "Data de geração",
-    "footer": "Documento de trabalho · Não constitui diagnóstico, orçamento ou compromisso de resultado."
+    "footer": "Documento de trabalho · Não constitui diagnóstico, orçamento ou compromisso de resultado.",
+    "relatedAreas": "Áreas relacionadas às respostas",
+    "relatedAreasHint": "Estas áreas apareceram como contexto nas respostas. Não representam, por si só, problemas identificados ou recomendações confirmadas.",
+    "noRelatedAreas": "Nenhuma área de trabalho foi associada ao contexto informado.",
+    "contextMentions": "respostas relacionadas"
   }
 }
