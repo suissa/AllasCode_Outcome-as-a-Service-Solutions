@@ -11,5 +11,8 @@
     "questions",
     "diagnostic",
     "export"
+  ],
+  "scripts": [
+    "runtime/discovery.js"
   ]
 }
