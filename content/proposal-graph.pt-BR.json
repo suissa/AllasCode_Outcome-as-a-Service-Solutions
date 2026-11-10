@@ -1252,7 +1252,7 @@
           "dimensionId": "company-profile",
           "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1304,6 +1304,12 @@
           "moduleIds": [],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "industry-context",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1337,6 +1343,12 @@
           "moduleIds": [],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "operating-maturity",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1388,6 +1400,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "operating-capacity",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1451,6 +1469,12 @@
           "moduleIds": [],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "desired-outcome",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1471,7 +1495,7 @@
           "dimensionId": "desired-outcome",
           "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1511,6 +1535,12 @@
           "moduleIds": [],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "timeline",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1533,11 +1563,9 @@
         },
         "$unknown": {
           "dimensionId": "success-criteria",
-          "moduleIds": [
-            "analytics"
-          ],
+          "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1581,6 +1609,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "commercial-model",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1620,6 +1654,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "sales-channels",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1703,6 +1743,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "sales-channels",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1725,11 +1771,9 @@
         },
         "$unknown": {
           "dimensionId": "sales-process",
-          "moduleIds": [
-            "sales"
-          ],
+          "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1796,6 +1840,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "technology-landscape",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1851,6 +1901,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "integration-readiness",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1926,6 +1982,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "data-coverage",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -1983,6 +2045,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "data-access",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2005,11 +2073,9 @@
         },
         "$unknown": {
           "dimensionId": "financial-baseline",
-          "moduleIds": [
-            "finance"
-          ],
+          "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2034,12 +2100,9 @@
         },
         "$unknown": {
           "dimensionId": "commercial-baseline",
-          "moduleIds": [
-            "sales",
-            "analytics"
-          ],
+          "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2064,12 +2127,9 @@
         },
         "$unknown": {
           "dimensionId": "commercial-baseline",
-          "moduleIds": [
-            "sales",
-            "analytics"
-          ],
+          "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2092,11 +2152,9 @@
         },
         "$unknown": {
           "dimensionId": "profitability-baseline",
-          "moduleIds": [
-            "finance"
-          ],
+          "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2140,6 +2198,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "profitability-baseline",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2188,6 +2252,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "data-reliability",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2281,6 +2351,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "acquisition",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2326,6 +2402,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "acquisition-measurement",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2365,6 +2447,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "acquisition-measurement",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2416,6 +2504,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "lead-management",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2464,6 +2558,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "lead-management",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2509,6 +2609,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "lead-management",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2564,6 +2670,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "retention",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2603,6 +2715,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "retention",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2650,6 +2768,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "retention",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2701,6 +2825,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "retention-measurement",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2736,6 +2866,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "operating-capacity",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2825,6 +2961,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "operational-bottleneck",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2880,6 +3022,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "automation-potential",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2904,12 +3052,9 @@
         },
         "$unknown": {
           "dimensionId": "offer-portfolio",
-          "moduleIds": [
-            "sales",
-            "finance"
-          ],
+          "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -2957,6 +3102,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "profitability-visibility",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3004,6 +3155,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "profitability-visibility",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3039,6 +3196,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "inventory-scope",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3096,6 +3259,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "inventory-control",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3165,6 +3334,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "inventory-availability",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3225,6 +3400,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "inventory-demand",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3303,6 +3484,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "procurement",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3354,6 +3541,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "procurement",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3411,6 +3604,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "supplier-context",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3471,6 +3670,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "procurement-automation",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3522,6 +3727,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "financial-management",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3578,6 +3789,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "cash-visibility",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3625,6 +3842,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "profitability-visibility",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3682,6 +3905,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "working-capital",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3749,6 +3978,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "marketing-channels",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3804,6 +4039,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "campaign-operations",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3849,6 +4090,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "customer-data",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3885,6 +4132,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "customer-engagement",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3941,6 +4194,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "campaign-measurement",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -3995,6 +4254,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "service-performance",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4056,6 +4321,12 @@
             }
           ],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "conversion-measurement",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4116,6 +4387,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "conversion-loss",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4189,6 +4466,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "conversion-loss",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4237,6 +4520,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "customer-visibility",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4276,6 +4565,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "customer-relationship",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4315,6 +4610,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "customer-feedback",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4354,6 +4655,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "customer-feedback",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4402,6 +4709,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "conversion-recovery",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4441,6 +4754,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "conversion-evidence",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4465,12 +4784,9 @@
         },
         "$unknown": {
           "dimensionId": "conversion-baseline",
-          "moduleIds": [
-            "sales",
-            "analytics"
-          ],
+          "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4495,12 +4811,9 @@
         },
         "$unknown": {
           "dimensionId": "conversion-context",
-          "moduleIds": [
-            "sales",
-            "crm"
-          ],
+          "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4592,6 +4905,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "success-criteria",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4614,11 +4933,9 @@
         },
         "$unknown": {
           "dimensionId": "success-criteria",
-          "moduleIds": [
-            "analytics"
-          ],
+          "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4641,11 +4958,9 @@
         },
         "$unknown": {
           "dimensionId": "success-criteria",
-          "moduleIds": [
-            "analytics"
-          ],
+          "moduleIds": [],
           "solutionLinks": [],
-          "interpretation": "Resposta ausente ou desconhecida; manter como lacuna, sem inferir problema."
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4712,6 +5027,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "measurement-readiness",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4769,6 +5090,12 @@
           "moduleIds": [],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "priority",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4804,6 +5131,12 @@
           ],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "investment-constraint",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4843,6 +5176,12 @@
           "moduleIds": [],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "timeline",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4882,6 +5221,12 @@
           "moduleIds": [],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "constraints",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4921,6 +5266,12 @@
           "moduleIds": [],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "governance",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     },
@@ -4948,6 +5299,12 @@
           "moduleIds": [],
           "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
+        },
+        "$unknown": {
+          "dimensionId": "validation-status",
+          "moduleIds": [],
+          "solutionLinks": [],
+          "interpretation": "Resposta ausente ou desconhecida; não deve gerar hipótese de problema."
         }
       }
     }
@@ -9866,6 +10223,468 @@
       "to": "solution:SOL-OPS-003",
       "type": "proposal-module",
       "weight": 0.5
+    },
+    {
+      "from": "answer:company_name:$unknown",
+      "to": "dimension:company-profile",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:segment:$unknown",
+      "to": "dimension:industry-context",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:years_active:$unknown",
+      "to": "dimension:operating-maturity",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:team_size:$unknown",
+      "to": "dimension:operating-capacity",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:main_goal:$unknown",
+      "to": "dimension:desired-outcome",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:goal_target:$unknown",
+      "to": "dimension:desired-outcome",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:goal_deadline:$unknown",
+      "to": "dimension:timeline",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:success_definition:$unknown",
+      "to": "dimension:success-criteria",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:business_model:$unknown",
+      "to": "dimension:commercial-model",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:sales_mode:$unknown",
+      "to": "dimension:sales-channels",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:channels:$unknown",
+      "to": "dimension:sales-channels",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:sales_process:$unknown",
+      "to": "dimension:sales-process",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:systems:$unknown",
+      "to": "dimension:technology-landscape",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:integration:$unknown",
+      "to": "dimension:integration-readiness",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:records:$unknown",
+      "to": "dimension:data-coverage",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:data_access:$unknown",
+      "to": "dimension:data-access",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:monthly_revenue:$unknown",
+      "to": "dimension:financial-baseline",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:monthly_sales:$unknown",
+      "to": "dimension:commercial-baseline",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:average_ticket:$unknown",
+      "to": "dimension:commercial-baseline",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:margin_value:$unknown",
+      "to": "dimension:profitability-baseline",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:margin_type:$unknown",
+      "to": "dimension:profitability-baseline",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:metrics_source:$unknown",
+      "to": "dimension:data-reliability",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:acquisition_channels:$unknown",
+      "to": "dimension:acquisition",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:new_customer_tracking:$unknown",
+      "to": "dimension:acquisition-measurement",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:channel_attribution:$unknown",
+      "to": "dimension:acquisition-measurement",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:lead_registration:$unknown",
+      "to": "dimension:lead-management",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:customer_followup:$unknown",
+      "to": "dimension:lead-management",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:abandonment_tracking:$unknown",
+      "to": "dimension:lead-management",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:repeat_purchase:$unknown",
+      "to": "dimension:retention",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:purchase_interval:$unknown",
+      "to": "dimension:retention",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:loyalty_program:$unknown",
+      "to": "dimension:retention",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:repeat_tracking:$unknown",
+      "to": "dimension:retention-measurement",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:growth_capacity:$unknown",
+      "to": "dimension:operating-capacity",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:operational_bottleneck:$unknown",
+      "to": "dimension:operational-bottleneck",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:repetitive_tasks:$unknown",
+      "to": "dimension:automation-potential",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:main_offers:$unknown",
+      "to": "dimension:offer-portfolio",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:margin_knowledge:$unknown",
+      "to": "dimension:profitability-visibility",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:profitability_mix:$unknown",
+      "to": "dimension:profitability-visibility",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:has_inventory:$unknown",
+      "to": "dimension:inventory-scope",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:stock_control:$unknown",
+      "to": "dimension:inventory-control",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:stockout_frequency:$unknown",
+      "to": "dimension:inventory-availability",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:product_demand:$unknown",
+      "to": "dimension:inventory-demand",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:purchase_decision:$unknown",
+      "to": "dimension:procurement",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:replenishment:$unknown",
+      "to": "dimension:procurement",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:supplier_count:$unknown",
+      "to": "dimension:supplier-context",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:reorder_alerts:$unknown",
+      "to": "dimension:procurement-automation",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:finance_control:$unknown",
+      "to": "dimension:financial-management",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:cash_forecast:$unknown",
+      "to": "dimension:cash-visibility",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:monthly_profit:$unknown",
+      "to": "dimension:profitability-visibility",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:stock_financing:$unknown",
+      "to": "dimension:working-capital",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:marketing_channels:$unknown",
+      "to": "dimension:marketing-channels",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:campaign_frequency:$unknown",
+      "to": "dimension:campaign-operations",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:customer_base:$unknown",
+      "to": "dimension:customer-data",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:proactive_contact:$unknown",
+      "to": "dimension:customer-engagement",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:campaign_measurement:$unknown",
+      "to": "dimension:campaign-measurement",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:response_time:$unknown",
+      "to": "dimension:service-performance",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:conversion_tracking:$unknown",
+      "to": "dimension:conversion-measurement",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:abandonment_frequency:$unknown",
+      "to": "dimension:conversion-loss",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:abandonment_reason:$unknown",
+      "to": "dimension:conversion-loss",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:order_tracking:$unknown",
+      "to": "dimension:customer-visibility",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:after_sales:$unknown",
+      "to": "dimension:customer-relationship",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:complaints:$unknown",
+      "to": "dimension:customer-feedback",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:satisfaction:$unknown",
+      "to": "dimension:customer-feedback",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:lead_followup_quality:$unknown",
+      "to": "dimension:conversion-recovery",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:lost_sales_evidence:$unknown",
+      "to": "dimension:conversion-evidence",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:conversion_baseline:$unknown",
+      "to": "dimension:conversion-baseline",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:conversion_notes:$unknown",
+      "to": "dimension:conversion-context",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:primary_kpi:$unknown",
+      "to": "dimension:success-criteria",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:baseline_value:$unknown",
+      "to": "dimension:success-criteria",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:target_value:$unknown",
+      "to": "dimension:success-criteria",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:measurement_source:$unknown",
+      "to": "dimension:measurement-readiness",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:top_priority:$unknown",
+      "to": "dimension:priority",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:investment:$unknown",
+      "to": "dimension:investment-constraint",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:deadline:$unknown",
+      "to": "dimension:timeline",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:constraints:$unknown",
+      "to": "dimension:constraints",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:approver:$unknown",
+      "to": "dimension:governance",
+      "type": "unknown-gap",
+      "weight": 0
+    },
+    {
+      "from": "answer:diagnosis_validation:$unknown",
+      "to": "dimension:validation-status",
+      "type": "unknown-gap",
+      "weight": 0
     }
   ],
   "unknownPolicy": {
@@ -12244,6 +13063,390 @@
       "type": "solution",
       "label": "Indicadores de gestão",
       "moduleId": "analytics"
+    },
+    {
+      "id": "answer:segment:$unknown",
+      "type": "answer",
+      "questionId": "segment",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:years_active:$unknown",
+      "type": "answer",
+      "questionId": "years_active",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:team_size:$unknown",
+      "type": "answer",
+      "questionId": "team_size",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:main_goal:$unknown",
+      "type": "answer",
+      "questionId": "main_goal",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:goal_deadline:$unknown",
+      "type": "answer",
+      "questionId": "goal_deadline",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:business_model:$unknown",
+      "type": "answer",
+      "questionId": "business_model",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:sales_mode:$unknown",
+      "type": "answer",
+      "questionId": "sales_mode",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:channels:$unknown",
+      "type": "answer",
+      "questionId": "channels",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:systems:$unknown",
+      "type": "answer",
+      "questionId": "systems",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:integration:$unknown",
+      "type": "answer",
+      "questionId": "integration",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:records:$unknown",
+      "type": "answer",
+      "questionId": "records",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:data_access:$unknown",
+      "type": "answer",
+      "questionId": "data_access",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:margin_type:$unknown",
+      "type": "answer",
+      "questionId": "margin_type",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:metrics_source:$unknown",
+      "type": "answer",
+      "questionId": "metrics_source",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:acquisition_channels:$unknown",
+      "type": "answer",
+      "questionId": "acquisition_channels",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:new_customer_tracking:$unknown",
+      "type": "answer",
+      "questionId": "new_customer_tracking",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:channel_attribution:$unknown",
+      "type": "answer",
+      "questionId": "channel_attribution",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:lead_registration:$unknown",
+      "type": "answer",
+      "questionId": "lead_registration",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:customer_followup:$unknown",
+      "type": "answer",
+      "questionId": "customer_followup",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:abandonment_tracking:$unknown",
+      "type": "answer",
+      "questionId": "abandonment_tracking",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:repeat_purchase:$unknown",
+      "type": "answer",
+      "questionId": "repeat_purchase",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:purchase_interval:$unknown",
+      "type": "answer",
+      "questionId": "purchase_interval",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:loyalty_program:$unknown",
+      "type": "answer",
+      "questionId": "loyalty_program",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:repeat_tracking:$unknown",
+      "type": "answer",
+      "questionId": "repeat_tracking",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:growth_capacity:$unknown",
+      "type": "answer",
+      "questionId": "growth_capacity",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:operational_bottleneck:$unknown",
+      "type": "answer",
+      "questionId": "operational_bottleneck",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:repetitive_tasks:$unknown",
+      "type": "answer",
+      "questionId": "repetitive_tasks",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:margin_knowledge:$unknown",
+      "type": "answer",
+      "questionId": "margin_knowledge",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:profitability_mix:$unknown",
+      "type": "answer",
+      "questionId": "profitability_mix",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:has_inventory:$unknown",
+      "type": "answer",
+      "questionId": "has_inventory",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:stock_control:$unknown",
+      "type": "answer",
+      "questionId": "stock_control",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:stockout_frequency:$unknown",
+      "type": "answer",
+      "questionId": "stockout_frequency",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:product_demand:$unknown",
+      "type": "answer",
+      "questionId": "product_demand",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:purchase_decision:$unknown",
+      "type": "answer",
+      "questionId": "purchase_decision",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:replenishment:$unknown",
+      "type": "answer",
+      "questionId": "replenishment",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:supplier_count:$unknown",
+      "type": "answer",
+      "questionId": "supplier_count",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:reorder_alerts:$unknown",
+      "type": "answer",
+      "questionId": "reorder_alerts",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:finance_control:$unknown",
+      "type": "answer",
+      "questionId": "finance_control",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:cash_forecast:$unknown",
+      "type": "answer",
+      "questionId": "cash_forecast",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:monthly_profit:$unknown",
+      "type": "answer",
+      "questionId": "monthly_profit",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:stock_financing:$unknown",
+      "type": "answer",
+      "questionId": "stock_financing",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:marketing_channels:$unknown",
+      "type": "answer",
+      "questionId": "marketing_channels",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:campaign_frequency:$unknown",
+      "type": "answer",
+      "questionId": "campaign_frequency",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:customer_base:$unknown",
+      "type": "answer",
+      "questionId": "customer_base",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:proactive_contact:$unknown",
+      "type": "answer",
+      "questionId": "proactive_contact",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:campaign_measurement:$unknown",
+      "type": "answer",
+      "questionId": "campaign_measurement",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:response_time:$unknown",
+      "type": "answer",
+      "questionId": "response_time",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:conversion_tracking:$unknown",
+      "type": "answer",
+      "questionId": "conversion_tracking",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:abandonment_frequency:$unknown",
+      "type": "answer",
+      "questionId": "abandonment_frequency",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:abandonment_reason:$unknown",
+      "type": "answer",
+      "questionId": "abandonment_reason",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:order_tracking:$unknown",
+      "type": "answer",
+      "questionId": "order_tracking",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:after_sales:$unknown",
+      "type": "answer",
+      "questionId": "after_sales",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:complaints:$unknown",
+      "type": "answer",
+      "questionId": "complaints",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:satisfaction:$unknown",
+      "type": "answer",
+      "questionId": "satisfaction",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:lead_followup_quality:$unknown",
+      "type": "answer",
+      "questionId": "lead_followup_quality",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:lost_sales_evidence:$unknown",
+      "type": "answer",
+      "questionId": "lost_sales_evidence",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:primary_kpi:$unknown",
+      "type": "answer",
+      "questionId": "primary_kpi",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:measurement_source:$unknown",
+      "type": "answer",
+      "questionId": "measurement_source",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:top_priority:$unknown",
+      "type": "answer",
+      "questionId": "top_priority",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:investment:$unknown",
+      "type": "answer",
+      "questionId": "investment",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:deadline:$unknown",
+      "type": "answer",
+      "questionId": "deadline",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:constraints:$unknown",
+      "type": "answer",
+      "questionId": "constraints",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:approver:$unknown",
+      "type": "answer",
+      "questionId": "approver",
+      "value": "$unknown"
+    },
+    {
+      "id": "answer:diagnosis_validation:$unknown",
+      "type": "answer",
+      "questionId": "diagnosis_validation",
+      "value": "$unknown"
     }
   ]
 }
