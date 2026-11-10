@@ -1,0 +1,84 @@
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./archivo-100_900-latin-ext.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./archivo-100_900-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("./spline-sans-mono-300-latin-ext.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("./spline-sans-mono-300-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./spline-sans-mono-400-latin-ext.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./spline-sans-mono-400-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./spline-sans-mono-500-latin-ext.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./spline-sans-mono-500-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./spline-sans-mono-600-latin-ext.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./spline-sans-mono-600-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./spline-sans-mono-700-latin-ext.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./spline-sans-mono-700-latin.woff2") format("woff2");
+}

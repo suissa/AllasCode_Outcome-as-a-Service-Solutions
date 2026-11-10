@@ -43,6 +43,7 @@ The mechanism is outcome-based delivery with an explicit first cycle: baseline, 
 - Name: **OaaS.Quest**. Category line: **Outcome as a Service**. Registered line: "Seu objetivo. Nossa entrega."
 - The classic mode is deliberately the institutional/corporate register, distinct from the guild's fantasy register. The two modes belong to one product and must read as one company.
 - Brief-pinned visual direction from the user for the classic page: **modern and corporate, with animation on hover and on scroll.** Recorded as a binding constraint, not expanded here.
+- **Standing visual commitment (user, 2026-11-10):** the classic page and the home follow the conventional arrangement of the category, played straight — no irony, no smuggled quirk — executed at the craft level of **Stripe, Linear and Notion**. When the category default was offered as an explicit exit and chosen over the rolled directions, this became a brand commitment rather than a one-off selection.
 - A real logo and photography will be supplied by the user and take precedence over any typographic fallback.
 
 ## Evidence on Hand

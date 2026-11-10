@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html><head>
+  <script type="module" src="/@vite/client"></script>
+<meta charset="utf-8"><title>measure</title></head>
+<body>
+<iframe id="f" src="/classico" style="width:1200px;height:900px;border:0"></iframe>
+<pre id="out">{
+ "cycleLeft": 707.890625,
+ "cyclePadLeft": "26px",
+ "liLeft": 733.890625,
+ "liTop": 209.921875,
+ "liHeight": 31.015625,
+ "dotLeftUsed": "-26px",
+ "dotTopUsed": "11px",
+ "dotW": "9px",
+ "dotH": "9px",
+ "spineLeftUsed": "4px",
+ "spineTopUsed": "15px",
+ "spineH": "199.109px",
+ "dotAbsLeft": 707.890625,
+ "spineAbsLeft": 711.890625
+}</pre>
+<script>
+document.getElementById("f").addEventListener("load", function () {
+  setTimeout(function () {
+    var d = this.contentDocument;
+    var cyc = d.querySelector(".cycle");
+    var li = d.querySelector(".cycle__node");
+    var r1 = cyc.getBoundingClientRect();
+    var r2 = li.getBoundingClientRect();
+    var cs = d.defaultView.getComputedStyle(li, "::before");
+    var cs2 = d.defaultView.getComputedStyle(cyc, "::after");
+    document.getElementById("out").textContent = JSON.stringify({
+      cycleLeft: r1.left, cyclePadLeft: d.defaultView.getComputedStyle(cyc).paddingLeft,
+      liLeft: r2.left, liTop: r2.top, liHeight: r2.height,
+      dotLeftUsed: cs.left, dotTopUsed: cs.top, dotW: cs.width, dotH: cs.height,
+      spineLeftUsed: cs2.left, spineTopUsed: cs2.top, spineH: cs2.height,
+      dotAbsLeft: r2.left + parseFloat(cs.left),
+      spineAbsLeft: r1.left + parseFloat(cs2.left)
+    }, null, 1);
+  }.bind(this), 1200);
+});
+</script>
+</body></html>

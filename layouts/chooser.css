@@ -1,0 +1,304 @@
+/* OaaS.Quest — home (seletor de experiência).
+   Mesmo sistema do Modo Clássico: uma tipografia, um acento, divisórias por filete.
+   A página escolhe uma experiência; ela não compete com as páginas que abre. */
+
+@import "./tokens.css";
+
+.home { padding-bottom: clamp(48px, 7vw, 96px); }
+
+/* ---------------------------------------------------------------- introdução */
+
+.home__intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(24px, 5vw, 72px);
+  align-items: end;
+  padding-block: clamp(48px, 7vw, 104px) clamp(30px, 4vw, 52px);
+  border-bottom: 1px solid var(--line);
+}
+
+.home__title {
+  font-size: clamp(34px, 5.2vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.038em;
+  font-weight: 600;
+}
+
+.home__title span { display: block; color: var(--accent); }
+
+.home__lead {
+  font-size: 16.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  max-width: 46ch;
+  padding-bottom: 6px;
+}
+
+/* ---------------------------------------------------------------- experiências */
+
+.home__modes { border-bottom: 0; }
+
+.mode {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+  gap: clamp(26px, 5vw, 76px);
+  align-items: center;
+  padding-block: clamp(30px, 4vw, 54px);
+  border-bottom: 1px solid var(--line);
+}
+
+.mode__label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  transition: color 0.24s var(--ease);
+}
+
+.mode:hover .mode__label,
+.mode:focus-visible .mode__label { color: var(--accent); }
+
+.mode__name {
+  font-size: clamp(25px, 3vw, 36px);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  margin-top: 12px;
+}
+
+.mode__desc {
+  margin-top: 12px;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  max-width: 48ch;
+}
+
+.mode__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  color: var(--accent);
+  font-size: 14.5px;
+  font-weight: 500;
+}
+
+.mode__cta svg { transition: transform 0.26s var(--ease); }
+.mode:hover .mode__cta svg,
+.mode:focus-visible .mode__cta svg { transform: translateX(4px); }
+
+/* ---------------------------------------------------------------- prévias */
+
+.shot {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.mode:hover .shot,
+.mode:focus-visible .shot {
+  border-color: var(--line-2);
+  box-shadow: 0 16px 38px rgba(11, 14, 20, 0.1);
+}
+
+.shot__stage {
+  padding: 16px;
+  transition: transform 0.55s var(--ease);
+  transform-origin: center;
+}
+
+.mode:hover .shot__stage,
+.mode:focus-visible .shot__stage { transform: scale(1.035); }
+
+/* guilda — o mundo da guilda permanece intacto; aqui é só a prévia */
+
+.shot--guilda {
+  background: #14211c;
+  border-color: #2a3a31;
+  color: #ece0c6;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.shot__bar {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: #c0a374;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #2b3a32;
+}
+
+.shot__body { padding: 22px 4px 20px; text-align: center; }
+
+.shot__seal {
+  width: 38px;
+  height: 38px;
+  margin: 0 auto 10px;
+  border: 1px solid #bda06e;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: #d9bd8b;
+  font-family: var(--font);
+}
+
+.shot__role {
+  font-family: var(--font);
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  color: #c9b68f;
+}
+
+.shot__line {
+  font-size: 19px;
+  line-height: 1.3;
+  margin: 10px 0 14px;
+}
+
+.shot__bubble {
+  display: inline-block;
+  border: 1px solid #8e7955;
+  background: #22362b;
+  border-radius: 5px;
+  padding: 9px 14px;
+  font-family: var(--font);
+  font-size: 11px;
+  color: #f4ead7;
+}
+
+.shot__pills { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
+.shot__pills span {
+  font-family: var(--font);
+  font-size: 9px;
+  border: 1px solid #8e7955;
+  padding: 5px 9px;
+  border-radius: 3px;
+  color: #dfc99f;
+}
+
+.shot__foot {
+  font-family: var(--font);
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  color: #8d8069;
+  text-align: center;
+  padding-top: 10px;
+  border-top: 1px solid #2b3a32;
+}
+
+/* clássico — o preview antecipa a página real */
+
+.shot--classic { background: #fff; }
+
+.shot__nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.shot__nav b {
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin-right: auto;
+}
+
+.shot__nav b span { color: var(--accent); }
+
+.shot__nav i {
+  font-style: normal;
+  font-size: 9.5px;
+  color: var(--muted);
+}
+
+.shot__hero { padding: 22px 4px 24px; }
+
+.shot__title {
+  font-size: 21px;
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  max-width: 22ch;
+}
+
+.shot__title span { display: block; color: var(--accent); }
+
+.shot__sub {
+  margin-top: 10px;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 34ch;
+}
+
+.shot__actions { display: flex; gap: 8px; margin-top: 16px; }
+
+.shot__actions span {
+  font-size: 10px;
+  padding: 7px 11px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+}
+
+.shot__actions span + span {
+  background: transparent;
+  color: var(--accent-deep);
+  border: 1px solid var(--line-2);
+}
+
+.shot__foot--light {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+}
+
+/* ---------------------------------------------------------------- rodapé da home */
+
+.home__note {
+  padding-top: 26px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 62ch;
+}
+
+/* ---------------------------------------------------------------- movimento */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: home-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 4% cover 22%;
+    }
+
+    @keyframes home-reveal {
+      from { transform: translateY(18px); }
+      to { transform: none; }
+    }
+  }
+}
+
+/* ---------------------------------------------------------------- responsivo */
+
+@media (max-width: 900px) {
+  .home__intro { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .home__lead { max-width: 58ch; }
+  .mode { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .shot { max-width: 520px; }
+}
+
+@media (max-width: 700px) {
+  .mode { padding-block: 28px; }
+  .shot__nav i { display: none; }
+}

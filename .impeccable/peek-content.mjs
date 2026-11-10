@@ -1,0 +1,13 @@
+import { readFileSync } from "node:fs";
+const exp = JSON.parse(readFileSync("content/experience.pt-BR.json","utf8"));
+console.log("== positioning ==");
+console.log(JSON.stringify(exp.positioning, null, 1));
+console.log("== brand ==");
+console.log(JSON.stringify(exp.brand, null, 1));
+console.log("== differentiators count ==", exp.differentiators.length);
+console.log(JSON.stringify(exp.differentiators.map(d => d.title)));
+const sp = JSON.parse(readFileSync("content/sector-playbooks.pt-BR.json","utf8"));
+console.log("== sectors ==", sp.sectors.length);
+console.log(JSON.stringify(sp.sectors.map(s => ({ n: s.name, o: s.outcomes.length, m: s.metrics.length, keys: Object.keys(s).join("/") })), null, 1));
+console.log("== sector0 ==");
+console.log(JSON.stringify(sp.sectors[0], null, 1));

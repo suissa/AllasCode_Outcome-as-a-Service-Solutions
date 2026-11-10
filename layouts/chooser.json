@@ -2,7 +2,7 @@
   "id": "chooser",
   "name": "Seletor de experiência",
   "template": "layouts/chooser.html",
-  "stylesheet": "styles.css",
+  "stylesheet": "layouts/chooser.css",
   "shell": "topbar + mode-grid + site-footer",
   "renderer": "static-html",
   "slots": [

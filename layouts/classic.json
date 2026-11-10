@@ -2,9 +2,9 @@
   "id": "classic",
   "name": "Institucional clássico",
   "template": "layouts/classic.html",
-  "stylesheet": "styles.css",
+  "stylesheet": "layouts/classic.css",
   "shell": "classic-nav + main + classic-footer",
-  "renderer": "content.js",
+  "renderer": "runtime/classic-page.js",
   "slots": [
     "navigation",
     "hero",
@@ -13,7 +13,7 @@
   ],
   "scripts": [
     "app.js",
-    "content.js",
+    "runtime/classic-page.js",
     "runtime/classic.js"
   ]
 }
