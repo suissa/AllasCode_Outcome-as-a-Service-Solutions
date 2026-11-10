@@ -12,7 +12,8 @@ test("pages reference existing layouts, templates and resolvable JSON content",a
     "agent-team":"content/agent-team.pt-BR.json",
     "mission-steps":"content/mission-steps.pt-BR.json",
     discovery:"content/discovery.pt-BR.json",
-    "ui-copy":"content/ui-copy.pt-BR.json"
+    "ui-copy":"content/ui-copy.pt-BR.json",
+    "inference-graph":"content/inference-graph.pt-BR.json"
   };
   for(const id of ["home","classic","guild","discovery"]){
     const page=await load<{id:string;entry:string;layout:string;contentRefs:string[];sections:{id:string;contentRef:string}[]}>(`pages/pt-BR/${id}.json`);
@@ -92,9 +93,10 @@ test("page loader mounts templates and loads layout scripts from nested entries"
     dispatchEvent:()=>true
   };
   const payloads:Record<string,any>={
-    "pages/pt-BR/discovery.json":{id:"discovery",layout:"discovery",title:"Discovery",contentRefs:["discovery.stages"],sections:[]},
-    "layouts/discovery.json":{id:"discovery",template:"layouts/discovery.html",stylesheet:"layouts/discovery.css",scripts:["runtime/discovery.js"]},
-    "content/discovery.pt-BR.json":{stages:[]}
+    "pages/pt-BR/discovery.json":{id:"discovery",layout:"discovery",title:"Discovery",contentRefs:["discovery.stages","inference-graph"],sections:[]},
+    "layouts/discovery.json":{id:"discovery",template:"layouts/discovery.html",stylesheet:"layouts/discovery.css",scripts:["runtime/inference.js","runtime/discovery.js"]},
+    "content/discovery.pt-BR.json":{stages:[]},
+    "content/inference-graph.pt-BR.json":{answerNodes:[],solutionNodes:[],edges:[]}
   };
   const fetch=async(input:unknown)=>{
     const path=new URL(String(input)).pathname.slice(1);
@@ -106,7 +108,7 @@ test("page loader mounts templates and loads layout scripts from nested entries"
   await window.OaaSPageScriptsReady;
   assert.equal(mounted.innerHTML,"<main>Loaded</main>");
   assert.equal(document.title,"Discovery");
-  assert.deepEqual(scriptUrls,["https://example.test/runtime/discovery.js"]);
+  assert.deepEqual(scriptUrls,["https://example.test/runtime/inference.js","https://example.test/runtime/discovery.js"]);
 });
 
 test("Guild runtime reads interface copy from the localized catalog",async()=>{
