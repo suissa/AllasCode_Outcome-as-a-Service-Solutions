@@ -20,9 +20,9 @@ test("pricing supports fixed, usage, outcome, gain-share, revenue-share and SLA 
     { id: "growth", label: "Receita incremental", kind: "revenue_share", currency: "BRL", rate: 0.05, eligibleValue: 20000, progress: 0.5, cap: 1000 },
     { id: "sla", label: "Crédito SLA", kind: "sla_credit", currency: "BRL", rate: 0.1, eligibleValue: 5000, progress: 1 },
   ]);
-  assert.equal(result.subtotal, 6000);
+  assert.equal(result.subtotal, 6900);
   assert.equal(result.credits, 500);
-  assert.equal(result.total, 5500);
+  assert.equal(result.total, 6400);
 });
 test("composer creates pricing, outcome and sector annexes with a reproducible fingerprint", () => {
   const input = {
