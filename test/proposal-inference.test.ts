@@ -5,7 +5,7 @@ import { Script, runInNewContext } from "node:vm";
 
 type Question={id:string;label:string;type:string;options?:{value:string;label:string}[];allowUnknown?:boolean};
 type Discovery={version:string;engine:{storageKey:string};stages:{id:string;title:string;questions:Question[]}[];solutions:{id:string;signals:string[]}[]};
-type Graph={method:string;dimensions:{id:string}[];modules:{id:string}[];solutions:{id:string;moduleId:string;signals:string[]}[];answerMappings:{questionId:string;dimensionId:string;moduleIds:string[];values:Record<string,{dimensionId:string;moduleIds:string[];solutionLinks:{solutionId:string;signal:string}[]}>}[];nodes:{id:string}[];edges:{from:string;to:string}[]};
+type Graph={method:string;dimensions:{id:string}[];modules:{id:string}[];solutions:{id:string;moduleId:string;signals:string[]}[];answerMappings:{questionId:string;dimensionId:string;moduleIds:string[];values:Record<string,{dimensionId:string;moduleIds:string[];solutionLinks:{solutionId:string;signal:string}[]}>}[];nodes:{id:string}[];edges:{from:string;to:string;type?:string}[]};
 const readJson=async<T>(path:string)=>JSON.parse(await readFile(path,"utf8")) as T;
 const discovery=await readJson<Discovery>("content/discovery.pt-BR.json");
 const graph=await readJson<Graph>("content/proposal-graph.pt-BR.json");
