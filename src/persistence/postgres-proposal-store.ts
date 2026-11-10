@@ -10,6 +10,12 @@ export class PostgresProposalStore implements ProposalStore {
   constructor(private readonly db: SqlDatabase) {}
 
   async create(command: CreateProposalCommand): Promise<{ value: PersistedProposal; replayed: boolean }> {
+    if (!command.tenantId.trim() || !command.actorId.trim() || !command.idempotencyKey.trim() || !command.fingerprint.trim()
+      || command.value.proposal.tenantId !== command.tenantId || command.value.proposal.status !== "draft"
+      || command.value.status !== "ready_for_review" || command.value.proposal.readiness.status !== "ready_for_review"
+      || command.event.tenantId !== command.tenantId || command.event.proposalId !== command.value.proposal.id
+      || command.event.version !== command.value.proposal.version || command.event.actorId !== command.actorId
+      || command.event.kind !== "submitted") throw new Error("PROPOSAL_CREATE_COMMAND_INVALID");
     return this.db.transaction(async tx => {
       await tx.query("select pg_advisory_xact_lock(hashtextextended($1, 0))", [command.tenantId + ":proposal:" + command.idempotencyKey]);
       const prior = await tx.query<IdempotencyRow>(
@@ -59,6 +65,12 @@ export class PostgresProposalStore implements ProposalStore {
   }
 
   async transition(command: TransitionProposalCommand): Promise<PersistedProposal> {
+    const expectedEventKind = command.status === "approved" ? "approved" : command.status === "rejected" ? "rejected" : "superseded";
+    if (!command.tenantId.trim() || !command.proposalId.trim() || !command.actorId.trim()
+      || !Number.isInteger(command.expectedVersion) || command.expectedVersion < 1
+      || command.event.tenantId !== command.tenantId || command.event.proposalId !== command.proposalId
+      || command.event.version !== command.expectedVersion + 1 || command.event.actorId !== command.actorId
+      || command.event.kind !== expectedEventKind) throw new Error("PROPOSAL_TRANSITION_COMMAND_INVALID");
     return this.db.transaction(async tx => {
       const current = await tx.query<ProposalRow>(
         "select payload from outcome_proposals where tenant_id = $1 and proposal_id = $2 for update",
