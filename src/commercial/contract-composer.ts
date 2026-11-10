@@ -53,10 +53,21 @@ function renderClause(clause: ContractClause): string {
   return body;
 }
 function canonical(value: unknown): string {
-  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (value === undefined) return "null";
+  if (value === null || typeof value !== "object") return JSON.stringify(value) ?? "null";
   if (Array.isArray(value)) return "[" + value.map(canonical).join(",") + "]";
   const object = value as Record<string, unknown>;
   return "{" + Object.keys(object).sort().map(key => JSON.stringify(key) + ":" + canonical(object[key])).join(",") + "}";
+}
+function deepFreeze<T>(value: T): T {
+  if (value && typeof value === "object" && !Object.isFrozen(value)) {
+    Object.freeze(value);
+    for (const child of Object.values(value as Record<string, unknown>)) deepFreeze(child);
+  }
+  return value;
+}
+function cloneRecord(value: Readonly<Record<string, unknown>>): Readonly<Record<string, unknown>> {
+  return JSON.parse(JSON.stringify(value)) as Record<string, unknown>;
 }
 export function composeContract(input: ContractComposerInput, generatedAt = new Date()): ContractPackage {
   const { agreement } = input;
@@ -77,7 +88,7 @@ export function composeContract(input: ContractComposerInput, generatedAt = new 
     { id: "annex-scope", kind: "scope", title: "Escopo, entregáveis e exclusões", content: { scope: [...agreement.scope], deliverables: [...agreement.deliverables], exclusions: [...agreement.exclusions] } },
     { id: "annex-pricing", kind: "pricing", title: "Quadro de preços e faturamento", content: { currency: pricing.currency, lines: pricing.lines, subtotal: pricing.subtotal, credits: pricing.credits, total: pricing.total } },
   ];
-  if (input.outcome) annexes.push({ id: "annex-outcome", kind: "outcome", title: "Métrica, baseline e apuração de resultado", content: input.outcome as unknown as Record<string, unknown> });
+  if (input.outcome) annexes.push({ id: "annex-outcome", kind: "outcome", title: "Métrica, baseline e apuração de resultado", content: cloneRecord(input.outcome as unknown as Record<string, unknown>) });
   const optionalAnnexes: [ContractAnnexKind, string, Readonly<Record<string, unknown>> | undefined][] = [
     ["delivery", "Plano de execução e governança", input.deliveryPlan],
     ["acceptance", "Critérios de aceite", input.acceptance],
@@ -86,7 +97,7 @@ export function composeContract(input: ContractComposerInput, generatedAt = new 
     ["data_processing", "Tratamento e proteção de dados", input.dataProcessing],
     ["sector_specific", "Condições específicas do setor", input.sectorTerms],
   ];
-  for (const [kind, title, content] of optionalAnnexes) if (content) annexes.push({ id: "annex-" + kind, kind, title, content });
+  for (const [kind, title, content] of optionalAnnexes) if (content) annexes.push({ id: "annex-" + kind, kind, title, content: cloneRecord(content) });
   const clauses = (input.clauses ?? []).map(c => Object.freeze({ id: c.id, title: c.title, body: renderClause(c), required: c.required ?? true }));
   if (new Set(clauses.map(c => c.id)).size !== clauses.length) throw new Error("CONTRACT_CLAUSE_ID_DUPLICATE");
   const base = {
@@ -98,7 +109,7 @@ export function composeContract(input: ContractComposerInput, generatedAt = new 
     exclusions: [...agreement.exclusions], pricing, clauses, annexes, generatedAt: generatedAt.toISOString(),
   };
   const fingerprint = createHash("sha256").update(canonical(base), "utf8").digest("hex");
-  return Object.freeze({ ...base, parties: Object.freeze(base.parties), scope: Object.freeze(base.scope), deliverables: Object.freeze(base.deliverables), exclusions: Object.freeze(base.exclusions), clauses: Object.freeze(clauses), annexes: Object.freeze(annexes), fingerprint });
+  return deepFreeze({ ...base, parties: base.parties, scope: base.scope, deliverables: base.deliverables, exclusions: base.exclusions, clauses, annexes, fingerprint });
 }
 export function renderContractMarkdown(contract: ContractPackage): string {
   const money = (amount: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: contract.pricing.currency }).format(amount);
