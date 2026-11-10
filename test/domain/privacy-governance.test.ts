@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { parseEntityId } from "../../src/domain/identifiers.ts";
 import {
-  PrivacyGovernanceError,
   assessRetention,
   classifyData,
   recordPrivacyConsent,
@@ -14,7 +14,7 @@ import {
 } from "../../src/domain/privacy-governance.ts";
 
 const now = new Date("2026-11-10T12:00:00.000Z");
-const tenantId = "tenant_alpha_001";
+const tenantId = parseEntityId("tenant", "tenant_alpha_001");
 const evidenceHash = createHash("sha256").update("explicit consent screen capture", "utf8").digest("hex");
 
 class MemoryConsentStore implements ConsentStore {
@@ -121,7 +121,8 @@ test("validates personal-data processing only with matching active consent and p
 });
 
 test("accepts documented non-consent legal bases but rejects inconsistent consent references", async () => {
-  const record = { ...processing, legalBasis: "contract" as const, consentId: undefined };
+  const { consentId: _consentId, ...processingWithoutConsent } = processing;
+  const record = { ...processingWithoutConsent, legalBasis: "contract" as const };
   assert.equal(await validateDataProcessingBasis(record, async () => undefined, now), true);
   await assert.rejects(() => validateDataProcessingBasis({ ...record, consentId: "consent_1" }, async () => undefined, now), /PROCESSING_CONSENT_REFERENCE_UNEXPECTED/);
   await assert.rejects(() => validateDataProcessingBasis({ ...record, legalBasis: "unknown" as never }, async () => undefined, now), /PROCESSING_LEGAL_BASIS_INVALID/);
@@ -158,5 +159,6 @@ test("rejects cross-tenant, malformed and inconsistent retention metadata", () =
 test("rejects future processing, expired retention and missing privacy basis", async () => {
   await assert.rejects(() => validateDataProcessingBasis({ ...processing, createdAt: "2026-11-10T12:01:00.000Z" }, async () => undefined, now), /PROCESSING_TIMESTAMP_FUTURE/);
   await assert.rejects(() => validateDataProcessingBasis({ ...processing, retentionUntil: "2026-11-10T11:00:00.000Z" }, async () => undefined, now), /PROCESSING_RETENTION_EXPIRED/);
-  await assert.rejects(() => validateDataProcessingBasis({ ...processing, consentId: undefined, legalBasis: undefined }, async () => undefined, now), /PROCESSING_PRIVACY_BASIS_REQUIRED/);
+  const { consentId: _consentId, legalBasis: _legalBasis, ...withoutBasis } = processing;
+  await assert.rejects(() => validateDataProcessingBasis(withoutBasis, async () => undefined, now), /PROCESSING_PRIVACY_BASIS_REQUIRED/);
 });
