@@ -16,10 +16,11 @@ test("pages reference existing layouts, templates and resolvable JSON content",a
     const page=await load<{id:string;entry:string;layout:string;contentRefs:string[];sections:{id:string;contentRef:string}[]}>(`pages/pt-BR/${id}.json`);
     assert.equal(page.id,id);
     await readFile(join(root,page.entry),"utf8");
-    const layout=await load<{id:string;template:string;stylesheet:string}>(`layouts/${page.layout}.json`);
+    const layout=await load<{id:string;template:string;stylesheet:string;scripts?:string[]}>(`layouts/${page.layout}.json`);
     assert.equal(layout.id,page.layout);
     await readFile(join(root,layout.template),"utf8");
     if(layout.stylesheet!=="inline") await readFile(join(root,layout.stylesheet),"utf8");
+    for(const script of layout.scripts||[]) await readFile(join(root,script),"utf8");
     assert.ok(page.sections.length>0);
     assert.ok(page.sections.every(section=>section.id&&section.contentRef));
     for(const ref of new Set([...page.contentRefs,...page.sections.map(section=>section.contentRef)])){
@@ -42,15 +43,19 @@ test("HTML entry points boot through the manifest-driven page runtime",async()=>
   assert.ok(loader.includes("window.OaaSPageReady"));
   assert.ok(loader.includes("rootElement.innerHTML"));
   assert.ok(loader.includes("oaasLayoutStylesheet"));
+  assert.ok(loader.includes("window.OaaSPageScriptsReady"));
+  assert.ok(loader.includes("LAYOUT_SCRIPT_FETCH_FAILED"));
   assert.ok(loader.includes("LAYOUT_STYLESHEET_FETCH_FAILED"));
   assert.ok(loader.includes("CONTENT_REFERENCE_NOT_FOUND"));
   assert.ok(renderer.includes("window.OaaSPageReady"));
   assert.ok(renderer.includes("pageRuntime.sources.experience"));
+  assert.ok(renderer.includes("document.readyState"));
   for(const [path,id] of [["index.html","home"],["classico.html","classic"],["guilda.html","guild"],["descoberta/index.html","discovery"]] as const){
     const html=await readFile(join(root,path),"utf8");
     assert.ok(html.includes('data-oaas-page="'+id+'"'),path+" must declare its page id");
     assert.ok(html.includes(path==="descoberta/index.html"?"../page-config.js":"page-config.js"),path+" must load the page runtime");
     assert.ok(html.includes("oaas-page-root"),path+" must expose the template mount point");
+    assert.ok(!html.includes("<script>"),path+" must not embed inline runtime scripts");
   }
 });
 
@@ -59,4 +64,12 @@ test("layout stylesheets are external assets, not embedded in the discovery entr
   const stylesheet=await readFile(join(root,"layouts/discovery.css"),"utf8");
   assert.ok(stylesheet.includes(":root"));
   assert.ok(!discovery.includes("<style>"));
+});
+
+test("entry HTML delegates behavior to scripts declared by the layout",async()=>{
+  for(const id of ["chooser","classic","guild","discovery"]){
+    const layout=await load<{scripts?:string[]}>(`layouts/${id}.json`);
+    assert.ok(layout.scripts && layout.scripts.length>0,`${id} must declare runtime scripts`);
+    for(const script of layout.scripts||[]) await readFile(join(root,script),"utf8");
+  }
 });
