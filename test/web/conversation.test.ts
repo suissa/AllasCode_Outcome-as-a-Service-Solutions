@@ -4,16 +4,16 @@ import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 
 const source = readFileSync(new URL("../../app.js", import.meta.url), "utf8");
-function harness(initial = {}) {
-  const values = new Map(Object.entries(initial));
+function harness(initial: Record<string, string> = {}) {
+  const values = new Map<string, string>(Object.entries(initial));
   const localStorage = {
-    getItem: key => values.has(key) ? values.get(key) : null,
-    setItem: (key, value) => values.set(key, String(value)),
-    removeItem: key => values.delete(key)
+    getItem: (key: string) => values.has(key) ? values.get(key)! : null,
+    setItem: (key: string, value: string) => values.set(key, String(value)),
+    removeItem: (key: string) => values.delete(key)
   };
-  const window = {};
+  const window: { OQ?: any } = {};
   runInNewContext(source, { window, localStorage, console, Date, JSON, Object, Array, String, Number, Math, Set });
-  return { OQ: window.OQ, values };
+  return { OQ: window.OQ as any, values };
 }
 
 test("migrates previous browser state without dropping conversation history", () => {
