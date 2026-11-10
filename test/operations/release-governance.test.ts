@@ -21,7 +21,7 @@ const migrations = [
   { id: "0001_core.sql", checksum: "a".repeat(64), order: 1, destructive: false, reversible: true, recoveryStrategy: "down_migration" as const },
   { id: "0002_indexes.sql", checksum: "b".repeat(64), order: 2, destructive: true, reversible: false, recoveryStrategy: "backup_restore" as const },
 ];
-const manifest: Omit<GovernedReleaseManifest, "status" | "revision"> = {
+const manifest: Omit<GovernedReleaseManifest, "status" | "revision" | "createdAt" | "completedMigrations" | "rolloutPercentage" | "rolloutHistory" | "rollbackActions"> = {
   id: "release_2026_11", tenantId: "tenant_a", version: "2.0.0", previousVersion: "1.9.0",
   commitSha: "c".repeat(40), artifactHash: "d".repeat(64), createdBy: "release_owner",
   target: "production", migrations,
