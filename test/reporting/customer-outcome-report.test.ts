@@ -54,7 +54,8 @@ test("rejects cross-tenant, unauthorized, expired and unverified evidence withou
   await assert.rejects(() => buildCustomerOutcomeReport(input, [{ ...evidence[0]!, tenantId: "tenant_b" }, evidence[1]!], access, sign, now), /REPORT_EVIDENCE_NOT_FOUND/);
   await assert.rejects(() => buildCustomerOutcomeReport(input, evidence, { ...access, allowedClassifications: ["public"] }, sign, now), /REPORT_EVIDENCE_ACCESS_DENIED/);
   await assert.rejects(() => buildCustomerOutcomeReport(input, [{ ...evidence[0]!, validUntil: "2026-11-10T11:59:00.000Z" }, evidence[1]!], access, sign, now), /REPORT_EVIDENCE_ACCESS_DENIED/);
-  await assert.rejects(() => buildCustomerOutcomeReport(input, [{ ...evidence[1]!, verifiedBy: undefined }, evidence[0]!], access, sign, now), /REPORT_EVIDENCE_ACCESS_DENIED/);
+  const { verifiedBy: _verifiedBy, verifiedAt: _verifiedAt, ...unverifiedEvidence } = evidence[1]!;
+  await assert.rejects(() => buildCustomerOutcomeReport(input, [unverifiedEvidence, evidence[0]!], access, sign, now), /REPORT_EVIDENCE_ACCESS_DENIED/);
   assert.equal(calls, 0);
 });
 
