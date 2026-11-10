@@ -2,7 +2,7 @@
   "id": "discovery",
   "name": "Discovery Engine",
   "template": "layouts/discovery.html",
-  "stylesheet": "inline",
+  "stylesheet": "layouts/discovery.css",
   "shell": "progressive discovery + diagnostic",
   "renderer": "discovery config-driven runtime",
   "slots": [

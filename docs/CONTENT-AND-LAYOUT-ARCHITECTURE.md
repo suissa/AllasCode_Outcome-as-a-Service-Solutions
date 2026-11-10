@@ -24,3 +24,7 @@ Os testes verificam entradas HTML, templates, folhas de estilo externas, integri
 O markup de apresentação foi extraído para `layouts/chooser.html`, `layouts/classic.html`, `layouts/guild.html` e `layouts/discovery.html`. Os arquivos `index.html`, `classico.html`, `guilda.html` e `descoberta/index.html` agora são pontos de entrada: declaram a página, carregam o runtime e oferecem o mount point `#oaas-page-root`. O `page-config.js` busca o template indicado pelo descritor JSON e o monta antes de resolver `OaaSPageReady`. Scripts de interação aguardam essa promessa para não procurar elementos antes da montagem.
 
 O CSS e os runtimes específicos continuam nos pontos de entrada nesta etapa; a extração de estilos e scripts para assets independentes é uma etapa posterior.
+
+## Folhas de estilo
+
+O `page-config.js` também carrega a folha de estilo declarada em cada descritor de layout e aguarda seu carregamento antes de montar o template. Os modos Seletor, Clássico e Guilda reutilizam `styles.css`; o Discovery Engine utiliza `layouts/discovery.css`. As entradas HTML não precisam mais declarar manualmente essas folhas de estilo.

@@ -41,6 +41,8 @@ test("HTML entry points boot through the manifest-driven page runtime",async()=>
   const renderer=await readFile(join(root,"content.js"),"utf8");
   assert.ok(loader.includes("window.OaaSPageReady"));
   assert.ok(loader.includes("rootElement.innerHTML"));
+  assert.ok(loader.includes("oaasLayoutStylesheet"));
+  assert.ok(loader.includes("LAYOUT_STYLESHEET_FETCH_FAILED"));
   assert.ok(loader.includes("CONTENT_REFERENCE_NOT_FOUND"));
   assert.ok(renderer.includes("window.OaaSPageReady"));
   assert.ok(renderer.includes("pageRuntime.sources.experience"));
@@ -50,4 +52,11 @@ test("HTML entry points boot through the manifest-driven page runtime",async()=>
     assert.ok(html.includes(path==="descoberta/index.html"?"../page-config.js":"page-config.js"),path+" must load the page runtime");
     assert.ok(html.includes("oaas-page-root"),path+" must expose the template mount point");
   }
+});
+
+test("layout stylesheets are external assets, not embedded in the discovery entry",async()=>{
+  const discovery=await readFile(join(root,"descoberta/index.html"),"utf8");
+  const stylesheet=await readFile(join(root,"layouts/discovery.css"),"utf8");
+  assert.ok(stylesheet.includes(":root"));
+  assert.ok(!discovery.includes("<style>"));
 });
