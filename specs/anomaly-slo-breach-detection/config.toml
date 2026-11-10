@@ -1,0 +1,15 @@
+version = "1.0"
+baseline_window_seconds = 600
+current_window_seconds = 120
+baseline_minimum_samples = 5
+mad_multiplier = 3.0
+minimum_deviation = 2.0
+failure_rate_threshold = 0.25
+minimum_execution_samples = 4
+reject_cross_tenant_data = true
+reject_future_timestamps = true
+emit_slo_breach_findings = true
+slo_breach_severity = "critical"
+insufficient_data_is_healthy = false
+persist_findings = false
+dispatch_alerts = false

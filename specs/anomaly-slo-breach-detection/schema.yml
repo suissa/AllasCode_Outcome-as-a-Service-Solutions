@@ -1,0 +1,44 @@
+version: "1.0"
+behavior: anomaly-slo-breach-detection
+scope:
+  required: [tenantId]
+windows:
+  baseline:
+    required: true
+    excludesCurrentWindow: true
+  current:
+    required: true
+config:
+  baselineMinimumSamples: positive_integer
+  madMultiplier: positive_number
+  minimumDeviation: positive_number
+  failureRateThreshold: number_between_0_and_1
+  minimumExecutionSamples: positive_integer
+samples:
+  metric:
+    required: [id, tenantId, metric, value, unit, occurredAt, outcomeId, executionId]
+    value: finite_number
+  execution:
+    required: [id, tenantId, outcomeId, executionId, occurredAt, status]
+    status: [success, failure]
+    failureCode: optional_nonempty_string
+slo:
+  status: [healthy, breached, insufficient_data]
+  breachedDimensions: [availability, errorRate, latencyP95Ms]
+invariants:
+  - tenant-isolation
+  - unique-sample-identifiers
+  - strict-utc-timestamps
+  - reject-future-data
+  - deterministic-median-mad-baseline
+  - insufficient-data-is-not-healthy
+  - stable-finding-identifiers
+  - no-domain-side-effects
+errors:
+  - { code: ANOMALY_CONFIG_INVALID, path: config }
+  - { code: ANOMALY_TENANT_MISMATCH, path: input.tenantId }
+  - { code: ANOMALY_SAMPLE_DUPLICATE, path: samples.id }
+  - { code: ANOMALY_TIMESTAMP_INVALID, path: samples.occurredAt }
+  - { code: ANOMALY_TIMESTAMP_FUTURE, path: samples.occurredAt }
+  - { code: ANOMALY_METRIC_INVALID, path: metric.value }
+  - { code: ANOMALY_SLO_INVALID, path: slo }
