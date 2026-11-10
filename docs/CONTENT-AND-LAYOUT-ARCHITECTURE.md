@@ -28,3 +28,7 @@ O CSS e os runtimes específicos continuam nos pontos de entrada nesta etapa; a 
 ## Folhas de estilo
 
 O `page-config.js` também carrega a folha de estilo declarada em cada descritor de layout e aguarda seu carregamento antes de montar o template. Os modos Seletor, Clássico e Guilda reutilizam `styles.css`; o Discovery Engine utiliza `layouts/discovery.css`. As entradas HTML não precisam mais declarar manualmente essas folhas de estilo.
+
+## Runtimes por layout
+
+Os descritores JSON declaram também os scripts necessários a cada experiência. O `page-config.js` carrega os runtimes na ordem declarada depois de montar o template e publicar `OaaSPageReady`. Os comportamentos do seletor, Clássico, Guilda e Discovery foram movidos para `runtime/*.js`; os HTMLs de entrada deixam de conter scripts inline ou listas duplicadas de dependências. O renderer compartilhado trata tanto o carregamento antes quanto depois de `DOMContentLoaded`, pois os scripts são carregados dinamicamente.
