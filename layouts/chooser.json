@@ -1,0 +1,13 @@
+{
+  "id": "chooser",
+  "name": "Seletor de experiência",
+  "template": "index.html",
+  "stylesheet": "styles.css",
+  "shell": "topbar + mode-grid + site-footer",
+  "renderer": "static-html",
+  "slots": [
+    "brand",
+    "experience-options",
+    "footer"
+  ]
+}
