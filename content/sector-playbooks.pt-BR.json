@@ -1,0 +1,540 @@
+{
+  "schemaVersion": "1.0.0",
+  "locale": "pt-BR",
+  "description": "Playbooks iniciais de descoberta setorial. São hipóteses de investigação, não pacotes fixos nem promessas de resultado.",
+  "sectors": [
+    {
+      "id": "retail",
+      "name": "Varejo e comércio",
+      "guildaName": "Mercadores e casas comerciais",
+      "problems": [
+        "Estoque parado ou ruptura",
+        "Margens pouco visíveis por produto",
+        "Vendas perdidas por demora no atendimento",
+        "Baixa recompra e pouca recuperação de clientes",
+        "Compras e reposição pouco previsíveis"
+      ],
+      "outcomes": [
+        "Aumentar margem de contribuição",
+        "Reduzir perdas e capital imobilizado",
+        "Melhorar conversão e recompra",
+        "Aumentar disponibilidade de produtos"
+      ],
+      "metrics": [
+        "Margem por SKU/categoria",
+        "Giro e cobertura de estoque",
+        "Ruptura",
+        "Sell-through",
+        "Conversão por canal",
+        "Ticket médio",
+        "Taxa de recompra",
+        "Perdas e descontos"
+      ],
+      "solutions": [
+        "Integração de PDV, ERP, ecommerce e CRM",
+        "Previsão de demanda e recomendação de reposição",
+        "Alertas de margem e precificação assistida",
+        "Recuperação de carrinhos e clientes inativos",
+        "Atendimento e pós-venda automatizados"
+      ],
+      "evidence": [
+        "Vendas e notas fiscais",
+        "Movimentação de estoque",
+        "Tabela de custos e preços",
+        "CRM e eventos de atendimento"
+      ],
+      "guardrails": [
+        "Margem e preço mínimo",
+        "Acurácia de estoque",
+        "Política de descontos",
+        "Consentimento e frequência de contato"
+      ]
+    },
+    {
+      "id": "services",
+      "name": "Empresas de serviços",
+      "guildaName": "Ofícios e companhias de serviço",
+      "problems": [
+        "Agenda ociosa ou sobrecarregada",
+        "Orçamentos sem acompanhamento",
+        "Retrabalho e deslocamentos desnecessários",
+        "Dificuldade para medir produtividade e rentabilidade"
+      ],
+      "outcomes": [
+        "Aumentar ocupação e receita por equipe",
+        "Reduzir tempo entre solicitação e atendimento",
+        "Diminuir retrabalho e custo por serviço",
+        "Melhorar retenção"
+      ],
+      "metrics": [
+        "Ocupação da agenda",
+        "Tempo de resposta",
+        "Taxa de conversão de orçamento",
+        "Comparecimento",
+        "Receita e margem por serviço",
+        "Retrabalho",
+        "Satisfação e recorrência"
+      ],
+      "solutions": [
+        "Captação e qualificação de solicitações",
+        "Agendamento e despacho inteligente",
+        "Orçamentos e follow-up assistidos",
+        "Ordens de serviço digitais",
+        "Cobrança, pós-venda e renovação"
+      ],
+      "evidence": [
+        "Agenda",
+        "CRM",
+        "Ordens de serviço",
+        "Propostas e faturas",
+        "Registros de atendimento"
+      ],
+      "guardrails": [
+        "Capacidade real da equipe",
+        "Regras de cancelamento",
+        "Aprovação de orçamento",
+        "Qualidade e segurança da execução"
+      ]
+    },
+    {
+      "id": "food-hospitality",
+      "name": "Alimentação, restaurantes e hotelaria",
+      "guildaName": "Estalagens, tavernas e cozinhas",
+      "problems": [
+        "Desperdício e compras imprecisas",
+        "Picos de demanda mal atendidos",
+        "Reservas e pedidos com falhas",
+        "Baixa previsibilidade de equipe e insumos"
+      ],
+      "outcomes": [
+        "Reduzir custo de alimentos e desperdício",
+        "Aumentar ocupação e receita por período",
+        "Melhorar velocidade e qualidade do atendimento"
+      ],
+      "metrics": [
+        "CMV",
+        "Desperdício por categoria",
+        "Tempo de preparo",
+        "Ocupação",
+        "Ticket médio",
+        "Cancelamentos",
+        "Avaliação do cliente"
+      ],
+      "solutions": [
+        "Previsão de demanda e compras",
+        "Integração de pedidos, reservas e estoque",
+        "Gestão de fila e capacidade",
+        "Análise de cardápio e rentabilidade",
+        "Recuperação de clientes"
+      ],
+      "evidence": [
+        "PDV",
+        "Fichas técnicas",
+        "Compras e estoque",
+        "Reservas",
+        "Pedidos e avaliações"
+      ],
+      "guardrails": [
+        "Segurança alimentar",
+        "Disponibilidade de insumos",
+        "Qualidade do serviço",
+        "Sazonalidade"
+      ]
+    },
+    {
+      "id": "health",
+      "name": "Saúde e clínicas",
+      "guildaName": "Casas de cuidado e clínicas",
+      "problems": [
+        "Faltas e ociosidade de agenda",
+        "Jornada administrativa fragmentada",
+        "Demora na autorização e documentação",
+        "Comunicação inconsistente com pacientes"
+      ],
+      "outcomes": [
+        "Aumentar comparecimento e ocupação",
+        "Reduzir tempo administrativo",
+        "Melhorar continuidade e experiência do paciente"
+      ],
+      "metrics": [
+        "Taxa de no-show",
+        "Ocupação por especialidade",
+        "Tempo de autorização",
+        "Tempo de ciclo administrativo",
+        "Reagendamento",
+        "Satisfação"
+      ],
+      "solutions": [
+        "Agendamento e lembretes",
+        "Integração de agenda, CRM e faturamento",
+        "Conferência documental assistida",
+        "Painéis operacionais",
+        "Automação de tarefas administrativas"
+      ],
+      "evidence": [
+        "Agenda",
+        "Sistema de gestão clínica",
+        "Registros administrativos",
+        "Faturamento e autorizações"
+      ],
+      "guardrails": [
+        "LGPD e dados sensíveis",
+        "Sigilo profissional",
+        "Decisões clínicas permanecem com profissionais habilitados",
+        "Auditoria e controle de acesso"
+      ]
+    },
+    {
+      "id": "industry",
+      "name": "Indústria e manufatura",
+      "guildaName": "Forjas e oficinas de produção",
+      "problems": [
+        "Paradas não planejadas",
+        "Defeitos e desperdício",
+        "Baixa utilização de equipamentos",
+        "Planejamento e manutenção reativos"
+      ],
+      "outcomes": [
+        "Aumentar disponibilidade e produtividade",
+        "Reduzir refugos e custo unitário",
+        "Melhorar previsibilidade de produção"
+      ],
+      "metrics": [
+        "OEE",
+        "MTBF",
+        "MTTR",
+        "Scrap",
+        "Rendimento",
+        "Paradas",
+        "Custo por unidade",
+        "Cumprimento do plano"
+      ],
+      "solutions": [
+        "Manutenção preditiva",
+        "Inspeção e qualidade assistidas",
+        "Integração MES, ERP e CMMS",
+        "Planejamento de produção",
+        "Análise de causa e alertas"
+      ],
+      "evidence": [
+        "MES/SCADA",
+        "Sensores",
+        "Ordens de manutenção",
+        "Inspeções",
+        "Lotes e apontamentos"
+      ],
+      "guardrails": [
+        "Segurança industrial",
+        "Validação do operador",
+        "Limites de controle",
+        "Fallback seguro"
+      ]
+    },
+    {
+      "id": "logistics",
+      "name": "Logística e transporte",
+      "guildaName": "Caravanas e companhias de transporte",
+      "problems": [
+        "Atrasos e reentregas",
+        "Baixa visibilidade de cargas",
+        "Rotas e capacidade ineficientes",
+        "Conciliação de frete demorada"
+      ],
+      "outcomes": [
+        "Reduzir custo por entrega",
+        "Aumentar entregas no prazo",
+        "Diminuir exceções e reentregas"
+      ],
+      "metrics": [
+        "OTIF",
+        "Custo por entrega",
+        "Km por entrega",
+        "Reentrega",
+        "Atraso",
+        "Tempo de resolução de ocorrência"
+      ],
+      "solutions": [
+        "Roteirização e previsão de chegada",
+        "Rastreamento e tratamento de exceções",
+        "Integração TMS, ERP e transportadoras",
+        "Conciliação de fretes",
+        "Previsão de capacidade"
+      ],
+      "evidence": [
+        "TMS",
+        "GPS",
+        "Comprovantes de entrega",
+        "Pedidos",
+        "Ocorrências e faturas"
+      ],
+      "guardrails": [
+        "Segurança",
+        "Trânsito e clima",
+        "Restrições de carga",
+        "Privacidade de localização"
+      ]
+    },
+    {
+      "id": "professional-services",
+      "name": "Serviços profissionais, jurídico e contábil",
+      "guildaName": "Escritórios e ordens profissionais",
+      "problems": [
+        "Documentos e tarefas repetitivas",
+        "Prazos e pendências difíceis de acompanhar",
+        "Baixa visibilidade de rentabilidade por cliente",
+        "Retrabalho na análise e conferência"
+      ],
+      "outcomes": [
+        "Reduzir tempo de processamento",
+        "Aumentar capacidade por profissional",
+        "Melhorar cumprimento de prazos e qualidade"
+      ],
+      "metrics": [
+        "Tempo por processo",
+        "Pendências",
+        "Retrabalho",
+        "Prazos cumpridos",
+        "Custo por caso",
+        "Margem por cliente"
+      ],
+      "solutions": [
+        "Captura e classificação documental",
+        "Fluxos de revisão e aprovação",
+        "Gestão de prazos e tarefas",
+        "Conciliação e relatórios",
+        "Portal e comunicação com clientes"
+      ],
+      "evidence": [
+        "Documentos",
+        "Sistemas de gestão",
+        "Protocolos",
+        "Registros de revisão e aceite"
+      ],
+      "guardrails": [
+        "Sigilo profissional",
+        "Revisão por profissional habilitado",
+        "Trilha de auditoria",
+        "Controle de conflito e acesso"
+      ]
+    },
+    {
+      "id": "education",
+      "name": "Educação e treinamento",
+      "guildaName": "Academias e escolas de conhecimento",
+      "problems": [
+        "Baixa conversão de interessados",
+        "Evasão e faltas",
+        "Atendimento administrativo repetitivo",
+        "Dificuldade de acompanhar jornadas"
+      ],
+      "outcomes": [
+        "Aumentar matrículas e permanência",
+        "Reduzir evasão evitável",
+        "Diminuir tempo administrativo"
+      ],
+      "metrics": [
+        "Conversão em matrícula",
+        "Comparecimento",
+        "Evasão",
+        "Retenção",
+        "Tempo de atendimento",
+        "Conclusão de atividades"
+      ],
+      "solutions": [
+        "Captação e qualificação",
+        "Matrícula assistida",
+        "Comunicação e lembretes",
+        "Alertas de risco de evasão",
+        "Integração CRM e sistema acadêmico"
+      ],
+      "evidence": [
+        "CRM",
+        "Sistema acadêmico",
+        "Matrículas",
+        "Presença",
+        "Histórico de comunicação"
+      ],
+      "guardrails": [
+        "Proteção de menores",
+        "Privacidade de dados educacionais",
+        "Revisão humana em decisões relevantes",
+        "Sazonalidade do calendário"
+      ]
+    },
+    {
+      "id": "real-estate",
+      "name": "Imobiliário",
+      "guildaName": "Guildas imobiliárias e construtores",
+      "problems": [
+        "Leads sem resposta",
+        "Visitas não realizadas",
+        "Follow-up inconsistente",
+        "Baixa visibilidade do funil"
+      ],
+      "outcomes": [
+        "Aumentar visitas qualificadas",
+        "Reduzir tempo de resposta",
+        "Melhorar conversão e velocidade de fechamento"
+      ],
+      "metrics": [
+        "Tempo de primeira resposta",
+        "Leads qualificados",
+        "Visitas realizadas",
+        "Conversão por etapa",
+        "Tempo até fechamento"
+      ],
+      "solutions": [
+        "Qualificação conversacional",
+        "Distribuição de leads",
+        "Agendamento e lembretes",
+        "Follow-up assistido",
+        "Integração CRM e portais"
+      ],
+      "evidence": [
+        "CRM",
+        "Agenda",
+        "Origem do lead",
+        "Registro de visita",
+        "Proposta e contrato"
+      ],
+      "guardrails": [
+        "Consentimento",
+        "Deduplicação",
+        "Atribuição de origem",
+        "Participação de corretores"
+      ]
+    },
+    {
+      "id": "construction",
+      "name": "Construção e engenharia",
+      "guildaName": "Construtores e mestres de obra",
+      "problems": [
+        "Desvio de orçamento",
+        "Atrasos e retrabalho",
+        "Documentação dispersa",
+        "Medições e inspeções demoradas"
+      ],
+      "outcomes": [
+        "Reduzir desvios de custo e prazo",
+        "Diminuir retrabalho",
+        "Melhorar rastreabilidade de etapas"
+      ],
+      "metrics": [
+        "Desvio orçamentário",
+        "Aderência ao cronograma",
+        "Retrabalho",
+        "Não conformidades",
+        "Custo por etapa"
+      ],
+      "solutions": [
+        "Comparação de orçamento",
+        "Gestão documental",
+        "Acompanhamento de medições",
+        "Checklists e inspeção assistida",
+        "Alertas de risco"
+      ],
+      "evidence": [
+        "Projetos",
+        "Diário de obra",
+        "Medições",
+        "Inspeções",
+        "Notas e aceite técnico"
+      ],
+      "guardrails": [
+        "Responsabilidade técnica",
+        "Segurança do trabalho",
+        "Aprovação de profissional habilitado",
+        "Integridade dos registros"
+      ]
+    },
+    {
+      "id": "ecommerce",
+      "name": "E-commerce e negócios digitais",
+      "guildaName": "Mercados e entrepostos digitais",
+      "problems": [
+        "Abandono de carrinho",
+        "CAC crescente",
+        "Falhas de catálogo e estoque",
+        "Devoluções e suporte elevados"
+      ],
+      "outcomes": [
+        "Aumentar conversão e margem",
+        "Reduzir custo de aquisição e atendimento",
+        "Melhorar retenção e recompra"
+      ],
+      "metrics": [
+        "Conversão",
+        "CAC",
+        "ROAS incremental",
+        "Margem por pedido",
+        "Abandono",
+        "Devolução",
+        "Recompra"
+      ],
+      "solutions": [
+        "Integração de catálogo e estoque",
+        "Recuperação de carrinho",
+        "Personalização e recomendação",
+        "Atendimento e pós-venda",
+        "Análise de campanhas"
+      ],
+      "evidence": [
+        "Plataforma de ecommerce",
+        "Analytics",
+        "CRM",
+        "Pedidos",
+        "Pagamentos e devoluções"
+      ],
+      "guardrails": [
+        "Margem mínima",
+        "Consentimento",
+        "Fraude",
+        "Atribuição multicanal",
+        "Política de devolução"
+      ]
+    },
+    {
+      "id": "finance",
+      "name": "Finanças, crédito e cobrança",
+      "guildaName": "Casas de tesouraria e crédito",
+      "problems": [
+        "Conciliação manual",
+        "Inadimplência",
+        "Baixa previsibilidade de caixa",
+        "Divergências e duplicidades"
+      ],
+      "outcomes": [
+        "Aumentar recuperação líquida",
+        "Reduzir custo de conciliação",
+        "Melhorar previsibilidade financeira"
+      ],
+      "metrics": [
+        "Recuperação líquida atribuível",
+        "Aging",
+        "Tempo de conciliação",
+        "Taxa de divergência",
+        "Custo por recuperação"
+      ],
+      "solutions": [
+        "Conciliação automatizada",
+        "Priorização de cobrança",
+        "Alertas de fluxo de caixa",
+        "Detecção de duplicidade",
+        "Negociação assistida"
+      ],
+      "evidence": [
+        "ERP financeiro",
+        "Extratos",
+        "Títulos",
+        "Recebimentos",
+        "Eventos de cobrança"
+      ],
+      "guardrails": [
+        "Privacidade",
+        "Não discriminação",
+        "Regras de crédito e cobrança",
+        "Revisão humana para decisões de alto impacto"
+      ]
+    }
+  ]
+}
