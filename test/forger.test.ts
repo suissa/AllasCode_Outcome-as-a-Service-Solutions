@@ -15,4 +15,7 @@ test("generated pages include semantic content and unique canonical metadata", a
   assert.match(html,/<main>/); assert.match(html,/<h1>/); assert.match(html,/name="description"/);
   assert.match(html,/rel="canonical"/); assert.match(html,/application\/ld\+json/);
   assert.ok(html.includes('OaaS.Quest'));
+  assert.ok(html.includes('UMA NOVA FORMA DE CONQUISTAR RESULTADOS'));
+  assert.ok(html.includes('Modo Guilda'));
+  assert.ok(html.includes('Modo Clássico'));
 });
