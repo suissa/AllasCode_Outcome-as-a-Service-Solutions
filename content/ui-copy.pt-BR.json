@@ -96,7 +96,9 @@
     "recordedAnswers": "Respostas registradas",
     "reviewAnswers": "Revisar respostas",
     "exportJson": "Exportar JSON",
-    "confirmReset": "Apagar todas as respostas salvas desta descoberta?"
+    "confirmReset": "Apagar todas as respostas salvas desta descoberta?",
+    "proposalCta": "Montar proposta preliminar",
+    "proposalGenerated": "Proposta preliminar pronta para revisão."
   },
   "proposal": {
     "brand": "GOALTROPIC · OaaS.QUEST",
