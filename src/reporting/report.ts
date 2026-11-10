@@ -42,7 +42,7 @@ function validateCustomerReportInput(input: CustomerOutcomeReportInput, evidence
   if (input.tenantId !== access.tenantId) throw new CustomerReportError("REPORT_TENANT_MISMATCH", "tenantId");
   if (!reportRequired(access.actorId) || !reportRequired(access.purpose)) throw new CustomerReportError("REPORT_ACCESS_CONTEXT_INVALID", "access");
   if (!input.metric || ![input.metric.id, input.metric.name, input.metric.unit].every(reportRequired)) throw new CustomerReportError("REPORT_METRIC_INVALID", "metric");
-  if (!input.period || !/^\\d{4}-\\d{2}-\\d{2}$/.test(input.period.start) || !/^\\d{4}-\\d{2}-\\d{2}$/.test(input.period.end) || !Number.isFinite(Date.parse(input.period.start + "T00:00:00Z")) || !Number.isFinite(Date.parse(input.period.end + "T00:00:00Z")) || input.period.end <= input.period.start) throw new CustomerReportError("REPORT_PERIOD_INVALID", "period");
+  if (!input.period || !/^\d{4}-\d{2}-\d{2}$/.test(input.period.start) || !/^\d{4}-\d{2}-\d{2}$/.test(input.period.end) || !Number.isFinite(Date.parse(input.period.start + "T00:00:00Z")) || !Number.isFinite(Date.parse(input.period.end + "T00:00:00Z")) || input.period.end <= input.period.start) throw new CustomerReportError("REPORT_PERIOD_INVALID", "period");
   if (!reportRequired(input.methodology)) throw new CustomerReportError("REPORT_METHOD_REQUIRED", "methodology");
   if (!reportRequired(input.attribution)) throw new CustomerReportError("REPORT_ATTRIBUTION_REQUIRED", "attribution");
   if (!Array.isArray(input.limitations) || input.limitations.some(value => !reportRequired(value))) throw new CustomerReportError("REPORT_LIMITATIONS_INVALID", "limitations");
