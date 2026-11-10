@@ -14,12 +14,14 @@
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
-<body data-theme="dark">
+<body data-theme="dark" data-oaas-page="discovery" data-config-root="../">
 <div id="app" class="app"></div>
 
+<script src="../page-config.js"></script>
 <script>
 (async()=>{'use strict';
-const config=await fetch('../content/discovery.pt-BR.json').then(response=>{if(!response.ok)throw new Error('DISCOVERY_CONFIG_UNAVAILABLE');return response.json()});
+const pageRuntime=await window.OaaSPageReady;
+const config=pageRuntime.sources.discovery;
 const root=document.getElementById('app');let index=0,answers={},transitioning=false,showResults=false;
 const key=config.engine.storageKey;
 let handoffSource=null;
