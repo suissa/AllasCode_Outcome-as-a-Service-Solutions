@@ -55,7 +55,7 @@ test("HTML entry points boot through the manifest-driven page runtime",async()=>
     assert.ok(html.includes('data-oaas-page="'+id+'"'),path+" must declare its page id");
     assert.ok(html.includes(path==="descoberta/index.html"?"../page-config.js":"page-config.js"),path+" must load the page runtime");
     assert.ok(html.includes("oaas-page-root"),path+" must expose the template mount point");
-    assert.ok(!/<script>[\\s\\S]*?<\\/script>/.test(html),path+" must not embed inline runtime scripts");
+    assert.ok(!html.includes("<script>"),path+" must not embed inline runtime scripts");
   }
 });
 
