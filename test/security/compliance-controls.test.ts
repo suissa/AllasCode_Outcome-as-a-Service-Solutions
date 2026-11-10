@@ -87,5 +87,6 @@ test("builds a tamper-evident evidence bundle and requires independent reviewer"
   const reviewed = reviewComplianceEvidenceBundle(bundle, "independent_auditor", now);
   assert.equal(reviewed.reviewedBy, "independent_auditor");
   assert.ok(Object.isFrozen(reviewed));
-  assert.throws(() => reviewComplianceEvidenceBundle(bundle, "control_runner", now), /COMPLIANCE_REVIEW_INDEPENDENT_REQUIRED/);\n  assert.throws(() => reviewComplianceEvidenceBundle({ ...bundle, controls: [] }, "independent_auditor", now), /COMPLIANCE_BUNDLE_HASH_MISMATCH/);
+  assert.throws(() => reviewComplianceEvidenceBundle(bundle, "control_runner", now), /COMPLIANCE_REVIEW_INDEPENDENT_REQUIRED/);
+  assert.throws(() => reviewComplianceEvidenceBundle({ ...bundle, controls: [] }, "independent_auditor", now), /COMPLIANCE_BUNDLE_HASH_MISMATCH/);
 });
