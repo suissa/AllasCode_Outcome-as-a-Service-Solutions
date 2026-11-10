@@ -73,7 +73,7 @@ test("contract HTTP lifecycle persists a draft, review, approval, signatures and
     assert.equal((await post(path + "/submit-review", "submit-1", {})).status, 200);
     assert.equal((await post(path + "/approve", "approve-1", {})).status, 200);
     for (const signerId of ["customer_admin", "provider_admin"]) {
-      const signed = await post(path + "/signatures", "sign-" + signerId, { signature: { signerId, signatureHash: "verified:" + signerId, provider: "test-verifier", signedAt: "2026-11-10T10:00:00.000Z", verificationReference: "verification-" + signerId } });
+      const signed = await post(path + "/signatures", "sign-" + signerId, { signature: { signerId, signatureHash: "verified:" + signerId, documentFingerprint: createdBody.value.document.fingerprint, provider: "test-verifier", signedAt: "2026-11-10T10:00:00.000Z", verificationReference: "verification-" + signerId } });
       assert.equal(signed.status, 200);
     }
     const activated = await post(path + "/activate", "activate-1", {});
