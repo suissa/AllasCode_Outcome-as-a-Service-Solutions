@@ -830,7 +830,6 @@
         "lead_registration:partial",
         "lead_registration:none",
         "abandonment_tracking:no",
-        "conversion_tracking:unknown",
         "conversion_tracking:partial"
       ],
       "metrics": [
@@ -851,8 +850,7 @@
       "signals": [
         "response_time:slow",
         "abandonment_frequency:often",
-        "abandonment_frequency:sometimes",
-        "conversion_tracking:unknown"
+        "abandonment_frequency:sometimes"
       ],
       "metrics": [
         "Tempo de resposta",
@@ -1046,7 +1044,6 @@
       "name": "Indicadores de gestão",
       "description": "Definir indicadores, fontes, periodicidade e responsáveis para decisões baseadas em dados.",
       "signals": [
-        "conversion_tracking:unknown",
         "campaign_measurement:no",
         "new_customer_tracking:no",
         "cash_forecast:no"
@@ -4131,23 +4128,7 @@
             "sales",
             "analytics"
           ],
-          "solutionLinks": [
-            {
-              "solutionId": "SOL-SALES-001",
-              "signal": "conversion_tracking:unknown",
-              "weight": 1
-            },
-            {
-              "solutionId": "SOL-SALES-002",
-              "signal": "conversion_tracking:unknown",
-              "weight": 1
-            },
-            {
-              "solutionId": "SOL-OPS-003",
-              "signal": "conversion_tracking:unknown",
-              "weight": 1
-            }
-          ],
+          "solutionLinks": [],
           "interpretation": "Contexto declarado pelo cliente; usar apenas como hipótese de escopo."
         },
         "$unknown": {
