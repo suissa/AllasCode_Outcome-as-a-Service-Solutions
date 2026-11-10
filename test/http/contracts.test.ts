@@ -16,7 +16,7 @@ const proposalInput: OutcomeProposalInput = {
   scenario: { id: "scenario_1", rationale: "Reposição assistida.", confidence: 0.7, assumptions: [], risks: [] },
   scope: ["Instrumentar estoque"], deliverables: ["Painel de ruptura"], exclusions: ["Troca do ERP"],
   dependencies: [], responsibilities: [{ party: "customer", description: "Liberar acesso ao ERP." }, { party: "provider", description: "Implementar integração." }],
-  acceptanceCriteria: ["Dados reconciliados"], pricingLines: [{ id: "base", label: "Implantação", kind: "fixed", currency: "BRL", amount: 2000 }],
+  acceptanceCriteria: ["Dados reconciliados"], pricingLines: [{ id: "base", label: "Implantação", kind: "fixed", currency: "BRL", amount: 2000 }, { id: "outcome_fee", label: "Economia validada", kind: "gain_share", currency: "BRL", rate: 0.08, eligibleValue: 10000, progress: 0.5 }],
 };
 const agreement: Agreement = { id: "agreement_http_001", tenantId: "tenant_http_001", version: 1, status: "draft", scope: [...proposalInput.scope], deliverables: [...proposalInput.deliverables], exclusions: [...proposalInput.exclusions], fees: [] };
 class MemoryContracts implements ContractRegistryStore {
