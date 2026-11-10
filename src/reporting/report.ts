@@ -102,7 +102,7 @@ export async function buildCustomerOutcomeReport(
   });
 }
 function markdownText(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\\|/g, "\\\\|").replace(/\r?\n/g, " ");
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/[|]/g, "\\|").replace(/\r?\n/g, " ");
 }
 /** Render a customer-safe Markdown artifact; never embeds evidence payloads or credentials. */
 export function renderCustomerOutcomeReport(report: CustomerOutcomeReport): string {
