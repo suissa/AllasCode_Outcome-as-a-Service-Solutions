@@ -12,7 +12,9 @@ export class PostgresProposalStore implements ProposalStore {
   async create(command: CreateProposalCommand): Promise<{ value: PersistedProposal; replayed: boolean }> {
     if (!command.tenantId.trim() || !command.actorId.trim() || !command.idempotencyKey.trim() || !command.fingerprint.trim()
       || command.value.proposal.tenantId !== command.tenantId || command.value.proposal.status !== "draft"
-      || command.value.status !== "ready_for_review" || command.value.proposal.readiness.status !== "ready_for_review"
+      || !["draft", "ready_for_review"].includes(command.value.status)
+      || (command.value.status === "ready_for_review" && command.value.proposal.readiness.status !== "ready_for_review")
+      || (command.value.status === "draft" && command.value.proposal.readiness.status === "ready_for_review")
       || command.event.tenantId !== command.tenantId || command.event.proposalId !== command.value.proposal.id
       || command.event.version !== command.value.proposal.version || command.event.actorId !== command.actorId
       || command.event.kind !== "submitted") throw new Error("PROPOSAL_CREATE_COMMAND_INVALID");
