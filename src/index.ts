@@ -87,3 +87,4 @@ export * from "./commercial/pricing.ts";
 export * from "./commercial/contract-composer.ts";
 export * from "./operations/observability.ts";
 export * from "./operations/trace-correlation.ts";
+export * from "./operations/anomaly-detection.ts";
