@@ -43,7 +43,8 @@
       "id": "operating-capacity",
       "label": "operating capacity",
       "questionIds": [
-        "team_size"
+        "team_size",
+        "growth_capacity"
       ],
       "moduleIds": [
         "operations"
@@ -53,14 +54,7 @@
       "id": "desired-outcome",
       "label": "desired outcome",
       "questionIds": [
-        "main_goal"
-      ],
-      "moduleIds": []
-    },
-    {
-      "id": "desired-outcome",
-      "label": "desired outcome",
-      "questionIds": [
+        "main_goal",
         "goal_target"
       ],
       "moduleIds": []
@@ -69,7 +63,8 @@
       "id": "timeline",
       "label": "timeline",
       "questionIds": [
-        "goal_deadline"
+        "goal_deadline",
+        "deadline"
       ],
       "moduleIds": []
     },
@@ -77,7 +72,10 @@
       "id": "success-criteria",
       "label": "success criteria",
       "questionIds": [
-        "success_definition"
+        "success_definition",
+        "primary_kpi",
+        "baseline_value",
+        "target_value"
       ],
       "moduleIds": [
         "analytics"
@@ -99,17 +97,7 @@
       "id": "sales-channels",
       "label": "sales channels",
       "questionIds": [
-        "sales_mode"
-      ],
-      "moduleIds": [
-        "sales",
-        "marketing"
-      ]
-    },
-    {
-      "id": "sales-channels",
-      "label": "sales channels",
-      "questionIds": [
+        "sales_mode",
         "channels"
       ],
       "moduleIds": [
@@ -185,17 +173,7 @@
       "id": "commercial-baseline",
       "label": "commercial baseline",
       "questionIds": [
-        "monthly_sales"
-      ],
-      "moduleIds": [
-        "sales",
-        "analytics"
-      ]
-    },
-    {
-      "id": "commercial-baseline",
-      "label": "commercial baseline",
-      "questionIds": [
+        "monthly_sales",
         "average_ticket"
       ],
       "moduleIds": [
@@ -207,16 +185,7 @@
       "id": "profitability-baseline",
       "label": "profitability baseline",
       "questionIds": [
-        "margin_value"
-      ],
-      "moduleIds": [
-        "finance"
-      ]
-    },
-    {
-      "id": "profitability-baseline",
-      "label": "profitability baseline",
-      "questionIds": [
+        "margin_value",
         "margin_type"
       ],
       "moduleIds": [
@@ -249,17 +218,7 @@
       "id": "acquisition-measurement",
       "label": "acquisition measurement",
       "questionIds": [
-        "new_customer_tracking"
-      ],
-      "moduleIds": [
-        "analytics",
-        "marketing"
-      ]
-    },
-    {
-      "id": "acquisition-measurement",
-      "label": "acquisition measurement",
-      "questionIds": [
+        "new_customer_tracking",
         "channel_attribution"
       ],
       "moduleIds": [
@@ -271,28 +230,8 @@
       "id": "lead-management",
       "label": "lead management",
       "questionIds": [
-        "lead_registration"
-      ],
-      "moduleIds": [
-        "sales",
-        "crm"
-      ]
-    },
-    {
-      "id": "lead-management",
-      "label": "lead management",
-      "questionIds": [
-        "customer_followup"
-      ],
-      "moduleIds": [
-        "sales",
-        "crm"
-      ]
-    },
-    {
-      "id": "lead-management",
-      "label": "lead management",
-      "questionIds": [
+        "lead_registration",
+        "customer_followup",
         "abandonment_tracking"
       ],
       "moduleIds": [
@@ -304,31 +243,13 @@
       "id": "retention",
       "label": "retention",
       "questionIds": [
-        "repeat_purchase"
-      ],
-      "moduleIds": [
-        "crm"
-      ]
-    },
-    {
-      "id": "retention",
-      "label": "retention",
-      "questionIds": [
-        "purchase_interval"
+        "repeat_purchase",
+        "purchase_interval",
+        "loyalty_program"
       ],
       "moduleIds": [
         "crm",
         "analytics"
-      ]
-    },
-    {
-      "id": "retention",
-      "label": "retention",
-      "questionIds": [
-        "loyalty_program"
-      ],
-      "moduleIds": [
-        "crm"
       ]
     },
     {
@@ -340,16 +261,6 @@
       "moduleIds": [
         "crm",
         "analytics"
-      ]
-    },
-    {
-      "id": "operating-capacity",
-      "label": "operating capacity",
-      "questionIds": [
-        "growth_capacity"
-      ],
-      "moduleIds": [
-        "operations"
       ]
     },
     {
@@ -389,17 +300,9 @@
       "id": "profitability-visibility",
       "label": "profitability visibility",
       "questionIds": [
-        "margin_knowledge"
-      ],
-      "moduleIds": [
-        "finance"
-      ]
-    },
-    {
-      "id": "profitability-visibility",
-      "label": "profitability visibility",
-      "questionIds": [
-        "profitability_mix"
+        "margin_knowledge",
+        "profitability_mix",
+        "monthly_profit"
       ],
       "moduleIds": [
         "finance"
@@ -452,21 +355,12 @@
       "id": "procurement",
       "label": "procurement",
       "questionIds": [
-        "purchase_decision"
+        "purchase_decision",
+        "replenishment"
       ],
       "moduleIds": [
         "inventory",
         "finance"
-      ]
-    },
-    {
-      "id": "procurement",
-      "label": "procurement",
-      "questionIds": [
-        "replenishment"
-      ],
-      "moduleIds": [
-        "inventory"
       ]
     },
     {
@@ -510,16 +404,6 @@
       "moduleIds": [
         "finance",
         "analytics"
-      ]
-    },
-    {
-      "id": "profitability-visibility",
-      "label": "profitability visibility",
-      "questionIds": [
-        "monthly_profit"
-      ],
-      "moduleIds": [
-        "finance"
       ]
     },
     {
@@ -612,21 +496,12 @@
       "id": "conversion-loss",
       "label": "conversion loss",
       "questionIds": [
-        "abandonment_frequency"
-      ],
-      "moduleIds": [
-        "sales",
-        "crm"
-      ]
-    },
-    {
-      "id": "conversion-loss",
-      "label": "conversion loss",
-      "questionIds": [
+        "abandonment_frequency",
         "abandonment_reason"
       ],
       "moduleIds": [
         "sales",
+        "crm",
         "operations",
         "inventory"
       ]
@@ -657,21 +532,12 @@
       "id": "customer-feedback",
       "label": "customer feedback",
       "questionIds": [
-        "complaints"
-      ],
-      "moduleIds": [
-        "customer-experience",
-        "operations"
-      ]
-    },
-    {
-      "id": "customer-feedback",
-      "label": "customer feedback",
-      "questionIds": [
+        "complaints",
         "satisfaction"
       ],
       "moduleIds": [
         "customer-experience",
+        "operations",
         "analytics"
       ]
     },
@@ -720,36 +586,6 @@
       ]
     },
     {
-      "id": "success-criteria",
-      "label": "success criteria",
-      "questionIds": [
-        "primary_kpi"
-      ],
-      "moduleIds": [
-        "analytics"
-      ]
-    },
-    {
-      "id": "success-criteria",
-      "label": "success criteria",
-      "questionIds": [
-        "baseline_value"
-      ],
-      "moduleIds": [
-        "analytics"
-      ]
-    },
-    {
-      "id": "success-criteria",
-      "label": "success criteria",
-      "questionIds": [
-        "target_value"
-      ],
-      "moduleIds": [
-        "analytics"
-      ]
-    },
-    {
       "id": "measurement-readiness",
       "label": "measurement readiness",
       "questionIds": [
@@ -777,14 +613,6 @@
       "moduleIds": [
         "finance"
       ]
-    },
-    {
-      "id": "timeline",
-      "label": "timeline",
-      "questionIds": [
-        "deadline"
-      ],
-      "moduleIds": []
     },
     {
       "id": "constraints",
@@ -12588,11 +12416,6 @@
       "label": "desired outcome"
     },
     {
-      "id": "dimension:desired-outcome",
-      "type": "dimension",
-      "label": "desired outcome"
-    },
-    {
       "id": "dimension:timeline",
       "type": "dimension",
       "label": "timeline"
@@ -12606,11 +12429,6 @@
       "id": "dimension:commercial-model",
       "type": "dimension",
       "label": "commercial model"
-    },
-    {
-      "id": "dimension:sales-channels",
-      "type": "dimension",
-      "label": "sales channels"
     },
     {
       "id": "dimension:sales-channels",
@@ -12653,16 +12471,6 @@
       "label": "commercial baseline"
     },
     {
-      "id": "dimension:commercial-baseline",
-      "type": "dimension",
-      "label": "commercial baseline"
-    },
-    {
-      "id": "dimension:profitability-baseline",
-      "type": "dimension",
-      "label": "profitability baseline"
-    },
-    {
       "id": "dimension:profitability-baseline",
       "type": "dimension",
       "label": "profitability baseline"
@@ -12683,34 +12491,9 @@
       "label": "acquisition measurement"
     },
     {
-      "id": "dimension:acquisition-measurement",
-      "type": "dimension",
-      "label": "acquisition measurement"
-    },
-    {
       "id": "dimension:lead-management",
       "type": "dimension",
       "label": "lead management"
-    },
-    {
-      "id": "dimension:lead-management",
-      "type": "dimension",
-      "label": "lead management"
-    },
-    {
-      "id": "dimension:lead-management",
-      "type": "dimension",
-      "label": "lead management"
-    },
-    {
-      "id": "dimension:retention",
-      "type": "dimension",
-      "label": "retention"
-    },
-    {
-      "id": "dimension:retention",
-      "type": "dimension",
-      "label": "retention"
     },
     {
       "id": "dimension:retention",
@@ -12721,11 +12504,6 @@
       "id": "dimension:retention-measurement",
       "type": "dimension",
       "label": "retention measurement"
-    },
-    {
-      "id": "dimension:operating-capacity",
-      "type": "dimension",
-      "label": "operating capacity"
     },
     {
       "id": "dimension:operational-bottleneck",
@@ -12741,11 +12519,6 @@
       "id": "dimension:offer-portfolio",
       "type": "dimension",
       "label": "offer portfolio"
-    },
-    {
-      "id": "dimension:profitability-visibility",
-      "type": "dimension",
-      "label": "profitability visibility"
     },
     {
       "id": "dimension:profitability-visibility",
@@ -12778,11 +12551,6 @@
       "label": "procurement"
     },
     {
-      "id": "dimension:procurement",
-      "type": "dimension",
-      "label": "procurement"
-    },
-    {
       "id": "dimension:supplier-context",
       "type": "dimension",
       "label": "supplier context"
@@ -12801,11 +12569,6 @@
       "id": "dimension:cash-visibility",
       "type": "dimension",
       "label": "cash visibility"
-    },
-    {
-      "id": "dimension:profitability-visibility",
-      "type": "dimension",
-      "label": "profitability visibility"
     },
     {
       "id": "dimension:working-capital",
@@ -12853,11 +12616,6 @@
       "label": "conversion loss"
     },
     {
-      "id": "dimension:conversion-loss",
-      "type": "dimension",
-      "label": "conversion loss"
-    },
-    {
       "id": "dimension:customer-visibility",
       "type": "dimension",
       "label": "customer visibility"
@@ -12866,11 +12624,6 @@
       "id": "dimension:customer-relationship",
       "type": "dimension",
       "label": "customer relationship"
-    },
-    {
-      "id": "dimension:customer-feedback",
-      "type": "dimension",
-      "label": "customer feedback"
     },
     {
       "id": "dimension:customer-feedback",
@@ -12898,21 +12651,6 @@
       "label": "conversion context"
     },
     {
-      "id": "dimension:success-criteria",
-      "type": "dimension",
-      "label": "success criteria"
-    },
-    {
-      "id": "dimension:success-criteria",
-      "type": "dimension",
-      "label": "success criteria"
-    },
-    {
-      "id": "dimension:success-criteria",
-      "type": "dimension",
-      "label": "success criteria"
-    },
-    {
       "id": "dimension:measurement-readiness",
       "type": "dimension",
       "label": "measurement readiness"
@@ -12926,11 +12664,6 @@
       "id": "dimension:investment-constraint",
       "type": "dimension",
       "label": "investment constraint"
-    },
-    {
-      "id": "dimension:timeline",
-      "type": "dimension",
-      "label": "timeline"
     },
     {
       "id": "dimension:constraints",
