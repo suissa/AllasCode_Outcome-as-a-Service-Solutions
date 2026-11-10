@@ -1,0 +1,8 @@
+extract_intent_fields -(validate_request_and_threshold)-> call_extractor
+call_extractor -(provider_result)-> validate_structured_result
+validate_structured_result -(invalid_shape_or_field)-> reject_stable_error
+validate_structured_result -(valid_shape)-> evaluate_confidence_and_ambiguity
+evaluate_confidence_and_ambiguity -(low_confidence_or_ambiguity_or_missing_fields)-> ask_clarification
+ evaluate_confidence_and_ambiguity -(complete_and_confident)-> capture_normalized_intent
+capture_normalized_intent -(valid)-> return_captured_intent
+capture_normalized_intent -(invalid_envelope)-> reject_stable_error
