@@ -79,6 +79,7 @@ export class PostgresProposalStore implements ProposalStore {
       if (!current.rows[0]) throw new Error("PROPOSAL_NOT_FOUND");
       const value = decode(current.rows[0].payload);
       if (value.proposal.version !== command.expectedVersion) throw new Error("PROPOSAL_VERSION_CONFLICT");
+      if (command.actorId === value.createdBy) throw new Error("PROPOSAL_SEPARATION_OF_DUTIES");
       if (value.status !== "ready_for_review" || !["approved", "rejected", "superseded"].includes(command.status)) {
         throw new Error("PROPOSAL_TRANSITION_NOT_ALLOWED");
       }
