@@ -163,12 +163,13 @@ export function runSecurityPrivacyControls(
     const item = input.evidence[index]!;
     const path = `evidence[${index}]`;
     if (!item || !required(item.id) || !required(item.controlId) || !required(item.kind) ||
-        !required(item.sourceId) || !/^[a-f0-9]{64}$/i.test(item.contentHash) ||
+        !required(item.sourceId) ||
         !["public", "internal", "confidential", "personal", "sensitive"].includes(item.classification) ||
         !["passed", "failed"].includes(item.result)) {
       fail("COMPLIANCE_EVIDENCE_INVALID", path);
     }
     if (item.tenantId !== input.tenantId) fail("COMPLIANCE_TENANT_MISMATCH", `${path}.tenantId`);
+    if (!/^[a-f0-9]{64}$/i.test(item.contentHash)) fail("COMPLIANCE_EVIDENCE_HASH_INVALID", `${path}.contentHash`);
     if (evidenceIds.has(item.id)) fail("COMPLIANCE_EVIDENCE_DUPLICATE", `${path}.id`);
     evidenceIds.add(item.id);
     const control = controlById.get(item.controlId);
