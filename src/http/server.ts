@@ -76,7 +76,7 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
           const result = await registry.createDraft(value, event, idempotencyKey, contractCommandFingerprint("create", createInput));
           send(response, result.replayed ? 200 : 201, { value: result.value, replayed: result.replayed, correlationId }); return;
         }
-        const contractId = parts[2];
+        const contractId = decodeURIComponent(parts[2] ?? "");
         if (!contractId) { send(response, 404, { error: "ROUTE_NOT_FOUND", correlationId }); return; }
         const current = await registry.get(actor.tenantId, contractId);
         if (!current) { send(response, 404, { error: "CONTRACT_NOT_FOUND", correlationId }); return; }
