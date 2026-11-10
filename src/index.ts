@@ -89,3 +89,4 @@ export * from "./operations/observability.ts";
 export * from "./operations/trace-correlation.ts";
 export * from "./operations/anomaly-detection.ts";
 export * from "./security/credential-governance.ts";
+export * from "./security/compliance-controls.ts";
