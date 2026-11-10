@@ -95,3 +95,11 @@ test("telemetry event freezes safe attributes and redacts sensitive keys", () =>
   assert.ok(Object.isFrozen(event));
   assert.throws(() => createTelemetryEvent(context, { name: " ", occurredAt: "invalid", attributes: {} }), /TELEMETRY_EVENT_INVALID/);
 });
+
+test("health aggregation rejects unknown statuses and empty probe sets fail closed", () => {
+  const now = new Date("2026-11-10T12:00:00.000Z");
+  assert.equal(aggregateTenantHealth("tenant_a", [], now).status, "unhealthy");
+  assert.throws(() => aggregateTenantHealth("tenant_a", [
+    { id: "db", tenantId: "tenant_a", name: "database", critical: true, status: "unknown" as never, checkedAt: now.toISOString(), latencyMs: 2 },
+  ], now), /HEALTH_STATUS_INVALID/);
+});
