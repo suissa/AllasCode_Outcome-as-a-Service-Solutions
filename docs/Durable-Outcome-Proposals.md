@@ -36,4 +36,4 @@ window.OaaSProposalConfig = {
 
 The bridge must return a short-lived access token from the host's existing auth session; do not put secrets or long-lived tokens in page config/localStorage. Requests use Bearer authentication, `credentials: omit`, and `cache: no-store`. The recommended deployment is a same-origin reverse proxy. The API's authenticate/authorize functions remain responsible for validating the token and tenant permissions.
 
-The visitor can preview readiness first, then submit the Discovery. Incomplete answers are stored as `draft` for commercial enrichment—not mislabeled as an approved or ready proposal. The response displays its server-generated proposal ID and persisted status. No contract or execution is triggered.
+The visitor can preview readiness first, then submit the Discovery. Incomplete answers are stored as `draft` for commercial enrichment—not mislabeled as an approved or ready proposal. The response displays its server-generated proposal ID and persisted status. No contract or execution is triggered. Proposal IDs are server-generated and should be used for support and audit references.
