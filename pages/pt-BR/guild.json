@@ -6,7 +6,7 @@
   "locale": "pt-BR",
   "title": "OaaS.Quest — Modo Guilda",
   "contentRefs": [
-    "experience.presentation.guild",
+    "experience.presentation.guilda",
     "experience.customerJourney",
     "experience.90DayMethod",
     "experience.measurement",
@@ -20,7 +20,7 @@
     {
       "id": "welcome",
       "component": "guild-welcome",
-      "contentRef": "experience.presentation.guild.hero"
+      "contentRef": "experience.presentation.guilda.hero"
     },
     {
       "id": "mission",
