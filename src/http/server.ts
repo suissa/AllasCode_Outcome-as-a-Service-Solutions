@@ -93,6 +93,9 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
         if (!(await options.authorize(actor, "contract." + action))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
         const input = await readBody(request);
         const idempotencyKey = requiredString(request.headers["idempotency-key"], "IDEMPOTENCY_KEY_REQUIRED");
+        const commandFingerprint = contractCommandFingerprint(action, input);
+        const replay = await registry.getIdempotentResult(actor.tenantId, idempotencyKey, commandFingerprint);
+        if (replay) { send(response, 200, { value: replay, replayed: true, correlationId }); return; }
         const at = now(); let next: ContractRecord;
         let eventAction: import("../commercial/contract-workflow.ts").ContractEvent["action"];
         let metadata: Record<string, unknown> = {};
@@ -110,7 +113,7 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
           default: send(response, 404, { error: "ROUTE_NOT_FOUND", correlationId }); return;
         }
         const event = createContractEvent({ record: next, actorId: actor.actorId, correlationId, action: eventAction, fromState: current.state, now: at, metadata });
-        const result = await registry.commit({ tenantId: actor.tenantId, contractId, expectedRevision: current.revision, idempotencyKey, fingerprint: contractCommandFingerprint(action, input), value: next, event });
+        const result = await registry.commit({ tenantId: actor.tenantId, contractId, expectedRevision: current.revision, idempotencyKey, fingerprint: commandFingerprint, value: next, event });
         send(response, 200, { value: result.value, replayed: result.replayed, correlationId }); return;
       }
       if (parts[0] !== "v1" || parts[1] !== "cases") { send(response, 404, { error: "ROUTE_NOT_FOUND", correlationId }); return; }
