@@ -123,7 +123,8 @@ test("unknown, unanswered, and not-applicable values are not invented as problem
   const proposal=make(answers);
   assertValidProposal(proposal);
   if(Object.keys(answers).length===0)assert.equal(proposal.scope.opportunities.length,0);
-  if(answers.lead_registration?.value==="unknown"||answers.lead_registration?.value===null)assert.equal(proposal.scope.opportunities.length,0);
+  const lead=answers["lead_registration"] as {value?:unknown}|undefined;
+  if(lead?.value==="unknown"||lead?.value===null)assert.equal(proposal.scope.opportunities.length,0);
  }
 });
 
@@ -144,7 +145,7 @@ test("numeric and free-text answers are preserved as context, not converted into
 test("proposal inference is deterministic and explicitly precedes data analysis",()=>{
  const answers={segment:{value:"retail"},lead_registration:{value:"none"},abandonment_tracking:{value:"no"},investment:{value:"limited"}};
  const first=make(answers),second=make(answers);
- assert.deepEqual(first,second);
+ assert.equal(JSON.stringify(first),JSON.stringify(second));
  assert.equal(first.stage,"pre-data-analysis");
  assert.equal(first.governance.status,"preliminary-hypothesis");
  assert.ok(first.governance.limitations.length>=3);
