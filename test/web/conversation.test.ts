@@ -11,7 +11,7 @@ async function harness(initial: Record<string, string> = {}) {
     setItem: (key: string, value: string) => values.set(key, String(value)),
     removeItem: (key: string) => values.delete(key)
   };
-  const window: { OQ?: any } = {};
+  const window: { OQ?: any; OQReady?: Promise<any> } = {};
   const missionSteps = JSON.parse(readFileSync(new URL("../../content/mission-steps.pt-BR.json", import.meta.url), "utf8"));
   const fetch = async () => ({ ok: true, json: async () => missionSteps });
   runInNewContext(source, { window, localStorage, console, Date, JSON, Object, Array, String, Number, Math, Set, fetch });
@@ -42,7 +42,7 @@ test("collects the guided mission progressively and reaches review", async () =>
 });
 
 test("keeps unknown answers explicit and allows reviewing the mission", async () => {
-  const { OQ } = harness();
+  const { OQ } = await harness();
   OQ.startMission();
   OQ.advanceMission(null, true);
   assert.equal(OQ.getMission().answers.segment.value, null);
