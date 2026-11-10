@@ -1,0 +1,17 @@
+version = "1.0"
+require_ci = true
+require_tests = true
+require_security_scan = true
+require_migration_verification = true
+require_backup_verification = true
+require_slo_health = true
+require_independent_release_approval = true
+migration_checksum = "sha256"
+destructive_migration_requires_recovery = true
+rollout_requires_completed_migrations = true
+rollout_requires_health_gate = true
+rollout_percentage_min = 1
+rollout_percentage_max = 100
+feature_flag_bucket = "sha256"
+feature_flag_denylist_precedes_allowlist = true
+require_independent_rollback_operator = true
