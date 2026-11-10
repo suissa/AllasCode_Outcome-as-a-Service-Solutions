@@ -1,0 +1,42 @@
+version: "1.0"
+behavior: privacy-consent-retention
+input:
+  DataHandling:
+    classification:
+      type: enum
+      values: [public, internal, confidential, personal, sensitive]
+      required: true
+      error: DATA_CLASSIFICATION_INVALID
+    purpose:
+      type: string
+      required: true
+      minLength: 1
+      trimForValidation: true
+      error: DATA_PURPOSE_REQUIRED
+    consentId:
+      type: identifier
+      required: false
+      privacy: confidential
+    legalBasis:
+      type: string
+      required: false
+      privacy: confidential
+    retentionUntil:
+      type: timestamp
+      required: false
+      mustBeFuture: true
+      errors: [RETENTION_DATE_INVALID, RETENTION_EXPIRED]
+  ConsentRecord:
+    id: { type: identifier, required: true }
+    tenantId: { type: identifier, required: true }
+    subjectId: { type: identifier, required: true, privacy: personal }
+    purpose: { type: string, required: true, minLength: 1 }
+    granted: { type: boolean, required: true }
+    capturedAt: { type: timestamp, required: true }
+    source: { type: string, required: true, minLength: 1 }
+    expiresAt: { type: timestamp, required: false, after: capturedAt }
+    withdrawnAt: { type: timestamp, required: false, afterOrEqual: capturedAt }
+output:
+  validateDataHandling: void | stable-error
+  consentIsValid: boolean
+  withdrawConsent: immutable-ConsentRecord | stable-error
