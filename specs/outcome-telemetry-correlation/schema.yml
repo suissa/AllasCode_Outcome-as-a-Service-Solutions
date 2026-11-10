@@ -1,0 +1,48 @@
+version: "1.0"
+behavior: outcome-telemetry-correlation
+scope:
+  required: [tenantId, outcomeId, executionId]
+signal:
+  common: [id, occurredAt, context]
+  context:
+    required: [tenantId, actorId, requestId, outcomeId, executionId, traceId, spanId]
+    tenantMustEqual: scope.tenantId
+    outcomeMustEqual: scope.outcomeId
+    executionMustEqual: scope.executionId
+    traceId: w3c-32-hex-nonzero
+    spanId: w3c-16-hex-nonzero
+  kinds:
+    trace: [name, parentSpanId]
+    log: [level, event]
+    metric: [name, value, unit]
+  timestamp: strict-utc-iso8601-not-future
+  attributes:
+    maxCount: 32
+    maxStringLength: 256
+    values: [string, finite-number, boolean, null]
+    sensitiveKeyValues: redact
+invariants:
+  - unique-signal-id
+  - single-trace-id
+  - unique-trace-span-definition
+  - tenant-outcome-execution-isolation
+  - deterministic-order
+output:
+  - tenantId
+  - outcomeId
+  - executionId
+  - traceId
+  - signals
+  - counts
+  - windowStart
+  - windowEnd
+errors:
+  - { code: CORRELATION_SCOPE_INVALID, path: scope }
+  - { code: CORRELATION_SIGNALS_REQUIRED, path: signals }
+  - { code: CORRELATION_TENANT_MISMATCH, path: signals[index].context.tenantId }
+  - { code: CORRELATION_OUTCOME_MISMATCH, path: signals[index].context.outcomeId }
+  - { code: CORRELATION_EXECUTION_MISMATCH, path: signals[index].context.executionId }
+  - { code: CORRELATION_TRACE_MISMATCH, path: signals[index].context.traceId }
+  - { code: CORRELATION_SIGNAL_DUPLICATE, path: signals[index].id }
+  - { code: CORRELATION_TIMESTAMP_INVALID, path: signals[index].occurredAt }
+  - { code: CORRELATION_TIMESTAMP_FUTURE, path: signals[index].occurredAt }
