@@ -1876,13 +1876,6 @@
       "source": "discovery.solutions"
     },
     {
-      "from": "answer:conversion_tracking:unknown",
-      "to": "solution:SOL-SALES-001",
-      "relation": "supports",
-      "weight": 1,
-      "source": "discovery.solutions"
-    },
-    {
       "from": "answer:conversion_tracking:partial",
       "to": "solution:SOL-SALES-001",
       "relation": "supports",
@@ -1905,13 +1898,6 @@
     },
     {
       "from": "answer:abandonment_frequency:sometimes",
-      "to": "solution:SOL-SALES-002",
-      "relation": "supports",
-      "weight": 1,
-      "source": "discovery.solutions"
-    },
-    {
-      "from": "answer:conversion_tracking:unknown",
       "to": "solution:SOL-SALES-002",
       "relation": "supports",
       "weight": 1,
@@ -2149,13 +2135,6 @@
       "source": "discovery.solutions"
     },
     {
-      "from": "answer:conversion_tracking:unknown",
-      "to": "solution:SOL-OPS-003",
-      "relation": "supports",
-      "weight": 1,
-      "source": "discovery.solutions"
-    },
-    {
       "from": "answer:campaign_measurement:no",
       "to": "solution:SOL-OPS-003",
       "relation": "supports",
@@ -2177,5 +2156,5 @@
       "source": "discovery.solutions"
     }
   ],
-  "unknownPolicy": "unknown, empty and null answers never activate edges; values not listed in the graph do not infer a solution."
+  "unknownPolicy": "null, empty, unanswered and explicit unknown values do not activate solution edges; non-mapped values never infer a solution."
 }
