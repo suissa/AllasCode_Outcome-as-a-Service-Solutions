@@ -3,7 +3,7 @@
 function normalize(value){return Array.isArray(value)?value:[value]}
 function infer(config,graph,answers){
  const answerMap=new Map(graph.answerNodes.map(n=>[n.id,n]));
- const solutionMap=new Map(config.solutions.map(s=>[s.id,s]));
+
  const solutionHits=new Map(config.solutions.map(s=>[s.id,[]]));
  const ignored=[];
  const observed=[];
