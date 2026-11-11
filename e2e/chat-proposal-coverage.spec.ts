@@ -110,6 +110,13 @@ async function seedDiscoveryAnswers(
   expect(handoff.answers.team_size.value).toBe("2_5");
   expect(handoff.answers.main_goal.value).toBe("sales");
   expect(handoff.answers.goal_deadline.value).toBe("90d");
+  expect(handoff.answers.goal_target.value).toContain("Aumentar as vendas");
+  expect(handoff.answers.success_definition.value).toContain("conversão");
+  expect(handoff.answers.operational_bottleneck.value).toBe("information");
+  expect(handoff.answers.conversion_notes.value).toContain("visibilidade");
+  expect(handoff.answers.primary_kpi.value).toBe("sales_count");
+  expect(handoff.answers.target_value.value).toContain("conversão");
+  expect(handoff.answers.sales_process.value).toContain("Vendas");
   expect(handoff.answers.company_name.value).toBe("Empresa E2E");
 }
 
@@ -183,6 +190,7 @@ test("Chat sem evidência associável não inventa uma solução", async ({ page
     }
   }
 
+  unknownAnswers.operational_bottleneck = { value: "unknown", status: "provided", source: "e2e" };
   await startAndConfirmBusinessMission(page);
   await seedDiscoveryAnswers(page, unknownAnswers);
   await page.reload();
@@ -192,6 +200,6 @@ test("Chat sem evidência associável não inventa uma solução", async ({ page
   }
 
   await page.getByRole("button", { name: /gerar diagnóstico/i }).click();
-  await expect(page.getByText(/nenhuma oportunidade|nenhuma solução|sem correspondências/i)).toBeVisible();
+  await expect(page.getByText(/ainda não há combinações suficientes para sugerir soluções/i)).toBeVisible();
   await expect(page.locator(".solution")).toHaveCount(0);
 });
