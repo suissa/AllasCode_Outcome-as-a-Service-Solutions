@@ -9,6 +9,7 @@ const databaseUrl = process.env.DATABASE_URL;
 test("Chat API sends context to OpenRouter and restores conversation from PostgreSQL", {
   skip: !databaseUrl
 }, async () => {
+  if (!databaseUrl) return;
   const calls: Array<{ messages: Array<{ role: string; content: string }> }> = [];
   const fetchImpl: typeof fetch = async (_url, options) => {
     const body = JSON.parse(String(options?.body));
