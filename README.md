@@ -11,6 +11,7 @@ O front-end usa Vite em modo multi-page, com hot reload e rotas limpas.
 ```bash
 bun install        # ou npm install
 bun run dev        # http://localhost:5173
+bun run dev:api    # Fastify em http://localhost:3000 (requer PostgreSQL e OpenRouter)
 bun run build      # gera dist/
 bun run preview    # serve dist/ como em producao
 bun run test       # suite de testes
@@ -68,3 +69,10 @@ Ele escuta em `0.0.0.0:5173` (dando acesso pela rede local em `http://<ip-do-wif
 o supervisor religa o Vite se ele cair e o log fica em `/tmp/oaas-dev.log`. O hot reload
 depende do watcher: passar `watch: null` no `server` do Vite **desliga** o watcher
 inteiro, e nao apenas usa o padrao.
+
+
+## Chat com LLM e PostgreSQL
+
+O Chat usa Fastify como API, PostgreSQL para persistir sessões/mensagens/contexto da missão e OpenRouter para gerar as respostas conversacionais. Consulte [docs/CHAT-API.md](docs/CHAT-API.md).
+
+Configure `.env` a partir de `.env.example` e execute `npm run dev:api` e `npm run dev` em terminais separados. O Vite encaminha `/api` ao Fastify durante o desenvolvimento. A chave OpenRouter permanece exclusivamente no servidor.
