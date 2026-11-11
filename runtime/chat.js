@@ -150,7 +150,7 @@ export async function mount(page) {
         button.type = "button";
         button.className = "chat-mission-option";
         button.textContent = option.label;
-        button.addEventListener("click", () => submitAnswer(option.value, option.label));
+        button.addEventListener("click", () => submitAnswer(option.value, option.label, true));
         group.append(button);
       });
         controls.append(group);
@@ -224,21 +224,22 @@ export async function mount(page) {
       renderMissionReview(true);
       return;
     }
-    const answeredByAssistant = await requestAssistantTurn(step);
-    if (!answeredByAssistant && !pendingTurn) {
-      const last = OQ.history("chat").at(-1);
-      if (last?.role !== "assistant" || !last.text.includes(step.prompt)) add("assistant", step.prompt);
-    } else if (!answeredByAssistant) {
-      add("assistant", step.prompt);
-    }
+    // Reconhecimento é um roteiro fixo: a IA não altera perguntas nem opções.
+    add("assistant", step.prompt);
     renderStepControls(step);
     input.value = "";
     input.focus();
   }
 
-  function submitAnswer(value, label) {
+  function submitAnswer(value, label, fromButton = false) {
     if (isResponding || !String(value || "").trim()) return;
     const previousStep = OQ.currentMissionStep();
+    if (previousStep?.options?.length && !fromButton) {
+      add("assistant", "Para continuar, selecione uma das opções apresentadas nos botões. Respostas digitadas não são registradas nesta etapa.");
+      renderStepControls(previousStep);
+      input.value = "";
+      return;
+    }
     if (previousStep?.options?.length) {
       const normalized = candidate => String(candidate || "")
         .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").trim().toLocaleLowerCase("pt-BR");
