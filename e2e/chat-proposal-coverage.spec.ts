@@ -123,6 +123,7 @@ async function seedDiscoveryAnswers(
 }
 
 async function generateProposal(page: Page): Promise<void> {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   // O handoff permanece no Chat; a etapa de diagnóstico/proposta usa a página Discovery.
   await page.goto("/descoberta");
   await page.reload();
