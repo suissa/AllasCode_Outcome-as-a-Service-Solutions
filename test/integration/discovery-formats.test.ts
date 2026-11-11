@@ -97,3 +97,45 @@ test("unknown and unanswered retail data remain unknown, not negative evidence",
   assert.ok(proposal.context.unknowns.some((item: any) => item.questionId === "abandonment_tracking"));
   assert.ok(!proposal.graphTrace.edgesTraversed.some((edge: any) => edge.questionId === "lead_registration" && edge.kind === "solution-association"));
 });
+
+test("Guilda selects the first explicit KPI when a mission mentions multiple metrics", async () => {
+  const runtime = createChatRuntime();
+  const OQ = await runtime.ready;
+  OQ.startMission("business");
+  for (const answer of [
+    "retail",
+    "2_5",
+    "Aumentar vendas e margem",
+    "Controle de estoque",
+    "Perdas de conversão e margem por pedido",
+    "90d",
+    "Elevar conversão de 2,4% para 3,5% e melhorar margem por pedido"
+  ]) OQ.advanceMission(answer);
+  const mission = OQ.getMission();
+  assert.equal(mission.status, "review");
+  OQ.confirmMission();
+  OQ.prepareDiscovery();
+  const saved = JSON.parse(runtime.localStorage.getItem("goaltropic.discovery.v1")!);
+  assert.equal(saved.answers.primary_kpi.value, "conversion");
+});
+
+test("retail fixture produces preliminary commercial and stock opportunities", async () => {
+  const fixture = await readJson("test/fixtures/retail-discovery.json");
+  const answers = Object.fromEntries(
+    Object.entries(fixture).map(([id, value]) => [id, { value }])
+  );
+  const proposal = createInference()({
+    graph,
+    discovery,
+    answers,
+    createdAt: "2026-11-10T12:00:00.000Z"
+  });
+  const opportunityIds = proposal.scope.opportunities.map((item: any) => item.id);
+  assert.equal(proposal.profile.companyName, "Mercado Aurora");
+  assert.equal(proposal.profile.segment, "retail");
+  assert.ok(opportunityIds.includes("SOL-SALES-001"));
+  assert.ok(opportunityIds.includes("SOL-STOCK-001"));
+  assert.equal(proposal.governance.status, "preliminary-hypothesis");
+  assert.equal(proposal.governance.dataAnalysisPerformed, false);
+  assert.ok(proposal.context.unknowns.some((item: any) => item.questionId === "margin_type"));
+});

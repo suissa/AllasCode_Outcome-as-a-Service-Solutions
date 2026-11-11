@@ -7,14 +7,15 @@ import { createAuditEvent } from "../domain/audit.ts";
 import type { EvidenceRecord } from "../evidence/evidence.ts";
 import type { Observation } from "../measurement/metrics.ts";
 import type { OutcomeStore } from "../persistence/outcome-store.ts";
+import type { ProposalStore, PersistedProposal } from "../persistence/proposal-store.ts";
 import type { ContractRegistryStore, CreateContractRecordInput, ContractRecord } from "../commercial/contract-workflow.ts";
 import { createContractRecord, createContractEvent, submitContractForReview, approveContractForSignature, signContract, activateContract, contractCommandFingerprint } from "../commercial/contract-workflow.ts";
 import type { SignatureVerifier, AgreementSignature } from "../commercial/agreement.ts";
 
 export interface AuthenticatedActor { tenantId: string; actorId: string; roles: readonly string[] }
 export type Authenticate = (request: IncomingMessage) => Promise<AuthenticatedActor | undefined>;
-export type Authorize = (actor: AuthenticatedActor, action: string, resource?: OutcomeCase) => boolean | Promise<boolean>;
-export interface OutcomeHttpOptions { store: OutcomeStore; authenticate: Authenticate; authorize: Authorize; contracts?: ContractRegistryStore; verifyContractSignature?: SignatureVerifier; now?: () => Date }
+export type Authorize = (actor: AuthenticatedActor, action: string, resource?: OutcomeCase | PersistedProposal) => boolean | Promise<boolean>;
+export interface OutcomeHttpOptions { store: OutcomeStore; proposalStore?: ProposalStore; authenticate: Authenticate; authorize: Authorize; contracts?: ContractRegistryStore; verifyContractSignature?: SignatureVerifier; now?: () => Date }
 type JsonObject = Record<string, unknown>;
 
 async function readBody(request: IncomingMessage): Promise<JsonObject> {
@@ -68,6 +69,55 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
         const preview = mapDiscoveryToOutcomeProposal(snapshot as DiscoverySnapshot, safeOptions, now());
         send(response, 200, { value: preview.proposal, source: preview.source, unmapped: preview.unmapped, correlationId });
         return;
+      }
+      const proposalParts = url.pathname.split("/").filter(Boolean);
+      if (proposalParts[0] === "v1" && proposalParts[1] === "proposals") {
+        const proposalStore = options.proposalStore;
+        if (!proposalStore) { send(response, 503, { error: "PROPOSAL_STORAGE_UNAVAILABLE", correlationId }); return; }
+        if (proposalParts.length === 2 && request.method === "POST") {
+          if (!(await options.authorize(actor, "proposal.create"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          const idempotencyKey = requiredString(request.headers["idempotency-key"], "IDEMPOTENCY_KEY_REQUIRED");
+          const input = await readBody(request);
+          if (!input.snapshot || typeof input.snapshot !== "object" || Array.isArray(input.snapshot)) throw Object.assign(new Error("DISCOVERY_SNAPSHOT_REQUIRED"), { statusCode: 400 });
+          if (!input.options || typeof input.options !== "object" || Array.isArray(input.options)) throw Object.assign(new Error("PROPOSAL_OPTIONS_REQUIRED"), { statusCode: 400 });
+          const safeOptions = { ...(input.options as Partial<DiscoveryProposalOptions>), tenantId: actor.tenantId, proposalId: "proposal_" + randomUUID(), version: 1 } as DiscoveryProposalOptions;
+          const composed = mapDiscoveryToOutcomeProposal(input.snapshot as DiscoverySnapshot, safeOptions, now());
+          const timestamp = now().toISOString();
+          const persistedStatus = composed.proposal.readiness.status === "ready_for_review" ? "ready_for_review" : "draft";
+          const value: PersistedProposal = { proposal: composed.proposal, status: persistedStatus, source: composed.source, createdBy: actor.actorId, updatedBy: actor.actorId, createdAt: timestamp, updatedAt: timestamp };
+          const result = await proposalStore.create({ tenantId: actor.tenantId, actorId: actor.actorId, idempotencyKey, fingerprint: fingerprint("proposal.submit", { snapshot: input.snapshot, options: input.options }), value, event: { id: randomUUID(), tenantId: actor.tenantId, proposalId: value.proposal.id, version: 1, actorId: actor.actorId, kind: "submitted", occurredAt: timestamp } });
+          send(response, result.replayed ? 200 : 201, { value: result.value, replayed: result.replayed, unmapped: composed.unmapped, correlationId }); return;
+        }
+        if (proposalParts.length === 2 && request.method === "GET") {
+          if (!(await options.authorize(actor, "proposal.list"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          const limit = Number(url.searchParams.get("limit") ?? "50");
+          if (!Number.isInteger(limit) || limit < 1 || limit > 100) throw Object.assign(new Error("PROPOSAL_LIST_LIMIT_INVALID"), { statusCode: 400 });
+          send(response, 200, { value: await proposalStore.list(actor.tenantId, limit), correlationId }); return;
+        }
+        const proposalId = proposalParts[2];
+        if (!proposalId) { send(response, 404, { error: "ROUTE_NOT_FOUND", correlationId }); return; }
+        const currentProposal = await proposalStore.get(actor.tenantId, proposalId);
+        if (!currentProposal) { send(response, 404, { error: "PROPOSAL_NOT_FOUND", correlationId }); return; }
+        if (proposalParts.length === 3 && request.method === "GET") {
+          if (!(await options.authorize(actor, "proposal.read", currentProposal))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          send(response, 200, { value: currentProposal, correlationId }); return;
+        }
+        if (proposalParts[3] === "events" && request.method === "GET") {
+          if (!(await options.authorize(actor, "proposal.audit.read", currentProposal))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          send(response, 200, { value: await proposalStore.events(actor.tenantId, proposalId), correlationId }); return;
+        }
+        if (proposalParts[3] === "review" && request.method === "POST" && proposalParts.length === 4) {
+          const input = await readBody(request);
+          if (input.decision !== "approve" && input.decision !== "reject") throw Object.assign(new Error("PROPOSAL_REVIEW_DECISION_INVALID"), { statusCode: 400 });
+          const action = input.decision === "approve" ? "proposal.approve" : "proposal.reject";
+          if (!(await options.authorize(actor, action, currentProposal))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+          if (typeof input.expectedVersion !== "number" || !Number.isInteger(input.expectedVersion) || input.expectedVersion < 1) throw Object.assign(new Error("PROPOSAL_EXPECTED_VERSION_REQUIRED"), { statusCode: 400 });
+          const reason = input.decision === "reject" ? requiredString(input.reason, "PROPOSAL_REJECTION_REASON_REQUIRED") : undefined;
+          const timestamp = now().toISOString();
+          const next = await proposalStore.transition({ tenantId: actor.tenantId, proposalId, actorId: actor.actorId, expectedVersion: input.expectedVersion, status: input.decision === "approve" ? "approved" : "rejected", ...(reason ? { reason } : {}), event: { id: randomUUID(), tenantId: actor.tenantId, proposalId, version: input.expectedVersion + 1, actorId: actor.actorId, kind: input.decision === "approve" ? "approved" : "rejected", ...(reason ? { reason } : {}), occurredAt: timestamp } });
+          send(response, 200, { value: next, correlationId }); return;
+        }
+        send(response, 404, { error: "ROUTE_NOT_FOUND", correlationId }); return;
       }
       const parts = url.pathname.split("/").filter(Boolean);
       if (parts[0] === "v1" && parts[1] === "contracts") {
