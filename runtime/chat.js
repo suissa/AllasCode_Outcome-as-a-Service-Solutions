@@ -209,12 +209,11 @@ export async function mount(page) {
     if (audienceChoices) audienceChoices.hidden = true;
     clearControls();
     input.value = "";
-    const response = await fetch("/content/discovery.pt-BR.json");
-    if (!response.ok) {
+    const config = page.sources.discovery;
+    if (!config || !Array.isArray(config.stages)) {
       await add("assistant", "Não consegui carregar as perguntas da descoberta. Tente novamente em instantes.");
       return;
     }
-    const config = await response.json();
     const storageKey = config.engine?.storageKey || "goaltropic.discovery.v1";
     let saved = {};
     try { saved = JSON.parse(localStorage.getItem(storageKey) || "{}") || {}; } catch {}
