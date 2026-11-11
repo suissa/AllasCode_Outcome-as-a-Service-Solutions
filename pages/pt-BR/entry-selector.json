@@ -1,0 +1,12 @@
+{
+  "id": "entry-selector",
+  "route": "/entrar",
+  "entry": "entrar.html",
+  "layout": "entry-selector",
+  "clientNavigation": false,
+  "locale": "pt-BR",
+  "title": "OaaS.Quest — Entrar",
+  "contentRefs": [],
+  "sections": [],
+  "description": "Escolha entre entrar no Chat ou no Site."
+}
