@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import postgres from "postgres";
+import { randomUUID } from "node:crypto";
 import { createApiServer } from "../server/api.js";
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -9,8 +10,8 @@ test("Chat API sends context to OpenRouter and restores conversation from Postgr
   skip: !databaseUrl
 }, async () => {
   const calls: Array<{ messages: Array<{ role: string; content: string }> }> = [];
-  const fetchImpl = async (_url: string, options: RequestInit) => {
-    const body = JSON.parse(String(options.body));
+  const fetchImpl: typeof fetch = async (_url, options) => {
+    const body = JSON.parse(String(options?.body));
     calls.push(body);
     const contextMessage = body.messages.at(-1)?.content || "";
     const context = JSON.parse(contextMessage.replace("Contexto operacional (não é uma mensagem do usuário): ", ""));
@@ -19,7 +20,7 @@ test("Chat API sends context to OpenRouter and restores conversation from Postgr
     }), { status: 200, headers: { "Content-Type": "application/json" } });
   };
 
-  const sessionId = "test-" + crypto.randomUUID();
+  const sessionId = "test-" + randomUUID();
   const app = createApiServer({
     databaseUrl,
     apiKey: "test-key",
