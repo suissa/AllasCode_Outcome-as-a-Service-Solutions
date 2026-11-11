@@ -8,7 +8,7 @@
  *
  * O gesto e lateral: cada bloco entra pela margem - esquerda, direita,
  * esquerda - e assenta no meio, compondo o layout. O titulo do bloco viaja
- * com ele (runtime/word-reveal.js nao os quebra em palavras), e o titulo da
+ * com ele (runtime/word-reveal.tsx nao os quebra em palavras), e o titulo da
  * secao, que fica de fora do bloco, tem a revelacao por mascara tambem
  * lateral (layouts/exemplos.css).
  *

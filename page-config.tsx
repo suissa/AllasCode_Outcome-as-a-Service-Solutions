@@ -3,7 +3,7 @@
  *
  * Um unico runtime monta qualquer pagina do manifesto: resolve o template,
  * publica o conteudo e executa o runtime do layout. A navegacao client-side
- * (runtime/router.js) reutiliza exatamente este mesmo caminho, entao a troca
+ * (runtime/router.tsx) reutiliza exatamente este mesmo caminho, entao a troca
  * de pagina nao recarrega o documento e nao duplica listeners.
  *
  * O Vite resolve manifestos, templates e conteudo no grafo de modulos, o que

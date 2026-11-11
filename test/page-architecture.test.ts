@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { BASE_SOURCES, SOURCE_FILES, createPageLoader } from "../page-loader.js";
+import { BASE_SOURCES, SOURCE_FILES, createPageLoader } from "../page-loader.tsx";
 
 const root = process.cwd();
 async function load<T>(path: string): Promise<T> {
@@ -74,8 +74,8 @@ test("layouts declare the body class and the stylesheets the router swaps", asyn
 });
 
 test("HTML entry points boot through the manifest-driven page runtime", async () => {
-  const loader = await readFile(join(root, "page-config.js"), "utf8");
-  const resolver = await readFile(join(root, "page-loader.js"), "utf8");
+  const loader = await readFile(join(root, "page-config.tsx"), "utf8");
+  const resolver = await readFile(join(root, "page-loader.tsx"), "utf8");
   assert.ok(loader.includes("window.OaaSPageReady"));
   assert.ok(loader.includes("rootElement.innerHTML"));
   assert.ok(loader.includes("window.OaaSPageScriptsReady"));
@@ -87,7 +87,7 @@ test("HTML entry points boot through the manifest-driven page runtime", async ()
     const html = await readFile(join(root, path), "utf8");
     assert.ok(html.includes('data-oaas-page="' + id + '"'), path + " must declare its page id");
     assert.ok(html.includes('type="module"'), path + " must load the page runtime as a module");
-    assert.ok(html.includes('src="/page-config.js"') || html.includes('src="../page-config.js"'), path + " must load the page runtime");
+    assert.ok(html.includes('src="/page-config.tsx"') || html.includes('src="../page-config.tsx"'), path + " must load the page runtime");
     assert.ok(html.includes("oaas-page-root"), path + " must expose the template mount point");
     assert.ok(!html.includes("<script>"), path + " must not embed inline runtime scripts");
   }
@@ -158,16 +158,16 @@ test("navigation links use routes instead of html files", async () => {
     "layouts/chat.html",
     "layouts/site.html",
     "layouts/exemplos.html",
-    "content.js",
-    "runtime/chat.js",
-    "runtime/site-page.js",
-    "runtime/site.js"
+    "content.tsx",
+    "runtime/chat.tsx",
+    "runtime/site-page.tsx",
+    "runtime/site.tsx"
   ];
   for (const file of files) {
     const source = await readFile(join(root, file), "utf8");
     assert.ok(!/["'][^"']*\.html(?:[?#][^"']*)?["']/.test(source), file + " must not link to .html files");
   }
-  const chat = await readFile(join(root, "runtime/chat.js"), "utf8");
+  const chat = await readFile(join(root, "runtime/chat.tsx"), "utf8");
   assert.ok(chat.includes('"/chat#descoberta"'));
   assert.ok(chat.includes('"/site#solucoes"'));
 });
@@ -184,7 +184,7 @@ test("every layout template uses the dark logo", async () => {
 
 test("the global theme defines one class per theme on the html wrapper", async () => {
   const themes = await readFile(join(root, "layouts/themes.css"), "utf8");
-  const runtime = await readFile(join(root, "runtime/theme.js"), "utf8");
+  const runtime = await readFile(join(root, "runtime/theme.tsx"), "utf8");
   for (const id of ["abyss", "carbon", "ember", "paper"]) {
     assert.ok(themes.includes(".oq-theme-" + id), "themes.css must define the theme " + id);
   }
@@ -197,12 +197,12 @@ test("the global theme defines one class per theme on the html wrapper", async (
 });
 
 test("the client-side router swaps pages without reloading the document", async () => {
-  const router = await readFile(join(root, "runtime/router.js"), "utf8");
+  const router = await readFile(join(root, "runtime/router.tsx"), "utf8");
   assert.ok(router.includes("startViewTransition"));
   assert.ok(router.includes("pushState"));
   assert.ok(router.includes("popstate"));
   assert.ok(router.includes("clientNavigation"));
-  const loader = await readFile(join(root, "page-config.js"), "utf8");
+  const loader = await readFile(join(root, "page-config.tsx"), "utf8");
   assert.ok(loader.includes("createRouter"));
   assert.ok(loader.includes("buildThemeSwitcher"));
   for (const id of ["home", "site", "chat", "exemplos"]) {
@@ -213,13 +213,13 @@ test("the client-side router swaps pages without reloading the document", async 
 
 test("layout runtimes expose mount(page) for re-execution without re-import", async () => {
   for (const file of [
-    "runtime/chooser-page.js",
-    "runtime/site-page.js",
-    "runtime/site.js",
-    "runtime/chat.js",
-    "content.js",
-    "runtime/exemplos-page.js",
-    "runtime/exemplos-scroll.js"
+    "runtime/chooser-page.tsx",
+    "runtime/site-page.tsx",
+    "runtime/site.tsx",
+    "runtime/chat.tsx",
+    "content.tsx",
+    "runtime/exemplos-page.tsx",
+    "runtime/exemplos-scroll.tsx"
   ]) {
     const source = await readFile(join(root, file), "utf8");
     assert.ok(/export\s+(async\s+)?function\s+mount\s*\(/.test(source), file + " must export mount(page)");
@@ -236,7 +236,7 @@ test("the chat keeps its own navigation and fills the section list separately", 
     /class="chat-nav"[^]*?href="\/site"/.test(template),
     "the primary navigation must keep the link to /site"
   );
-  const content = await readFile(join(root, "content.js"), "utf8");
+  const content = await readFile(join(root, "content.tsx"), "utf8");
   assert.ok(
     content.includes(".chat-nav-sections"),
     "the content runtime must fill the section navigation"
@@ -262,7 +262,7 @@ test("every published route is reachable from the interface", async () => {
 
 test("the router swaps stylesheets using the assets manifest", async () => {
   const config = await readFile(join(root, "vite.config.ts"), "utf8");
-  const router = await readFile(join(root, "runtime/router.js"), "utf8");
+  const router = await readFile(join(root, "runtime/router.tsx"), "utf8");
   assert.ok(config.includes("oaasAssetsManifest"), "the build must publish the assets manifest");
   assert.ok(config.includes("/oaas-assets.json"), "the manifest must be served under /oaas-assets.json");
   assert.ok(router.includes("/oaas-assets.json"), "the router must read the assets manifest");
@@ -270,14 +270,14 @@ test("the router swaps stylesheets using the assets manifest", async () => {
 });
 
 test("the shell is the only orchestrator of the title reveal", async () => {
-  const reveal = await readFile(join(root, "runtime/word-reveal.js"), "utf8");
-  const loader = await readFile(join(root, "page-config.js"), "utf8");
+  const reveal = await readFile(join(root, "runtime/word-reveal.tsx"), "utf8");
+  const loader = await readFile(join(root, "page-config.tsx"), "utf8");
   assert.ok(reveal.includes("h1, h2, h3, h4"), "the reveal must cover every title level");
   assert.ok(reveal.includes("leadOf"), "the reveal must cover the semi-titles");
   assert.ok(reveal.includes("data-rise"), "the reveal must mark the semi-titles");
   assert.ok(loader.includes("applyMotion"), "the shell must apply the motion policy");
   assert.ok(loader.includes("initWordReveal"), "the shell must call the reveal");
-  for (const file of ["runtime/chooser-page.js", "runtime/site-page.js"]) {
+  for (const file of ["runtime/chooser-page.tsx", "runtime/site-page.tsx"]) {
     const source = await readFile(join(root, file), "utf8");
     assert.ok(
       !source.includes("initWordReveal"),
@@ -290,15 +290,15 @@ test("the examples page owns its scroll motion with GSAP and ScrollTrigger", asy
   const layout = await load<{ scripts?: string[] }>("layouts/exemplos.json");
   const scripts = layout.scripts || [];
   assert.ok(
-    scripts.includes("runtime/exemplos-scroll.js"),
+    scripts.includes("runtime/exemplos-scroll.tsx"),
     "the examples layout must load the scroll runtime"
   );
   assert.ok(
-    scripts.indexOf("runtime/exemplos-scroll.js") > scripts.indexOf("runtime/exemplos-page.js"),
+    scripts.indexOf("runtime/exemplos-scroll.tsx") > scripts.indexOf("runtime/exemplos-page.tsx"),
     "the scroll runtime must run after the content runtime"
   );
 
-  const scroll = await readFile(join(root, "runtime/exemplos-scroll.js"), "utf8");
+  const scroll = await readFile(join(root, "runtime/exemplos-scroll.tsx"), "utf8");
   assert.ok(scroll.includes('import gsap from "gsap"'), "the scroll runtime must use gsap");
   assert.ok(
     scroll.includes('import { ScrollTrigger } from "gsap/ScrollTrigger"'),
