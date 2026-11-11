@@ -16,8 +16,6 @@ export const SOURCE_FILES = {
   "proposal-graph": "proposal-graph.pt-BR.json",
   "ui-copy": "ui-copy.pt-BR.json",
   exemplos: "exemplos.pt-BR.json"
-  "ui-copy": "ui-copy.pt-BR.json",
-  "proposal-graph": "proposal-graph.pt-BR.json"
 };
 
 /**

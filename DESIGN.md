@@ -2,7 +2,7 @@
 
 Direção escolhida: **canon**. O padrão da categoria, executado sem ironia nem truque, com a barra de acabamento em Stripe, Linear e Notion. O Chat conserva o próprio mundo de fantasia (Mestre da Guilda, reinos e ofícios) dentro do mesmo sistema visual.
 
-Documento de direção: `.impeccable/surfaces/classico-html.md`. Contexto de produto: `PRODUCT.md`. Arquitetura de páginas: `docs/CONTENT-AND-LAYOUT-ARCHITECTURE.md`.
+Documento de direção: `.impeccable/surfaces/site-html.md`. Contexto de produto: `PRODUCT.md`. Arquitetura de páginas: `docs/CONTENT-AND-LAYOUT-ARCHITECTURE.md`.
 
 ## Princípios
 

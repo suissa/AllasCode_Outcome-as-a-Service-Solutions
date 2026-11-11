@@ -21,10 +21,6 @@ export const routes: readonly OaasRoute[] = [
   { route: "/site", entry: "site.html", pageId: "site" },
   { route: "/descoberta", entry: "descoberta/index.html", pageId: "discovery" },
   { route: "/exemplos", entry: "exemplos.html", pageId: "exemplos" }
-  { route: "/guilda", entry: "guilda.html", pageId: "guild" },
-  { route: "/classico", entry: "classico.html", pageId: "classic" },
-  { route: "/descoberta", entry: "descoberta/index.html", pageId: "discovery" },
-  { route: "/proposta", entry: "proposta/index.html", pageId: "proposal" }
 ];
 
 const routeEntries = new Map<string, string>(routes.map(item => [item.route, item.entry] as const));

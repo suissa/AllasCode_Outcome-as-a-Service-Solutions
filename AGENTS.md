@@ -27,6 +27,12 @@ bun run dev         # vite dev server
 Dependências via **bun** (`bun.lock`). O `node_modules` fica em `/mnt/d` (DrvFs, sem
 inotify): o Vite já liga polling automático nesse caso.
 
+Atenção: este repositório **rastreia** o `node_modules` (o `.gitignore` tem `node_moules/*`,
+com erro de digitação, então nada é ignorado de fato) e o CI instala com **npm**
+(`npm install --include=dev`, sem lockfile congelado — o `package-lock.json` é a fonte do CI).
+Ao adicionar dependência, use **npm** para não criar shims duplicados: o bun gera
+`.bin/*.bunx` e `.bin/*.exe` ao lado dos shims npm que já estão versionados.
+
 ## Estrutura
 
 - `pages/pt-BR/*.json` — manifesto por rota (`route`, `entry`, `layout`, `contentRefs`,

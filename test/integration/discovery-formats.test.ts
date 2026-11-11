@@ -17,7 +17,7 @@ function createInference() {
   return sandbox.window.OaaSProposalInference.buildProposal;
 }
 
-function createGuildaRuntime() {
+function createChatRuntime() {
   const values = new Map<string, string>();
   const localStorage = {
     getItem: (key: string) => values.get(key) ?? null,
@@ -43,8 +43,8 @@ const retailAnswers = {
   investment: { value: "limited" }
 };
 
-test("Guilda mission is transformed into Discovery's persisted answer contract", async () => {
-  const runtime = createGuildaRuntime();
+test("Chat mission is transformed into Discovery's persisted answer contract", async () => {
+  const runtime = createChatRuntime();
   const OQ = await runtime.ready;
   OQ.startMission("business");
   OQ.advanceMission("retail");
@@ -58,7 +58,7 @@ test("Guilda mission is transformed into Discovery's persisted answer contract",
   const handoff = OQ.prepareDiscovery();
   const saved = JSON.parse(runtime.localStorage.getItem("goaltropic.discovery.v1")!);
   assert.equal(handoff.prefilled, 11);
-  assert.equal(saved.source, "guilda");
+  assert.equal(saved.source, "chat");
   assert.ok(saved.missionId);
   assert.equal(saved.answers.segment.value, "retail");
   assert.equal(saved.answers.team_size.value, "2_5");
@@ -67,24 +67,24 @@ test("Guilda mission is transformed into Discovery's persisted answer contract",
   assert.equal(saved.answers.sales_process.value, "Controle de estoque e reposição");
 });
 
-test("Guilda handoff and classic Discovery infer equivalent retail facts", async () => {
-  const runtime = createGuildaRuntime();
+test("Chat handoff and Discovery infer equivalent retail facts", async () => {
+  const runtime = createChatRuntime();
   const OQ = await runtime.ready;
   OQ.startMission("business");
   for (const answer of ["retail", "2_5", "Aumentar vendas", "Estoque", "Rupturas", "90d", "Reduzir rupturas"]) OQ.advanceMission(answer);
   OQ.confirmMission();
   OQ.prepareDiscovery();
-  const guildaSaved = JSON.parse(runtime.localStorage.getItem("goaltropic.discovery.v1")!);
-  const classicAnswers = { ...retailAnswers, ...guildaSaved.answers };
+  const chatSaved = JSON.parse(runtime.localStorage.getItem("goaltropic.discovery.v1")!);
+  const discoveryAnswers = { ...retailAnswers, ...chatSaved.answers };
   const build = createInference();
-  const sharedAnswers = { ...retailAnswers, ...guildaSaved.answers };
-  const guildaProposal = build({ graph, discovery, answers: sharedAnswers, createdAt: "2026-11-10T00:00:00.000Z" });
-  const classicProposal = build({ graph, discovery, answers: sharedAnswers, createdAt: "2026-11-10T00:00:00.000Z" });
-  assert.equal(guildaProposal.profile.segment, "retail");
-  assert.equal(classicProposal.profile.segment, "retail");
-  assert.ok(guildaProposal.context.facts.some((fact: any) => fact.questionId === "segment" && fact.value === "retail"));
-  assert.ok(classicProposal.context.facts.some((fact: any) => fact.questionId === "segment" && fact.value === "retail"));
-  assert.deepEqual(guildaProposal.scope.opportunities.map((item: any) => item.id), classicProposal.scope.opportunities.map((item: any) => item.id));
+  const sharedAnswers = { ...retailAnswers, ...chatSaved.answers };
+  const chatProposal = build({ graph, discovery, answers: sharedAnswers, createdAt: "2026-11-10T00:00:00.000Z" });
+  const discoveryProposal = build({ graph, discovery, answers: sharedAnswers, createdAt: "2026-11-10T00:00:00.000Z" });
+  assert.equal(chatProposal.profile.segment, "retail");
+  assert.equal(discoveryProposal.profile.segment, "retail");
+  assert.ok(chatProposal.context.facts.some((fact: any) => fact.questionId === "segment" && fact.value === "retail"));
+  assert.ok(discoveryProposal.context.facts.some((fact: any) => fact.questionId === "segment" && fact.value === "retail"));
+  assert.deepEqual(chatProposal.scope.opportunities.map((item: any) => item.id), discoveryProposal.scope.opportunities.map((item: any) => item.id));
 });
 
 test("unknown and unanswered retail data remain unknown, not negative evidence", () => {

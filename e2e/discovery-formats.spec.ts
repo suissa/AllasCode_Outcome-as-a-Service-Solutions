@@ -22,8 +22,8 @@ async function completeDiscovery(page: any) {
   await expect(page.getByText("Mercado E2E").first()).toBeVisible();
 }
 
-test("Guilda confirms a retail mission, hands off to Discovery and persists the proposal", async ({ page }) => {
-  await page.goto("/guilda");
+test("Chat confirms a retail mission, hands off to Discovery and persists the proposal", async ({ page }) => {
+  await page.goto("/chat");
   await page.getByRole("button", { name: "Sou empresário" }).click();
   await page.getByRole("button", { name: "Comércio" }).click();
   await page.getByRole("button", { name: "2–5 pessoas" }).click();
@@ -41,7 +41,7 @@ test("Guilda confirms a retail mission, hands off to Discovery and persists the 
   await page.getByRole("button", { name: /aprofundar diagnóstico/i }).click();
   await expect(page).toHaveURL(/\/descoberta/);
   const handoff = await page.evaluate(() => JSON.parse(localStorage.getItem("goaltropic.discovery.v1") || "null"));
-  expect(handoff.source).toBe("guilda");
+  expect(handoff.source).toBe("chat");
   expect(handoff.answers.segment.value).toBe("retail");
   expect(handoff.answers.team_size.value).toBe("2_5");
   expect(handoff.answers.main_goal.value).toBe("sales");
@@ -55,7 +55,7 @@ test("Guilda confirms a retail mission, hands off to Discovery and persists the 
   await expect(page.getByText("Mercado E2E").first()).toBeVisible();
 });
 
-test("Classic Discovery builds and persists the same retail proposal", async ({ page }) => {
+test("Discovery builds and persists the same retail proposal", async ({ page }) => {
   await page.goto("/descoberta");
   await page.evaluate((answers) => {
     localStorage.setItem("goaltropic.discovery.v1", JSON.stringify({ index: 0, answers, source: "discovery" }));
