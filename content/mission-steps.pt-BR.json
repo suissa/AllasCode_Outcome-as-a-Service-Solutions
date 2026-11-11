@@ -74,20 +74,112 @@
   {
     "id": "desiredOutcome",
     "prompt": "Qual resultado você mais deseja alcançar? Descreva com suas palavras.",
-    "freeText": true,
-    "placeholder": "Ex.: aumentar as vendas sem aumentar a equipe"
+    "options": [
+      {
+        "value": "sales",
+        "label": "Aumentar as vendas"
+      },
+      {
+        "value": "costs",
+        "label": "Reduzir custos"
+      },
+      {
+        "value": "productivity",
+        "label": "Aumentar a produtividade"
+      },
+      {
+        "value": "service",
+        "label": "Melhorar o atendimento"
+      },
+      {
+        "value": "growth",
+        "label": "Expandir a operação"
+      },
+      {
+        "value": "organization",
+        "label": "Organizar a gestão"
+      },
+      {
+        "value": "other",
+        "label": "Outro objetivo"
+      }
+    ]
   },
   {
     "id": "process",
     "prompt": "Qual área ou processo precisa mudar primeiro?",
-    "freeText": true,
-    "placeholder": "Ex.: vendas, atendimento, estoque, financeiro, produção..."
+    "options": [
+      {
+        "value": "sales",
+        "label": "Vendas e comercial"
+      },
+      {
+        "value": "marketing",
+        "label": "Marketing e aquisição de clientes"
+      },
+      {
+        "value": "service",
+        "label": "Atendimento ao cliente"
+      },
+      {
+        "value": "stock",
+        "label": "Estoque e compras"
+      },
+      {
+        "value": "finance",
+        "label": "Financeiro"
+      },
+      {
+        "value": "operations",
+        "label": "Operação e produção"
+      },
+      {
+        "value": "management",
+        "label": "Gestão e indicadores"
+      },
+      {
+        "value": "other",
+        "label": "Outro processo"
+      }
+    ]
   },
   {
     "id": "challenge",
     "prompt": "O que mais impede esse resultado hoje?",
-    "freeText": true,
-    "placeholder": "Conte brevemente o principal obstáculo"
+    "options": [
+      {
+        "value": "leads",
+        "label": "Poucos clientes ou oportunidades"
+      },
+      {
+        "value": "conversion",
+        "label": "Dificuldade para converter vendas"
+      },
+      {
+        "value": "manual",
+        "label": "Tarefas manuais e retrabalho"
+      },
+      {
+        "value": "visibility",
+        "label": "Falta de dados e visibilidade"
+      },
+      {
+        "value": "capacity",
+        "label": "Equipe ou capacidade limitada"
+      },
+      {
+        "value": "cost",
+        "label": "Custos elevados"
+      },
+      {
+        "value": "unknown",
+        "label": "Ainda não identifiquei"
+      },
+      {
+        "value": "other",
+        "label": "Outro desafio"
+      }
+    ]
   },
   {
     "id": "deadline",
@@ -118,7 +210,35 @@
   {
     "id": "successMetric",
     "prompt": "Como você saberia que a missão deu certo? Informe um indicador ou deixe para definir depois.",
-    "freeText": true,
-    "placeholder": "Ex.: aumentar conversão de 10% para 15%"
+    "options": [
+      {
+        "value": "revenue",
+        "label": "Aumentar faturamento"
+      },
+      {
+        "value": "sales",
+        "label": "Aumentar quantidade de vendas"
+      },
+      {
+        "value": "conversion",
+        "label": "Melhorar taxa de conversão"
+      },
+      {
+        "value": "cost",
+        "label": "Reduzir custos"
+      },
+      {
+        "value": "time",
+        "label": "Reduzir tempo de execução"
+      },
+      {
+        "value": "satisfaction",
+        "label": "Melhorar satisfação dos clientes"
+      },
+      {
+        "value": "define_later",
+        "label": "Definir o indicador depois"
+      }
+    ]
   }
 ]
