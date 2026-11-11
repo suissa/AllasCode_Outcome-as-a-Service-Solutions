@@ -97,3 +97,24 @@ test("unknown and unanswered retail data remain unknown, not negative evidence",
   assert.ok(proposal.context.unknowns.some((item: any) => item.questionId === "abandonment_tracking"));
   assert.ok(!proposal.graphTrace.edgesTraversed.some((edge: any) => edge.questionId === "lead_registration" && edge.kind === "solution-association"));
 });
+
+test("Guilda selects the first explicit KPI when a mission mentions multiple metrics", async () => {
+  const runtime = createChatRuntime();
+  const OQ = await runtime.ready;
+  OQ.startMission("business");
+  for (const answer of [
+    "retail",
+    "2_5",
+    "Aumentar vendas e margem",
+    "Controle de estoque",
+    "Perdas de conversão e margem por pedido",
+    "90d",
+    "Elevar conversão de 2,4% para 3,5% e melhorar margem por pedido"
+  ]) OQ.advanceMission(answer);
+  const mission = OQ.getMission();
+  assert.equal(mission.status, "review");
+  assert.equal(mission.primaryKpi ?? mission.metric ?? mission.goalMetric, undefined);
+  OQ.confirmMission();
+  const saved = JSON.parse(runtime.localStorage.getItem("goaltropic.discovery.v1")!);
+  assert.equal(saved.answers.primary_kpi.value, "conversion");
+});
