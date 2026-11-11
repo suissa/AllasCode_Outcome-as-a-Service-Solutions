@@ -6,7 +6,7 @@
   "stylesheets": ["layouts/chat.css"],
   "bodyClass": "chat-page",
   "shell": "chat-sidebar + chat-main + chat-side",
-  "renderer": "content.js + runtime/chat.js",
+  "renderer": "content.js + runtime/chat.tsx",
   "slots": [
     "chat-navigation",
     "welcome",
@@ -17,8 +17,8 @@
     "content-sections"
   ],
   "scripts": [
-    "app.js",
-    "content.js",
-    "runtime/chat.js"
+    "app.tsx",
+    "content.tsx",
+    "runtime/chat.tsx"
   ]
 }
