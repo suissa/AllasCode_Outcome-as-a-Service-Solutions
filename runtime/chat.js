@@ -344,8 +344,11 @@ export async function mount(page) {
     }
     if (mission?.status === "review" || mission?.status === "ready_for_discovery") {
       add("user", value);
-      add("assistant", copy.reviewObservation);
+      pendingTurn = { message: value, stepId: "mission-review" };
       input.value = "";
+      requestAssistantTurn(null).then(ok => {
+        if (!ok) OQ.logInteraction("chat", "llm-fallback", { step: "mission-review" });
+      });
       return;
     }
     add("user", value);
