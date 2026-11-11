@@ -1,0 +1,10 @@
+submit_diagnosis -(valid_tenant_problem)-> validate_findings
+validate_findings -(valid_evidence_and_confidence)-> validate_tenant_scope
+validate_findings -(invalid_finding)-> reject_ROOT_CAUSE_INVALID
+validate_tenant_scope -(all_findings_same_tenant)-> validate_alternatives
+validate_tenant_scope -(cross_tenant)-> reject_TENANT_MISMATCH
+validate_alternatives -(non_empty_unique)-> await_independent_approval
+validate_alternatives -(missing_or_ambiguous)-> request_human_clarification
+await_independent_approval -(independent_actor_and_valid_time)-> freeze_approved_analysis
+await_independent_approval -(owner_or_unauthorized_actor)-> escalate_for_independent_review
+freeze_approved_analysis -(success)-> return_approved_diagnosis
