@@ -28,18 +28,29 @@ const NAV = [
 ];
 
 function renderHero(exp, copy) {
-  return `<section class="hero">
+  return `<section class="hero hero--outcome">
     <div class="hero-grid">
       <div class="hero-copy">
-        <span class="hero-badge">${TREND}</span>
+        <p class="hero-eyebrow">OUTCOME AS A SERVICE · OaaS.QUEST</p>
         <h1 class="hero-title" data-words><span class="hero-lead">${esc(copy.hero.title)}</span><span class="hero-accent">${esc(copy.hero.titleEmphasis)}</span></h1>
-        <p class="hero-text" data-reveal data-delay="350">${esc(copy.hero.body)}</p>
-        <div class="hero-actions" data-reveal data-delay="500">
-          <a class="cta" href="/chat">${esc(copy.hero.primaryCta)}${ARROW}</a>
+        <p class="hero-text" data-reveal data-delay="220">${esc(copy.hero.body)}</p>
+        <div class="hero-actions" data-reveal data-delay="360">
+          <a class="cta" href="/descoberta">${esc(copy.hero.primaryCta)}${ARROW}</a>
           <a class="cta" data-variant="ghost" href="#metodo">${esc(copy.hero.secondaryCta)}</a>
         </div>
-        <p class="hero-note" data-reveal data-delay="620">${esc(exp.brand.promise)}</p>
+        <p class="hero-note" data-reveal data-delay="480">${esc(exp.brand.promise)}</p>
       </div>
+      <aside class="hero-visual" aria-label="OaaS.Quest — jornada orientada a resultados" data-reveal data-delay="260">
+        <div class="hero-visual-frame">
+          <div class="hero-visual-top"><span>PLATAFORMA DE RESULTADOS</span><span class="hero-live"><i></i> ORIENTADA A OBJETIVOS</span></div>
+          <div class="hero-brand-lockup"><img src="/logo-dark.png" alt="OaaS.Quest" width="900" height="200"></div>
+          <p class="hero-visual-caption">Do objetivo ao resultado verificável.</p>
+          <div class="hero-flow" aria-label="Etapas da jornada">
+            <span><b>01</b> Descoberta</span><span><b>02</b> Análise</span><span><b>03</b> Planejamento</span><span><b>04</b> Desenvolvimento</span>
+          </div>
+          <div class="hero-visual-foot"><span>CONTEXTO</span><span>ESTRATÉGIA</span><span>EXECUÇÃO</span><span>EVIDÊNCIAS</span></div>
+        </div>
+      </aside>
     </div>
   </section>`;
 }
