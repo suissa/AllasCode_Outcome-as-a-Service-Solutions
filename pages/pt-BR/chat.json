@@ -16,6 +16,8 @@
     "agent-team.roles",
     "sector-playbooks.sectors",
     "mission-steps",
+    "discovery.stages",
+    "discovery.solutions",
     "ui-copy.chat"
   ],
   "sections": [
