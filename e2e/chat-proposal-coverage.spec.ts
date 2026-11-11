@@ -198,6 +198,7 @@ test("Chat sem evidência associável não inventa uma solução", async ({ page
   unknownAnswers.operational_bottleneck = { value: "unknown", status: "provided", source: "e2e" };
   await startAndConfirmBusinessMission(page);
   await seedDiscoveryAnswers(page, unknownAnswers);
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.reload();
 
   for (let stage = 0; stage < 18; stage += 1) {
