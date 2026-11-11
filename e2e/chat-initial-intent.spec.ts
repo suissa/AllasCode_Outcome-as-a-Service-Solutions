@@ -8,7 +8,7 @@ test("primeira mensagem espontânea inicia uma missão e preserva o objetivo inf
   await expect(page.locator("#goal")).toHaveText("quero vender mais");
   await expect(page.locator("#audience-choices")).toBeHidden();
   await expect(page.getByText("Em qual setor sua empresa atua?")).toBeVisible();
-  await expect(page.getByText("quero vender mais", { exact: true })).toBeVisible();
+  await expect(page.locator(".chat-message[data-role=\"user\"] .chat-bubble").filter({ hasText: "quero vender mais" })).toBeVisible();
 
   const mission = await page.evaluate(async () => {
     const oq = await (window as any).OQReady;
