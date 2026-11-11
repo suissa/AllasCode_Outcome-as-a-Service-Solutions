@@ -97,6 +97,33 @@ export async function mount(page) {
     return lastAssistantTyping;
   }
 
+  async function typeWelcomeSequence() {
+    const lead = chat.querySelector(".chat-bubble-brief .chat-bubble-lead");
+    const question = chat.querySelectorAll(".chat-bubble-lead")[1];
+    if (!lead || !question) return;
+    const audience = document.getElementById("audience-choices");
+    const welcomeText = lead.textContent.trim();
+    const questionText = question.textContent.trim();
+    if (audience) audience.hidden = true;
+
+    const typeInto = async (element, value) => {
+      element.textContent = "";
+      if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) {
+        element.textContent = value;
+        return;
+      }
+      for (const character of value) {
+        element.textContent += character;
+        chat.scrollTop = chat.scrollHeight;
+        await new Promise(resolve => window.setTimeout(resolve, 14));
+      }
+    };
+
+    await typeInto(lead, welcomeText);
+    await typeInto(question, questionText);
+    if (audience) audience.hidden = false;
+  }
+
   function addLink(text, label, url) {
     const { row, avatar } = makeMessage("assistant");
     const bubble = document.createElement("div");
@@ -364,6 +391,9 @@ export async function mount(page) {
     }
   }
 
+  if (OQ.history("chat").length === 0 && !OQ.getMission()) {
+    await typeWelcomeSequence();
+  }
   restore();
   restoreMission();
 
