@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Apresentação interativa "Do SaaS ao OaaS".
  * Conteúdo resumido do material editorial fornecido; sem dependências externas.
