@@ -238,6 +238,12 @@ export async function mount(page) {
       const script = sectorScripts[sectorId];
       if (!script) return false;
       if (saved.sectorScriptId === sectorId && questions.some(question => question.sectorSpecific)) return true;
+      const previousSectorId = saved.sectorScriptId;
+      if (previousSectorId && previousSectorId !== sectorId) {
+        Object.keys(saved.answers).filter(key => key.startsWith(previousSectorId + "_")).forEach(key => delete saved.answers[key]);
+        saved.chatCompleted = false;
+        saved.chatIndex = 0;
+      }
       const sector = sectorPlaybooks.find(item => item.id === sectorId);
       const sectorQuestions = (script.stages || []).flatMap((stage, stageIndex) =>
         (stage.questions || []).map(question => ({
@@ -253,7 +259,6 @@ export async function mount(page) {
       saved.sectorScriptId = sectorId;
       saved.sectorName = sector?.name || sectorId;
       saved.sectorScriptIntro = script.intro || "";
-      if (saved.chatCompleted && saved.sectorScriptId !== sectorId) saved.chatCompleted = false;
       return true;
     };
     const existingSector = saved.answers.segment?.value || saved.sectorId;
@@ -375,17 +380,17 @@ export async function mount(page) {
       const sector = sectorPlaybooks.find(item => item.id === saved.sectorId);
       const sectorScript = sectorScripts[saved.sectorId];
       const sectorAnswers = questions.filter(question => question.sectorSpecific && saved.answers[question.id]?.status === "provided");
-      const list = values => (values || []).map(value => "• " + value).join("\\n");
+      const list = values => (values || []).map(value => "• " + value).join("\n");
       const resultText = sector && sectorScript
-        ? "Roteiro aplicado: " + sector.name + ".\\n\\n" +
-          sectorScript.intro + "\\n\\n" +
-          "Problemas que serão investigados:\\n" + list(sector.problems) + "\\n\\n" +
-          "Soluções que poderão ser avaliadas:\\n" + list(sector.solutions) + "\\n\\n" +
-          "Indicadores relevantes:\\n" + list(sector.metrics) + "\\n\\n" +
-          "Evidências a validar:\\n" + list(sector.evidence) + "\\n\\n" +
-          "Controles e restrições:\\n" + list(sector.guardrails)
+        ? "Roteiro aplicado: " + sector.name + ".\n\n" +
+          sectorScript.intro + "\n\n" +
+          "Problemas que serão investigados:\n" + list(sector.problems) + "\n\n" +
+          "Soluções que poderão ser avaliadas:\n" + list(sector.solutions) + "\n\n" +
+          "Indicadores relevantes:\n" + list(sector.metrics) + "\n\n" +
+          "Evidências a validar:\n" + list(sector.evidence) + "\n\n" +
+          "Controles e restrições:\n" + list(sector.guardrails)
         : "As respostas foram registradas. A análise deverá esclarecer os pontos em aberto.";
-      await add("assistant", "Você concluiu a descoberta setorial de " + (sector?.name || "sua empresa") + ". " + Object.keys(saved.answers).length + " campos foram registrados, incluindo " + sectorAnswers.length + " respostas específicas do setor.\\n\\n" + resultText + "\\n\\nAs frentes listadas são hipóteses de investigação, não recomendações confirmadas. A próxima etapa valida as informações, as evidências e os critérios de sucesso.");
+      await add("assistant", "Você concluiu a descoberta setorial de " + (sector?.name || "sua empresa") + ". " + Object.keys(saved.answers).length + " campos foram registrados, incluindo " + sectorAnswers.length + " respostas específicas do setor.\n\n" + resultText + "\n\nAs frentes listadas são hipóteses de investigação, não recomendações confirmadas. A próxima etapa valida as informações, as evidências e os critérios de sucesso.");
       clearControls();
       const restart = document.createElement("button");
       restart.type = "button";
@@ -411,7 +416,7 @@ export async function mount(page) {
       }
       const question = questions[index];
       const intro = question.stageId !== saved.lastChatStage
-        ? question.stageTitle + " — " + question.stageDescription + "\\n\\n"
+        ? question.stageTitle + " — " + question.stageDescription + "\n\n"
         : "";
       saved.lastChatStage = question.stageId;
       persist();
