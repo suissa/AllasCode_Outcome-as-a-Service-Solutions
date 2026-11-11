@@ -588,12 +588,12 @@ export async function mount(page) {
     }
   }
 
-  if (OQ.history("chat").length === 0 && !OQ.getMission()) {
-    await typeWelcomeSequence();
-  }
   if (window.location.hash === "#descoberta") {
     await runChatDiscovery();
     return;
+  }
+  if (OQ.history("chat").length === 0 && !OQ.getMission()) {
+    await typeWelcomeSequence();
   }
 
   restore();
