@@ -254,7 +254,7 @@ window.OQReady = (async function () {
   function startMission(audience = "business") {
     if (audience !== "business") throw new Error("MISSION_AUDIENCE_UNSUPPORTED");
     state.mission = {
-      id: "mission_" + Date.now().toString(36),
+      id: "mission_" + (globalThis.crypto?.randomUUID?.() || Date.now().toString(36) + Math.random().toString(36).slice(2)),
       audience,
       status: "collecting",
       stepIndex: 0,
