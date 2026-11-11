@@ -1,5 +1,7 @@
 # OaaS.Quest — Documentação de referência
 
+> **Documento arquitetural consolidado:** [Architecture Reference v1.5](./Architecture-Reference-v1.5.md) — visão unificada de Outcome lifecycle, evidências, arquitetura policromática, SBTA, Syntropic Antifragility, segurança, autonomia e governança.
+
 Esta pasta reúne as definições de produto, operação, engenharia, contratos e comercialização necessárias para transformar uma intenção de negócio em um resultado mensurável, entregue e comprovável.
 
 ## Mapa de leitura
