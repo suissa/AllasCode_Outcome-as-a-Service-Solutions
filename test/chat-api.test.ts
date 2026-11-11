@@ -39,7 +39,7 @@ test("Chat API sends context to OpenRouter and restores conversation from Postgr
         message: "quero vender mais",
         context: {
           currentStep: "initial-intent",
-          nextQuestion: "Hoje, por quais canais sua empresa vende?",
+          nextQuestion: "Em qual setor sua empresa atua?",
           mission: { answers: { desiredOutcome: { value: "quero vender mais" } } }
         }
       }
