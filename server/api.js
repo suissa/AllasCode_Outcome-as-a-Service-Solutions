@@ -25,9 +25,11 @@ export function createApiServer({
       CREATE TABLE IF NOT EXISTS chat_sessions (
         id TEXT PRIMARY KEY,
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        mission_data JSONB NOT NULL DEFAULT '{}'::jsonb
       )
     `;
+    await sql`ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS mission_data JSONB NOT NULL DEFAULT '{}'::jsonb`;
     await sql`
       CREATE TABLE IF NOT EXISTS chat_messages (
         id BIGSERIAL PRIMARY KEY,
@@ -76,8 +78,8 @@ export function createApiServer({
     const nextQuestion = String(context.nextQuestion || "").trim();
 
     await sql`
-      INSERT INTO chat_sessions (id) VALUES (${sessionId})
-      ON CONFLICT (id) DO UPDATE SET updated_at = NOW()
+      INSERT INTO chat_sessions (id, mission_data) VALUES (${sessionId}, ${sql.json(context.mission || {})})
+      ON CONFLICT (id) DO UPDATE SET updated_at = NOW(), mission_data = EXCLUDED.mission_data
     `;
     await sql`
       INSERT INTO chat_messages (session_id, role, content)
