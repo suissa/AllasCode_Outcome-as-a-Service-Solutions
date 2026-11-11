@@ -82,7 +82,7 @@ async function startAndConfirmBusinessMission(page: Page): Promise<void> {
 
   await page.getByRole("button", { name: /confirmar missão e aprofundar diagnóstico/i }).click();
   await page.getByRole("button", { name: /aprofundar diagnóstico/i }).click();
-  await expect(page).toHaveURL(/\/descoberta\/?$/);
+  await expect(page).toHaveURL(/chat#descoberta$/);
 }
 
 async function seedDiscoveryAnswers(
