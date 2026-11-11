@@ -1,0 +1,8 @@
+assess_observations -(metric_definition_valid)-> validate_each_observation
+assess_observations -(invalid_metric_definition)-> mark_invalid_definition
+validate_each_observation -(all_fields_valid)-> aggregate_source_coverage
+validate_each_observation -(invalid_or_stale)-> record_stable_issue
+aggregate_source_coverage -(all_required_sources_present)-> calculate_quality
+aggregate_source_coverage -(missing_sources)-> mark_incomplete
+calculate_quality -(complete_fresh_valid)-> return_quality
+calculate_quality -(incomplete_or_invalid)-> return_quality_with_issues
