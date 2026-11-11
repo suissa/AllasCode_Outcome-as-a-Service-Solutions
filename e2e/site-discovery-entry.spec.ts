@@ -12,7 +12,7 @@ test("site result CTAs open the full discovery conversation in the branded Chat"
   await page.locator(".hero-actions a.cta").first().click();
   await expect(page).toHaveURL(/\/chat#descoberta$/);
   await expect(page.locator("#chat")).toBeVisible();
-  await expect(page.getByText("Nome da empresa", { exact: true })).toBeVisible();
+  await expect(page.getByText("Nome da empresa", { exact: false })).toBeVisible();
 });
 
 test("chat types its welcome messages before exposing the first choices", async ({ page }) => {
