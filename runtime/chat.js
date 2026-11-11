@@ -239,13 +239,13 @@ export async function mount(page) {
       if (!script) return false;
       if (saved.sectorScriptId === sectorId && questions.some(question => question.sectorSpecific)) return true;
       const sector = sectorPlaybooks.find(item => item.id === sectorId);
-      const sectorQuestions = (script.stages || []).flatMap(stage =>
+      const sectorQuestions = (script.stages || []).flatMap((stage, stageIndex) =>
         (stage.questions || []).map(question => ({
           ...question,
           sectorSpecific: true,
           stageId: sectorId + ":" + stage.id,
           stageTitle: stage.title,
-          stageDescription: stage.description
+          stageDescription: stage.description + (stageIndex === 0 ? " " + (script.intro || "") : "")
         }))
       );
       questions = [...commonQuestions, ...sectorQuestions];
@@ -258,6 +258,10 @@ export async function mount(page) {
     };
     const existingSector = saved.answers.segment?.value || saved.sectorId;
     if (existingSector) {
+      if (!saved.sectorScriptId) {
+        saved.chatIndex = 0;
+        saved.chatCompleted = false;
+      }
       configureSectorScript(existingSector);
       index = Math.max(0, Number(saved.chatIndex) || 0);
     } else {
@@ -407,9 +411,7 @@ export async function mount(page) {
       }
       const question = questions[index];
       const intro = question.stageId !== saved.lastChatStage
-        ? (question.sectorSpecific && question.stageId.endsWith(":sector_operation")
-            ? (saved.sectorScriptIntro || "") + "\\n\\n"
-            : "") + question.stageTitle + " — " + question.stageDescription + "\\n\\n"
+        ? question.stageTitle + " — " + question.stageDescription + "\\n\\n"
         : "";
       saved.lastChatStage = question.stageId;
       persist();
