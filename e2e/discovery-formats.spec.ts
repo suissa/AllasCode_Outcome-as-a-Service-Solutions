@@ -31,8 +31,6 @@ test("Chat confirms a retail mission, hands off to Discovery and persists the pr
   await page.getByRole("button", { name: "Sou empresário" }).click();
   await page.getByRole("button", { name: "Comércio" }).click();
   await page.getByRole("button", { name: "2–5 pessoas" }).click();
-  const input = page.locator("#message");
-  const form = page.locator("#composer");
   await page.getByRole("button", { name: "Aumentar as vendas" }).click();
   await page.getByRole("button", { name: "Estoque e compras" }).click();
   await page.getByRole("button", { name: "Falta de dados e visibilidade" }).click();
