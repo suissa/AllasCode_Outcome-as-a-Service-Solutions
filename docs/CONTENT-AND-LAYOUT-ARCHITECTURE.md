@@ -167,6 +167,17 @@ A persistência usa a chave `localStorage["oaas.quest.theme"]`. O shell (`page-c
 
 As regras de estilo vivem em `layouts/motion.css`.
 
+## Movimento por scroll
+
+`runtime/exemplos-scroll.js` é a camada de scroll da página de Exemplos: GSAP + ScrollTrigger no lugar das timelines nativas do navegador (`animation-timeline`). É declarado em `layouts/exemplos.json`, depois do runtime de conteúdo, e roda só nessa rota — as demais não carregam o GSAP.
+
+- **Entrada**: cada bloco sobe para o lugar quando entra na viewport (`.85s`, `power3.out`, escalonado). O gatilho é o próprio bloco e os alvos são os filhos dele, para um cartão subir quando a grade dele chega, e não quando a primeira grade chega.
+- **Scroll**: o herói cede espaço enquanto a página avança (grade e conteúdolinked ao scroll, `scrub` com `ease: "none"`) e a barra de progresso acompanha o documento.
+- **Estado**: a camada da arquitetura marca `data-reached="true"` quando chega, e o círculo numerado acende.
+- **Devolução**: `clearProps` devolve `transform` e `opacity` ao CSS no fim da entrada, para o `:hover` do cartão continuar valendo.
+- **Acessibilidade**: `gsap.matchMedia()` só registra as animações sob `prefers-reduced-motion: no-preference`; com movimento reduzido o conteúdo aparece pronto.
+- **Ciclo de vida**: `destroy()` é chamado no começo de cada `mount()` e quando o evento `oaas:page-ready` traz outra rota, para nenhum gatilho sobreviver à navegação client-side.
+
 ## Navegação client-side
 
 `runtime/router.js` roteia por rota, troca o conteúdo, troca as folhas de estilo e reexecuta o runtime do layout — tudo dentro de uma **View Transition** (`document.startViewTransition`), sem recarregar o documento.

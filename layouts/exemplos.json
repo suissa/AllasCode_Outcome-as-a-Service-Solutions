@@ -19,6 +19,7 @@
   ],
   "scripts": [
     "app.js",
-    "runtime/exemplos-page.js"
+    "runtime/exemplos-page.js",
+    "runtime/exemplos-scroll.js"
   ]
 }

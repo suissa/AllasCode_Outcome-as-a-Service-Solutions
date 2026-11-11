@@ -218,7 +218,8 @@ test("layout runtimes expose mount(page) for re-execution without re-import", as
     "runtime/site.js",
     "runtime/chat.js",
     "content.js",
-    "runtime/exemplos-page.js"
+    "runtime/exemplos-page.js",
+    "runtime/exemplos-scroll.js"
   ]) {
     const source = await readFile(join(root, file), "utf8");
     assert.ok(/export\s+(async\s+)?function\s+mount\s*\(/.test(source), file + " must export mount(page)");
@@ -282,4 +283,67 @@ test("the shell is the only orchestrator of the title reveal", async () => {
       file + " must not call the reveal on its own"
     );
   }
+});
+
+test("the examples page owns its scroll motion with GSAP and ScrollTrigger", async () => {
+  const layout = await load<{ scripts?: string[] }>("layouts/exemplos.json");
+  const scripts = layout.scripts || [];
+  assert.ok(
+    scripts.includes("runtime/exemplos-scroll.js"),
+    "the examples layout must load the scroll runtime"
+  );
+  assert.ok(
+    scripts.indexOf("runtime/exemplos-scroll.js") > scripts.indexOf("runtime/exemplos-page.js"),
+    "the scroll runtime must run after the content runtime"
+  );
+
+  const scroll = await readFile(join(root, "runtime/exemplos-scroll.js"), "utf8");
+  assert.ok(scroll.includes('import gsap from "gsap"'), "the scroll runtime must use gsap");
+  assert.ok(
+    scroll.includes('import { ScrollTrigger } from "gsap/ScrollTrigger"'),
+    "the scroll runtime must use ScrollTrigger"
+  );
+  assert.ok(
+    scroll.includes("gsap.registerPlugin(ScrollTrigger)"),
+    "ScrollTrigger must be registered before it is used"
+  );
+  assert.ok(
+    scroll.includes("prefers-reduced-motion: no-preference"),
+    "the scroll runtime must respect the reduced motion preference"
+  );
+  assert.ok(
+    scroll.includes('ease: "none"'),
+    "a scrubbed animation must use the linear ease"
+  );
+  assert.ok(
+    scroll.includes("clearProps"),
+    "the entrance must hand the element back to the CSS"
+  );
+  assert.ok(
+    !scroll.includes("await window.OaaSPageReady"),
+    "the scroll runtime must not depend on the global page promise"
+  );
+
+  const css = await readFile(join(root, "layouts/exemplos.css"), "utf8");
+  assert.ok(
+    !css.includes("animation-timeline"),
+    "the scroll of the examples page belongs to GSAP, not to a native timeline"
+  );
+  assert.ok(
+    !/\.exemplos-layer\s*\{[^}]*border-bottom/.test(css),
+    "the architecture list must not draw a horizontal line"
+  );
+  assert.ok(
+    !css.includes(".exemplos-layer::after"),
+    "the architecture list must not draw a vertical line"
+  );
+  assert.ok(
+    css.includes(".exemplos-layer-index"),
+    "the architecture list must keep the numbered circle"
+  );
+  assert.ok(
+    !/\.exemplos-insight\s*\{[^}]*max-width/.test(css),
+    "the closing card must take the width of the grid, not the measure of the text"
+  );
+  assert.ok(css.includes(".exemplos-insight-text"), "the closing card must keep the text measured");
 });

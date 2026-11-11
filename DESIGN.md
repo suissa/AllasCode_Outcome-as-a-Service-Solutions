@@ -88,6 +88,7 @@ Regra única: **ease-out exponencial a partir de um estado já visível**. Nenhu
 | Títulos (h1–h4) e semi-títulos | cada palavra sobe de baixo de uma máscara, escalonada 65ms por palavra (`.95s` em `cubic-bezier(.2, .7, .2, 1)`) — o mesmo formato do herói do bubble.io |
 | Blocos de texto | deslocamento vertical de 28px com atraso próprio em milissegundos |
 | Rolagem | a barra de progresso da coroa da página cresce com o documento (`animation-timeline: scroll()`) |
+| Scroll por GSAP (`/exemplos`) | o conteúdo sobe para o lugar quando entra na viewport, o herói cede espaço enquanto a página avança e a barra de progresso acompanha o documento — tudo em `runtime/exemplos-scroll.js` |
 | Hover | linhas e listas deslizam 8px para a direita (`transform`, nunca `padding`) e o item ganha acento |
 | Troca de página | View Transition na navegação client-side: a saída sobe 6px, a entrada desce 10px |
 
@@ -95,7 +96,9 @@ A revelação é implementada em `runtime/word-reveal.js` e estilizada em `layou
 
 Quem aplica é **apenas o shell**: `page-config.js`, função `applyMotion`, chama `initWordReveal(document)` depois de executar os runtimes do layout, para que o conteúdo renderizado por JavaScript também entre na revelação. Nenhum runtime de página chama a revelação por conta própria. `applyMotion` roda somente nas páginas com `clientNavigation: true` — `/`, `/site`, `/chat` e `/exemplos`; `/descoberta` e `/proposta` mantêm o próprio mundo visual.
 
-Tudo respeita `prefers-reduced-motion: reduce` e degrada sem `@supports (animation-timeline)`: sem barra de progresso, sem deslocamento, sem blur.
+A página de Exemplos tem uma camada a mais: `runtime/exemplos-scroll.js` usa GSAP + ScrollTrigger para o que o CSS não fazia — o conteúdo sobe para o lugar quando entra na viewport (`.85s`, `power3.out`), o herói cede espaço enquanto a página avança (`scrub` com `ease: "none"`) e o círculo numerado da arquitetura acende quando a sua camada chega. O runtime é carregado só por `/exemplos`, o `gsap.matchMedia()` não registra animação nenhuma sob `prefers-reduced-motion: reduce` e a `clearProps` devolve o elemento ao CSS no fim da entrada, para o hover do cartão continuar valendo. O `destroy()` é chamado quando a rota deixa de ser a de Exemplos, para nenhum gatilho ficar apontando para elemento que saiu da árvore.
+
+Tudo respeita `prefers-reduced-motion: reduce` e degrada sem JavaScript: sem barra de progresso, sem deslocamento, sem blur.
 
 ## Componentes
 

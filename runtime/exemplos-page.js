@@ -47,7 +47,7 @@ function renderAgent(agent) {
 
 function renderCategory(category) {
   const icon = ICONS[category.icon] || "";
-  return `<section class="exemplos-category" id="cat-${esc(category.id)}" data-reveal="view">
+  return `<section class="exemplos-category" id="cat-${esc(category.id)}">
     <div class="exemplos-shell">
       <div class="exemplos-category-head">
         <div class="exemplos-category-icon">${icon}</div>
@@ -56,13 +56,13 @@ function renderCategory(category) {
       <div class="exemplos-agents">
         ${category.agents.map(renderAgent).join("")}
       </div>
-      ${category.insight ? `<p class="exemplos-insight">${esc(category.insight)}</p>` : ""}
+      ${category.insight ? `<aside class="exemplos-insight"><p class="exemplos-insight-text">${esc(category.insight)}</p></aside>` : ""}
     </div>
   </section>`;
 }
 
 function renderOutcomeTable(data) {
-  return `<section class="exemplos-outcomes" id="cat-resultado" data-reveal="view">
+  return `<section class="exemplos-outcomes" id="cat-resultado">
     <div class="exemplos-shell">
       <h2 class="exemplos-section-title">${esc(data.title)}</h2>
       <p class="exemplos-section-lead">${esc(data.intro)}</p>
@@ -89,7 +89,7 @@ function renderOutcomeTable(data) {
 }
 
 function renderArchitecture(data) {
-  return `<section class="exemplos-architecture" id="cat-arquitetura" data-reveal="view">
+  return `<section class="exemplos-architecture" id="cat-arquitetura">
     <div class="exemplos-shell">
       <h2 class="exemplos-section-title">${esc(data.title)}</h2>
       <p class="exemplos-section-lead">${esc(data.intro)}</p>

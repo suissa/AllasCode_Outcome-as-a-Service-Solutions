@@ -52,6 +52,8 @@ o documento não recarrega, o runtime troca o conteúdo e as folhas de estilo.
 O movimento é um sistema único: a revelação por máscara de palavra é aplicada pelo shell
 (`page-config.js`, função `applyMotion`) depois dos runtimes do layout, para que o conteúdo
 renderizado por JavaScript também entre na revelação. `/descoberta` e `/proposta` mantêm o
-próprio mundo visual.
+próprio mundo visual. `/exemplos` acrescenta uma camada de scroll com GSAP + ScrollTrigger
+(`runtime/exemplos-scroll.js`): o conteúdo sobe para o lugar quando entra na viewport e o herói
+cede espaço enquanto a página avança.
 
 No WSL, o projeto fica em /mnt/d (DrvFs) e nao suporta inotify; o vite.config.ts liga o watcher em polling automaticamente nesse caso.

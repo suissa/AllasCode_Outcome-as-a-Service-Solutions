@@ -1,7 +1,8 @@
 /* OaaS.Quest — Exemplos práticos.
    Uma classe semântica por tipo de elemento; toda cor, borda e sombra vem dos
-   tokens de tema (--oq-*). Um único momento de movimento: a revelação das
-   seções por scroll (data-reveal="view"). O grid do herói é estático. */
+   tokens de tema (--oq-*). Um único momento de movimento: o GSAP
+   (runtime/exemplos-scroll.js) sobe o conteúdo para o lugar quando ele entra
+   na viewport. O grid do herói é estático. */
 
 @import "../fonts/fonts.css";
 @import "./themes.css";
@@ -88,25 +89,16 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
 
 /* ---------------------------------------------------------------- progresso de scroll */
 
-.scroll-progress { display: none; }
-
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .scroll-progress {
-      display: block;
-      position: fixed;
-      inset: 0 0 auto 0;
-      height: 2px;
-      z-index: 90;
-      background: var(--oq-accent);
-      transform: scaleX(0);
-      transform-origin: 0 50%;
-      animation: exemplos-progress linear both;
-      animation-timeline: scroll(root block);
-    }
-
-    @keyframes exemplos-progress { to { transform: scaleX(1); } }
-  }
+/* A linha de progresso é movida pelo GSAP (runtime/exemplos-scroll.js): o
+   scroll da página não tem duas timelines diferentes. */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 2px;
+  z-index: 90;
+  background: var(--oq-accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
 }
 
 /* ---------------------------------------------------------------- navegação */
@@ -430,14 +422,19 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
 
 /* ---------------------------------------------------------------- insight */
 
+/* A conclusão ocupa a largura da grade: é o texto que fica com a medida de
+   leitura, não o bloco. */
 .exemplos-insight {
-  margin-top: clamp(20px, 2.4vw, 30px);
+  margin-top: clamp(24px, 2.8vw, 36px);
   padding: clamp(18px, 2.2vw, 24px);
-  max-width: 74ch;
   border: 1px solid var(--oq-line);
   border-left: 1px solid var(--oq-accent);
   border-radius: var(--oq-radius-sm);
   background: var(--oq-surface);
+}
+
+.exemplos-insight-text {
+  max-width: 72ch;
   font-size: 15px;
   line-height: 1.68;
   color: var(--oq-ink-2);
@@ -512,33 +509,19 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
   padding: clamp(56px, 7vw, 96px) 0;
 }
 
+/* Sem linhas: o círculo numerado é o que costura a lista. */
 .exemplos-layers {
+  display: grid;
+  gap: clamp(26px, 3vw, 40px);
   margin-top: clamp(28px, 3.6vw, 46px);
 }
 
 .exemplos-layer {
-  position: relative;
   display: grid;
   grid-template-columns: 56px minmax(0, 1fr);
   gap: 20px;
   align-items: start;
-  padding: clamp(20px, 2.4vw, 28px) 0;
-  border-bottom: 1px solid var(--oq-line);
 }
-
-.exemplos-layer:last-child { border-bottom: none; }
-
-.exemplos-layer::after {
-  content: "";
-  position: absolute;
-  left: 19.5px;
-  top: 48px;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(to bottom, var(--oq-line-strong), var(--oq-line));
-}
-
-.exemplos-layer:last-child::after { display: none; }
 
 .exemplos-layer-index {
   display: flex;
@@ -554,6 +537,12 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--oq-accent);
+  transition: border-color 0.4s var(--oq-ease), background-color 0.4s var(--oq-ease);
+}
+
+.exemplos-layer[data-reached="true"] .exemplos-layer-index {
+  border-color: var(--oq-accent);
+  background: var(--oq-accent-soft);
 }
 
 .exemplos-layer-content {
@@ -628,22 +617,14 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
   text-underline-offset: 4px;
 }
 
-/* ---------------------------------------------------------------- movimento: revelação por scroll */
+/* ---------------------------------------------------------------- movimento
 
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    [data-reveal="view"] {
-      animation: exemplos-reveal linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 55%;
-    }
+   A revelação por scroll é do GSAP (runtime/exemplos-scroll.js). O bloco
+   sobe para o lugar quando entra na viewport; o semi-título dentro dele não
+   repete o deslocamento — um gesto só por bloco. */
 
-    @keyframes exemplos-reveal {
-      from { transform: translateY(22px); }
-      to { transform: translateY(0); }
-    }
-  }
-}
+.exemplos-agent [data-rise]:not(.is-in),
+.exemplos-layer [data-rise]:not(.is-in) { transform: none; }
 
 /* ---------------------------------------------------------------- responsivo */
 
@@ -708,8 +689,6 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }
-
-  .exemplos-layer::after { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -726,10 +705,5 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-  }
-
-  [data-reveal="view"] {
-    animation: none !important;
-    transform: none !important;
   }
 }
