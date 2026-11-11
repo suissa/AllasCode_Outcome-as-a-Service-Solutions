@@ -42,7 +42,7 @@ Conduzir o usuário da intenção inicial até uma missão empresarial compreend
 Usuário: “quero vender mais”.
 
 Resposta adequada:
-“Entendi. Vamos investigar o que pode aumentar suas vendas sem presumir ainda qual é a causa. Hoje, suas vendas vêm principalmente de loja física, WhatsApp, site ou de uma combinação desses canais?”
+“Entendi. Vamos compreender o contexto antes de recomendar qualquer ação. Em qual setor sua empresa atua?”
 
 Resposta inadequada:
 “Missão registrada neste navegador. Agora podemos aprofundar o diagnóstico. quero vender mais”
