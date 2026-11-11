@@ -337,17 +337,28 @@ window.OQReady = (async function () {
   }
 
   function inferMetric(text) {
-    const v = String(text || "").toLowerCase();
-    if (/fatur|receita/.test(v)) return "revenue";
-    if (/lucro|margem/.test(v)) return "profit";
-    if (/venda|pedidos/.test(v)) return "sales_count";
-    if (/ticket/.test(v)) return "ticket";
-    if (/convers/.test(v)) return "conversion";
-    if (/reten|recorr|fidel/.test(v)) return "retention";
-    if (/custo|despesa/.test(v)) return "cost";
-    if (/produtiv|tempo/.test(v)) return "productivity";
-    if (/satisfa/.test(v)) return "satisfaction";
-    return "other";
+    const value = String(text || "").toLowerCase();
+    const candidates = [
+      ["revenue", /fatur|receita/],
+      ["profit", /lucro|margem|rentab/],
+      ["sales_count", /venda|pedidos/],
+      ["ticket", /ticket/],
+      ["conversion", /convers/],
+      ["retention", /reten|recorr|fidel/],
+      ["cost", /custo|despesa/],
+      ["productivity", /produtiv|tempo/],
+      ["satisfaction", /satisfa/]
+    ];
+    let selected = "other";
+    let firstMatch = -1;
+    for (const [id, pattern] of candidates) {
+      const position = value.search(pattern);
+      if (position >= 0 && (firstMatch < 0 || position < firstMatch)) {
+        selected = id;
+        firstMatch = position;
+      }
+    }
+    return selected;
   }
 
   function prepareDiscovery() {
