@@ -38,11 +38,11 @@ Ao adicionar dependência, use **npm** para não criar shims duplicados: o bun g
 - `pages/pt-BR/*.json` — manifesto por rota (`route`, `entry`, `layout`, `contentRefs`,
   `clientNavigation`).
 - `layouts/*.json` + `layouts/*.html` + `layouts/*.css` — template, folha e renderer de cada layout.
-- `runtime/*.js` — runtimes de página. Todo runtime exporta `mount(page)`.
+- `runtime/*.tsx` — runtimes de página. Todo runtime exporta `mount(page)`.
 - `content/*.json` — **toda** a copy. O runtime formata; nunca inventa texto.
-- `page-loader.js` — resolve fontes por nome; precisa cobrir **todas** as fontes que os
+- `page-loader.tsx` — resolve fontes por nome; precisa cobrir **todas** as fontes que os
   manifestos declaram, senão a página renderiza em branco em runtime (build e teste passam).
-- `page-config.js` — shell único: monta o template, executa os runtimes, liga o tema e o router.
+- `page-config.tsx` — shell único: monta o template, executa os runtimes, liga o tema e o router.
 - `scripts/forger.mjs` — gera as páginas estáticas de SEO em `dist/seo/`. **Nunca** em
   `dist/index.html` ou `dist/<rota>/index.html`: esses são do app (Vite). O forger falha com
   `FORGER_COLLIDE` se detectar uma entrada do app no destino.
