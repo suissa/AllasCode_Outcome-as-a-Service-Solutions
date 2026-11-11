@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "test": "tsx --test test/*.test.ts test/**/*.test.ts",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install chromium",
+    "test:e2e:debug": "playwright test --debug"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",

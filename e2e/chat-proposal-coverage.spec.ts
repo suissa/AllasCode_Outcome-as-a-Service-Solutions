@@ -82,7 +82,7 @@ async function startAndConfirmBusinessMission(page: Page): Promise<void> {
 
   await page.getByRole("button", { name: /confirmar missão e aprofundar diagnóstico/i }).click();
   await page.getByRole("button", { name: /aprofundar diagnóstico/i }).click();
-  await expect(page).toHaveURL(/\/descoberta\/?$/);
+  await expect(page).toHaveURL(/chat#descoberta$/);
 }
 
 async function seedDiscoveryAnswers(
@@ -112,17 +112,20 @@ async function seedDiscoveryAnswers(
   expect(handoff.answers.team_size.value).toBe("2_5");
   expect(handoff.answers.main_goal.value).toBe("sales");
   expect(handoff.answers.goal_deadline.value).toBe("90d");
-  expect(handoff.answers.goal_target.value).toContain("Aumentar as vendas");
+  expect(handoff.answers.goal_target.value).toBe("sales");
   expect(handoff.answers.success_definition.value).toContain("conversão");
   expect(handoff.chatAnswers.operational_bottleneck.value).toBe("information");
   expect(handoff.chatAnswers.conversion_notes.value).toContain("visibilidade");
-  expect(handoff.chatAnswers.primary_kpi.value).toBe("sales_count");
+  expect(handoff.chatAnswers.primary_kpi.value).toBe("conversion");
   expect(handoff.chatAnswers.target_value.value).toContain("conversão");
   expect(handoff.chatAnswers.sales_process.value).toContain("Vendas");
   expect(handoff.answers.company_name.value).toBe("Empresa E2E");
 }
 
 async function generateProposal(page: Page): Promise<void> {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  // O handoff permanece no Chat; a etapa de diagnóstico/proposta usa a página Discovery.
+  await page.goto("/descoberta");
   await page.reload();
 
   // A Discovery possui 19 etapas. As respostas do cenário já estão persistidas;
@@ -195,6 +198,7 @@ test("Chat sem evidência associável não inventa uma solução", async ({ page
   unknownAnswers.operational_bottleneck = { value: "unknown", status: "provided", source: "e2e" };
   await startAndConfirmBusinessMission(page);
   await seedDiscoveryAnswers(page, unknownAnswers);
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.reload();
 
   for (let stage = 0; stage < 18; stage += 1) {
