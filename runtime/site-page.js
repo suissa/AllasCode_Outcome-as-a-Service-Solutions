@@ -6,6 +6,7 @@
  * Uma classe semântica por tipo de elemento — as cores vêm dos tokens de tema.
  */
 
+import { renderOaasSlider, mountOaasSliders } from "./oaas-overview-slider.js";
 
 const esc = value =>
   String(value == null ? "" : value).replace(/[&<>"']/g, c => ({
@@ -345,6 +346,7 @@ export function mount(page) {
   if (main) {
     main.innerHTML = [
       renderHero(exp, copy),
+      renderOaasSlider("site-oaas-overview"),
       renderPanel(exp, copy),
       renderAudience(exp),
       renderDifferentiators(exp),
@@ -360,6 +362,8 @@ export function mount(page) {
     ].join("");
   }
 
+
+  if (main) mountOaasSliders(main);
 
   const footerLine = document.getElementById("footer-line");
   if (footerLine) footerLine.textContent = exp.brand.tagline;
