@@ -22,7 +22,7 @@
     "print"
   ],
   "scripts": [
-    "runtime/proposal-inference.js",
-    "runtime/proposal-report.js"
+    "runtime/proposal-inference.tsx",
+    "runtime/proposal-report.tsx"
   ]
 }
