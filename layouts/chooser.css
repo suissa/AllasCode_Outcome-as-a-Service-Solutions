@@ -23,35 +23,42 @@
 @media(max-width:420px){.selector-choice-content{width:100%}}
 
 /* ---------------------------------------------------------------- entrada coreografada da home */
-@keyframes selector-logo-zoom-in-down-fade-out{
-  0%{opacity:0;transform:translate3d(0,-100%,0) scale(.82)}
-  23.53%{opacity:1;transform:translate3d(0,0,0) scale(1)}
-  82.35%{opacity:1;transform:translate3d(0,0,0) scale(1)}
-  100%{opacity:0;transform:translate3d(0,18px,0) scale(.96)}
+@keyframes zoomInDown{
+  0%{opacity:0;transform:translate3d(0,-100%,0) scale(.8)}
+  60%{opacity:1;transform:translate3d(0,10px,0) scale(.96)}
+  80%{transform:translate3d(0,-4px,0) scale(1.02)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
 }
-@keyframes selector-zoom-in-left{
+@keyframes fadeOut{
+  0%{opacity:1}
+  100%{opacity:0}
+}
+@keyframes zoomInLeft{
   0%{opacity:0;transform:translate3d(-64px,0,0) scale(.92)}
   100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
 }
-@keyframes selector-zoom-in-right{
+@keyframes zoomInRight{
   0%{opacity:0;transform:translate3d(64px,0,0) scale(.92)}
   100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
 }
-@keyframes selector-bounce-in-down{
+@keyframes bounceInDown{
   0%{opacity:0;transform:translate3d(0,-180px,0) scale(.92)}
   60%{opacity:1;transform:translate3d(0,22px,0) scale(1)}
   80%{transform:translate3d(0,-8px,0)}
   100%{opacity:1;transform:translate3d(0,0,0)}
 }
-@keyframes selector-bounce-in-up{
+@keyframes bounceInUp{
   0%{opacity:0;transform:translate3d(0,180px,0) scale(.92)}
   60%{opacity:1;transform:translate3d(0,-22px,0) scale(1)}
   80%{transform:translate3d(0,8px,0)}
   100%{opacity:1;transform:translate3d(0,0,0)}
 }
 .home-intro-motion .selector-wordmark{
-  animation:selector-logo-zoom-in-down-fade-out 3.4s cubic-bezier(.22,.75,.25,1) 2s both;
+  animation:zoomInDown .8s cubic-bezier(.22,.75,.25,1) 2s both;
   will-change:opacity,transform;
+}
+.home-intro-motion .selector-wordmark img{
+  animation:fadeOut .6s ease 4.8s both;
 }
 .home-intro-motion .selector-choice{
   opacity:0;
@@ -61,14 +68,15 @@
   animation-timing-function:cubic-bezier(.22,.75,.25,1);
   will-change:opacity,transform;
 }
-.home-intro-motion .selector-choice:first-child{animation-name:selector-zoom-in-left}
-.home-intro-motion .selector-choice:last-child{animation-name:selector-zoom-in-right}
+.home-intro-motion .selector-choice:first-child{animation-name:zoomInLeft}
+.home-intro-motion .selector-choice:last-child{animation-name:zoomInRight}
 @media(max-width:760px){
-  .home-intro-motion .selector-choice:first-child{animation-name:selector-bounce-in-down}
-  .home-intro-motion .selector-choice:last-child{animation-name:selector-bounce-in-up}
+  .home-intro-motion .selector-choice:first-child{animation-name:bounceInDown}
+  .home-intro-motion .selector-choice:last-child{animation-name:bounceInUp}
 }
 @media(prefers-reduced-motion:reduce){
   .home-intro-motion .selector-wordmark,
+  .home-intro-motion .selector-wordmark img,
   .home-intro-motion .selector-choice{
     animation:none!important;
     opacity:1!important;
