@@ -53,12 +53,14 @@ test("the chat route publishes the mission copy", async () => {
 
 test("minimal chooser renders only the logo and the two entry actions", async () => {
   const template = await readFile("layouts/chooser.html", "utf8");
-  assert.match(template, /logo-dark\\.png/);
-  assert.match(template, /href="\\/chat"/);
-  assert.match(template, /href="\\/site"/);
-  assert.equal((template.match(/<a\\b/g) || []).length, 3);
-  assert.doesNotMatch(template, /data-copy(?:-aria-label)?=/);
-  assert.doesNotMatch(template, /href="\\/(?:exemplos|descoberta|proposta)/);
+  assert.ok(template.includes("logo-dark.png"));
+  assert.ok(template.includes('href="/chat"'));
+  assert.ok(template.includes('href="/site"'));
+  assert.equal((template.match(/<a/g) || []).length, 3);
+  assert.ok(!template.includes("data-copy"));
+  assert.ok(!template.includes('href="/exemplos"'));
+  assert.ok(!template.includes('href="/descoberta'));
+  assert.ok(!template.includes('href="/proposta'));
 });
 test("proposal report is included in crawlable SEO and GEO output", async () => {
   const html = await readFile("dist/seo/proposta/index.html", "utf8");
