@@ -418,13 +418,21 @@ The architecture should evolve through measurable research and engineering work:
 
 Every empirical claim in a publication should include source, date, method, context and limitations. Architecture proposals should be labeled as proposals, not scientific findings.
 
-## 15. Conclusion
+## 16. Conclusion
 
 OaaS.Quest treats software and AI as means to deliver measurable organizational outcomes. Its architecture unites contracts, execution, evidence, causal evaluation, governance and settlement in a traceable lifecycle. Polychromatic specialization allows each component to use an appropriate language and runtime while remaining interoperable through explicit contracts. Syntropic Antifragility makes learning from disturbances a controlled engineering process: failures are contained, diagnosed, transformed into proposals, validated, approved, measured and either retained or rolled back.
 
 The central invariant is simple: **an outcome is not accepted because the system says it happened; it is accepted when the contract's evidence and governance requirements support that conclusion.** Likewise, an evolution is not considered an improvement because it was generated or deployed; it is an improvement only when its benefits are verified without violating protected constraints.
 
 ---
+
+## 15. Coherence notes and decision-record integrity
+
+The repository currently contains two files carrying the identifier **ADR-004**: [Durable settlement action workflow](./ADR-004-durable-settlement-workflow.md) and [Syntropic Antifragility](./ADR-004-syntropic-antifragility.md). They describe independent decisions and therefore cannot share a canonical ADR number. This is a repository-level numbering defect, not a semantic conflict between the decisions. The settlement record should be renumbered to the next unused ADR identifier and all references updated in a dedicated change; until then, links must use the full filename.
+
+The reference lifecycle is intentionally broader than any single implementation workflow. In particular, settlement's persisted queue/lease/CAS semantics are compatible with the outcome lifecycle: acceptance creates a durable action, provider execution is at-least-once, and exactly-once external effects are not claimed unless provider idempotency or reconciliation supports them.
+
+The Syntropic ADR's human approval and controlled promotion are consistent with this reference's evolution pipeline. Formal proofs remain scoped to modeled propositions; a proof-to-runtime correspondence is a separate obligation.
 
 ## Repository sources consolidated
 
@@ -439,7 +447,7 @@ This reference consolidates and cross-links the repository's existing source doc
 - [ADR-001 — Durable Storage and HTTP Boundary](./ADR-001-durable-storage-and-http-boundary.md)
 - [ADR-002 — Tenant-scoped RBAC/ABAC](./ADR-002-tenant-scoped-rbac-abac.md)
 - [ADR-003 — Immutable Calculation Snapshots](./ADR-003-immutable-calculation-snapshots.md)
-- [ADR-004 — Syntropic Antifragility](./ADR-004-syntropic-antifragility.md)
+- [ADR-004 — Syntropic Antifragility](./ADR-004-syntropic-antifragility.md)\n- [ADR-004 — Durable settlement action workflow (numbering collision; see coherence note)](./ADR-004-durable-settlement-workflow.md)
 - [ADR-005 — Immutable Intent History](./ADR-005-immutable-intent-history.md)
 - [ADR-006 — Customer Outcome Reports](./ADR-006-customer-outcome-reports.md)
 - [ADR-007 — SLO, Health and Telemetry](./ADR-007-slo-health-and-telemetry.md)
