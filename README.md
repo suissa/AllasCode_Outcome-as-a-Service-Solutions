@@ -16,6 +16,9 @@ bun run build      # gera dist/
 bun run preview    # serve dist/ como em producao
 bun run test       # suite de testes
 bun run typecheck  # typecheck do dominio e da config do Vite
+npm run test:e2e:install # instala o Chromium usado pelos testes de navegador
+npm run test:e2e         # executa os testes E2E localmente
+npm run test:e2e:debug   # abre o Playwright Inspector para depuração
 ```
 
 | Rota | Entrada | Página |
@@ -76,3 +79,15 @@ inteiro, e nao apenas usa o padrao.
 O Chat usa Fastify como API, PostgreSQL para persistir sessões/mensagens/contexto da missão e OpenRouter para gerar as respostas conversacionais. Consulte [docs/CHAT-API.md](docs/CHAT-API.md).
 
 Configure `.env` a partir de `.env.example` e execute `npm run dev:api` e `npm run dev` em terminais separados. O Vite encaminha `/api` ao Fastify durante o desenvolvimento. A chave OpenRouter permanece exclusivamente no servidor.
+
+### Testes E2E (execução local)
+
+Os testes de navegador não rodam mais no GitHub Actions. Para executá-los localmente:
+
+```bash
+npm install
+npm run test:e2e:install
+npm run test:e2e
+```
+
+Para depurar interativamente, use `npm run test:e2e:debug`. O Playwright inicia o Vite automaticamente em `http://127.0.0.1:5173`. Em caso de falha, envie a saída completa do terminal e o arquivo `trace.zip` correspondente em `test-results/`; a configuração mantém traces quando um teste falha.
