@@ -15,6 +15,7 @@
 .selector-choice-title{color:var(--oq-ink);font-size:25px;font-weight:680;letter-spacing:-.025em}.selector-choice-kicker{margin-top:8px;color:var(--oq-muted);font-family:var(--oq-mono);font-size:9px;font-weight:700;letter-spacing:.12em}
 .selector-choice-description{margin:19px 0 26px;color:var(--oq-ink-2);font-size:14px;line-height:1.7}.selector-choice-cta{display:inline-flex;align-items:center;gap:10px;margin-top:auto;color:var(--oq-accent-2);font-size:13px;font-weight:700}
 .selector-choice-cta svg{width:16px;height:16px;transition:transform .18s var(--oq-ease)}.selector-choice:hover .selector-choice-cta svg{transform:translateX(4px)}
+.selector-examples-link{display:block;width:max-content;margin:18px auto 0;color:var(--oq-accent-2);font-size:12px;text-decoration:underline;text-underline-offset:4px}.selector-examples-link:hover{color:var(--oq-ink)}
 .selector-switch-note{margin:28px 0 0;color:var(--oq-muted);font-size:12px;line-height:1.6;text-align:center}
 .selector-footer{min-height:76px;border-top:1px solid var(--oq-line);color:var(--oq-muted);font-size:11px}.selector-footer-brand{gap:12px;color:var(--oq-ink-2);font-weight:650}
 .selector-footer-brand img{width:auto;height:22px}.selector-footer-brand span{padding-left:12px;border-left:1px solid var(--oq-line);color:var(--oq-muted);font-weight:400}.selector-footer-note{letter-spacing:.03em}
