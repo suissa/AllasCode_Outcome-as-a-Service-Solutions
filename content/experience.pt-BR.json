@@ -443,38 +443,38 @@
         "method": "Como funciona o Chat",
         "solutions": "Especialidades",
         "ninetyDays": "Jornada de 90 dias",
-        "measurement": "Orbe de métricas",
-        "sectors": "Reinos e ofícios",
-        "faq": "Perguntas ao Mestre"
+        "measurement": "Indicadores",
+        "sectors": "Setores",
+        "faq": "Dúvidas"
       },
       "hero": {
-        "eyebrow": "SALÃO DA GUILDA · OaaS.QUEST",
+        "eyebrow": "OaaS.QUEST · JORNADA DE RESULTADOS",
         "title": "Toda conquista começa com um objetivo.",
-        "titleEmphasis": "Sua missão, nossa expedição.",
-        "body": "Conte ao Mestre da Guilda o que sua empresa precisa conquistar. Nossa equipe investigará o cenário, traçará a estratégia, reunirá as especialidades necessárias e acompanhará cada avanço.",
+        "titleEmphasis": "Sua missão começa aqui.",
+        "body": "Conte ao assistente do OaaS.Quest o que sua empresa precisa conquistar. Vamos entender seu cenário, investigar os processos, definir uma estratégia e reunir as especialidades necessárias para acompanhar cada avanço.",
         "primaryCta": "Registrar minha missão",
         "secondaryCta": "Conhecer a jornada"
       },
       "method": {
-        "title": "Do quadro de missões à conquista comprovada",
-        "body": "Cada missão passa por investigação, estratégia, preparação, expedição, monitoramento e validação. Você acompanha o diário da jornada e as evidências de cada marco."
+        "title": "Da primeira conversa ao resultado validado",
+        "body": "Cada missão passa por investigação, estratégia, preparação, execução, acompanhamento e validação. Você acompanha a jornada e as evidências de cada avanço."
       },
       "ninetyDays": {
-        "title": "Uma expedição de até 90 dias",
-        "body": "Organizamos a jornada em quatro capítulos: conhecer o terreno, traçar a estratégia, construir e testar os recursos, e consolidar a conquista. O escopo é definido para a realidade de cada missão.",
-        "disclaimer": "Nem toda missão pode ser concluída em 90 dias. O Mestre apresenta o prazo viável depois de avaliar complexidade, riscos, dados e dependências."
+        "title": "Uma jornada inicial de até 90 dias",
+        "body": "Organizamos o trabalho em etapas: compreender o cenário, definir a estratégia, construir e testar a solução e validar os resultados. O escopo considera a realidade de cada missão.",
+        "disclaimer": "Nem toda missão pode ser concluída em 90 dias. O prazo viável é definido após avaliar complexidade, riscos, dados e dependências."
       },
       "custom": {
-        "title": "Nenhuma missão recebe um equipamento genérico",
-        "body": "A Guilda reúne ferramentas, engenheiros, estrategistas e agentes especializados para criar a combinação adequada ao desafio de cada companhia."
+        "title": "Uma solução adequada à realidade da sua empresa",
+        "body": "Combinamos ferramentas, engenharia, estratégia e agentes especializados para criar a abordagem adequada ao desafio de cada empresa."
       },
       "measurement": {
-        "title": "O Orbe de Métricas revela o progresso real",
-        "body": "Acompanhamos indicadores, metas, custos, qualidade e evidências. O diário registra o que avançou, o que está bloqueado e quais resultados foram efetivamente validados."
+        "title": "Acompanhe o progresso com indicadores",
+        "body": "Acompanhamos indicadores, metas, custos, qualidade e evidências. O histórico registra o que avançou, o que está bloqueado e quais resultados foram efetivamente validados."
       },
       "closing": {
-        "title": "Qual conquista sua companhia busca?",
-        "body": "Apresente seu objetivo ao Mestre da Guilda. A primeira etapa é compreender a missão antes de escolher os aventureiros e ferramentas.",
+        "title": "Qual resultado sua empresa busca?",
+        "body": "Apresente seu objetivo. A primeira etapa é compreender a missão antes de recomendar ferramentas ou soluções.",
         "cta": "Iniciar minha missão"
       }
     }
