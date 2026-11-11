@@ -18,6 +18,23 @@ export function createApiServer({
 } = {}) {
   const app = Fastify({ logger });
   const sql = databaseUrl ? postgres(databaseUrl, { max: 10, idle_timeout: 20 }) : null;
+  const rateWindows = new Map();
+
+  app.addHook("preHandler", async (request, reply) => {
+    if (request.method !== "POST" || request.url.split("?")[0] !== "/api/chat/turn") return;
+    const now = Date.now();
+    const key = request.ip;
+    const window = rateWindows.get(key);
+    if (!window || now - window.startedAt >= 60_000) {
+      rateWindows.set(key, { startedAt: now, count: 1 });
+      if (rateWindows.size > 1000) {
+        for (const [ip, item] of rateWindows) if (now - item.startedAt >= 60_000) rateWindows.delete(ip);
+      }
+      return;
+    }
+    window.count += 1;
+    if (window.count > 30) return reply.code(429).send({ error: "RATE_LIMITED" });
+  });
 
   app.addHook("onReady", async () => {
     if (!sql) return;
