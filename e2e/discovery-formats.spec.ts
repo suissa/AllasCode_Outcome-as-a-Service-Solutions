@@ -71,7 +71,8 @@ test("Discovery builds and persists the same retail proposal", async ({ page }) 
 });
 
 
-test("Site CTA opens the complete Discovery sequence inside Chat", async ({ page }) => {
+
+test("Site CTA opens the retail-specific Discovery script inside Chat", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/site");
   await page.evaluate(async () => {
@@ -81,12 +82,30 @@ test("Site CTA opens the complete Discovery sequence inside Chat", async ({ page
   await expect(page).toHaveURL(/\/chat#descoberta$/);
   await expect(page.getByText("Nome da empresa", { exact: false })).toBeVisible();
 
-  const config = await page.evaluate(async () => {
+  const sources = await page.evaluate(async () => {
     await (window as typeof window & { OaaSPageReady?: Promise<unknown> }).OaaSPageReady;
-    return (window as typeof window & { OaaSPage?: { sources: { discovery: any } } }).OaaSPage?.sources.discovery;
+    return (window as typeof window & { OaaSPage?: { sources: any } }).OaaSPage?.sources;
   });
-  const questions = config.stages.flatMap((stage: any) => stage.questions);
-  for (const question of questions) {
+  const common = sources.discovery.stages.slice(0, 2).flatMap((stage: any) => stage.questions);
+  const script = sources["sector-discovery"].scripts.retail;
+  const sectorName = sources["sector-playbooks"].sectors.find((sector: any) => sector.id === "retail").name;
+
+  for (const question of common) {
+    await expect(page.getByText(question.label, { exact: false })).toBeVisible();
+    if (question.id === "segment") {
+      await page.getByRole("button", { name: sectorName, exact: true }).click();
+    } else if (question.type === "single") {
+      await page.getByRole("button", { name: question.options[0].label, exact: true }).click();
+    } else if (question.type === "multi") {
+      await page.getByRole("button", { name: question.options[0].label, exact: true }).click();
+      await page.getByRole("button", { name: "Confirmar seleção" }).click();
+    } else {
+      await page.locator("#message").fill(question.type === "number" ? "100" : "Resposta de teste");
+      await page.getByRole("button", { name: "Enviar" }).click();
+    }
+  }
+
+  for (const question of script.stages.flatMap((stage: any) => stage.questions)) {
     await expect(page.getByText(question.label, { exact: false })).toBeVisible();
     if (question.type === "single") {
       await page.getByRole("button", { name: question.options[0].label, exact: true }).click();
@@ -98,10 +117,11 @@ test("Site CTA opens the complete Discovery sequence inside Chat", async ({ page
       await page.getByRole("button", { name: "Enviar" }).click();
     }
   }
-  await expect(page.getByText(/Você concluiu as \d+ perguntas da Descoberta/)).toBeVisible();
-  await expect(page.getByText(/hipóteses preliminares, não resultados comprovados/)).toBeVisible();
+
+  await expect(page.getByText(/Você concluiu a descoberta setorial de Varejo e comércio/)).toBeVisible();
+  await expect(page.getByText(/hipóteses de investigação, não recomendações confirmadas/)).toBeVisible();
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("goaltropic.discovery.v1") || "null"));
   expect(saved.source).toBe("chat");
-  expect(saved.chatCompleted).toBe(true);
-  expect(Object.keys(saved.answers).length).toBeGreaterThanOrEqual(questions.length);
+  expect(saved.sectorScriptId).toBe("retail");
+  expect(Object.keys(saved.answers).length).toBe(common.length + script.stages.reduce((count: number, stage: any) => count + stage.questions.length, 0));
 });

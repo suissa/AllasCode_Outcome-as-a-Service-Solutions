@@ -1,0 +1,3643 @@
+{
+  "schemaVersion": "1.0.0",
+  "locale": "pt-BR",
+  "description": "Roteiros adaptativos de descoberta. Cada setor possui perguntas próprias sobre operação, indicadores, evidências e restrições. As respostas orientam hipóteses de investigação, não diagnósticos automáticos.",
+  "scripts": {
+    "retail": {
+      "intro": "Vamos investigar vendas, margem, estoque, compras e relacionamento com clientes no varejo.",
+      "stages": [
+        {
+          "id": "retail_operation",
+          "title": "Operação de varejo",
+          "description": "Como produtos, lojas, canais e estoque funcionam.",
+          "questions": [
+            {
+              "id": "retail_channels",
+              "label": "Onde acontecem as vendas?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "loja_fisica",
+                  "label": "Loja física"
+                },
+                {
+                  "value": "whatsapp",
+                  "label": "WhatsApp"
+                },
+                {
+                  "value": "e_commerce_proprio",
+                  "label": "E-commerce próprio"
+                },
+                {
+                  "value": "marketplaces",
+                  "label": "Marketplaces"
+                },
+                {
+                  "value": "redes_sociais",
+                  "label": "Redes sociais"
+                },
+                {
+                  "value": "vendedores_externos",
+                  "label": "Vendedores externos"
+                }
+              ]
+            },
+            {
+              "id": "retail_catalog",
+              "label": "Como o catálogo é organizado?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "poucos_produtos_e_variacoes",
+                  "label": "Poucos produtos e variações"
+                },
+                {
+                  "value": "muitos_skus_e_variacoes",
+                  "label": "Muitos SKUs e variações"
+                },
+                {
+                  "value": "produtos_sob_encomenda",
+                  "label": "Produtos sob encomenda"
+                },
+                {
+                  "value": "servicos_junto_com_produtos",
+                  "label": "Serviços junto com produtos"
+                },
+                {
+                  "value": "ainda_nao_existe_catalogo_estruturado",
+                  "label": "Ainda não existe catálogo estruturado"
+                }
+              ]
+            },
+            {
+              "id": "retail_stock_locations",
+              "label": "Onde o estoque fica distribuído?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "um_unico_local",
+                  "label": "Um único local"
+                },
+                {
+                  "value": "loja_e_deposito",
+                  "label": "Loja e depósito"
+                },
+                {
+                  "value": "varias_lojas_ou_filiais",
+                  "label": "Várias lojas ou filiais"
+                },
+                {
+                  "value": "depositos_e_operadores_logisticos",
+                  "label": "Depósitos e operadores logísticos"
+                },
+                {
+                  "value": "nao_controlo_estoque",
+                  "label": "Não controlo estoque"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "retail_performance",
+          "title": "Vendas, margem e estoque",
+          "description": "Indicadores e perdas que afetam o resultado.",
+          "questions": [
+            {
+              "id": "retail_main_loss",
+              "label": "Qual situação mais prejudica o resultado?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "ruptura_produto_indisponivel",
+                  "label": "Ruptura: produto indisponível"
+                },
+                {
+                  "value": "estoque_parado_ou_excesso",
+                  "label": "Estoque parado ou excesso"
+                },
+                {
+                  "value": "descontos_reduzem_a_margem",
+                  "label": "Descontos reduzem a margem"
+                },
+                {
+                  "value": "vendas_perdidas_por_demora_no_atendimento",
+                  "label": "Vendas perdidas por demora no atendimento"
+                },
+                {
+                  "value": "baixa_recompra",
+                  "label": "Baixa recompra"
+                },
+                {
+                  "value": "compras_feitas_sem_previsao",
+                  "label": "Compras feitas sem previsão"
+                }
+              ]
+            },
+            {
+              "id": "retail_margin_visibility",
+              "label": "Você conhece a margem por produto ou categoria?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "sim_atualizada",
+                  "label": "Sim, atualizada"
+                },
+                {
+                  "value": "parcialmente",
+                  "label": "Parcialmente"
+                },
+                {
+                  "value": "somente_a_margem_geral",
+                  "label": "Somente a margem geral"
+                },
+                {
+                  "value": "nao_conheco",
+                  "label": "Não conheço"
+                }
+              ]
+            },
+            {
+              "id": "retail_demand_method",
+              "label": "Como decide o que comprar ou repor?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "historico_de_vendas",
+                  "label": "Histórico de vendas"
+                },
+                {
+                  "value": "experiencia_do_comprador",
+                  "label": "Experiência do comprador"
+                },
+                {
+                  "value": "minimo_e_maximo_de_estoque",
+                  "label": "Mínimo e máximo de estoque"
+                },
+                {
+                  "value": "previsao_por_sazonalidade",
+                  "label": "Previsão por sazonalidade"
+                },
+                {
+                  "value": "fornecedor_define",
+                  "label": "Fornecedor define"
+                },
+                {
+                  "value": "sem_metodo_definido",
+                  "label": "Sem método definido"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "retail_evidence",
+          "title": "Dados e controles do varejo",
+          "description": "Fontes disponíveis e limites que precisam ser respeitados.",
+          "questions": [
+            {
+              "id": "retail_systems",
+              "label": "Quais sistemas registram a operação?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "pdv",
+                  "label": "PDV"
+                },
+                {
+                  "value": "erp",
+                  "label": "ERP"
+                },
+                {
+                  "value": "e_commerce",
+                  "label": "E-commerce"
+                },
+                {
+                  "value": "marketplace",
+                  "label": "Marketplace"
+                },
+                {
+                  "value": "crm",
+                  "label": "CRM"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                },
+                {
+                  "value": "nao_ha_sistema_integrado",
+                  "label": "Não há sistema integrado"
+                }
+              ]
+            },
+            {
+              "id": "retail_evidence",
+              "label": "Quais dados consegue consultar?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "vendas_por_sku",
+                  "label": "Vendas por SKU"
+                },
+                {
+                  "value": "custos_e_precos",
+                  "label": "Custos e preços"
+                },
+                {
+                  "value": "movimentacao_de_estoque",
+                  "label": "Movimentação de estoque"
+                },
+                {
+                  "value": "devolucoes_e_perdas",
+                  "label": "Devoluções e perdas"
+                },
+                {
+                  "value": "clientes_e_compras_anteriores",
+                  "label": "Clientes e compras anteriores"
+                },
+                {
+                  "value": "campanhas_e_origem_das_vendas",
+                  "label": "Campanhas e origem das vendas"
+                }
+              ]
+            },
+            {
+              "id": "retail_guardrail",
+              "label": "Qual controle não pode ser comprometido?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "margem_minima_e_preco_minimo",
+                  "label": "Margem mínima e preço mínimo"
+                },
+                {
+                  "value": "acuracia_do_estoque",
+                  "label": "Acurácia do estoque"
+                },
+                {
+                  "value": "politica_de_descontos",
+                  "label": "Política de descontos"
+                },
+                {
+                  "value": "consentimento_e_frequencia_de_contato",
+                  "label": "Consentimento e frequência de contato"
+                },
+                {
+                  "value": "todos_os_anteriores",
+                  "label": "Todos os anteriores"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "services": {
+      "intro": "Vamos mapear a prestação do serviço, agenda, orçamento, capacidade da equipe e rentabilidade.",
+      "stages": [
+        {
+          "id": "services_delivery",
+          "title": "Entrega dos serviços",
+          "description": "Como a demanda entra, é agendada e executada.",
+          "questions": [
+            {
+              "id": "services_model",
+              "label": "Como o serviço é prestado?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "na_empresa_do_cliente",
+                  "label": "Na empresa do cliente"
+                },
+                {
+                  "value": "em_endereco_proprio",
+                  "label": "Em endereço próprio"
+                },
+                {
+                  "value": "remoto_ou_digital",
+                  "label": "Remoto ou digital"
+                },
+                {
+                  "value": "modelo_hibrido",
+                  "label": "Modelo híbrido"
+                },
+                {
+                  "value": "equipe_em_campo_e_visitas",
+                  "label": "Equipe em campo e visitas"
+                }
+              ]
+            },
+            {
+              "id": "services_scheduling",
+              "label": "Como os atendimentos são organizados?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "agenda_manual",
+                  "label": "Agenda manual"
+                },
+                {
+                  "value": "calendario_compartilhado",
+                  "label": "Calendário compartilhado"
+                },
+                {
+                  "value": "sistema_de_agendamento",
+                  "label": "Sistema de agendamento"
+                },
+                {
+                  "value": "despacho_por_supervisor",
+                  "label": "Despacho por supervisor"
+                },
+                {
+                  "value": "nao_existe_agenda_central",
+                  "label": "Não existe agenda central"
+                }
+              ]
+            },
+            {
+              "id": "services_work_order",
+              "label": "Como acompanha a execução?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "conversas_e_mensagens",
+                  "label": "Conversas e mensagens"
+                },
+                {
+                  "value": "ordens_de_servico",
+                  "label": "Ordens de serviço"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                },
+                {
+                  "value": "sistema_de_gestao",
+                  "label": "Sistema de gestão"
+                },
+                {
+                  "value": "nao_ha_acompanhamento_padronizado",
+                  "label": "Não há acompanhamento padronizado"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "services_performance",
+          "title": "Agenda e rentabilidade",
+          "description": "Gargalos de capacidade, conversão e retrabalho.",
+          "questions": [
+            {
+              "id": "services_main_bottleneck",
+              "label": "Onde ocorre a maior perda?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "agenda_ociosa",
+                  "label": "Agenda ociosa"
+                },
+                {
+                  "value": "equipe_sobrecarregada",
+                  "label": "Equipe sobrecarregada"
+                },
+                {
+                  "value": "orcamentos_sem_retorno",
+                  "label": "Orçamentos sem retorno"
+                },
+                {
+                  "value": "atrasos_e_deslocamentos",
+                  "label": "Atrasos e deslocamentos"
+                },
+                {
+                  "value": "retrabalho",
+                  "label": "Retrabalho"
+                },
+                {
+                  "value": "baixa_rentabilidade_por_servico",
+                  "label": "Baixa rentabilidade por serviço"
+                }
+              ]
+            },
+            {
+              "id": "services_quote_followup",
+              "label": "Como acompanha os orçamentos enviados?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "follow_up_automatico",
+                  "label": "Follow-up automático"
+                },
+                {
+                  "value": "equipe_acompanha_manualmente",
+                  "label": "Equipe acompanha manualmente"
+                },
+                {
+                  "value": "somente_quando_o_cliente_responde",
+                  "label": "Somente quando o cliente responde"
+                },
+                {
+                  "value": "nao_existe_acompanhamento",
+                  "label": "Não existe acompanhamento"
+                }
+              ]
+            },
+            {
+              "id": "services_profitability",
+              "label": "Você conhece receita e margem por tipo de serviço?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "sim_por_servico_e_equipe",
+                  "label": "Sim, por serviço e equipe"
+                },
+                {
+                  "value": "parcialmente",
+                  "label": "Parcialmente"
+                },
+                {
+                  "value": "somente_receita_total",
+                  "label": "Somente receita total"
+                },
+                {
+                  "value": "nao_conheco",
+                  "label": "Não conheço"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "services_evidence",
+          "title": "Dados e capacidade operacional",
+          "description": "Fontes de evidência e regras de execução.",
+          "questions": [
+            {
+              "id": "services_systems",
+              "label": "Onde estão os dados da operação?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "agenda",
+                  "label": "Agenda"
+                },
+                {
+                  "value": "crm",
+                  "label": "CRM"
+                },
+                {
+                  "value": "ordens_de_servico",
+                  "label": "Ordens de serviço"
+                },
+                {
+                  "value": "propostas_e_contratos",
+                  "label": "Propostas e contratos"
+                },
+                {
+                  "value": "faturamento",
+                  "label": "Faturamento"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                }
+              ]
+            },
+            {
+              "id": "services_capacity",
+              "label": "Como sabe a capacidade disponível?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "horas_e_disponibilidade_por_profissional",
+                  "label": "Horas e disponibilidade por profissional"
+                },
+                {
+                  "value": "agenda_de_equipes",
+                  "label": "Agenda de equipes"
+                },
+                {
+                  "value": "estimativa_do_gestor",
+                  "label": "Estimativa do gestor"
+                },
+                {
+                  "value": "nao_medimos_capacidade",
+                  "label": "Não medimos capacidade"
+                }
+              ]
+            },
+            {
+              "id": "services_guardrail",
+              "label": "Qual regra deve ser respeitada?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "capacidade_real_da_equipe",
+                  "label": "Capacidade real da equipe"
+                },
+                {
+                  "value": "aprovacao_do_orcamento_pelo_cliente",
+                  "label": "Aprovação do orçamento pelo cliente"
+                },
+                {
+                  "value": "regras_de_cancelamento",
+                  "label": "Regras de cancelamento"
+                },
+                {
+                  "value": "qualidade_e_seguranca_da_execucao",
+                  "label": "Qualidade e segurança da execução"
+                },
+                {
+                  "value": "todas_as_anteriores",
+                  "label": "Todas as anteriores"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "food-hospitality": {
+      "intro": "Vamos investigar demanda por período, compras, fichas técnicas, desperdício, reservas e atendimento.",
+      "stages": [
+        {
+          "id": "food_demand",
+          "title": "Demanda e atendimento",
+          "description": "Como pedidos, reservas e picos são absorvidos.",
+          "questions": [
+            {
+              "id": "food_operation",
+              "label": "Qual operação descreve melhor o negócio?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "restaurante_ou_lanchonete",
+                  "label": "Restaurante ou lanchonete"
+                },
+                {
+                  "value": "delivery_e_retirada",
+                  "label": "Delivery e retirada"
+                },
+                {
+                  "value": "hotel_ou_pousada",
+                  "label": "Hotel ou pousada"
+                },
+                {
+                  "value": "catering_e_eventos",
+                  "label": "Catering e eventos"
+                },
+                {
+                  "value": "bar_cafeteria_ou_padaria",
+                  "label": "Bar, cafeteria ou padaria"
+                },
+                {
+                  "value": "mais_de_um_modelo",
+                  "label": "Mais de um modelo"
+                }
+              ]
+            },
+            {
+              "id": "food_channels",
+              "label": "Por onde chegam pedidos e reservas?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "salao",
+                  "label": "Salão"
+                },
+                {
+                  "value": "whatsapp",
+                  "label": "WhatsApp"
+                },
+                {
+                  "value": "aplicativo_de_delivery",
+                  "label": "Aplicativo de delivery"
+                },
+                {
+                  "value": "telefone",
+                  "label": "Telefone"
+                },
+                {
+                  "value": "site_proprio",
+                  "label": "Site próprio"
+                },
+                {
+                  "value": "agencias_e_plataformas_de_reserva",
+                  "label": "Agências e plataformas de reserva"
+                }
+              ]
+            },
+            {
+              "id": "food_peak",
+              "label": "Quando a operação mais sofre com variação de demanda?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "almoco",
+                  "label": "Almoço"
+                },
+                {
+                  "value": "jantar",
+                  "label": "Jantar"
+                },
+                {
+                  "value": "fins_de_semana",
+                  "label": "Fins de semana"
+                },
+                {
+                  "value": "feriados_e_temporadas",
+                  "label": "Feriados e temporadas"
+                },
+                {
+                  "value": "eventos",
+                  "label": "Eventos"
+                },
+                {
+                  "value": "demanda_varia_pouco",
+                  "label": "Demanda varia pouco"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "food_cost",
+          "title": "Custos, compras e desperdício",
+          "description": "Como custos de insumos e capacidade são controlados.",
+          "questions": [
+            {
+              "id": "food_main_loss",
+              "label": "Qual é o principal problema hoje?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "desperdicio_de_alimentos",
+                  "label": "Desperdício de alimentos"
+                },
+                {
+                  "value": "falta_de_insumos_em_horarios_de_pico",
+                  "label": "Falta de insumos em horários de pico"
+                },
+                {
+                  "value": "cmv_alto",
+                  "label": "CMV alto"
+                },
+                {
+                  "value": "tempo_de_preparo_elevado",
+                  "label": "Tempo de preparo elevado"
+                },
+                {
+                  "value": "falhas_em_pedidos_ou_reservas",
+                  "label": "Falhas em pedidos ou reservas"
+                },
+                {
+                  "value": "equipe_mal_dimensionada",
+                  "label": "Equipe mal dimensionada"
+                }
+              ]
+            },
+            {
+              "id": "food_recipe_control",
+              "label": "As fichas técnicas e porções são padronizadas?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "sim_atualizadas_e_utilizadas",
+                  "label": "Sim, atualizadas e utilizadas"
+                },
+                {
+                  "value": "existem_mas_estao_desatualizadas",
+                  "label": "Existem, mas estão desatualizadas"
+                },
+                {
+                  "value": "somente_para_alguns_itens",
+                  "label": "Somente para alguns itens"
+                },
+                {
+                  "value": "nao_existem",
+                  "label": "Não existem"
+                }
+              ]
+            },
+            {
+              "id": "food_purchasing",
+              "label": "Como planeja compras e produção?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "previsao_baseada_em_historico",
+                  "label": "Previsão baseada em histórico"
+                },
+                {
+                  "value": "contagem_e_experiencia_da_equipe",
+                  "label": "Contagem e experiência da equipe"
+                },
+                {
+                  "value": "pedidos_conforme_demanda_do_dia",
+                  "label": "Pedidos conforme demanda do dia"
+                },
+                {
+                  "value": "minimo_de_estoque",
+                  "label": "Mínimo de estoque"
+                },
+                {
+                  "value": "sem_planejamento_estruturado",
+                  "label": "Sem planejamento estruturado"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "food_evidence",
+          "title": "Dados e segurança da operação",
+          "description": "Registros necessários para medir resultado sem comprometer qualidade.",
+          "questions": [
+            {
+              "id": "food_systems",
+              "label": "Quais registros existem?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "pdv",
+                  "label": "PDV"
+                },
+                {
+                  "value": "fichas_tecnicas",
+                  "label": "Fichas técnicas"
+                },
+                {
+                  "value": "compras_e_estoque",
+                  "label": "Compras e estoque"
+                },
+                {
+                  "value": "reservas",
+                  "label": "Reservas"
+                },
+                {
+                  "value": "pedidos_de_delivery",
+                  "label": "Pedidos de delivery"
+                },
+                {
+                  "value": "escalas_e_horas_da_equipe",
+                  "label": "Escalas e horas da equipe"
+                },
+                {
+                  "value": "avaliacoes_de_clientes",
+                  "label": "Avaliações de clientes"
+                }
+              ]
+            },
+            {
+              "id": "food_metrics",
+              "label": "Quais indicadores acompanha?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "cmv",
+                  "label": "CMV"
+                },
+                {
+                  "value": "desperdicio",
+                  "label": "Desperdício"
+                },
+                {
+                  "value": "tempo_de_preparo",
+                  "label": "Tempo de preparo"
+                },
+                {
+                  "value": "ocupacao_e_reservas",
+                  "label": "Ocupação e reservas"
+                },
+                {
+                  "value": "ticket_medio",
+                  "label": "Ticket médio"
+                },
+                {
+                  "value": "cancelamentos",
+                  "label": "Cancelamentos"
+                }
+              ]
+            },
+            {
+              "id": "food_guardrail",
+              "label": "Qual condição é inegociável?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "seguranca_alimentar",
+                  "label": "Segurança alimentar"
+                },
+                {
+                  "value": "qualidade_e_padrao_dos_pratos",
+                  "label": "Qualidade e padrão dos pratos"
+                },
+                {
+                  "value": "disponibilidade_de_insumos",
+                  "label": "Disponibilidade de insumos"
+                },
+                {
+                  "value": "sazonalidade_e_capacidade_da_equipe",
+                  "label": "Sazonalidade e capacidade da equipe"
+                },
+                {
+                  "value": "todas_as_anteriores",
+                  "label": "Todas as anteriores"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "health": {
+      "intro": "Vamos focar na operação administrativa da clínica, agenda, autorizações, faturamento e experiência do paciente. Não solicitaremos dados clínicos identificáveis.",
+      "stages": [
+        {
+          "id": "health_journey",
+          "title": "Jornada administrativa do paciente",
+          "description": "Como o paciente agenda, confirma e percorre os processos administrativos.",
+          "questions": [
+            {
+              "id": "health_type",
+              "label": "Qual é o perfil da instituição?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "clinica_multidisciplinar",
+                  "label": "Clínica multidisciplinar"
+                },
+                {
+                  "value": "consultorio",
+                  "label": "Consultório"
+                },
+                {
+                  "value": "laboratorio_ou_diagnostico",
+                  "label": "Laboratório ou diagnóstico"
+                },
+                {
+                  "value": "centro_de_saude",
+                  "label": "Centro de saúde"
+                },
+                {
+                  "value": "rede_de_unidades",
+                  "label": "Rede de unidades"
+                }
+              ]
+            },
+            {
+              "id": "health_scheduling",
+              "label": "Como a agenda é organizada?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "por_profissional",
+                  "label": "Por profissional"
+                },
+                {
+                  "value": "por_especialidade_e_sala",
+                  "label": "Por especialidade e sala"
+                },
+                {
+                  "value": "por_equipamento_e_recurso",
+                  "label": "Por equipamento e recurso"
+                },
+                {
+                  "value": "sistema_integrado",
+                  "label": "Sistema integrado"
+                },
+                {
+                  "value": "planilhas_e_mensagens",
+                  "label": "Planilhas e mensagens"
+                }
+              ]
+            },
+            {
+              "id": "health_authorization",
+              "label": "Como são tratadas autorizações e documentos?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "fluxo_digital_integrado",
+                  "label": "Fluxo digital integrado"
+                },
+                {
+                  "value": "equipe_confere_manualmente",
+                  "label": "Equipe confere manualmente"
+                },
+                {
+                  "value": "portais_de_convenios",
+                  "label": "Portais de convênios"
+                },
+                {
+                  "value": "processo_misto",
+                  "label": "Processo misto"
+                },
+                {
+                  "value": "nao_ha_fluxo_padronizado",
+                  "label": "Não há fluxo padronizado"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "health_performance",
+          "title": "Acesso e eficiência administrativa",
+          "description": "Faltas, ocupação, tempo de ciclo e retrabalho.",
+          "questions": [
+            {
+              "id": "health_main_bottleneck",
+              "label": "Qual gargalo mais afeta a operação?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "faltas_e_horarios_ociosos",
+                  "label": "Faltas e horários ociosos"
+                },
+                {
+                  "value": "demora_para_agendar",
+                  "label": "Demora para agendar"
+                },
+                {
+                  "value": "autorizacao_e_documentacao",
+                  "label": "Autorização e documentação"
+                },
+                {
+                  "value": "faturamento_e_glosas",
+                  "label": "Faturamento e glosas"
+                },
+                {
+                  "value": "comunicacao_e_reagendamento",
+                  "label": "Comunicação e reagendamento"
+                },
+                {
+                  "value": "tarefas_administrativas_repetitivas",
+                  "label": "Tarefas administrativas repetitivas"
+                }
+              ]
+            },
+            {
+              "id": "health_noshow",
+              "label": "Como acompanha faltas e cancelamentos?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "indicador_por_profissional_e_especialidade",
+                  "label": "Indicador por profissional e especialidade"
+                },
+                {
+                  "value": "relatorio_geral",
+                  "label": "Relatório geral"
+                },
+                {
+                  "value": "controle_manual",
+                  "label": "Controle manual"
+                },
+                {
+                  "value": "nao_acompanha",
+                  "label": "Não acompanha"
+                }
+              ]
+            },
+            {
+              "id": "health_cycle",
+              "label": "Onde o processo administrativo mais demora?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "primeiro_contato_e_agendamento",
+                  "label": "Primeiro contato e agendamento"
+                },
+                {
+                  "value": "autorizacao",
+                  "label": "Autorização"
+                },
+                {
+                  "value": "confirmacao_e_preparo",
+                  "label": "Confirmação e preparo"
+                },
+                {
+                  "value": "faturamento",
+                  "label": "Faturamento"
+                },
+                {
+                  "value": "retorno_e_reagendamento",
+                  "label": "Retorno e reagendamento"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "health_governance",
+          "title": "Dados, privacidade e governança",
+          "description": "Fontes administrativas e controles de acesso.",
+          "questions": [
+            {
+              "id": "health_systems",
+              "label": "Quais sistemas são utilizados?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "sistema_de_gestao_clinica",
+                  "label": "Sistema de gestão clínica"
+                },
+                {
+                  "value": "agenda",
+                  "label": "Agenda"
+                },
+                {
+                  "value": "prontuario_eletronico",
+                  "label": "Prontuário eletrônico"
+                },
+                {
+                  "value": "faturamento",
+                  "label": "Faturamento"
+                },
+                {
+                  "value": "portal_de_convenios",
+                  "label": "Portal de convênios"
+                },
+                {
+                  "value": "crm",
+                  "label": "CRM"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                }
+              ]
+            },
+            {
+              "id": "health_evidence",
+              "label": "Quais indicadores administrativos estão disponíveis?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "ocupacao_por_especialidade",
+                  "label": "Ocupação por especialidade"
+                },
+                {
+                  "value": "no_show",
+                  "label": "No-show"
+                },
+                {
+                  "value": "tempo_de_autorizacao",
+                  "label": "Tempo de autorização"
+                },
+                {
+                  "value": "glosas",
+                  "label": "Glosas"
+                },
+                {
+                  "value": "reagendamento",
+                  "label": "Reagendamento"
+                },
+                {
+                  "value": "satisfacao",
+                  "label": "Satisfação"
+                }
+              ]
+            },
+            {
+              "id": "health_guardrail",
+              "label": "Quais controles devem ser obrigatórios?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "lgpd_e_dados_sensiveis",
+                  "label": "LGPD e dados sensíveis"
+                },
+                {
+                  "value": "sigilo_profissional",
+                  "label": "Sigilo profissional"
+                },
+                {
+                  "value": "controle_de_acesso_e_auditoria",
+                  "label": "Controle de acesso e auditoria"
+                },
+                {
+                  "value": "decisao_clinica_exclusiva_de_profissional_habilitado",
+                  "label": "Decisão clínica exclusiva de profissional habilitado"
+                },
+                {
+                  "value": "minimizacao_de_dados_identificaveis",
+                  "label": "Minimização de dados identificáveis"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "industry": {
+      "intro": "Vamos investigar produção, equipamentos, qualidade, manutenção, paradas e planejamento industrial.",
+      "stages": [
+        {
+          "id": "industry_production",
+          "title": "Processo produtivo",
+          "description": "Como ordens, linhas, turnos e equipamentos são coordenados.",
+          "questions": [
+            {
+              "id": "industry_type",
+              "label": "Qual é o tipo predominante de produção?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "producao_discreta",
+                  "label": "Produção discreta"
+                },
+                {
+                  "value": "processo_continuo",
+                  "label": "Processo contínuo"
+                },
+                {
+                  "value": "lotes",
+                  "label": "Lotes"
+                },
+                {
+                  "value": "sob_encomenda",
+                  "label": "Sob encomenda"
+                },
+                {
+                  "value": "operacao_de_montagem",
+                  "label": "Operação de montagem"
+                },
+                {
+                  "value": "misto",
+                  "label": "Misto"
+                }
+              ]
+            },
+            {
+              "id": "industry_planning",
+              "label": "Como o plano de produção é definido?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "erp_mrp",
+                  "label": "ERP/MRP"
+                },
+                {
+                  "value": "pcp_em_sistema_proprio",
+                  "label": "PCP em sistema próprio"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                },
+                {
+                  "value": "programacao_manual_diaria",
+                  "label": "Programação manual diária"
+                },
+                {
+                  "value": "integracao_ainda_inexistente",
+                  "label": "Integração ainda inexistente"
+                }
+              ]
+            },
+            {
+              "id": "industry_assets",
+              "label": "Como monitora máquinas e linhas?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "sensores_e_telemetria",
+                  "label": "Sensores e telemetria"
+                },
+                {
+                  "value": "scada_mes",
+                  "label": "SCADA/MES"
+                },
+                {
+                  "value": "apontamento_do_operador",
+                  "label": "Apontamento do operador"
+                },
+                {
+                  "value": "inspecoes_periodicas",
+                  "label": "Inspeções periódicas"
+                },
+                {
+                  "value": "sem_monitoramento_estruturado",
+                  "label": "Sem monitoramento estruturado"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "industry_performance",
+          "title": "Disponibilidade, qualidade e perdas",
+          "description": "Indicadores de produção e causas de ineficiência.",
+          "questions": [
+            {
+              "id": "industry_main_loss",
+              "label": "Qual perda tem maior impacto?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "paradas_nao_planejadas",
+                  "label": "Paradas não planejadas"
+                },
+                {
+                  "value": "refugo_e_retrabalho",
+                  "label": "Refugo e retrabalho"
+                },
+                {
+                  "value": "baixa_velocidade_ou_produtividade",
+                  "label": "Baixa velocidade ou produtividade"
+                },
+                {
+                  "value": "setup_e_troca_de_linha",
+                  "label": "Setup e troca de linha"
+                },
+                {
+                  "value": "atraso_no_plano_de_producao",
+                  "label": "Atraso no plano de produção"
+                },
+                {
+                  "value": "consumo_excessivo_de_insumos",
+                  "label": "Consumo excessivo de insumos"
+                }
+              ]
+            },
+            {
+              "id": "industry_maintenance",
+              "label": "Como a manutenção é realizada?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "preditiva_baseada_em_condicao",
+                  "label": "Preditiva baseada em condição"
+                },
+                {
+                  "value": "preventiva_programada",
+                  "label": "Preventiva programada"
+                },
+                {
+                  "value": "corretiva_apos_falha",
+                  "label": "Corretiva após falha"
+                },
+                {
+                  "value": "mista",
+                  "label": "Mista"
+                },
+                {
+                  "value": "sem_historico_confiavel",
+                  "label": "Sem histórico confiável"
+                }
+              ]
+            },
+            {
+              "id": "industry_quality",
+              "label": "Como registra defeitos e não conformidades?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "sistema_de_qualidade_integrado",
+                  "label": "Sistema de qualidade integrado"
+                },
+                {
+                  "value": "inspecoes_digitais",
+                  "label": "Inspeções digitais"
+                },
+                {
+                  "value": "planilhas_e_formularios",
+                  "label": "Planilhas e formulários"
+                },
+                {
+                  "value": "registros_em_papel",
+                  "label": "Registros em papel"
+                },
+                {
+                  "value": "nao_ha_rastreabilidade_suficiente",
+                  "label": "Não há rastreabilidade suficiente"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "industry_evidence",
+          "title": "Telemetria, rastreabilidade e segurança",
+          "description": "Dados técnicos disponíveis e limites de automação.",
+          "questions": [
+            {
+              "id": "industry_systems",
+              "label": "Quais fontes de dados existem?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "mes",
+                  "label": "MES"
+                },
+                {
+                  "value": "scada_plc",
+                  "label": "SCADA/PLC"
+                },
+                {
+                  "value": "erp_mrp",
+                  "label": "ERP/MRP"
+                },
+                {
+                  "value": "cmms_manutencao",
+                  "label": "CMMS/manutenção"
+                },
+                {
+                  "value": "sensores_iot",
+                  "label": "Sensores IoT"
+                },
+                {
+                  "value": "inspecoes_e_laboratorio",
+                  "label": "Inspeções e laboratório"
+                },
+                {
+                  "value": "apontamentos_de_producao",
+                  "label": "Apontamentos de produção"
+                }
+              ]
+            },
+            {
+              "id": "industry_metrics",
+              "label": "Quais indicadores são medidos?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "oee",
+                  "label": "OEE"
+                },
+                {
+                  "value": "mtbf_e_mttr",
+                  "label": "MTBF e MTTR"
+                },
+                {
+                  "value": "scrap_e_rendimento",
+                  "label": "Scrap e rendimento"
+                },
+                {
+                  "value": "paradas",
+                  "label": "Paradas"
+                },
+                {
+                  "value": "custo_por_unidade",
+                  "label": "Custo por unidade"
+                },
+                {
+                  "value": "cumprimento_do_plano",
+                  "label": "Cumprimento do plano"
+                }
+              ]
+            },
+            {
+              "id": "industry_guardrail",
+              "label": "Qual limite deve ser respeitado?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "seguranca_industrial",
+                  "label": "Segurança industrial"
+                },
+                {
+                  "value": "validacao_do_operador",
+                  "label": "Validação do operador"
+                },
+                {
+                  "value": "limites_de_controle_e_intertravamentos",
+                  "label": "Limites de controle e intertravamentos"
+                },
+                {
+                  "value": "fallback_seguro_sem_automacao",
+                  "label": "Fallback seguro sem automação"
+                },
+                {
+                  "value": "todos_os_anteriores",
+                  "label": "Todos os anteriores"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "logistics": {
+      "intro": "Vamos mapear transporte, armazenagem, entregas, rastreamento, ocorrências e custo logístico.",
+      "stages": [
+        {
+          "id": "logistics_network",
+          "title": "Rede e operação logística",
+          "description": "Como cargas, veículos, rotas e entregas são planejados.",
+          "questions": [
+            {
+              "id": "logistics_operation",
+              "label": "Qual operação predomina?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "transporte_rodoviario",
+                  "label": "Transporte rodoviário"
+                },
+                {
+                  "value": "entrega_urbana_ultima_milha",
+                  "label": "Entrega urbana/última milha"
+                },
+                {
+                  "value": "armazenagem_e_distribuicao",
+                  "label": "Armazenagem e distribuição"
+                },
+                {
+                  "value": "operador_logistico",
+                  "label": "Operador logístico"
+                },
+                {
+                  "value": "transporte_de_passageiros",
+                  "label": "Transporte de passageiros"
+                },
+                {
+                  "value": "operacao_multimodal",
+                  "label": "Operação multimodal"
+                }
+              ]
+            },
+            {
+              "id": "logistics_fleet",
+              "label": "Como a capacidade é organizada?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "frota_propria",
+                  "label": "Frota própria"
+                },
+                {
+                  "value": "transportadoras_terceirizadas",
+                  "label": "Transportadoras terceirizadas"
+                },
+                {
+                  "value": "frota_propria_e_terceiros",
+                  "label": "Frota própria e terceiros"
+                },
+                {
+                  "value": "agregados_e_parceiros",
+                  "label": "Agregados e parceiros"
+                },
+                {
+                  "value": "capacidade_contratada_por_demanda",
+                  "label": "Capacidade contratada por demanda"
+                }
+              ]
+            },
+            {
+              "id": "logistics_tracking",
+              "label": "Como acompanha as cargas?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "rastreamento_gps_em_tempo_real",
+                  "label": "Rastreamento GPS em tempo real"
+                },
+                {
+                  "value": "eventos_da_transportadora",
+                  "label": "Eventos da transportadora"
+                },
+                {
+                  "value": "atualizacoes_manuais",
+                  "label": "Atualizações manuais"
+                },
+                {
+                  "value": "contato_com_motorista",
+                  "label": "Contato com motorista"
+                },
+                {
+                  "value": "nao_ha_visibilidade_continua",
+                  "label": "Não há visibilidade contínua"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "logistics_performance",
+          "title": "Prazo, custo e exceções",
+          "description": "Onde surgem atrasos, reentregas e custos adicionais.",
+          "questions": [
+            {
+              "id": "logistics_main_loss",
+              "label": "Qual problema mais afeta o resultado?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "atrasos_e_baixo_otif",
+                  "label": "Atrasos e baixo OTIF"
+                },
+                {
+                  "value": "reentregas_e_insucesso",
+                  "label": "Reentregas e insucesso"
+                },
+                {
+                  "value": "rotas_e_ocupacao_ineficientes",
+                  "label": "Rotas e ocupação ineficientes"
+                },
+                {
+                  "value": "falta_de_visibilidade_da_carga",
+                  "label": "Falta de visibilidade da carga"
+                },
+                {
+                  "value": "conciliacao_de_frete",
+                  "label": "Conciliação de frete"
+                },
+                {
+                  "value": "tratamento_lento_de_ocorrencias",
+                  "label": "Tratamento lento de ocorrências"
+                }
+              ]
+            },
+            {
+              "id": "logistics_routing",
+              "label": "Como as rotas são definidas?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "otimizacao_por_sistema",
+                  "label": "Otimização por sistema"
+                },
+                {
+                  "value": "planejamento_por_operador",
+                  "label": "Planejamento por operador"
+                },
+                {
+                  "value": "rotas_fixas",
+                  "label": "Rotas fixas"
+                },
+                {
+                  "value": "decisao_do_motorista",
+                  "label": "Decisão do motorista"
+                },
+                {
+                  "value": "combinacao_desses_metodos",
+                  "label": "Combinação desses métodos"
+                }
+              ]
+            },
+            {
+              "id": "logistics_freight",
+              "label": "Como confere os valores de frete?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "conciliacao_automatizada",
+                  "label": "Conciliação automatizada"
+                },
+                {
+                  "value": "auditoria_por_amostragem",
+                  "label": "Auditoria por amostragem"
+                },
+                {
+                  "value": "conferencia_manual",
+                  "label": "Conferência manual"
+                },
+                {
+                  "value": "nao_existe_conciliacao_estruturada",
+                  "label": "Não existe conciliação estruturada"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "logistics_evidence",
+          "title": "Rastreamento e regras operacionais",
+          "description": "Fontes de dados e restrições de segurança.",
+          "questions": [
+            {
+              "id": "logistics_systems",
+              "label": "Quais sistemas e dados estão disponíveis?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "tms",
+                  "label": "TMS"
+                },
+                {
+                  "value": "wms",
+                  "label": "WMS"
+                },
+                {
+                  "value": "erp",
+                  "label": "ERP"
+                },
+                {
+                  "value": "gps_telemetria",
+                  "label": "GPS/telemetria"
+                },
+                {
+                  "value": "comprovantes_de_entrega",
+                  "label": "Comprovantes de entrega"
+                },
+                {
+                  "value": "ocorrencias_e_faturas",
+                  "label": "Ocorrências e faturas"
+                },
+                {
+                  "value": "dados_de_transito_e_clima",
+                  "label": "Dados de trânsito e clima"
+                }
+              ]
+            },
+            {
+              "id": "logistics_metrics",
+              "label": "Quais indicadores são acompanhados?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "otif",
+                  "label": "OTIF"
+                },
+                {
+                  "value": "custo_por_entrega",
+                  "label": "Custo por entrega"
+                },
+                {
+                  "value": "km_por_entrega",
+                  "label": "Km por entrega"
+                },
+                {
+                  "value": "reentregas",
+                  "label": "Reentregas"
+                },
+                {
+                  "value": "atrasos",
+                  "label": "Atrasos"
+                },
+                {
+                  "value": "tempo_de_resolucao_de_ocorrencia",
+                  "label": "Tempo de resolução de ocorrência"
+                }
+              ]
+            },
+            {
+              "id": "logistics_guardrail",
+              "label": "Quais restrições precisam ser consideradas?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "seguranca_de_motoristas_e_cargas",
+                  "label": "Segurança de motoristas e cargas"
+                },
+                {
+                  "value": "transito_e_clima",
+                  "label": "Trânsito e clima"
+                },
+                {
+                  "value": "restricoes_de_peso_dimensao_e_horario",
+                  "label": "Restrições de peso, dimensão e horário"
+                },
+                {
+                  "value": "privacidade_da_localizacao",
+                  "label": "Privacidade da localização"
+                },
+                {
+                  "value": "regras_de_jornada_e_descanso",
+                  "label": "Regras de jornada e descanso"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "professional-services": {
+      "intro": "Vamos investigar processos de clientes, documentos, prazos, revisão técnica, produtividade e rentabilidade profissional.",
+      "stages": [
+        {
+          "id": "professional_work",
+          "title": "Fluxo de trabalho profissional",
+          "description": "Como demandas, documentos e entregas são distribuídos.",
+          "questions": [
+            {
+              "id": "professional_type",
+              "label": "Qual atividade descreve melhor o escritório?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "juridico",
+                  "label": "Jurídico"
+                },
+                {
+                  "value": "contabilidade_e_fiscal",
+                  "label": "Contabilidade e fiscal"
+                },
+                {
+                  "value": "consultoria",
+                  "label": "Consultoria"
+                },
+                {
+                  "value": "auditoria",
+                  "label": "Auditoria"
+                },
+                {
+                  "value": "servicos_tecnicos_especializados",
+                  "label": "Serviços técnicos especializados"
+                },
+                {
+                  "value": "multidisciplinar",
+                  "label": "Multidisciplinar"
+                }
+              ]
+            },
+            {
+              "id": "professional_intake",
+              "label": "Como recebe demandas e documentos?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "portal_do_cliente",
+                  "label": "Portal do cliente"
+                },
+                {
+                  "value": "e_mail",
+                  "label": "E-mail"
+                },
+                {
+                  "value": "whatsapp",
+                  "label": "WhatsApp"
+                },
+                {
+                  "value": "sistema_de_gestao",
+                  "label": "Sistema de gestão"
+                },
+                {
+                  "value": "varios_canais_sem_centralizacao",
+                  "label": "Vários canais sem centralização"
+                }
+              ]
+            },
+            {
+              "id": "professional_deadlines",
+              "label": "Como controla prazos e obrigações?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "sistema_com_alertas",
+                  "label": "Sistema com alertas"
+                },
+                {
+                  "value": "agenda_compartilhada",
+                  "label": "Agenda compartilhada"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                },
+                {
+                  "value": "controle_individual",
+                  "label": "Controle individual"
+                },
+                {
+                  "value": "processo_manual_sem_padrao",
+                  "label": "Processo manual sem padrão"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "professional_performance",
+          "title": "Capacidade, qualidade e rentabilidade",
+          "description": "Retrabalho, tempo por processo e margem por cliente.",
+          "questions": [
+            {
+              "id": "professional_main_loss",
+              "label": "Qual é o gargalo principal?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "classificacao_e_conferencia_documental",
+                  "label": "Classificação e conferência documental"
+                },
+                {
+                  "value": "prazos_e_pendencias",
+                  "label": "Prazos e pendências"
+                },
+                {
+                  "value": "retrabalho_na_revisao",
+                  "label": "Retrabalho na revisão"
+                },
+                {
+                  "value": "distribuicao_de_tarefas",
+                  "label": "Distribuição de tarefas"
+                },
+                {
+                  "value": "rentabilidade_por_cliente",
+                  "label": "Rentabilidade por cliente"
+                },
+                {
+                  "value": "comunicacao_e_cobranca_de_documentos",
+                  "label": "Comunicação e cobrança de documentos"
+                }
+              ]
+            },
+            {
+              "id": "professional_review",
+              "label": "Como são revisadas entregas e análises?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "fluxo_formal_com_aprovacao",
+                  "label": "Fluxo formal com aprovação"
+                },
+                {
+                  "value": "revisao_por_outro_profissional",
+                  "label": "Revisão por outro profissional"
+                },
+                {
+                  "value": "revisao_do_responsavel",
+                  "label": "Revisão do responsável"
+                },
+                {
+                  "value": "sem_padrao_definido",
+                  "label": "Sem padrão definido"
+                }
+              ]
+            },
+            {
+              "id": "professional_profit",
+              "label": "Você conhece o custo e a margem por cliente ou caso?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "sim_com_apontamento_de_horas",
+                  "label": "Sim, com apontamento de horas"
+                },
+                {
+                  "value": "parcialmente",
+                  "label": "Parcialmente"
+                },
+                {
+                  "value": "somente_faturamento",
+                  "label": "Somente faturamento"
+                },
+                {
+                  "value": "nao_conheco",
+                  "label": "Não conheço"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "professional_governance",
+          "title": "Sigilo, evidências e aprovação",
+          "description": "Fontes de informação e responsabilidade profissional.",
+          "questions": [
+            {
+              "id": "professional_systems",
+              "label": "Quais ferramentas são utilizadas?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "ged_documentos",
+                  "label": "GED/documentos"
+                },
+                {
+                  "value": "erp_ou_sistema_contabil",
+                  "label": "ERP ou sistema contábil"
+                },
+                {
+                  "value": "gestao_juridica_processual",
+                  "label": "Gestão jurídica/processual"
+                },
+                {
+                  "value": "gestao_de_tarefas",
+                  "label": "Gestão de tarefas"
+                },
+                {
+                  "value": "assinatura_eletronica",
+                  "label": "Assinatura eletrônica"
+                },
+                {
+                  "value": "crm_e_portal_do_cliente",
+                  "label": "CRM e portal do cliente"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                }
+              ]
+            },
+            {
+              "id": "professional_evidence",
+              "label": "Quais registros podem ser analisados?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "prazos_e_protocolos",
+                  "label": "Prazos e protocolos"
+                },
+                {
+                  "value": "horas_e_tarefas",
+                  "label": "Horas e tarefas"
+                },
+                {
+                  "value": "versoes_e_revisoes",
+                  "label": "Versões e revisões"
+                },
+                {
+                  "value": "pendencias_documentais",
+                  "label": "Pendências documentais"
+                },
+                {
+                  "value": "faturamento_e_contratos",
+                  "label": "Faturamento e contratos"
+                }
+              ]
+            },
+            {
+              "id": "professional_guardrail",
+              "label": "Quais controles são obrigatórios?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "sigilo_profissional",
+                  "label": "Sigilo profissional"
+                },
+                {
+                  "value": "revisao_por_profissional_habilitado",
+                  "label": "Revisão por profissional habilitado"
+                },
+                {
+                  "value": "trilha_de_auditoria",
+                  "label": "Trilha de auditoria"
+                },
+                {
+                  "value": "controle_de_conflito_e_acesso",
+                  "label": "Controle de conflito e acesso"
+                },
+                {
+                  "value": "aprovacao_antes_de_envio_ou_protocolo",
+                  "label": "Aprovação antes de envio ou protocolo"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "education": {
+      "intro": "Vamos mapear captação, matrícula, permanência, presença, atendimento e jornada dos alunos.",
+      "stages": [
+        {
+          "id": "education_journey",
+          "title": "Jornada do aluno",
+          "description": "Da primeira procura à matrícula e acompanhamento.",
+          "questions": [
+            {
+              "id": "education_type",
+              "label": "Qual instituição descreve melhor a operação?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "escola_basica",
+                  "label": "Escola básica"
+                },
+                {
+                  "value": "ensino_superior",
+                  "label": "Ensino superior"
+                },
+                {
+                  "value": "cursos_livres_e_profissionalizantes",
+                  "label": "Cursos livres e profissionalizantes"
+                },
+                {
+                  "value": "treinamento_corporativo",
+                  "label": "Treinamento corporativo"
+                },
+                {
+                  "value": "escola_de_idiomas",
+                  "label": "Escola de idiomas"
+                },
+                {
+                  "value": "plataforma_de_educacao_digital",
+                  "label": "Plataforma de educação digital"
+                }
+              ]
+            },
+            {
+              "id": "education_admission",
+              "label": "Como os interessados chegam e se matriculam?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "processo_digital",
+                  "label": "Processo digital"
+                },
+                {
+                  "value": "equipe_comercial_e_secretaria",
+                  "label": "Equipe comercial e secretaria"
+                },
+                {
+                  "value": "inscricao_por_portal",
+                  "label": "Inscrição por portal"
+                },
+                {
+                  "value": "whatsapp_e_atendimento_manual",
+                  "label": "WhatsApp e atendimento manual"
+                },
+                {
+                  "value": "misto",
+                  "label": "Misto"
+                }
+              ]
+            },
+            {
+              "id": "education_delivery",
+              "label": "Como acompanha aulas e atividades?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "sistema_academico_lms",
+                  "label": "Sistema acadêmico/LMS"
+                },
+                {
+                  "value": "presenca_e_notas_em_sistema",
+                  "label": "Presença e notas em sistema"
+                },
+                {
+                  "value": "planilhas_e_listas",
+                  "label": "Planilhas e listas"
+                },
+                {
+                  "value": "plataforma_propria",
+                  "label": "Plataforma própria"
+                },
+                {
+                  "value": "nao_ha_visao_integrada",
+                  "label": "Não há visão integrada"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "education_performance",
+          "title": "Matrícula, presença e permanência",
+          "description": "Conversão, evasão e pontos de abandono da jornada.",
+          "questions": [
+            {
+              "id": "education_main_loss",
+              "label": "Qual desafio mais afeta a instituição?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "poucos_interessados_viram_matriculas",
+                  "label": "Poucos interessados viram matrículas"
+                },
+                {
+                  "value": "evasao_ou_trancamento",
+                  "label": "Evasão ou trancamento"
+                },
+                {
+                  "value": "faltas_e_baixa_participacao",
+                  "label": "Faltas e baixa participação"
+                },
+                {
+                  "value": "atendimento_administrativo_lento",
+                  "label": "Atendimento administrativo lento"
+                },
+                {
+                  "value": "dificuldade_de_acompanhar_aprendizagem",
+                  "label": "Dificuldade de acompanhar aprendizagem"
+                },
+                {
+                  "value": "renovacao_e_rematricula",
+                  "label": "Renovação e rematrícula"
+                }
+              ]
+            },
+            {
+              "id": "education_dropout",
+              "label": "Como identifica alunos com risco de evasão?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "indicadores_de_presenca_e_desempenho",
+                  "label": "Indicadores de presença e desempenho"
+                },
+                {
+                  "value": "alertas_do_sistema_academico",
+                  "label": "Alertas do sistema acadêmico"
+                },
+                {
+                  "value": "contato_da_coordenacao",
+                  "label": "Contato da coordenação"
+                },
+                {
+                  "value": "somente_apos_pedido_de_saida",
+                  "label": "Somente após pedido de saída"
+                },
+                {
+                  "value": "nao_existe_processo",
+                  "label": "Não existe processo"
+                }
+              ]
+            },
+            {
+              "id": "education_admission_followup",
+              "label": "Como acompanha interessados que não se matriculam?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "crm_com_etapas_e_lembretes",
+                  "label": "CRM com etapas e lembretes"
+                },
+                {
+                  "value": "planilha",
+                  "label": "Planilha"
+                },
+                {
+                  "value": "contato_individual",
+                  "label": "Contato individual"
+                },
+                {
+                  "value": "nao_existe_follow_up",
+                  "label": "Não existe follow-up"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "education_governance",
+          "title": "Dados educacionais e proteção",
+          "description": "Fontes de evidência e cuidados com estudantes.",
+          "questions": [
+            {
+              "id": "education_systems",
+              "label": "Quais sistemas estão disponíveis?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "crm",
+                  "label": "CRM"
+                },
+                {
+                  "value": "sistema_academico",
+                  "label": "Sistema acadêmico"
+                },
+                {
+                  "value": "lms_ambiente_virtual",
+                  "label": "LMS/ambiente virtual"
+                },
+                {
+                  "value": "financeiro",
+                  "label": "Financeiro"
+                },
+                {
+                  "value": "presenca_e_notas",
+                  "label": "Presença e notas"
+                },
+                {
+                  "value": "plataforma_de_comunicacao",
+                  "label": "Plataforma de comunicação"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                }
+              ]
+            },
+            {
+              "id": "education_metrics",
+              "label": "Quais indicadores são acompanhados?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "conversao_em_matricula",
+                  "label": "Conversão em matrícula"
+                },
+                {
+                  "value": "presenca",
+                  "label": "Presença"
+                },
+                {
+                  "value": "evasao_e_retencao",
+                  "label": "Evasão e retenção"
+                },
+                {
+                  "value": "conclusao_de_atividades",
+                  "label": "Conclusão de atividades"
+                },
+                {
+                  "value": "tempo_de_atendimento",
+                  "label": "Tempo de atendimento"
+                },
+                {
+                  "value": "renovacao",
+                  "label": "Renovação"
+                }
+              ]
+            },
+            {
+              "id": "education_guardrail",
+              "label": "Quais cuidados devem ser garantidos?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "protecao_de_menores",
+                  "label": "Proteção de menores"
+                },
+                {
+                  "value": "privacidade_de_dados_educacionais",
+                  "label": "Privacidade de dados educacionais"
+                },
+                {
+                  "value": "revisao_humana_em_decisoes_relevantes",
+                  "label": "Revisão humana em decisões relevantes"
+                },
+                {
+                  "value": "sazonalidade_do_calendario",
+                  "label": "Sazonalidade do calendário"
+                },
+                {
+                  "value": "comunicacao_adequada_a_responsaveis",
+                  "label": "Comunicação adequada a responsáveis"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "real-estate": {
+      "intro": "Vamos investigar captação de leads, qualificação, carteira de imóveis, visitas, propostas e fechamento.",
+      "stages": [
+        {
+          "id": "realestate_pipeline",
+          "title": "Funil imobiliário",
+          "description": "Como leads e imóveis avançam até a visita e proposta.",
+          "questions": [
+            {
+              "id": "realestate_type",
+              "label": "Qual é a atividade principal?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "venda_de_imoveis",
+                  "label": "Venda de imóveis"
+                },
+                {
+                  "value": "locacao",
+                  "label": "Locação"
+                },
+                {
+                  "value": "lancamentos_e_incorporacao",
+                  "label": "Lançamentos e incorporação"
+                },
+                {
+                  "value": "administracao_de_imoveis",
+                  "label": "Administração de imóveis"
+                },
+                {
+                  "value": "imobiliaria_com_varias_frentes",
+                  "label": "Imobiliária com várias frentes"
+                }
+              ]
+            },
+            {
+              "id": "realestate_lead_sources",
+              "label": "De onde vêm os leads?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "portais_imobiliarios",
+                  "label": "Portais imobiliários"
+                },
+                {
+                  "value": "site_proprio",
+                  "label": "Site próprio"
+                },
+                {
+                  "value": "redes_sociais_e_anuncios",
+                  "label": "Redes sociais e anúncios"
+                },
+                {
+                  "value": "indicacao",
+                  "label": "Indicação"
+                },
+                {
+                  "value": "whatsapp",
+                  "label": "WhatsApp"
+                },
+                {
+                  "value": "plantoes_e_eventos",
+                  "label": "Plantões e eventos"
+                }
+              ]
+            },
+            {
+              "id": "realestate_distribution",
+              "label": "Como os leads são distribuídos?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "rodizio_automatico",
+                  "label": "Rodízio automático"
+                },
+                {
+                  "value": "por_regiao_ou_tipo_de_imovel",
+                  "label": "Por região ou tipo de imóvel"
+                },
+                {
+                  "value": "por_carteira_do_corretor",
+                  "label": "Por carteira do corretor"
+                },
+                {
+                  "value": "manual_pelo_gestor",
+                  "label": "Manual pelo gestor"
+                },
+                {
+                  "value": "nao_ha_regra_definida",
+                  "label": "Não há regra definida"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "realestate_performance",
+          "title": "Visitas e conversão",
+          "description": "Velocidade de resposta, comparecimento e tempo de fechamento.",
+          "questions": [
+            {
+              "id": "realestate_main_loss",
+              "label": "Onde mais se perdem oportunidades?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "demora_na_primeira_resposta",
+                  "label": "Demora na primeira resposta"
+                },
+                {
+                  "value": "lead_sem_perfil_ou_orcamento",
+                  "label": "Lead sem perfil ou orçamento"
+                },
+                {
+                  "value": "visitas_nao_realizadas",
+                  "label": "Visitas não realizadas"
+                },
+                {
+                  "value": "follow_up_inconsistente",
+                  "label": "Follow-up inconsistente"
+                },
+                {
+                  "value": "imovel_indisponivel_ou_desatualizado",
+                  "label": "Imóvel indisponível ou desatualizado"
+                },
+                {
+                  "value": "propostas_sem_avanco",
+                  "label": "Propostas sem avanço"
+                }
+              ]
+            },
+            {
+              "id": "realestate_qualification",
+              "label": "Como qualifica o interessado?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "perfil_faixa_de_preco_regiao_e_prazo",
+                  "label": "Perfil, faixa de preço, região e prazo"
+                },
+                {
+                  "value": "conversa_livre_com_corretor",
+                  "label": "Conversa livre com corretor"
+                },
+                {
+                  "value": "formulario_padronizado",
+                  "label": "Formulário padronizado"
+                },
+                {
+                  "value": "somente_durante_a_visita",
+                  "label": "Somente durante a visita"
+                },
+                {
+                  "value": "nao_ha_criterios_definidos",
+                  "label": "Não há critérios definidos"
+                }
+              ]
+            },
+            {
+              "id": "realestate_followup",
+              "label": "Como acompanha quem ainda não fechou?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "cadencia_de_crm",
+                  "label": "Cadência de CRM"
+                },
+                {
+                  "value": "lembretes_individuais",
+                  "label": "Lembretes individuais"
+                },
+                {
+                  "value": "campanhas_periodicas",
+                  "label": "Campanhas periódicas"
+                },
+                {
+                  "value": "contato_somente_quando_o_lead_retorna",
+                  "label": "Contato somente quando o lead retorna"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "realestate_evidence",
+          "title": "CRM, carteira e governança",
+          "description": "Dados para medir o funil e preservar a atribuição.",
+          "questions": [
+            {
+              "id": "realestate_systems",
+              "label": "Quais ferramentas são utilizadas?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "crm_imobiliario",
+                  "label": "CRM imobiliário"
+                },
+                {
+                  "value": "portais",
+                  "label": "Portais"
+                },
+                {
+                  "value": "site_e_analytics",
+                  "label": "Site e analytics"
+                },
+                {
+                  "value": "agenda",
+                  "label": "Agenda"
+                },
+                {
+                  "value": "assinatura_e_contratos",
+                  "label": "Assinatura e contratos"
+                },
+                {
+                  "value": "whatsapp_integrado",
+                  "label": "WhatsApp integrado"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                }
+              ]
+            },
+            {
+              "id": "realestate_metrics",
+              "label": "Quais indicadores são medidos?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "tempo_de_primeira_resposta",
+                  "label": "Tempo de primeira resposta"
+                },
+                {
+                  "value": "leads_qualificados",
+                  "label": "Leads qualificados"
+                },
+                {
+                  "value": "visitas_realizadas",
+                  "label": "Visitas realizadas"
+                },
+                {
+                  "value": "conversao_por_etapa",
+                  "label": "Conversão por etapa"
+                },
+                {
+                  "value": "tempo_ate_fechamento",
+                  "label": "Tempo até fechamento"
+                },
+                {
+                  "value": "origem_do_negocio",
+                  "label": "Origem do negócio"
+                }
+              ]
+            },
+            {
+              "id": "realestate_guardrail",
+              "label": "Qual controle deve ser respeitado?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "consentimento_e_privacidade",
+                  "label": "Consentimento e privacidade"
+                },
+                {
+                  "value": "deduplicacao_de_leads",
+                  "label": "Deduplicação de leads"
+                },
+                {
+                  "value": "atribuicao_correta_da_origem",
+                  "label": "Atribuição correta da origem"
+                },
+                {
+                  "value": "participacao_e_autonomia_dos_corretores",
+                  "label": "Participação e autonomia dos corretores"
+                },
+                {
+                  "value": "atualizacao_da_disponibilidade_dos_imoveis",
+                  "label": "Atualização da disponibilidade dos imóveis"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "construction": {
+      "intro": "Vamos investigar obras, orçamento, cronograma, suprimentos, medições, inspeções e responsabilidade técnica.",
+      "stages": [
+        {
+          "id": "construction_project",
+          "title": "Gestão de obras e projetos",
+          "description": "Como projetos, equipes, fornecedores e etapas são coordenados.",
+          "questions": [
+            {
+              "id": "construction_type",
+              "label": "Qual tipo de obra predomina?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "residencial",
+                  "label": "Residencial"
+                },
+                {
+                  "value": "comercial",
+                  "label": "Comercial"
+                },
+                {
+                  "value": "industrial",
+                  "label": "Industrial"
+                },
+                {
+                  "value": "infraestrutura",
+                  "label": "Infraestrutura"
+                },
+                {
+                  "value": "reformas_e_manutencao",
+                  "label": "Reformas e manutenção"
+                },
+                {
+                  "value": "projetos_de_engenharia",
+                  "label": "Projetos de engenharia"
+                }
+              ]
+            },
+            {
+              "id": "construction_control",
+              "label": "Como controla orçamento e cronograma?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "erp_ou_sistema_de_obras",
+                  "label": "ERP ou sistema de obras"
+                },
+                {
+                  "value": "planejamento_especializado",
+                  "label": "Planejamento especializado"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                },
+                {
+                  "value": "relatorios_periodicos",
+                  "label": "Relatórios periódicos"
+                },
+                {
+                  "value": "controle_descentralizado",
+                  "label": "Controle descentralizado"
+                }
+              ]
+            },
+            {
+              "id": "construction_field",
+              "label": "Como registra o avanço no campo?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "aplicativo_de_obra",
+                  "label": "Aplicativo de obra"
+                },
+                {
+                  "value": "diario_de_obra_digital",
+                  "label": "Diário de obra digital"
+                },
+                {
+                  "value": "fotos_e_mensagens",
+                  "label": "Fotos e mensagens"
+                },
+                {
+                  "value": "formularios_e_papel",
+                  "label": "Formulários e papel"
+                },
+                {
+                  "value": "medicao_por_visitas",
+                  "label": "Medição por visitas"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "construction_performance",
+          "title": "Prazo, custo e qualidade",
+          "description": "Desvios, retrabalho e não conformidades.",
+          "questions": [
+            {
+              "id": "construction_main_loss",
+              "label": "Qual problema gera maior impacto?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "desvio_de_orcamento",
+                  "label": "Desvio de orçamento"
+                },
+                {
+                  "value": "atraso_no_cronograma",
+                  "label": "Atraso no cronograma"
+                },
+                {
+                  "value": "retrabalho_e_falhas_de_execucao",
+                  "label": "Retrabalho e falhas de execução"
+                },
+                {
+                  "value": "falta_de_materiais",
+                  "label": "Falta de materiais"
+                },
+                {
+                  "value": "medicoes_e_aprovacoes_lentas",
+                  "label": "Medições e aprovações lentas"
+                },
+                {
+                  "value": "documentos_e_versoes_divergentes",
+                  "label": "Documentos e versões divergentes"
+                }
+              ]
+            },
+            {
+              "id": "construction_measurement",
+              "label": "Como são conferidas medições e serviços executados?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "medicao_digital_com_evidencias",
+                  "label": "Medição digital com evidências"
+                },
+                {
+                  "value": "conferencia_do_engenheiro",
+                  "label": "Conferência do engenheiro"
+                },
+                {
+                  "value": "planilhas_e_fotos",
+                  "label": "Planilhas e fotos"
+                },
+                {
+                  "value": "relatorios_do_fornecedor",
+                  "label": "Relatórios do fornecedor"
+                },
+                {
+                  "value": "processo_sem_padrao",
+                  "label": "Processo sem padrão"
+                }
+              ]
+            },
+            {
+              "id": "construction_supply",
+              "label": "Como acompanha materiais e fornecedores?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "planejamento_integrado_a_obra",
+                  "label": "Planejamento integrado à obra"
+                },
+                {
+                  "value": "pedidos_por_etapa",
+                  "label": "Pedidos por etapa"
+                },
+                {
+                  "value": "controle_manual_do_almoxarifado",
+                  "label": "Controle manual do almoxarifado"
+                },
+                {
+                  "value": "compra_conforme_necessidade",
+                  "label": "Compra conforme necessidade"
+                },
+                {
+                  "value": "sem_visibilidade_consolidada",
+                  "label": "Sem visibilidade consolidada"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "construction_evidence",
+          "title": "Documentação e segurança técnica",
+          "description": "Evidências de campo e limites de aprovação.",
+          "questions": [
+            {
+              "id": "construction_systems",
+              "label": "Quais fontes de informação existem?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "projetos_e_bim",
+                  "label": "Projetos e BIM"
+                },
+                {
+                  "value": "diario_de_obra",
+                  "label": "Diário de obra"
+                },
+                {
+                  "value": "cronograma",
+                  "label": "Cronograma"
+                },
+                {
+                  "value": "medicoes",
+                  "label": "Medições"
+                },
+                {
+                  "value": "inspecoes_e_qualidade",
+                  "label": "Inspeções e qualidade"
+                },
+                {
+                  "value": "compras_e_notas",
+                  "label": "Compras e notas"
+                },
+                {
+                  "value": "contratos_e_aditivos",
+                  "label": "Contratos e aditivos"
+                }
+              ]
+            },
+            {
+              "id": "construction_metrics",
+              "label": "Quais indicadores são acompanhados?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "desvio_orcamentario",
+                  "label": "Desvio orçamentário"
+                },
+                {
+                  "value": "aderencia_ao_cronograma",
+                  "label": "Aderência ao cronograma"
+                },
+                {
+                  "value": "retrabalho",
+                  "label": "Retrabalho"
+                },
+                {
+                  "value": "nao_conformidades",
+                  "label": "Não conformidades"
+                },
+                {
+                  "value": "custo_por_etapa",
+                  "label": "Custo por etapa"
+                },
+                {
+                  "value": "produtividade_de_equipes",
+                  "label": "Produtividade de equipes"
+                }
+              ]
+            },
+            {
+              "id": "construction_guardrail",
+              "label": "Quais controles são inegociáveis?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "responsabilidade_tecnica",
+                  "label": "Responsabilidade técnica"
+                },
+                {
+                  "value": "seguranca_do_trabalho",
+                  "label": "Segurança do trabalho"
+                },
+                {
+                  "value": "aprovacao_de_profissional_habilitado",
+                  "label": "Aprovação de profissional habilitado"
+                },
+                {
+                  "value": "integridade_e_historico_dos_registros",
+                  "label": "Integridade e histórico dos registros"
+                },
+                {
+                  "value": "conformidade_com_projetos_e_normas",
+                  "label": "Conformidade com projetos e normas"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "ecommerce": {
+      "intro": "Vamos investigar aquisição digital, catálogo, conversão, checkout, logística, devoluções e retenção.",
+      "stages": [
+        {
+          "id": "ecommerce_funnel",
+          "title": "Funil e canais digitais",
+          "description": "Como visitantes avançam de aquisição a pedido entregue.",
+          "questions": [
+            {
+              "id": "ecommerce_model",
+              "label": "Qual modelo de negócio predomina?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "loja_virtual_propria",
+                  "label": "Loja virtual própria"
+                },
+                {
+                  "value": "marketplace",
+                  "label": "Marketplace"
+                },
+                {
+                  "value": "assinatura_recorrencia",
+                  "label": "Assinatura/recorrência"
+                },
+                {
+                  "value": "social_commerce",
+                  "label": "Social commerce"
+                },
+                {
+                  "value": "venda_digital_b2b",
+                  "label": "Venda digital B2B"
+                },
+                {
+                  "value": "multicanal",
+                  "label": "Multicanal"
+                }
+              ]
+            },
+            {
+              "id": "ecommerce_platforms",
+              "label": "Onde vende atualmente?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "plataforma_propria",
+                  "label": "Plataforma própria"
+                },
+                {
+                  "value": "marketplaces",
+                  "label": "Marketplaces"
+                },
+                {
+                  "value": "redes_sociais",
+                  "label": "Redes sociais"
+                },
+                {
+                  "value": "whatsapp",
+                  "label": "WhatsApp"
+                },
+                {
+                  "value": "aplicativos",
+                  "label": "Aplicativos"
+                },
+                {
+                  "value": "portal_b2b",
+                  "label": "Portal B2B"
+                }
+              ]
+            },
+            {
+              "id": "ecommerce_checkout",
+              "label": "Como funciona o checkout?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "checkout_proprio_integrado",
+                  "label": "Checkout próprio integrado"
+                },
+                {
+                  "value": "checkout_da_plataforma",
+                  "label": "Checkout da plataforma"
+                },
+                {
+                  "value": "link_ou_conversa_assistida",
+                  "label": "Link ou conversa assistida"
+                },
+                {
+                  "value": "pagamento_externo",
+                  "label": "Pagamento externo"
+                },
+                {
+                  "value": "fluxo_varia_por_canal",
+                  "label": "Fluxo varia por canal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ecommerce_performance",
+          "title": "Conversão, margem e retenção",
+          "description": "Aquisição, abandono, pedidos, suporte e recompra.",
+          "questions": [
+            {
+              "id": "ecommerce_main_loss",
+              "label": "Qual gargalo mais afeta o resultado?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "cac_alto",
+                  "label": "CAC alto"
+                },
+                {
+                  "value": "abandono_de_carrinho",
+                  "label": "Abandono de carrinho"
+                },
+                {
+                  "value": "conversao_baixa",
+                  "label": "Conversão baixa"
+                },
+                {
+                  "value": "margem_reduzida_por_pedido",
+                  "label": "Margem reduzida por pedido"
+                },
+                {
+                  "value": "ruptura_ou_catalogo_desatualizado",
+                  "label": "Ruptura ou catálogo desatualizado"
+                },
+                {
+                  "value": "devolucoes_e_suporte_elevados",
+                  "label": "Devoluções e suporte elevados"
+                }
+              ]
+            },
+            {
+              "id": "ecommerce_marketing",
+              "label": "Como mede campanhas e aquisição?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "cac_e_roas_por_canal",
+                  "label": "CAC e ROAS por canal"
+                },
+                {
+                  "value": "analytics_e_atribuicao_parcial",
+                  "label": "Analytics e atribuição parcial"
+                },
+                {
+                  "value": "relatorios_das_plataformas",
+                  "label": "Relatórios das plataformas"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                },
+                {
+                  "value": "nao_mede_com_consistencia",
+                  "label": "Não mede com consistência"
+                }
+              ]
+            },
+            {
+              "id": "ecommerce_recovery",
+              "label": "Como recupera carrinhos e clientes inativos?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "automacao_segmentada",
+                  "label": "Automação segmentada"
+                },
+                {
+                  "value": "campanhas_manuais",
+                  "label": "Campanhas manuais"
+                },
+                {
+                  "value": "acoes_pontuais",
+                  "label": "Ações pontuais"
+                },
+                {
+                  "value": "nao_existe_recuperacao",
+                  "label": "Não existe recuperação"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ecommerce_evidence",
+          "title": "Dados digitais e controles",
+          "description": "Integrações, evidências e limites comerciais.",
+          "questions": [
+            {
+              "id": "ecommerce_systems",
+              "label": "Quais sistemas estão integrados?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "e_commerce",
+                  "label": "E-commerce"
+                },
+                {
+                  "value": "erp_e_estoque",
+                  "label": "ERP e estoque"
+                },
+                {
+                  "value": "crm",
+                  "label": "CRM"
+                },
+                {
+                  "value": "analytics",
+                  "label": "Analytics"
+                },
+                {
+                  "value": "gateway_de_pagamento",
+                  "label": "Gateway de pagamento"
+                },
+                {
+                  "value": "plataformas_de_anuncios",
+                  "label": "Plataformas de anúncios"
+                },
+                {
+                  "value": "logistica_e_atendimento",
+                  "label": "Logística e atendimento"
+                }
+              ]
+            },
+            {
+              "id": "ecommerce_metrics",
+              "label": "Quais indicadores acompanha?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "conversao",
+                  "label": "Conversão"
+                },
+                {
+                  "value": "cac",
+                  "label": "CAC"
+                },
+                {
+                  "value": "roas_incremental",
+                  "label": "ROAS incremental"
+                },
+                {
+                  "value": "margem_por_pedido",
+                  "label": "Margem por pedido"
+                },
+                {
+                  "value": "abandono",
+                  "label": "Abandono"
+                },
+                {
+                  "value": "devolucao",
+                  "label": "Devolução"
+                },
+                {
+                  "value": "recompra",
+                  "label": "Recompra"
+                }
+              ]
+            },
+            {
+              "id": "ecommerce_guardrail",
+              "label": "Qual regra precisa ser protegida?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "margem_minima",
+                  "label": "Margem mínima"
+                },
+                {
+                  "value": "consentimento_e_privacidade",
+                  "label": "Consentimento e privacidade"
+                },
+                {
+                  "value": "prevencao_a_fraude",
+                  "label": "Prevenção a fraude"
+                },
+                {
+                  "value": "atribuicao_multicanal",
+                  "label": "Atribuição multicanal"
+                },
+                {
+                  "value": "politica_de_troca_e_devolucao",
+                  "label": "Política de troca e devolução"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "finance": {
+      "intro": "Vamos mapear contas a receber, conciliação, cobrança, caixa, divergências e governança financeira.",
+      "stages": [
+        {
+          "id": "finance_process",
+          "title": "Processos financeiros",
+          "description": "Como títulos, pagamentos, recebimentos e conciliações circulam.",
+          "questions": [
+            {
+              "id": "finance_type",
+              "label": "Qual operação financeira predomina?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "financeiro_corporativo",
+                  "label": "Financeiro corporativo"
+                },
+                {
+                  "value": "credito_e_financiamento",
+                  "label": "Crédito e financiamento"
+                },
+                {
+                  "value": "cobranca_e_recuperacao",
+                  "label": "Cobrança e recuperação"
+                },
+                {
+                  "value": "bpo_financeiro",
+                  "label": "BPO financeiro"
+                },
+                {
+                  "value": "meios_de_pagamento",
+                  "label": "Meios de pagamento"
+                },
+                {
+                  "value": "cooperativa_ou_instituicao_financeira",
+                  "label": "Cooperativa ou instituição financeira"
+                }
+              ]
+            },
+            {
+              "id": "finance_sources",
+              "label": "De onde vêm os lançamentos?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "erp_financeiro",
+                  "label": "ERP financeiro"
+                },
+                {
+                  "value": "bancos_e_extratos",
+                  "label": "Bancos e extratos"
+                },
+                {
+                  "value": "adquirentes_e_gateways",
+                  "label": "Adquirentes e gateways"
+                },
+                {
+                  "value": "boletos_e_titulos",
+                  "label": "Boletos e títulos"
+                },
+                {
+                  "value": "planilhas",
+                  "label": "Planilhas"
+                },
+                {
+                  "value": "sistemas_de_credito",
+                  "label": "Sistemas de crédito"
+                }
+              ]
+            },
+            {
+              "id": "finance_reconciliation",
+              "label": "Como realiza conciliação?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "automatica_por_integracao",
+                  "label": "Automática por integração"
+                },
+                {
+                  "value": "importacao_e_conferencia",
+                  "label": "Importação e conferência"
+                },
+                {
+                  "value": "planilhas_e_regras_manuais",
+                  "label": "Planilhas e regras manuais"
+                },
+                {
+                  "value": "amostragem",
+                  "label": "Amostragem"
+                },
+                {
+                  "value": "nao_ha_rotina_padronizada",
+                  "label": "Não há rotina padronizada"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "finance_performance",
+          "title": "Caixa, inadimplência e eficiência",
+          "description": "Onde estão perdas, atrasos e custos operacionais.",
+          "questions": [
+            {
+              "id": "finance_main_loss",
+              "label": "Qual problema mais afeta o resultado?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "inadimplencia_e_baixa_recuperacao",
+                  "label": "Inadimplência e baixa recuperação"
+                },
+                {
+                  "value": "conciliacao_demorada",
+                  "label": "Conciliação demorada"
+                },
+                {
+                  "value": "divergencias_e_duplicidades",
+                  "label": "Divergências e duplicidades"
+                },
+                {
+                  "value": "previsao_de_caixa_imprecisa",
+                  "label": "Previsão de caixa imprecisa"
+                },
+                {
+                  "value": "custo_alto_de_cobranca",
+                  "label": "Custo alto de cobrança"
+                },
+                {
+                  "value": "visibilidade_financeira_insuficiente",
+                  "label": "Visibilidade financeira insuficiente"
+                }
+              ]
+            },
+            {
+              "id": "finance_collection",
+              "label": "Como prioriza cobranças?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "regras_por_atraso_e_perfil_de_risco",
+                  "label": "Regras por atraso e perfil de risco"
+                },
+                {
+                  "value": "filas_manuais",
+                  "label": "Filas manuais"
+                },
+                {
+                  "value": "campanhas_gerais",
+                  "label": "Campanhas gerais"
+                },
+                {
+                  "value": "decisao_individual",
+                  "label": "Decisão individual"
+                },
+                {
+                  "value": "nao_existe_priorizacao",
+                  "label": "Não existe priorização"
+                }
+              ]
+            },
+            {
+              "id": "finance_cashflow",
+              "label": "Como projeta o fluxo de caixa?",
+              "type": "single",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "previsao_continua_integrada",
+                  "label": "Previsão contínua integrada"
+                },
+                {
+                  "value": "projecao_mensal",
+                  "label": "Projeção mensal"
+                },
+                {
+                  "value": "planilha_manual",
+                  "label": "Planilha manual"
+                },
+                {
+                  "value": "somente_saldo_atual",
+                  "label": "Somente saldo atual"
+                },
+                {
+                  "value": "nao_ha_previsao",
+                  "label": "Não há previsão"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "finance_governance",
+          "title": "Evidências e controles financeiros",
+          "description": "Dados necessários e decisões que exigem supervisão.",
+          "questions": [
+            {
+              "id": "finance_systems",
+              "label": "Quais fontes podem ser conciliadas?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "erp",
+                  "label": "ERP"
+                },
+                {
+                  "value": "extratos_bancarios",
+                  "label": "Extratos bancários"
+                },
+                {
+                  "value": "titulos_e_boletos",
+                  "label": "Títulos e boletos"
+                },
+                {
+                  "value": "recebimentos",
+                  "label": "Recebimentos"
+                },
+                {
+                  "value": "eventos_de_cobranca",
+                  "label": "Eventos de cobrança"
+                },
+                {
+                  "value": "adquirentes_e_gateways",
+                  "label": "Adquirentes e gateways"
+                }
+              ]
+            },
+            {
+              "id": "finance_metrics",
+              "label": "Quais indicadores são acompanhados?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "aging",
+                  "label": "Aging"
+                },
+                {
+                  "value": "recuperacao_liquida_atribuivel",
+                  "label": "Recuperação líquida atribuível"
+                },
+                {
+                  "value": "tempo_de_conciliacao",
+                  "label": "Tempo de conciliação"
+                },
+                {
+                  "value": "taxa_de_divergencia",
+                  "label": "Taxa de divergência"
+                },
+                {
+                  "value": "custo_por_recuperacao",
+                  "label": "Custo por recuperação"
+                },
+                {
+                  "value": "previsibilidade_de_caixa",
+                  "label": "Previsibilidade de caixa"
+                }
+              ]
+            },
+            {
+              "id": "finance_guardrail",
+              "label": "Quais controles são obrigatórios?",
+              "type": "multi",
+              "required": false,
+              "allowUnknown": true,
+              "options": [
+                {
+                  "value": "privacidade_e_controle_de_acesso",
+                  "label": "Privacidade e controle de acesso"
+                },
+                {
+                  "value": "nao_discriminacao",
+                  "label": "Não discriminação"
+                },
+                {
+                  "value": "regras_legais_de_credito_e_cobranca",
+                  "label": "Regras legais de crédito e cobrança"
+                },
+                {
+                  "value": "revisao_humana_para_decisoes_de_alto_impacto",
+                  "label": "Revisão humana para decisões de alto impacto"
+                },
+                {
+                  "value": "trilha_de_auditoria",
+                  "label": "Trilha de auditoria"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

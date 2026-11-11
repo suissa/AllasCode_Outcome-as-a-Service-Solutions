@@ -10,6 +10,7 @@
 export const SOURCE_FILES = {
   experience: "experience.pt-BR.json",
   "sector-playbooks": "sector-playbooks.pt-BR.json",
+  "sector-discovery": "sector-discovery.pt-BR.json",
   "agent-team": "agent-team.pt-BR.json",
   "mission-steps": "mission-steps.pt-BR.json",
   discovery: "discovery.pt-BR.json",
