@@ -144,11 +144,16 @@ export async function mount(page) {
   }
 
   let pendingTurn = null;
+  let isResponding = false;
 
   async function requestAssistantTurn(nextStep) {
     if (!pendingTurn) return false;
     const turn = pendingTurn;
     pendingTurn = null;
+    isResponding = true;
+    input.disabled = true;
+    form.querySelector("button[type=submit]")?.setAttribute("disabled", "");
+    controls.querySelectorAll("button").forEach(button => { button.disabled = true; });
     const mission = OQ.getMission();
     try {
       const response = await fetch("/api/chat/turn", {
@@ -175,6 +180,10 @@ export async function mount(page) {
       if (nextStep) add("assistant", nextStep.prompt);
       else add("assistant", "Recebi suas informações. Confira o resumo da missão e ajuste o que for necessário antes de confirmar.");
       return false;
+    } finally {
+      isResponding = false;
+      input.disabled = false;
+      form.querySelector("button[type=submit]")?.removeAttribute("disabled");
     }
   }
 
@@ -198,7 +207,7 @@ export async function mount(page) {
   }
 
   function submitAnswer(value, label) {
-    if (!String(value || "").trim()) return;
+    if (isResponding || !String(value || "").trim()) return;
     const previousStep = OQ.currentMissionStep();
     add("user", label || value);
     OQ.advanceMission(String(value));
@@ -334,6 +343,7 @@ export async function mount(page) {
 
   form.addEventListener("submit", event => {
     event.preventDefault();
+    if (isResponding) return;
     const value = input.value.trim();
     if (!value) return;
     const mission = OQ.getMission();
