@@ -904,3 +904,36 @@
 .hero-visual-foot{margin-top:22px;padding-top:16px;border-top:1px solid var(--oq-line);font-size:8px;letter-spacing:.08em}
 @media(max-width:900px){.hero--outcome .hero-grid{grid-template-columns:minmax(0,1fr);gap:34px}.hero--outcome .hero-copy{max-width:72ch}.hero-visual{max-width:640px;width:100%;margin-inline:auto}.hero-brand-lockup{min-height:160px}}
 @media(max-width:520px){.hero--outcome{padding-top:48px}.hero--outcome .hero-title{font-size:clamp(36px,10vw,48px)}.hero--outcome .hero-text{font-size:15.5px}.hero-visual-frame{padding:18px}.hero-visual-top{font-size:8px}.hero-brand-lockup{min-height:132px;margin-top:16px;padding:24px 14px}.hero-brand-lockup img{max-height:70px}.hero-flow{gap:7px}.hero-flow span{min-height:44px;padding:9px;font-size:11px}.hero-visual-foot{font-size:7px}}
+
+
+/* SaaS → OaaS interactive overview */
+.oaas-slider{position:relative;max-width:var(--oq-max);margin:0 auto;padding:clamp(28px,4vw,52px);border:1px solid var(--oq-line);border-radius:22px;background:var(--oq-surface);overflow:hidden}
+.oaas-slider-head{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.oaas-slider-kicker,.oaas-slider-eyebrow{font-family:var(--oq-mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--oq-accent)}
+.oaas-slider-counter{margin-top:5px;color:var(--oq-muted);font-family:var(--oq-mono);font-size:12px}
+.oaas-slider-progress{width:min(34%,220px);height:3px;background:var(--oq-surface-3);border-radius:99px;overflow:hidden}
+.oaas-slider-progress span{display:block;width:6.67%;height:100%;background:var(--oq-accent);transition:width .25s ease}
+.oaas-slider-stage{min-height:340px;display:flex;align-items:center;padding-block:clamp(30px,5vw,58px)}
+.oaas-slider-slide{width:100%;animation:oaas-slider-in .28s ease both}
+.oaas-slider-slide h2{max-width:19ch;margin-top:12px;font-size:clamp(28px,4vw,48px);line-height:1.08;letter-spacing:-.04em}
+.oaas-slider-body{max-width:68ch;margin-top:20px!important;color:var(--oq-ink-2);font-size:clamp(16px,1.7vw,19px);line-height:1.7}
+.oaas-slider-takeaway{max-width:76ch;margin-top:26px!important;padding:16px 18px;border-left:2px solid var(--oq-accent);background:var(--oq-accent-soft);color:var(--oq-ink);font-size:15px;line-height:1.65}
+.oaas-slider-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:24px}
+.oaas-slider-items article{display:flex;gap:12px;padding:15px;border:1px solid var(--oq-line);border-radius:12px;background:var(--oq-ground-2)}
+.oaas-slider-items small{flex:0 0 auto;color:var(--oq-accent);font:12px var(--oq-mono)}
+.oaas-slider-items h3{font-size:15px;line-height:1.3}
+.oaas-slider-items p{margin-top:6px;color:var(--oq-ink-2);font-size:13.5px;line-height:1.55}
+.oaas-slider-table{display:grid;gap:0;margin-top:24px;border:1px solid var(--oq-line);border-radius:12px;overflow:hidden}
+.oaas-slider-table-row{display:grid;grid-template-columns:.7fr 1fr 1fr;gap:12px;padding:12px 14px;border-top:1px solid var(--oq-line);font-size:13px;line-height:1.45}
+.oaas-slider-table-row:first-child{border-top:0}
+.oaas-slider-table-row b{color:var(--oq-muted)}
+.oaas-slider-table-row strong{color:var(--oq-accent);font-weight:600}
+.oaas-slider-controls{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:18px;border-top:1px solid var(--oq-line)}
+.oaas-slider-controls>button{display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--oq-line-strong);border-radius:50%;background:var(--oq-ground-2);font-size:20px;cursor:pointer}
+.oaas-slider-controls>button:disabled{opacity:.35;cursor:not-allowed}
+.oaas-slider-dots{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+.oaas-slider-dots button{width:7px;height:7px;padding:0;border:0;border-radius:99px;background:var(--oq-line-strong);cursor:pointer}
+.oaas-slider-dots button[aria-current=true]{width:22px;background:var(--oq-accent)}
+@keyframes oaas-slider-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:700px){.oaas-slider{padding:22px 18px;border-radius:16px}.oaas-slider-stage{min-height:380px;padding-block:30px}.oaas-slider-items{grid-template-columns:1fr}.oaas-slider-table-row{grid-template-columns:.65fr 1fr 1fr;gap:7px;padding:10px 8px;font-size:11px}.oaas-slider-controls{gap:8px}.oaas-slider-dots{gap:5px}.oaas-slider-dots button{width:5px;height:5px}}
+@media(prefers-reduced-motion:reduce){.oaas-slider-slide,.oaas-slider-progress span{animation:none;transition:none}}
