@@ -4,6 +4,8 @@ Esta pasta reúne as definições de produto, operação, engenharia, contratos 
 
 ## Mapa de leitura
 
+| [OaaS.Quest Wiki — Arquitetura](./Wiki-Architecture.md) | Portal navegável com o conteúdo integral da arquitetura, trilhas por perfil e links para ADRs e especificações |
+
 | [Architecture Reference v1.5](./Architecture-Reference-v1.5.md) | Referência integrada: ciclo de outcomes, evidências, previsão adaptativa, arquitetura policromática, SBTA, antifragilidade sintropicamente governada, segurança e autonomia |
 
 | Documento | Para que serve |
