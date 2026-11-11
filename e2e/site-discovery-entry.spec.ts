@@ -1,15 +1,16 @@
 import { test, expect } from "@playwright/test";
 
 test("site result CTAs open the full discovery conversation in the branded Chat", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/site");
 
   await expect(page.locator("#nav-cta")).toHaveText("Quero alcançar um resultado");
   await expect(page.locator("#nav-cta")).toHaveAttribute("href", "/chat#descoberta");
-  await expect(page.locator(".hero-actions a.cta").first()).toHaveAttribute("href", "/descoberta");
+  await expect(page.locator(".hero-actions a.cta").first()).toHaveAttribute("href", "/chat#descoberta");
   await expect(page.locator(".hero-brand-lockup img")).toHaveAttribute("src", "/logo-dark.png");
 
   await page.locator(".hero-actions a.cta").first().click();
-  await expect(page).toHaveURL(/\/descoberta$/);
+  await expect(page).toHaveURL(/\/chat#descoberta$/);
   await expect(page.locator("#chat")).toBeVisible();
   await expect(page.getByText("Nome da empresa", { exact: true })).toBeVisible();
 });
