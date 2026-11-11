@@ -10,10 +10,10 @@
  * habilita hot reload: qualquer mudanca em JSON, template, CSS ou runtime dispara
  * a atualizacao da pagina sem reiniciar o servidor.
  */
-import { createPageLoader } from "./page-loader.js";
-import { applyStoredTheme, buildThemeSwitcher } from "./runtime/theme.js";
-import { createRouter } from "./runtime/router.js";
-import { initWordReveal } from "./runtime/word-reveal.js";
+import { createPageLoader } from "./page-loader.tsx";
+import { applyStoredTheme, buildThemeSwitcher } from "./runtime/theme.tsx";
+import { createRouter } from "./runtime/router.tsx";
+import { initWordReveal } from "./runtime/word-reveal.tsx";
 
 const pages = import.meta.glob("/pages/pt-BR/*.json", { eager: true, import: "default" });
 const layouts = import.meta.glob("/layouts/*.json", { eager: true, import: "default" });
@@ -21,9 +21,9 @@ const templates = import.meta.glob("/layouts/*.html", { query: "?raw", import: "
 const content = import.meta.glob("/content/*.json", { eager: true, import: "default" });
 
 const scriptModules = {
-  ...import.meta.glob("/runtime/*.js"),
-  "/app.js": () => import("/app.js"),
-  "/content.js": () => import("/content.js")
+  ...import.meta.glob("/runtime/*.tsx"),
+  "/app.tsx": () => import("/app.tsx"),
+  "/content.tsx": () => import("/content.tsx")
 };
 
 const loadPage = createPageLoader({ pages, layouts, templates, content });

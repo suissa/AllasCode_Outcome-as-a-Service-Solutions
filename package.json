@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:api": "node --env-file=.env server/api.js",
+    "dev": "vite --force",
+    "dev:api": "tsx server/api.tsx",
     "build": "vite build",
     "preview": "vite preview",
     "test": "tsx --test test/*.test.ts test/**/*.test.ts",
