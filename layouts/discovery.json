@@ -17,7 +17,7 @@
     "export"
   ],
   "scripts": [
-    "runtime/proposal-inference.js",
-    "runtime/discovery.js"
+    "runtime/proposal-inference.tsx",
+    "runtime/discovery.tsx"
   ]
 }
