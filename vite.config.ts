@@ -19,6 +19,7 @@ export const routes: readonly OaasRoute[] = [
   { route: "/", entry: "index.html", pageId: "home" },
   { route: "/chat", entry: "chat.html", pageId: "chat" },
   { route: "/site", entry: "site.html", pageId: "site" },
+  { route: "/solucoes", entry: "solucoes.html", pageId: "solucoes" },
   { route: "/entrar", entry: "entrar.html", pageId: "entry-selector" },
   { route: "/descoberta", entry: "descoberta/index.html", pageId: "discovery" },
   { route: "/exemplos", entry: "exemplos.html", pageId: "exemplos" }
