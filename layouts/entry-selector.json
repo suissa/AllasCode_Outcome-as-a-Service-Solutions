@@ -1,0 +1,9 @@
+{
+  "id": "entry-selector",
+  "name": "Seletor de entrada",
+  "template": "layouts/entry-selector.html",
+  "stylesheet": "layouts/entry-selector.css",
+  "stylesheets": ["layouts/entry-selector.css"],
+  "bodyClass": "entry-selector-page",
+  "scripts": []
+}
