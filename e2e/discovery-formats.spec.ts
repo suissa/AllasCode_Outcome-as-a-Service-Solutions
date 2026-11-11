@@ -77,7 +77,10 @@ test("Site CTA opens the complete Discovery sequence inside Chat", async ({ page
   await expect(page).toHaveURL(/\/chat#descoberta$/);
   await expect(page.getByText("Nome da empresa", { exact: true })).toBeVisible();
 
-  const config = await page.evaluate(async () => (await fetch("/content/discovery.pt-BR.json")).json());
+  const config = await page.evaluate(async () => {
+    await (window as typeof window & { OaaSPageReady?: Promise<unknown> }).OaaSPageReady;
+    return (window as typeof window & { OaaSPage?: { sources: { discovery: any } } }).OaaSPage?.sources.discovery;
+  });
   const questions = config.stages.flatMap((stage: any) => stage.questions);
   for (const question of questions) {
     await expect(page.getByText(question.label, { exact: true })).toBeVisible();
