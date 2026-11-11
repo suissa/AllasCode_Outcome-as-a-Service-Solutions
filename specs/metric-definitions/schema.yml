@@ -1,0 +1,24 @@
+version: "1.0"
+behavior: metric-definitions
+input:
+  id: { type: identifier, required: true }
+  name: { type: text, required: true, trim: true, minLength: 1 }
+  unit: { type: text, required: true, trim: true, minLength: 1 }
+  version: { type: integer, required: false, min: 1 }
+  aggregation: { type: enum, required: true, values: [sum, avg, min, max, count, last] }
+  direction: { type: enum, required: true, values: [increase, decrease, target] }
+  freshnessMs: { type: integer, required: true, min: 1 }
+  requiredSources: { type: array, required: true, itemType: identifier, minItems: 1, unique: true }
+output:
+  type: MetricDefinition
+  immutable: true
+  versioned: true
+errors:
+  - METRIC_IDENTITY_REQUIRED
+  - METRIC_VERSION_INVALID
+  - METRIC_FRESHNESS_INVALID
+  - METRIC_AGGREGATION_INVALID
+  - METRIC_DIRECTION_INVALID
+  - METRIC_SOURCES_INVALID
+  - METRIC_ALREADY_REGISTERED
+  - METRIC_NOT_FOUND

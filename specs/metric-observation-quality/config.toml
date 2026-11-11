@@ -1,0 +1,9 @@
+[observation]
+confidence_min = 0.0
+confidence_max = 1.0
+reject_future_timestamps = true
+reject_invalid_timestamps = true
+enforce_metric_unit = true
+enforce_declared_sources = true
+require_all_sources_for_complete = true
+quality_is_fail_closed = true

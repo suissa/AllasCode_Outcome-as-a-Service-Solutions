@@ -1,0 +1,24 @@
+version: "1.0"
+behavior: metric-observation-quality
+input:
+  metricId: { type: identifier, required: true }
+  value: { type: number, required: true, finite: true }
+  unit: { type: text, required: true }
+  observedAt: { type: timestamp, required: true, notFuture: true }
+  sourceId: { type: identifier, required: true, mustBeDeclaredSource: true }
+  confidence: { type: number, required: true, min: 0, max: 1, finite: true }
+output:
+  type: DataQuality
+  fields: [valid, fresh, complete, confidence, issues]
+errors:
+  - metricId:MISMATCH
+  - unit:MISMATCH
+  - value:NOT_FINITE
+  - confidence:OUT_OF_RANGE
+  - observedAt:INVALID
+  - observedAt:FUTURE
+  - observedAt:STALE
+  - sourceId:REQUIRED
+  - sourceId:NOT_ALLOWED
+  - SOURCE_MISSING
+  - NO_OBSERVATIONS
