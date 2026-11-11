@@ -250,7 +250,8 @@ test("the chat keeps its own navigation and fills the section list separately", 
 test("every published route is reachable from the interface", async () => {
   const chooser = await readFile(join(root, "layouts/chooser.html"), "utf8");
   const site = await readFile(join(root, "layouts/site.html"), "utf8");
-  assert.ok(chooser.includes('href="/exemplos"'), "the home must link to /exemplos");
+  assert.ok(chooser.includes('href="/chat"'), "the home must link to /chat");
+  assert.ok(chooser.includes('href="/site"'), "the home must link to /site");
   assert.ok(site.includes('href="/exemplos"'), "the site must link to /exemplos");
   const chat = await readFile(join(root, "layouts/chat.html"), "utf8");
   assert.ok(chat.includes('href="/site"'), "the chat must link to /site");
