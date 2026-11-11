@@ -6,7 +6,7 @@
  * Uma classe semântica por tipo de elemento — as cores vêm dos tokens de tema.
  */
 
-import { renderOaasSlider, mountOaasSliders } from "./oaas-overview-slider.js";
+import { renderOaasSlider, mountOaasSliders } from "./oaas-overview-slider.tsx";
 
 const esc = value =>
   String(value == null ? "" : value).replace(/[&<>"']/g, c => ({
