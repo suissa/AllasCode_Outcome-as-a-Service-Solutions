@@ -332,19 +332,25 @@ window.OQReady = (async function () {
 
   function inferGoal(text) {
     const v = String(text || "").toLowerCase();
-    if (/venda|receita|fatur|comercial/.test(v)) return "sales";
-    if (/lucro|margem|rentab/.test(v)) return "profit";
+    if (v === "sales" || /venda|receita|fatur|comercial/.test(v)) return "sales";
+    if (v === "costs" || /lucro|margem|rentab/.test(v)) return v === "costs" ? "cost" : "profit";
     if (/custo|despesa|gasto/.test(v)) return "cost";
-    if (/produtiv|tempo|retrabalho|processo/.test(v)) return "productivity";
-    if (/atend|suporte|resposta/.test(v)) return "service";
+    if (v === "productivity" || v === "organization" || /produtiv|tempo|retrabalho|processo/.test(v)) return "productivity";
+    if (v === "service" || /atend|suporte|resposta/.test(v)) return "service";
     if (/autom/.test(v)) return "automation";
-    if (/expan|crescer|crescimento|filial/.test(v)) return "expansion";
+    if (v === "growth" || /expan|crescer|crescimento|filial/.test(v)) return "expansion";
     if (/reten|recorr|fidel/.test(v)) return "retention";
     return "other";
   }
 
   function inferBottleneck(text) {
     const v = String(text || "").toLowerCase();
+    if (v === "leads" || v === "conversion") return "sales";
+    if (v === "manual") return "process";
+    if (v === "visibility") return "information";
+    if (v === "capacity") return "overload";
+    if (v === "cost") return "cost";
+    if (v === "unknown") return "other";
     if (/atend|cliente|resposta/.test(v)) return "service";
     if (/sobrecarg|volume|equipe|pessoa/.test(v)) return "overload";
     if (/process|manual|retrabalho/.test(v)) return "process";
@@ -355,6 +361,8 @@ window.OQReady = (async function () {
 
   function inferMetric(text) {
     const value = String(text || "").toLowerCase();
+    const direct = { revenue: "revenue", sales: "sales_count", conversion: "conversion", cost: "cost", time: "productivity", satisfaction: "satisfaction" };
+    if (direct[value]) return direct[value];
     const candidates = [
       ["revenue", /fatur|receita/],
       ["profit", /lucro|margem|rentab/],
@@ -394,20 +402,25 @@ window.OQReady = (async function () {
       }
     };
     const get = id => m.answers[id]?.value;
+    const getLabel = id => {
+      const value = get(id);
+      const step = STEPS.find(item => item.id === id);
+      return step?.options?.find(option => option.value === value)?.label || value;
+    };
 
     const segment = get("segment");
-    const validSegments = ["retail", "services", "industry", "technology", "food", "health", "other"];
+    const validSegments = ["retail", "services", "industry", "technology", "food", "health", "logistics", "education", "other"];
     put("segment", validSegments.includes(segment) ? segment : "other");
     put("team_size", get("teamSize") === "unknown" ? null : get("teamSize"));
     put("main_goal", inferGoal(get("desiredOutcome")));
     put("goal_target", get("desiredOutcome"));
-    put("success_definition", get("successMetric"));
+    put("success_definition", getLabel("successMetric"));
     put("goal_deadline", get("deadline"));
     put("operational_bottleneck", inferBottleneck(get("challenge")));
-    put("conversion_notes", get("challenge"));
+    put("conversion_notes", getLabel("challenge"));
     put("primary_kpi", inferMetric(get("successMetric")));
-    put("target_value", get("successMetric"));
-    put("sales_process", get("process"));
+    put("target_value", getLabel("successMetric"));
+    put("sales_process", getLabel("process"));
 
     const handoff = {
       ...existing,
