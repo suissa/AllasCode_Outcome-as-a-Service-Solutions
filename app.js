@@ -1,9 +1,17 @@
 /**
  * Estado local do OaaS.Quest.
  *
- * O estado vive em localStorage: modo aberto, eventos, conversas por
- * experiencia e a missao em andamento. As chaves legadas (guilda, classico)
- * sao migradas na leitura, para que o historico anterior nao se perca.
+ * O estado tem duas sedes. O IndexedDB e a sede duravel: sobrevive ao fim do
+ * navegador, ao fechamento da aba e a uma limpeza parcial do localStorage.
+ * O localStorage continua como espelho de leitura rapida e como caminho
+ * unico quando o IndexedDB nao existe. Na subida, vence o exemplar mais
+ * recente dos dois; na descida, os dois recebem a mesma versao.
+ *
+ * O que mora aqui: modo aberto, eventos, conversas por experiencia (cada
+ * mensagem carrega as opcoes e acoes que pertencem a ela), a missao em
+ * andamento e as preferencias de interface. As chaves legadas (guilda,
+ * classico) sao migradas na leitura, para que o historico anterior nao se
+ * perca.
  */
 
 async function loadMissionSteps() {
@@ -20,36 +28,165 @@ window.OQReady = (async function () {
   const KEY = "oaas.quest.v1";
   const DISCOVERY_KEY = "goaltropic.discovery.v1";
 
-  const empty = () => ({ version: 2, mode: null, events: [], conversations: { chat: [], site: [] }, mission: null });
+  const DB_NAME = "oaas-quest";
+  const DB_VERSION = 1;
+  const DB_STORE = "state";
+  const DB_KEY = "v1";
+
+  const emptyPrefs = () => ({ contextOpen: true, sidebarOpen: true });
+
+  const empty = () => ({
+    version: 2,
+    mode: null,
+    events: [],
+    conversations: { chat: [], site: [] },
+    mission: null,
+    prefs: emptyPrefs(),
+    updatedAt: null
+  });
+
+  /** Normaliza qualquer exemplar legado para o formato atual. */
+  function normalize(raw) {
+    if (!raw || typeof raw !== "object") return empty();
+    const conversations = raw.conversations || {};
+    return {
+      ...empty(),
+      ...raw,
+      version: 2,
+      events: Array.isArray(raw.events) ? raw.events : [],
+      conversations: {
+        chat: conversations.chat || conversations.guilda || [],
+        site: conversations.site || conversations.classico || []
+      },
+      prefs: { ...emptyPrefs(), ...(raw.prefs || {}) }
+    };
+  }
 
   function read() {
     try {
-      const raw = JSON.parse(localStorage.getItem(KEY) || "null");
-      if (!raw || typeof raw !== "object") return empty();
-      const conversations = raw.conversations || {};
-      return {
-        ...empty(),
-        ...raw,
-        version: 2,
-        events: Array.isArray(raw.events) ? raw.events : [],
-        conversations: {
-          chat: conversations.chat || conversations.guilda || [],
-          site: conversations.site || conversations.classico || []
-        }
-      };
+      return normalize(JSON.parse(localStorage.getItem(KEY) || "null"));
     } catch {
       return empty();
     }
   }
 
+  function stampOf(value) {
+    const parsed = Date.parse(value || "");
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }
+
+  /* ------------------------------------------------------------ sede duravel */
+
+  let dbPromise = null;
+
+  function hasIndexedDb() {
+    return typeof indexedDB !== "undefined" && indexedDB !== null;
+  }
+
+  function openDatabase() {
+    if (dbPromise) return dbPromise;
+    if (!hasIndexedDb()) return Promise.reject(new Error("IDB_UNAVAILABLE"));
+    dbPromise = new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, DB_VERSION);
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains(DB_STORE)) db.createObjectStore(DB_STORE);
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error || new Error("IDB_OPEN_FAILED"));
+    }).catch(error => {
+      dbPromise = null;
+      throw error;
+    });
+    return dbPromise;
+  }
+
+  /** Le o ultimo estado gravado no IndexedDB, ou null se nao houver. */
+  async function readDurable() {
+    if (!hasIndexedDb()) return null;
+    try {
+      const db = await openDatabase();
+      return await new Promise((resolve, reject) => {
+        const request = db.transaction(DB_STORE, "readonly").objectStore(DB_STORE).get(DB_KEY);
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = () => reject(request.error);
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  /** Grava o estado no IndexedDB. Nunca lanca: a falha nao pode travar a pagina. */
+  async function writeDurable(snapshot) {
+    if (!hasIndexedDb()) return false;
+    try {
+      const db = await openDatabase();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_STORE, "readwrite");
+        tx.objectStore(DB_STORE).put(snapshot, DB_KEY);
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+      return true;
+    } catch (error) {
+      console.warn("Não foi possível salvar o histórico durável", error);
+      return false;
+    }
+  }
+
   let state = read();
 
+  /* Na subida, o exemplar mais recente vence: o IndexedDB guarda o que a
+     ultima sessao gravou, mesmo quando o localStorage foi limpo no meio. */
+  const durable = await readDurable();
+  if (durable && durable.state) {
+    const candidate = normalize(durable.state);
+    if (stampOf(candidate.updatedAt) > stampOf(state.updatedAt)) {
+      state = candidate;
+      try {
+        localStorage.setItem(KEY, JSON.stringify(state));
+      } catch (error) {
+        console.warn("Não foi possível espelhar o histórico local", error);
+      }
+    }
+  }
+
+  let durableTimer = null;
+
+  function scheduleDurable() {
+    if (typeof setTimeout !== "function") {
+      writeDurable({ updatedAt: state.updatedAt, state });
+      return;
+    }
+    if (durableTimer) return;
+    durableTimer = setTimeout(() => {
+      durableTimer = null;
+      writeDurable({ updatedAt: state.updatedAt, state });
+    }, 120);
+  }
+
+  function flushDurable() {
+    if (durableTimer && typeof clearTimeout === "function") {
+      clearTimeout(durableTimer);
+      durableTimer = null;
+    }
+    return writeDurable({ updatedAt: state.updatedAt, state });
+  }
+
+  if (typeof window.addEventListener === "function") {
+    window.addEventListener("pagehide", flushDurable);
+    window.addEventListener("beforeunload", flushDurable);
+  }
+
   function save() {
+    state.updatedAt = new Date().toISOString();
     try {
       localStorage.setItem(KEY, JSON.stringify(state));
     } catch (e) {
       console.warn("Não foi possível salvar o histórico local", e);
     }
+    scheduleDurable();
   }
 
   function event(type, detail = {}) {
@@ -63,9 +200,18 @@ window.OQReady = (async function () {
     event(type, { mode });
   }
 
-  function logMessage(mode, role, text) {
+  /**
+   * Registra uma mensagem da conversa. As opcoes e acoes que pertencem a
+   * mensagem viajam junto: e o que faz os botoes voltarem apos um recarregamento.
+   */
+  function logMessage(mode, role, text, extra) {
     state.conversations[mode] ??= [];
-    state.conversations[mode].push({ role, text, at: new Date().toISOString() });
+    const record = { role, text, at: new Date().toISOString() };
+    const choices = Array.isArray(extra && extra.choices) ? extra.choices : [];
+    const actions = Array.isArray(extra && extra.actions) ? extra.actions : [];
+    if (choices.length) record.choices = choices;
+    if (actions.length) record.actions = actions;
+    state.conversations[mode].push(record);
     if (state.conversations[mode].length > 200) state.conversations[mode] = state.conversations[mode].slice(-200);
     event("message-recorded", { mode, role, length: String(text).length });
   }
@@ -76,6 +222,29 @@ window.OQReady = (async function () {
 
   function history(mode) {
     return state.conversations[mode] || [];
+  }
+
+  /** Esvazia a conversa de uma experiencia, sem tocar na missao. */
+  function clearConversation(mode) {
+    state.conversations[mode] = [];
+    event("conversation-cleared", { mode });
+  }
+
+  /** Descarta a missao em andamento. */
+  function clearMission() {
+    state.mission = null;
+    event("mission-cleared", {});
+  }
+
+  function getPrefs() {
+    return { ...emptyPrefs(), ...(state.prefs || {}) };
+  }
+
+  /** Guarda uma preferencia de interface (painel aberto, coluna recolhida). */
+  function setPrefs(patch) {
+    state.prefs = { ...getPrefs(), ...(patch || {}) };
+    event("prefs-updated", { prefs: state.prefs });
+    return getPrefs();
   }
 
   function getMission() {
@@ -222,17 +391,23 @@ window.OQReady = (async function () {
       missionSummary: { ...m }
     };
     localStorage.setItem(DISCOVERY_KEY, JSON.stringify(handoff));
+    // A copia duravel permite retomar a descoberta mesmo sem localStorage.
+    state.handoff = handoff;
     event("mission-handed-to-discovery", { missionId: m.id, prefilled: Object.keys(answers).length });
     return { key: DISCOVERY_KEY, prefilled: Object.keys(answers).length };
   }
 
   window.OQ = {
     state,
-    getState: () => read(),
+    getState: () => normalize(state),
     setMode,
     logMessage,
     logInteraction,
     history,
+    clearConversation,
+    clearMission,
+    getPrefs,
+    setPrefs,
     getMission,
     startMission,
     currentMissionStep,
@@ -240,6 +415,7 @@ window.OQReady = (async function () {
     reviseMission,
     confirmMission,
     prepareDiscovery,
+    flushDurable,
     missionSteps: () => STEPS.map(s => ({ ...s, options: s.options?.map(o => ({ ...o })) }))
   };
   return window.OQ;

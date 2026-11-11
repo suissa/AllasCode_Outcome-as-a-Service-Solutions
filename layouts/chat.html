@@ -1,11 +1,52 @@
-<div class="chat-shell">
+<div class="chat-app" data-context="open" data-sidebar="open">
 
-  <aside class="chat-sidebar">
-    <a class="chat-logo" href="/" aria-label="OaaS.Quest — início">
-      <img src="/logo-dark.png" alt="OaaS.Quest" width="900" height="200">
-    </a>
+  <header class="chat-topbar">
+    <div class="chat-topbar-brand">
+      <a class="chat-brand" href="/" aria-label="OaaS.Quest — início">
+        <img class="chat-brand-logo" src="/logo-dark.png" alt="OaaS.Quest" width="900" height="200">
+      </a>
+      <p class="chat-brand-meta">
+        <span class="chat-brand-name">OaaS.Quest</span>
+        <span class="chat-brand-role">Outcome workspace</span>
+      </p>
+    </div>
+
+    <p class="chat-presence">
+      <span class="chat-presence-dot" aria-hidden="true"></span>
+      <span id="chat-status-text">Missão aberta neste navegador</span>
+    </p>
+
+    <div class="chat-topbar-actions">
+      <a class="chat-topbar-link" href="#perguntas">Ajuda</a>
+      <button class="chat-avatar-button" type="button" data-action="toggle-context" aria-pressed="true" aria-controls="chat-context">
+        <span class="chat-avatar-button-label">Contexto do resultado</span>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8.5" r="3.5"></circle>
+          <path d="M5 19.5a7 7 0 0 1 14 0"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <aside class="chat-sidebar" id="chat-sidebar">
+    <div class="chat-sidebar-head">
+      <button class="chat-new-request" type="button" data-action="new-request">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 5v14"></path>
+          <path d="M5 12h14"></path>
+        </svg>
+        Nova solicitação
+      </button>
+      <button class="chat-sidebar-toggle" type="button" data-action="toggle-sidebar" aria-pressed="true" aria-controls="chat-sidebar">
+        <span class="chat-sidebar-toggle-label">Recolher coluna</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 6l-6 6 6 6"></path>
+        </svg>
+      </button>
+    </div>
 
     <nav class="chat-nav" aria-label="Navegação do Chat">
+      <p class="chat-nav-label">Workspace</p>
       <a class="chat-link" href="#inicio" aria-current="page" data-active="true">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="3.5" y="4.5" width="17" height="12" rx="3"></rect>
@@ -19,6 +60,7 @@
           <circle cx="12" cy="12" r="3"></circle>
         </svg>
         Minha missão
+        <span class="chat-link-meta" id="chat-nav-goal">Sem objetivo definido</span>
       </a>
       <a class="chat-link" href="/site">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -32,113 +74,111 @@
 
     <nav class="chat-nav-sections" aria-label="Seções do Chat"></nav>
 
-    <div class="chat-journal-card">
-      <p class="chat-journal-label">Sua jornada</p>
-      <p>Seu objetivo é o ponto de partida. A missão começa quando você nos conta o resultado que deseja alcançar.</p>
-    </div>
-
     <a class="chat-mode-switch" href="/">Escolher outra experiência</a>
   </aside>
 
-  <main class="chat-main" id="inicio">
-    <header class="chat-header">
-      <p class="chat-header-title">Chat de missão</p>
-      <a class="chat-header-link" href="/">
-        Trocar experiência
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5 12h13"></path>
-          <path d="m12.5 5.5 6 6.5-6 6.5"></path>
-        </svg>
-      </a>
+  <main class="chat-main" id="inicio" data-view="chat">
+    <header class="chat-panel-head">
+      <p class="chat-panel-title">
+        <span class="chat-presence-dot" aria-hidden="true"></span>
+        OaaS.Quest Manager
+      </p>
+      <p class="chat-panel-state" id="chat-panel-state">Nova solicitação</p>
     </header>
 
-    <section class="chat-welcome">
-      <div class="chat-emblem">
-        <svg viewBox="0 0 32 32" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="16" cy="16" r="11"></circle>
-          <path d="M11 18.5 16 11l5 7.5"></path>
-          <path d="M12.5 21.5h7"></path>
-        </svg>
-      </div>
-      <h1>Bem-vindo ao Chat.</h1>
-      <p>Outcome as a Service é um modelo em que você define o resultado que deseja alcançar e nós assumimos a missão de descobrir, planejar e executar o caminho para chegar lá.</p>
-    </section>
+    <div class="chat-view" id="chat-view">
+      <section class="chat-conversation" id="missao">
+        <div class="chat-stream" id="chat" aria-live="polite">
 
-    <section class="chat-conversation" id="missao">
-      <div class="chat-stream" id="chat" aria-live="polite">
-        <article class="chat-message" data-role="assistant">
-          <div class="chat-avatar">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="8"></circle>
-              <circle cx="12" cy="12" r="2.6"></circle>
-            </svg>
-          </div>
-          <div class="chat-bubble">
-            <strong>Saudações, aventureiro.</strong>
-            <p>Eu sou o Guild Master do OaaS.Quest. Aqui, sua meta se transforma em nossa missão: entendemos seu contexto, identificamos as soluções possíveis e trabalhamos para entregar o resultado combinado.</p>
-            <div class="chat-actions">
-              <button class="chat-action" type="button" data-action="about" data-variant="ghost">Saber mais sobre Outcome as a Service</button>
+          <article class="chat-message" data-role="assistant">
+            <div class="chat-avatar">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="8"></circle>
+                <circle cx="12" cy="12" r="2.6"></circle>
+              </svg>
             </div>
-          </div>
-        </article>
+            <div class="chat-bubble chat-bubble-brief">
+              <div class="chat-welcome"></div>
+              <p class="chat-bubble-lead">Saudações, aventureiro. Eu sou o Guild Master do OaaS.Quest: sua meta vira missão, e eu conduzo o caminho até o resultado combinado.</p>
+              <div class="chat-actions">
+                <button class="chat-action" type="button" data-action="about" data-variant="ghost">Saber mais sobre Outcome as a Service</button>
+              </div>
+            </div>
+          </article>
 
-        <article class="chat-message" data-role="assistant">
-          <div class="chat-avatar">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="8"></circle>
-              <circle cx="12" cy="12" r="2.6"></circle>
-            </svg>
-          </div>
-          <div class="chat-bubble">
-            <strong>Antes de começarmos, escolha seu caminho:</strong>
-            <p>Qual é o seu papel nesta jornada?</p>
-          </div>
-        </article>
+          <article class="chat-message" data-role="assistant">
+            <div class="chat-avatar">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="8"></circle>
+                <circle cx="12" cy="12" r="2.6"></circle>
+              </svg>
+            </div>
+            <div class="chat-bubble">
+              <p class="chat-bubble-lead">Antes de começarmos, escolha seu caminho. Qual é o seu papel nesta jornada?</p>
+              <div class="chat-choices" id="audience-choices">
+                <button class="chat-choice" type="button" data-choice="Sou empresário">Sou empresário</button>
+                <button class="chat-choice" type="button" data-choice="Sou desenvolvedor">Sou desenvolvedor</button>
+              </div>
+            </div>
+          </article>
 
-        <div class="chat-choices" id="audience-choices">
-          <button class="chat-choice" type="button" data-choice="Sou empresário">Sou empresário</button>
-          <button class="chat-choice" type="button" data-choice="Sou desenvolvedor">Sou desenvolvedor</button>
         </div>
 
         <p class="chat-privacy">As respostas desta etapa ficam salvas neste navegador. Não informe senhas, dados bancários ou informações pessoais sensíveis.</p>
-      </div>
 
-      <div class="chat-mission-controls" id="mission-controls" aria-live="polite"></div>
+        <form class="chat-composer" id="composer">
+          <input class="chat-composer-input" id="message" placeholder="Descreva o que você precisa resolver..." autocomplete="off" aria-label="Mensagem para o Mestre">
+          <button class="chat-composer-send" type="submit">
+            <span>Enviar</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 19V5"></path>
+              <path d="m5.5 11.5 6.5-6.5 6.5 6.5"></path>
+            </svg>
+          </button>
+        </form>
+      </section>
+    </div>
 
-      <form class="chat-composer" id="composer">
-        <input class="chat-composer-input" id="message" placeholder="Registre sua missão ou faça uma pergunta..." autocomplete="off" aria-label="Mensagem para o Mestre">
-        <button class="chat-composer-send" type="submit">
-          Enviar
+    <div class="chat-reading" id="chat-reading" hidden>
+      <div class="chat-reading-head">
+        <button class="chat-reading-back" type="button" data-action="back-to-chat">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 12h14"></path>
-            <path d="m12.5 5.5 6 6.5-6 6.5"></path>
+            <path d="M14 6l-6 6 6 6"></path>
           </svg>
+          Voltar à conversa
         </button>
-      </form>
-    </section>
-
-    <div id="chat-content"></div>
+        <p class="chat-reading-title" id="chat-reading-title">Leitura</p>
+      </div>
+      <div class="chat-reading-body" id="chat-content"></div>
+    </div>
   </main>
 
-  <aside class="chat-side">
-    <h2 class="chat-journal-title">Diário da Jornada</h2>
+  <aside class="chat-side" id="chat-context">
+    <p class="chat-side-title">Contexto do resultado</p>
 
-    <div class="chat-journal-card">
-      <p class="chat-journal-label">Missão atual</p>
+    <section class="chat-context-block">
+      <p class="chat-context-label">Objetivo atual</p>
       <p class="chat-goal" id="goal">Aguardando seu objetivo...</p>
       <div class="chat-progress"><span class="chat-progress-bar"></span></div>
-    </div>
+      <p class="chat-progress-count" id="progress-count">0 etapas registradas</p>
+    </section>
 
-    <div class="chat-journal-card">
-      <p class="chat-journal-label">Caminhos disponíveis</p>
-      <p>Empresários: descoberta de oportunidades e soluções.</p>
-      <p>Desenvolvedores: soluções, contratos, ferramentas e arquitetura.</p>
-    </div>
+    <section class="chat-context-block">
+      <p class="chat-context-label">Critérios de sucesso</p>
+      <p class="chat-context-text" id="context-success">Ainda não informado.</p>
+    </section>
 
-    <div class="chat-journal-card">
-      <p class="chat-journal-label">Histórico</p>
-      <p class="chat-count" id="count">0 interações registradas nesta jornada.</p>
-    </div>
+    <section class="chat-context-block">
+      <p class="chat-context-label">Últimas evidências</p>
+      <ul class="chat-evidence" id="context-evidence">
+        <li class="chat-evidence-item">Nenhuma evidência registrada ainda.</li>
+      </ul>
+    </section>
+
+    <section class="chat-context-block">
+      <p class="chat-context-label">Histórico</p>
+      <p class="chat-count" id="count">0 mensagens registradas nesta jornada.</p>
+    </section>
   </aside>
 
 </div>

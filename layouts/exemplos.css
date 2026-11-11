@@ -166,7 +166,9 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
   border-color: var(--oq-accent);
 }
 
-.exemplos-button[data-variant="primary"] {
+/* O escopo com ID vence o reset "#oaas-page-root a { color: inherit }",
+   que sem isso deixaria o texto do botao claro sobre o fundo ciano. */
+#oaas-page-root .exemplos-button[data-variant="primary"] {
   background: var(--oq-accent);
   border-color: transparent;
   color: var(--oq-ground);

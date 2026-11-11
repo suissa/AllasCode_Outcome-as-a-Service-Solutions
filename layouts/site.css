@@ -144,7 +144,9 @@
   white-space: nowrap;
 }
 
-.cta {
+/* O escopo com a classe do pagina vence o reset ".site-page a { color: inherit }",
+   que sem isso deixaria o texto do botao claro sobre o fundo ciano. */
+.site-page .cta {
   display: inline-flex;
   align-items: center;
   gap: 10px;
