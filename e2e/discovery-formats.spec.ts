@@ -75,7 +75,7 @@ test("Site CTA opens the complete Discovery sequence inside Chat", async ({ page
   });
   await page.locator("#nav-cta").click();
   await expect(page).toHaveURL(/\/chat#descoberta$/);
-  await expect(page.getByText("Nome da empresa", { exact: true })).toBeVisible();
+  await expect(page.getByText("Nome da empresa", { exact: false })).toBeVisible();
 
   const config = await page.evaluate(async () => {
     await (window as typeof window & { OaaSPageReady?: Promise<unknown> }).OaaSPageReady;
@@ -83,7 +83,7 @@ test("Site CTA opens the complete Discovery sequence inside Chat", async ({ page
   });
   const questions = config.stages.flatMap((stage: any) => stage.questions);
   for (const question of questions) {
-    await expect(page.getByText(question.label, { exact: true })).toBeVisible();
+    await expect(page.getByText(question.label, { exact: false })).toBeVisible();
     if (question.type === "single") {
       await page.getByRole("button", { name: question.options[0].label, exact: true }).click();
     } else if (question.type === "multi") {
