@@ -348,3 +348,22 @@ test("the examples page owns its scroll motion with GSAP and ScrollTrigger", asy
   );
   assert.ok(css.includes(".exemplos-insight-text"), "the closing card must keep the text measured");
 });
+
+
+test("the home shows the logo, exits it, then reveals full-screen choices", async () => {
+  const template = await readFile(join(root, "layouts/chooser.html"), "utf8");
+  const css = await readFile(join(root, "layouts/chooser.css"), "utf8");
+  assert.ok(template.includes('class="selector-wordmark"'));
+  assert.ok(template.includes('class="selector-choice"'));
+  assert.match(css, /@keyframes logo-arrive-and-leave/);
+  assert.match(css, /@keyframes choices-arrive/);
+  assert.match(css, /animation:logo-arrive-and-leave/);
+  assert.match(css, /animation:choices-arrive[^;]*2\.75s/);
+  assert.match(css, /60%\{opacity:1/);
+  assert.match(css, /82%\{opacity:0/);
+  assert.match(css, /\.selector-choices\{[^}]*width:100%;height:100%/);
+  assert.match(css, /\.selector-choice\{[^}]*font-size:clamp\(36px,5\.8vw,88px\)/);
+  assert.match(css, /@media\(max-width:760px\)\{[\s\S]*?\.selector-choices\{flex-direction:column/);
+  assert.match(css, /\.selector-choice\{[\s\S]*?height:50%/);
+  assert.match(css, /prefers-reduced-motion:reduce/);
+});
