@@ -168,7 +168,7 @@ test("navigation links use routes instead of html files", async () => {
     assert.ok(!/["'][^"']*\.html(?:[?#][^"']*)?["']/.test(source), file + " must not link to .html files");
   }
   const chat = await readFile(join(root, "runtime/chat.js"), "utf8");
-  assert.ok(chat.includes('"/chat#descoberta"'));
+  assert.ok(chat.includes('"/descoberta"'));
   assert.ok(chat.includes('"/site#solucoes"'));
 });
 
