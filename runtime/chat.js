@@ -204,21 +204,16 @@ export async function mount(page) {
   let pendingTurn = null;
   let isResponding = false;
 
-  /**
-   * Executa no Chat o roteiro completo de Descoberta configurado em
-   * content/discovery.pt-BR.json. A fonte dos campos e opções continua sendo
-   * o manifesto existente; o chat apenas apresenta uma pergunta por vez.
-   */
+  /** Renderiza no Chat todas as perguntas do manifesto de Descoberta. */
   async function runChatDiscovery() {
     if (audienceChoices) audienceChoices.hidden = true;
     clearControls();
     input.value = "";
-    const response = await fetch("/content/discovery.pt-BR.json");
-    if (!response.ok) {
+    const config = page.sources.discovery;
+    if (!config || !Array.isArray(config.stages)) {
       await add("assistant", "Não consegui carregar as perguntas da descoberta. Tente novamente em instantes.");
       return;
     }
-    const config = await response.json();
     const storageKey = config.engine?.storageKey || "goaltropic.discovery.v1";
     let saved = {};
     try { saved = JSON.parse(localStorage.getItem(storageKey) || "{}") || {}; } catch {}
@@ -229,7 +224,6 @@ export async function mount(page) {
     );
     let index = Math.max(0, Number(saved.chatIndex) || 0);
     let selected = new Set();
-
     const persist = () => {
       saved.chatIndex = index;
       saved.updatedAt = new Date().toISOString();
@@ -248,12 +242,7 @@ export async function mount(page) {
     };
     const storeAnswer = async (question, value, label, status = "provided") => {
       add("user", label);
-      saved.answers[question.id] = {
-        value: status === "unknown" ? null : value,
-        status,
-        updatedAt: new Date().toISOString(),
-        source: "chat"
-      };
+      saved.answers[question.id] = { value: status === "unknown" ? null : value, status, updatedAt: new Date().toISOString(), source: "chat" };
       index++;
       persist();
       updateProgress();
@@ -342,8 +331,7 @@ export async function mount(page) {
           const [field, expected] = signal.split(":");
           const actual = saved.answers[field];
           if (!actual || actual.status !== "provided") return false;
-          const value = actual.value;
-          return Array.isArray(value) ? value.includes(expected) : String(value) === expected;
+          return Array.isArray(actual.value) ? actual.value.includes(expected) : String(actual.value) === expected;
         });
         return { ...solution, matchedSignals: signals.length };
       }).filter(solution => solution.matchedSignals > 0)
@@ -388,7 +376,6 @@ export async function mount(page) {
       await renderQuestionControls(question);
       updateProgress();
     };
-
     restore();
     updateProgress();
     if (saved.chatCompleted) {
@@ -601,12 +588,12 @@ export async function mount(page) {
     }
   }
 
-  if (OQ.history("chat").length === 0 && !OQ.getMission()) {
-    await typeWelcomeSequence();
-  }
   if (window.location.hash === "#descoberta") {
     await runChatDiscovery();
     return;
+  }
+  if (OQ.history("chat").length === 0 && !OQ.getMission()) {
+    await typeWelcomeSequence();
   }
 
   restore();

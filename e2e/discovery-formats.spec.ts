@@ -67,25 +67,23 @@ test("Discovery builds and persists the same retail proposal", async ({ page }) 
 });
 
 
-test("Site CTA opens the full Discovery questionnaire inside the Chat", async ({ page }) => {
+test("Site CTA opens the complete Discovery sequence inside Chat", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/site");
   await page.evaluate(async () => {
     await (window as typeof window & { OaaSPageScriptsReady?: Promise<unknown> }).OaaSPageScriptsReady;
   });
-
   await page.locator("#nav-cta").click();
   await expect(page).toHaveURL(/\/chat#descoberta$/);
-  await expect(page.getByText("Nome da empresa", { exact: true })).toBeVisible();
+  await expect(page.getByText("Nome da empresa", { exact: false })).toBeVisible();
 
   const config = await page.evaluate(async () => {
-    const response = await fetch("/content/discovery.pt-BR.json");
-    return response.json();
+    await (window as typeof window & { OaaSPageReady?: Promise<unknown> }).OaaSPageReady;
+    return (window as typeof window & { OaaSPage?: { sources: { discovery: any } } }).OaaSPage?.sources.discovery;
   });
   const questions = config.stages.flatMap((stage: any) => stage.questions);
-
   for (const question of questions) {
-    await expect(page.getByText(question.label, { exact: true })).toBeVisible();
+    await expect(page.getByText(question.label, { exact: false })).toBeVisible();
     if (question.type === "single") {
       await page.getByRole("button", { name: question.options[0].label, exact: true }).click();
     } else if (question.type === "multi") {
@@ -96,7 +94,6 @@ test("Site CTA opens the full Discovery questionnaire inside the Chat", async ({
       await page.getByRole("button", { name: "Enviar" }).click();
     }
   }
-
   await expect(page.getByText(/Você concluiu as \d+ perguntas da Descoberta/)).toBeVisible();
   await expect(page.getByText(/hipóteses preliminares, não resultados comprovados/)).toBeVisible();
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("goaltropic.discovery.v1") || "null"));

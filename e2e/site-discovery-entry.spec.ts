@@ -1,16 +1,18 @@
 import { test, expect } from "@playwright/test";
 
-test("site routes every result CTA to the Vite Discovery page and displays the brand logo", async ({ page }) => {
+test("site result CTAs open the full discovery conversation in the branded Chat", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/site");
 
-  await expect(page.locator("#nav-cta")).toHaveText("Quero resultado");
-  await expect(page.locator("#nav-cta")).toHaveAttribute("href", "/descoberta");
-  await expect(page.locator(".hero-actions a.cta").first()).toHaveAttribute("href", "/descoberta");
+  await expect(page.locator("#nav-cta")).toHaveText("Quero alcançar um resultado");
+  await expect(page.locator("#nav-cta")).toHaveAttribute("href", "/chat#descoberta");
+  await expect(page.locator(".hero-actions a.cta").first()).toHaveAttribute("href", "/chat#descoberta");
   await expect(page.locator(".hero-brand-lockup img")).toHaveAttribute("src", "/logo-dark.png");
 
   await page.locator(".hero-actions a.cta").first().click();
-  await expect(page).toHaveURL(/\/descoberta$/);
-  await expect(page.locator("#app")).toBeVisible();
+  await expect(page).toHaveURL(/\/chat#descoberta$/);
+  await expect(page.locator("#chat")).toBeVisible();
+  await expect(page.getByText("Nome da empresa", { exact: false })).toBeVisible();
 });
 
 test("chat types its welcome messages before exposing the first choices", async ({ page }) => {

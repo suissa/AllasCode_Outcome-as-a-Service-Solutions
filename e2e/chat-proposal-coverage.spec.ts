@@ -57,11 +57,12 @@ async function startAndConfirmBusinessMission(page: Page): Promise<void> {
   await page.getByRole("button", { name: "Comércio" }).click();
   await page.getByRole("button", { name: "2–5 pessoas" }).click();
 
-  await submitChatText(page, "Aumentar as vendas com mais controle da operação");
-  await submitChatText(page, "Vendas, atendimento e acompanhamento de clientes");
-  await submitChatText(page, "Falta de controle e visibilidade dos dados");
+  // Etapas com opções exigem seleção explícita; texto livre é rejeitado pelo chat.
+  await page.getByRole("button", { name: "Aumentar as vendas" }).click();
+  await page.getByRole("button", { name: "Vendas e comercial" }).click();
+  await page.getByRole("button", { name: "Falta de dados e visibilidade" }).click();
   await page.getByRole("button", { name: "Até 90 dias" }).click();
-  await submitChatText(page, "Aumentar vendas e acompanhar a taxa de conversão");
+  await page.getByRole("button", { name: "Melhorar taxa de conversão" }).click();
 
   await expect(page.getByText(/resumo inicial da sua missão/i)).toBeVisible();
 
@@ -73,11 +74,11 @@ async function startAndConfirmBusinessMission(page: Page): Promise<void> {
   expect(mission.status).toBe("review");
   expect(mission.answers.segment.value).toBe("retail");
   expect(mission.answers.teamSize.value).toBe("2_5");
-  expect(mission.answers.desiredOutcome.value).toContain("Aumentar as vendas");
-  expect(mission.answers.process.value).toContain("Vendas");
-  expect(mission.answers.challenge.value).toContain("visibilidade");
+  expect(mission.answers.desiredOutcome.value).toBe("sales");
+  expect(mission.answers.process.value).toBe("sales");
+  expect(mission.answers.challenge.value).toBe("visibility");
   expect(mission.answers.deadline.value).toBe("90d");
-  expect(mission.answers.successMetric.value).toContain("conversão");
+  expect(mission.answers.successMetric.value).toBe("conversion");
 
   await page.getByRole("button", { name: /confirmar missão e aprofundar diagnóstico/i }).click();
   await page.getByRole("button", { name: /aprofundar diagnóstico/i }).click();
