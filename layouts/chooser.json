@@ -8,14 +8,14 @@
   ],
   "bodyClass": "chooser-page",
   "shell": "nav + home-intro + home-modes + footer",
-  "renderer": "runtime/chooser-page.js",
+  "renderer": "runtime/chooser-page.tsx",
   "slots": [
     "brand",
     "experience-options",
     "footer"
   ],
   "scripts": [
-    "app.js",
-    "runtime/chooser-page.js"
+    "app.tsx",
+    "runtime/chooser-page.tsx"
   ]
 }
