@@ -1,0 +1,10 @@
+[diagnosis]
+confidence_min = 0.0
+confidence_max = 1.0
+require_evidence = true
+require_same_tenant = true
+require_unique_finding_ids = true
+require_alternatives = true
+require_independent_approver = true
+reject_ambiguous_findings = true
+freeze_approved_analysis = true
