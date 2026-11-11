@@ -831,3 +831,12 @@ body:has(.chat-shell) ::selection {
   .chat-sector-grid,
   .chat-orb-grid { grid-template-columns: 1fr; }
 }
+
+
+/* Apresentação OaaS dentro da conversa */
+.chat-bubble-overview{width:min(100%,900px);padding:12px}
+.chat-bubble-overview .oaas-slider{max-width:100%;padding:22px;border-radius:14px}
+.chat-bubble-overview .oaas-slider-stage{min-height:300px;padding-block:28px}
+.chat-bubble-overview .oaas-slider-slide h2{font-size:clamp(24px,3vw,36px)}
+.chat-bubble-overview .oaas-slider-items{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:700px){.chat-bubble-overview{padding:8px}.chat-bubble-overview .oaas-slider{padding:18px 14px}.chat-bubble-overview .oaas-slider-stage{min-height:360px}.chat-bubble-overview .oaas-slider-items{grid-template-columns:1fr}}

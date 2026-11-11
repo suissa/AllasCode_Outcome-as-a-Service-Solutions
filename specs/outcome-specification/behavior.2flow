@@ -1,0 +1,7 @@
+capture_observations -(validate_metric_and_provenance)-> calculate_baseline
+calculate_baseline -(validate_quality_and_aggregate)-> baseline_snapshot
+baseline_snapshot -(request_approval)-> approved_baseline
+approved_baseline -(define_target_and_window)-> target_candidate
+target_candidate -(validate_direction_constraints_and_window)-> valid_target
+valid_target -(independent_approval)-> approved_outcome_specification
+approved_outcome_specification -(detect_material_change)-> reapproval_required

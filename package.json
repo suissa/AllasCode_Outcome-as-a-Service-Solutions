@@ -4,12 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:api": "node --env-file=.env server/api.js",
+    "dev": "vite --force",
+    "dev:api": "tsx server/api.tsx",
     "build": "vite build",
     "preview": "vite preview",
     "test": "tsx --test test/*.test.ts test/**/*.test.ts",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json && tsx --eval \"import('./runtime/chat.tsx')\"",
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install chromium",
     "test:e2e:debug": "playwright test --debug"

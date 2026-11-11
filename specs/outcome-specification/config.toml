@@ -1,0 +1,15 @@
+[baseline]
+require_valid_quality = true
+require_declared_sources = true
+aggregate_tolerance = 0.000000001
+immutable_after_approval = true
+
+[target]
+require_finite_values = true
+require_valid_measurement_window = true
+require_direction_consistency = true
+require_unique_constraints = true
+
+[approval]
+require_independent_target_approver = true
+fail_closed = true

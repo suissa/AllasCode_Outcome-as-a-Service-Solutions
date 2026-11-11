@@ -1,0 +1,23 @@
+version: 1
+baseline:
+  required: [metric, observations, value, period, quality]
+  immutable_after_approval: true
+  quality: [valid, incomplete, stale]
+  invariants:
+    - metric_definition_is_valid
+    - every_observation_matches_metric_and_unit
+    - every_source_is_declared
+    - aggregate_matches_metric_aggregation
+    - confidence_is_finite_between_zero_and_one
+target:
+  required: [metricId, baseline, target, unit, periodStart, periodEnd, constraints]
+  invariants:
+    - values_are_finite
+    - period_start_precedes_period_end
+    - constraints_are_non_empty_and_unique
+    - target_direction_matches_metric
+    - target_baseline_matches_approved_snapshot
+approval:
+  baseline_actor_required: true
+  target_actor_independent_from_baseline_approver: true
+  timestamp_must_be_valid: true
