@@ -1,0 +1,29 @@
+version: "1.0"
+behavior: diagnosis-root-cause
+input:
+  tenantId: { type: identifier, required: true }
+  problem: { type: text, required: true, trim: true }
+  findings:
+    type: array
+    required: true
+    minItems: 1
+    item:
+      id: { type: identifier, required: true, unique: true }
+      tenantId: { type: identifier, required: true, equals: ../tenantId }
+      statement: { type: text, required: true, trim: true }
+      category: { type: enum, required: true, values: [process, technology, people, data, policy] }
+      evidenceIds: { type: array, required: true, minItems: 1, unique: true }
+      confidence: { type: number, required: true, finite: true, min: 0, max: 1 }
+      impact: { type: enum, required: true, values: [low, medium, high] }
+      constraints: { type: array, required: true, itemType: non_blank_text }
+      owner: { type: identifier, required: false }
+  alternativesConsidered: { type: array, required: true, itemType: non_blank_text, minItems: 1, unique: true }
+output:
+  type: RootCauseAnalysis
+  approved: false
+  immutableApproval: true
+errors:
+  - ROOT_CAUSE_INVALID
+  - ROOT_CAUSE_APPROVER_REQUIRED
+  - ROOT_CAUSE_APPROVER_NOT_INDEPENDENT
+  - ROOT_CAUSE_APPROVAL_TIME_INVALID
