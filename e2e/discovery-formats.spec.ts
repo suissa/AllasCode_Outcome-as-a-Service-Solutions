@@ -31,8 +31,6 @@ test("Chat confirms a retail mission, hands off to Discovery and persists the pr
   await page.getByRole("button", { name: "Sou empresário" }).click();
   await page.getByRole("button", { name: "Comércio" }).click();
   await page.getByRole("button", { name: "2–5 pessoas" }).click();
-  const input = page.locator("#message");
-  const form = page.locator("#composer");
   await page.getByRole("button", { name: "Aumentar as vendas" }).click();
   await page.getByRole("button", { name: "Estoque e compras" }).click();
   await page.getByRole("button", { name: "Falta de dados e visibilidade" }).click();
@@ -66,4 +64,40 @@ test("Discovery builds and persists the same retail proposal", async ({ page }) 
   await completeDiscovery(page);
   await page.reload();
   await expect(page.getByText("Mercado E2E").first()).toBeVisible();
+});
+
+
+test("Site CTA opens the complete Discovery sequence inside Chat", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/site");
+  await page.evaluate(async () => {
+    await (window as typeof window & { OaaSPageScriptsReady?: Promise<unknown> }).OaaSPageScriptsReady;
+  });
+  await page.locator("#nav-cta").click();
+  await expect(page).toHaveURL(/\/chat#descoberta$/);
+  await expect(page.getByText("Nome da empresa", { exact: false })).toBeVisible();
+
+  const config = await page.evaluate(async () => {
+    await (window as typeof window & { OaaSPageReady?: Promise<unknown> }).OaaSPageReady;
+    return (window as typeof window & { OaaSPage?: { sources: { discovery: any } } }).OaaSPage?.sources.discovery;
+  });
+  const questions = config.stages.flatMap((stage: any) => stage.questions);
+  for (const question of questions) {
+    await expect(page.getByText(question.label, { exact: false })).toBeVisible();
+    if (question.type === "single") {
+      await page.getByRole("button", { name: question.options[0].label, exact: true }).click();
+    } else if (question.type === "multi") {
+      await page.getByRole("button", { name: question.options[0].label, exact: true }).click();
+      await page.getByRole("button", { name: "Confirmar seleção" }).click();
+    } else {
+      await page.locator("#message").fill(question.type === "number" ? "100" : "Resposta de teste");
+      await page.getByRole("button", { name: "Enviar" }).click();
+    }
+  }
+  await expect(page.getByText(/Você concluiu as \d+ perguntas da Descoberta/)).toBeVisible();
+  await expect(page.getByText(/hipóteses preliminares, não resultados comprovados/)).toBeVisible();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("goaltropic.discovery.v1") || "null"));
+  expect(saved.source).toBe("chat");
+  expect(saved.chatCompleted).toBe(true);
+  expect(Object.keys(saved.answers).length).toBeGreaterThanOrEqual(questions.length);
 });
