@@ -112,7 +112,7 @@ async function seedDiscoveryAnswers(
   expect(handoff.answers.team_size.value).toBe("2_5");
   expect(handoff.answers.main_goal.value).toBe("sales");
   expect(handoff.answers.goal_deadline.value).toBe("90d");
-  expect(handoff.answers.goal_target.value).toContain("Aumentar as vendas");
+  expect(handoff.answers.goal_target.value).toBe("sales");
   expect(handoff.answers.success_definition.value).toContain("conversão");
   expect(handoff.chatAnswers.operational_bottleneck.value).toBe("information");
   expect(handoff.chatAnswers.conversion_notes.value).toContain("visibilidade");
@@ -123,6 +123,8 @@ async function seedDiscoveryAnswers(
 }
 
 async function generateProposal(page: Page): Promise<void> {
+  // O handoff permanece no Chat; a etapa de diagnóstico/proposta usa a página Discovery.
+  await page.goto("/descoberta");
   await page.reload();
 
   // A Discovery possui 19 etapas. As respostas do cenário já estão persistidas;
