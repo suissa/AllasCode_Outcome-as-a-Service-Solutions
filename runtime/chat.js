@@ -547,7 +547,7 @@ export async function mount(page) {
     try {
       const result = OQ.prepareDiscovery();
       OQ.logInteraction("chat", "discovery-handoff", { prefilled: result.prefilled });
-      window.location.href = "/chat#descoberta";
+      window.location.href = "/descoberta";
     } catch (error) {
       add("assistant", copy.discoveryError);
     }
