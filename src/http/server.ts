@@ -8,7 +8,6 @@ import type { EvidenceRecord } from "../evidence/evidence.ts";
 import type { Observation } from "../measurement/metrics.ts";
 import type { OutcomeStore } from "../persistence/outcome-store.ts";
 import type { ProposalStore, PersistedProposal } from "../persistence/proposal-store.ts";
-import { mapDiscoveryToOutcomeProposal, type DiscoverySnapshot, type DiscoveryProposalOptions } from "../application/discovery-proposal.ts";
 import type { ContractRegistryStore, CreateContractRecordInput, ContractRecord } from "../commercial/contract-workflow.ts";
 import { createContractRecord, createContractEvent, submitContractForReview, approveContractForSignature, signContract, activateContract, contractCommandFingerprint } from "../commercial/contract-workflow.ts";
 import type { SignatureVerifier, AgreementSignature } from "../commercial/agreement.ts";
