@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 
-const source = readFileSync(new URL("../../app.js", import.meta.url), "utf8");
+const source = readFileSync(new URL("../../app.tsx", import.meta.url), "utf8");
 async function harness(initial: Record<string, string> = {}) {
   const values = new Map<string, string>(Object.entries(initial));
   const localStorage = {
