@@ -1,6 +1,7 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import { defineConfig, type Plugin, type ViteDevServer } from "vite";
+import { IncomingMessage, ServerResponse } from "node:http";
+import { defineConfig, type Connect, type Plugin, type ResolvedConfig, type ViteDevServer } from "vite";
 
 /**
  * OaaS.Quest - mapa de rotas.
@@ -35,11 +36,11 @@ function oaasHtmlRoutes(): Plugin {
   let outDir = "dist";
   return {
     name: "oaas-html-routes",
-    configResolved(config) {
+    configResolved(config: ResolvedConfig) {
       outDir = resolve(config.root, config.build.outDir);
     },
     configureServer(server: ViteDevServer) {
-      server.middlewares.use((req, _res, next) => {
+      server.middlewares.use((req: Connect.IncomingMessage, _res: ServerResponse, next: Connect.NextFunction) => {
         const [pathname = "/", search] = (req.url ?? "/").split("?");
         const entry = routeEntries.get(pathname);
         if (!entry) {
@@ -87,11 +88,11 @@ function oaasAssetsManifest(): Plugin {
   let outDir = "dist";
   return {
     name: "oaas-assets-manifest",
-    configResolved(config) {
+    configResolved(config: ResolvedConfig) {
       outDir = resolve(config.root, config.build.outDir);
     },
     configureServer(server: ViteDevServer) {
-      server.middlewares.use((req, res, next) => {
+      server.middlewares.use((req: Connect.IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
         const pathname = (req.url ?? "").split("?")[0];
         if (pathname !== "/oaas-assets.json") {
           next();
