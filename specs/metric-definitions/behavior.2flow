@@ -1,0 +1,10 @@
+register_metric -(validate_identity_version_freshness)-> validate_semantics
+validate_semantics -(supported_aggregation_and_direction)-> validate_sources
+validate_semantics -(unsupported)-> reject_METRIC_SEMANTICS_INVALID
+validate_sources -(unique_non_empty_sources)-> freeze_definition
+validate_sources -(invalid)-> reject_METRIC_SOURCES_INVALID
+freeze_definition -(new_id)-> append_version_1
+freeze_definition -(existing_id)-> reject_METRIC_ALREADY_REGISTERED
+revise_metric -(existing_id)-> validate_candidate
+validate_candidate -(valid)-> append_next_version
+validate_candidate -(invalid)-> reject_stable_metric_error
