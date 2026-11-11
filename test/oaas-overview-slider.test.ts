@@ -4,8 +4,8 @@ import { OAAAS_SLIDES, renderOaasSlider } from "../runtime/oaas-overview-slider.
 
 test("OaaS overview contains the full SaaS-to-outcome narrative", () => {
   assert.equal(OAAAS_SLIDES.length, 15);
-  assert.equal(OAAAS_SLIDES[0].title, "Do SaaS ao OaaS");
-  assert.equal(OAAAS_SLIDES.at(-1).title, "Pare de comprar licenças. Destrave sua operação.");
+  assert.equal(OAAAS_SLIDES[0]!.title, "Do SaaS ao OaaS");
+  assert.equal(OAAAS_SLIDES.at(-1)!.title, "Pare de comprar licenças. Destrave sua operação.");
 });
 
 test("slider renders accessible navigation and the first slide", () => {
