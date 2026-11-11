@@ -134,20 +134,64 @@ export async function mount(page) {
     skip.className = "chat-mission-skip";
     skip.textContent = copy.skipQuestion;
     skip.addEventListener("click", () => {
+      const previousStep = OQ.currentMissionStep();
       add("user", copy.unknownAnswer);
       OQ.advanceMission(null, true);
+      pendingTurn = { message: copy.unknownAnswer, stepId: previousStep?.id || "unknown" };
       continueMission();
     });
     controls.append(skip);
   }
 
-  function askCurrentStep() {
+  let pendingTurn = null;
+
+  async function requestAssistantTurn(nextStep) {
+    if (!pendingTurn) return false;
+    const turn = pendingTurn;
+    pendingTurn = null;
+    const mission = OQ.getMission();
+    try {
+      const response = await fetch("/api/chat/turn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId: mission.id,
+          message: turn.message,
+          context: {
+            currentStep: turn.stepId,
+            nextQuestion: nextStep?.prompt || "",
+            mission
+          }
+        })
+      });
+      if (!response.ok) throw new Error("CHAT_API_UNAVAILABLE");
+      const payload = await response.json();
+      if (typeof payload.reply !== "string" || !payload.reply.trim()) throw new Error("CHAT_REPLY_INVALID");
+      add("assistant", payload.reply.trim());
+      return true;
+    } catch {
+      // O roteiro determinístico continua disponível quando a API/LLM estiver
+      // indisponível; a interface não perde a resposta já registrada.
+      if (nextStep) add("assistant", nextStep.prompt);
+      else add("assistant", "Recebi suas informações. Confira o resumo da missão e ajuste o que for necessário antes de confirmar.");
+      return false;
+    }
+  }
+
+  async function askCurrentStep() {
     const step = OQ.currentMissionStep();
     if (!step) {
+      await requestAssistantTurn(null);
       renderMissionReview(true);
       return;
     }
-    add("assistant", step.prompt);
+    const answeredByAssistant = await requestAssistantTurn(step);
+    if (!answeredByAssistant && !pendingTurn) {
+      const last = OQ.history("chat").at(-1);
+      if (last?.role !== "assistant" || !last.text.includes(step.prompt)) add("assistant", step.prompt);
+    } else if (!answeredByAssistant) {
+      add("assistant", step.prompt);
+    }
     renderStepControls(step);
     input.value = "";
     input.focus();
@@ -155,16 +199,21 @@ export async function mount(page) {
 
   function submitAnswer(value, label) {
     if (!String(value || "").trim()) return;
+    const previousStep = OQ.currentMissionStep();
     add("user", label || value);
     OQ.advanceMission(String(value));
+    pendingTurn = { message: String(value), stepId: previousStep?.id || "unknown" };
     updateGoal();
     continueMission();
   }
 
-  function continueMission() {
+  async function continueMission() {
     const step = OQ.currentMissionStep();
-    if (step) askCurrentStep();
-    else renderMissionReview(true);
+    if (step) await askCurrentStep();
+    else {
+      await requestAssistantTurn(null);
+      renderMissionReview(true);
+    }
   }
 
   function missionSummary() {
@@ -300,8 +349,13 @@ export async function mount(page) {
       return;
     }
     add("user", value);
-    add("assistant", copy.chooseBusiness);
+    OQ.startMission("business");
+    OQ.captureMissionIntent(value);
+    pendingTurn = { message: value, stepId: "initial-intent" };
+    if (audienceChoices) audienceChoices.hidden = true;
+    updateGoal();
     input.value = "";
+    continueMission();
   });
 
   document.querySelectorAll('a[href^="#"]').forEach(link =>
