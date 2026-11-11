@@ -5,13 +5,16 @@ import { readFile } from "node:fs/promises";
 const SYSTEM_PROMPT = await readFile(new URL("../prompts/chat-system.pt-BR.md", import.meta.url), "utf8");
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+type JsonObject = { [key: string]: JsonValue };
+
 type ChatTurnBody = {
   sessionId: string;
   message: string;
   context: {
     nextQuestion?: string;
     currentStep?: string;
-    mission?: Record<string, unknown>;
+    mission?: JsonObject;
   };
 };
 
