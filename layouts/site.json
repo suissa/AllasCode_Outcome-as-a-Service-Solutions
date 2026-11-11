@@ -8,7 +8,7 @@
   ],
   "bodyClass": "site-page",
   "shell": "site-nav + main + site-footer",
-  "renderer": "runtime/site-page.js",
+  "renderer": "runtime/site-page.tsx",
   "slots": [
     "navigation",
     "hero",
@@ -16,8 +16,8 @@
     "closing-cta"
   ],
   "scripts": [
-    "app.js",
-    "runtime/site-page.js",
-    "runtime/site.js"
+    "app.tsx",
+    "runtime/site-page.tsx",
+    "runtime/site.tsx"
   ]
 }
