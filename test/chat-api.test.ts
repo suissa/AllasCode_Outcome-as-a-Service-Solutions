@@ -9,6 +9,7 @@ const databaseUrl = process.env.DATABASE_URL;
 test("Chat API sends context to OpenRouter and restores conversation from PostgreSQL", {
   skip: !databaseUrl
 }, async () => {
+  if (!databaseUrl) return;
   const calls: Array<{ messages: Array<{ role: string; content: string }> }> = [];
   const fetchImpl: typeof fetch = async (_url, options) => {
     const body = JSON.parse(String(options?.body));
@@ -63,7 +64,9 @@ test("Chat API sends context to OpenRouter and restores conversation from Postgr
     assert.equal(second.statusCode, 200);
     assert.match(second.json<{ reply: string }>().reply, /tamanho aproximado/i);
 
-    const history = calls[1].messages.map(message => message.content).join("\n");
+    const secondCall = calls[1];
+    assert.ok(secondCall);
+    const history = secondCall.messages.map(message => message.content).join("\n");
     assert.match(history, /quero vender mais/);
     assert.match(history, /Entendi\./);
 
