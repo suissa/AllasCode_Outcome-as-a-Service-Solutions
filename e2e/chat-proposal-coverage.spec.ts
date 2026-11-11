@@ -59,7 +59,7 @@ async function startAndConfirmBusinessMission(page: Page): Promise<void> {
 
   await submitChatText(page, "Aumentar as vendas com mais controle da operação");
   await submitChatText(page, "Vendas, atendimento e acompanhamento de clientes");
-  await submitChatText(page, "Falta de controle e visibilidade dos processos");
+  await submitChatText(page, "Falta de controle e visibilidade dos dados");
   await page.getByRole("button", { name: "Até 90 dias" }).click();
   await submitChatText(page, "Aumentar vendas e acompanhar a taxa de conversão");
 
