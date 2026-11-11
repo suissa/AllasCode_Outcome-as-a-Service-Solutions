@@ -21,11 +21,11 @@ Migration `0014_durable_outcome_proposals.sql` adds tenant-scoped proposal recor
 
 Persisted records begin in `ready_for_review` only after `assessProposalReadiness` reports no blockers. A proposal can be approved or rejected by a separately authorized actor distinct from the submitter (maker-checker separation). Contract composition remains a distinct operation and continues to require explicit approval and matching scope.
 
-## Browser Discovery integration
+## Browser integration boundary
 
-The Discovery page remains local-first. It renders a separate consent checkbox and sends nothing until the visitor explicitly authorizes transmission and clicks the action. Consent is session-only and is not persisted.
+The current chat and site interface are intentionally unchanged. Discovery answers remain browser-local; this rebuild does not wire automatic submission or add a new consent panel to the existing page. The authenticated API is ready for a future explicit-consent host integration, but no browser data is transmitted by this release.
 
-The authenticated host may expose this bridge before the Discovery page loads:
+When that UI integration is approved, the authenticated host may expose this bridge before the Discovery page loads:
 
 ```js
 window.OaaSProposalConfig = {
@@ -36,4 +36,4 @@ window.OaaSProposalConfig = {
 
 The bridge must return a short-lived access token from the host's existing auth session; do not put secrets or long-lived tokens in page config/localStorage. Requests use Bearer authentication, `credentials: omit`, and `cache: no-store`. The recommended deployment is a same-origin reverse proxy. The API's authenticate/authorize functions remain responsible for validating the token and tenant permissions.
 
-The visitor can preview readiness first, then submit the Discovery. Incomplete answers are stored as `draft` for commercial enrichment—not mislabeled as an approved or ready proposal. The response displays its server-generated proposal ID and persisted status. No contract or execution is triggered. Proposal IDs are server-generated and should be used for support and audit references.
+When connected through an explicit-consent host flow, the visitor can preview readiness first, then submit the Discovery. Incomplete answers are stored as `draft` for commercial enrichment—not mislabeled as an approved or ready proposal. The response returns its server-generated proposal ID and persisted status. No contract or execution is triggered. Proposal IDs are server-generated and should be used for support and audit references.
