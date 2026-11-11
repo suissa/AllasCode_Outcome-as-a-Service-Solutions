@@ -284,7 +284,7 @@ export async function mount(page) {
       return answer && (answer.status === "provided" || answer.status === "unknown");
     };
     const updateProgress = () => {
-      const answered = Object.values(saved.answers).filter(answer => answer && answer.status).length;
+      const answered = questions.filter(question => saved.answers[question.id]?.status).length;
       if (progressBar) progressBar.style.width = Math.min(100, Math.round(answered / Math.max(1, questions.length) * 100)) + "%";
       const count = document.getElementById("progress-count");
       if (count) count.textContent = answered + " de " + questions.length + " perguntas registradas";
@@ -390,7 +390,8 @@ export async function mount(page) {
           "Evidências a validar:\n" + list(sector.evidence) + "\n\n" +
           "Controles e restrições:\n" + list(sector.guardrails)
         : "As respostas foram registradas. A análise deverá esclarecer os pontos em aberto.";
-      await add("assistant", "Você concluiu a descoberta setorial de " + (sector?.name || "sua empresa") + ". " + Object.keys(saved.answers).length + " campos foram registrados, incluindo " + sectorAnswers.length + " respostas específicas do setor.\n\n" + resultText + "\n\nAs frentes listadas são hipóteses de investigação, não recomendações confirmadas. A próxima etapa valida as informações, as evidências e os critérios de sucesso.");
+      const recordedAnswers = questions.filter(question => saved.answers[question.id]?.status).length;
+      await add("assistant", "Você concluiu a descoberta setorial de " + (sector?.name || "sua empresa") + ". " + recordedAnswers + " campos foram registrados, incluindo " + sectorAnswers.length + " respostas específicas do setor.\n\n" + resultText + "\n\nAs frentes listadas são hipóteses de investigação, não recomendações confirmadas. A próxima etapa valida as informações, as evidências e os critérios de sucesso.");
       clearControls();
       const restart = document.createElement("button");
       restart.type = "button";
