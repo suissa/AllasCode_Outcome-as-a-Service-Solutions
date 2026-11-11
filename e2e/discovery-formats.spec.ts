@@ -12,6 +12,9 @@ const retailAnswers = {
 };
 
 async function completeDiscovery(page: any) {
+  // A Descoberta conversacional termina em /chat#descoberta; a geração da proposta
+  // continua na experiência estruturada de /descoberta, com as mesmas respostas persistidas.
+  await page.goto("/descoberta");
   for (let stage = 0; stage < 18; stage++) {
     await page.getByRole("button", { name: /pular etapa/i }).click();
   }
