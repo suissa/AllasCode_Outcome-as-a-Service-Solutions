@@ -33,13 +33,11 @@ test("Chat confirms a retail mission, hands off to Discovery and persists the pr
   await page.getByRole("button", { name: "2–5 pessoas" }).click();
   const input = page.locator("#message");
   const form = page.locator("#composer");
-  for (const answer of ["Aumentar vendas", "Controle de estoque e reposição", "Rupturas de estoque e falta de visibilidade"]) {
-    await input.fill(answer);
-    await form.locator('button[type="submit"]').click();
-  }
+  await page.getByRole("button", { name: "Aumentar as vendas" }).click();
+  await page.getByRole("button", { name: "Estoque e compras" }).click();
+  await page.getByRole("button", { name: "Falta de dados e visibilidade" }).click();
   await page.getByRole("button", { name: "Até 90 dias" }).click();
-  await input.fill("Reduzir rupturas e aumentar vendas");
-  await form.locator('button[type="submit"]').click();
+  await page.getByRole("button", { name: "Aumentar faturamento" }).click();
   await expect(page.getByText(/resumo inicial da sua missão/i)).toBeVisible();
   await page.getByRole("button", { name: /confirmar missão e aprofundar diagnóstico/i }).click();
   await page.getByRole("button", { name: /aprofundar diagnóstico/i }).click();
