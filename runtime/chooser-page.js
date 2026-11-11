@@ -32,6 +32,11 @@ export function mount(page) {
 
   bind(document, "data-page-copy", page.sources);
 
+  // A home uses one deterministic CSS timeline: logo first, choices together.
+  // Re-applying the class is safe when the client-side router remounts the page.
+  document.documentElement.classList.remove("home-intro-motion");
+  void document.documentElement.offsetWidth;
+  document.documentElement.classList.add("home-intro-motion");
 
   document.querySelectorAll("[data-mode]").forEach(card =>
     card.addEventListener("click", () => {

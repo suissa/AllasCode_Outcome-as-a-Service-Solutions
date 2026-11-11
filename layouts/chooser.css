@@ -21,3 +21,66 @@
 .selector-footer-brand img{width:auto;height:22px}.selector-footer-brand span{padding-left:12px;border-left:1px solid var(--oq-line);color:var(--oq-muted);font-weight:400}.selector-footer-note{letter-spacing:.03em}
 @media(max-width:760px){.selector-nav,.selector-footer{width:min(100% - 36px,520px)}.selector-nav{min-height:72px}.selector-nav-note{max-width:130px;font-size:9px;line-height:1.5;text-align:right}.selector-main{width:min(100% - 36px,520px);padding:58px 0 52px}.selector-intro{margin-bottom:34px}.selector-title{letter-spacing:-.035em}.selector-lead{font-size:14px}.selector-choices{grid-template-columns:1fr;gap:13px}.selector-choice{min-height:0;padding:25px;gap:0}.selector-choice-content{min-height:0}.selector-choice-icon{width:42px;height:42px;flex-basis:42px;margin-bottom:20px}.selector-choice-description{margin:14px 0 20px}.selector-footer{min-height:72px;font-size:10px}.selector-footer-note{text-align:right}}
 @media(max-width:420px){.selector-choice-content{width:100%}}
+
+/* ---------------------------------------------------------------- entrada coreografada da home */
+@keyframes zoomInDown{
+  0%{opacity:0;transform:translate3d(0,-100%,0) scale(.8)}
+  60%{opacity:1;transform:translate3d(0,10px,0) scale(.96)}
+  80%{transform:translate3d(0,-4px,0) scale(1.02)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+@keyframes fadeOut{
+  0%{opacity:1}
+  100%{opacity:0}
+}
+@keyframes zoomInLeft{
+  0%{opacity:0;transform:translate3d(-64px,0,0) scale(.92)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+@keyframes zoomInRight{
+  0%{opacity:0;transform:translate3d(64px,0,0) scale(.92)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+@keyframes bounceInDown{
+  0%{opacity:0;transform:translate3d(0,-180px,0) scale(.92)}
+  60%{opacity:1;transform:translate3d(0,22px,0) scale(1)}
+  80%{transform:translate3d(0,-8px,0)}
+  100%{opacity:1;transform:translate3d(0,0,0)}
+}
+@keyframes bounceInUp{
+  0%{opacity:0;transform:translate3d(0,180px,0) scale(.92)}
+  60%{opacity:1;transform:translate3d(0,-22px,0) scale(1)}
+  80%{transform:translate3d(0,8px,0)}
+  100%{opacity:1;transform:translate3d(0,0,0)}
+}
+.home-intro-motion .selector-wordmark{
+  animation:zoomInDown .8s cubic-bezier(.22,.75,.25,1) 2s both;
+  will-change:opacity,transform;
+}
+.home-intro-motion .selector-wordmark img{
+  animation:fadeOut .6s ease 4.8s both;
+}
+.home-intro-motion .selector-choice{
+  opacity:0;
+  animation-duration:.8s;
+  animation-delay:5.4s;
+  animation-fill-mode:both;
+  animation-timing-function:cubic-bezier(.22,.75,.25,1);
+  will-change:opacity,transform;
+}
+.home-intro-motion .selector-choice:first-child{animation-name:zoomInLeft}
+.home-intro-motion .selector-choice:last-child{animation-name:zoomInRight}
+@media(max-width:760px){
+  .home-intro-motion .selector-choice:first-child{animation-name:bounceInDown}
+  .home-intro-motion .selector-choice:last-child{animation-name:bounceInUp}
+}
+@media(prefers-reduced-motion:reduce){
+  .home-intro-motion .selector-wordmark,
+  .home-intro-motion .selector-wordmark img,
+  .home-intro-motion .selector-choice{
+    animation:none!important;
+    opacity:1!important;
+    transform:none!important;
+    will-change:auto;
+  }
+}
