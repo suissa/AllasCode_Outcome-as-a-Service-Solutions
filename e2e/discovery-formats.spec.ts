@@ -12,6 +12,7 @@ const retailAnswers = {
 };
 
 async function completeDiscovery(page: any) {
+  await page.emulateMedia({ reducedMotion: "reduce" });
   // A Descoberta conversacional termina em /chat#descoberta; a geração da proposta
   // continua na experiência estruturada de /descoberta, com as mesmas respostas persistidas.
   await page.goto("/descoberta");
