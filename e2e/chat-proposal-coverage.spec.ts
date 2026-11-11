@@ -131,7 +131,7 @@ async function generateProposal(page: Page): Promise<void> {
   }
 
   await page.getByRole("button", { name: /gerar diagnóstico/i }).click();
-  await expect(page.locator(".solution")).toBeVisible();
+  await expect(page.locator(".solution").first()).toBeVisible();
 }
 
 for (const solution of graph.solutions) {
