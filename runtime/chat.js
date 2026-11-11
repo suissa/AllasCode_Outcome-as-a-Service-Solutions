@@ -9,6 +9,8 @@
  * data-variant). Os icones sao SVG inline, nunca glifos Unicode.
  */
 
+import { renderOaasSlider, mountOaasSliders } from "./oaas-overview-slider.js";
+
 const AVATAR_MASTER =
   '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="2.6"></circle></svg>';
 
@@ -648,17 +650,69 @@ export async function mount(page) {
   restore();
   restoreMission();
 
-  document.querySelectorAll("[data-choice]").forEach(button =>
-    button.addEventListener("click", () => {
-      if (button.dataset.choice === copy.business) {
+  function renderAudiencePrompt() {
+    const { row, avatar } = makeMessage("assistant");
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble";
+    const prompt = document.createElement("p");
+    prompt.className = "chat-bubble-lead";
+    prompt.textContent = "Qual é o seu papel nesta jornada?";
+    const choices = document.createElement("div");
+    choices.className = "chat-choices";
+    choices.innerHTML = '<button class="chat-choice" type="button" data-choice="business">Sou empresário</button><button class="chat-choice" type="button" data-choice="developer">Sou desenvolvedor</button>';
+    bubble.append(prompt, choices);
+    row.append(avatar, bubble);
+    chat.append(row);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  async function showOaasOverview() {
+    if (audienceChoices) audienceChoices.hidden = true;
+    add("user", "Quero entender a diferença entre SaaS e OaaS.");
+    await add("assistant", "Esta apresentação resume a mudança de modelo: da venda de licenças para a entrega de resultados mensuráveis.");
+    const { row, avatar } = makeMessage("assistant");
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble chat-bubble-overview";
+    bubble.innerHTML = renderOaasSlider("chat-oaas-overview");
+    const actions = document.createElement("div");
+    actions.className = "chat-actions";
+    const continueButton = document.createElement("button");
+    continueButton.type = "button";
+    continueButton.className = "chat-action";
+    continueButton.dataset.action = "overview-continue";
+    continueButton.textContent = "Continuar";
+    actions.append(continueButton);
+    bubble.append(actions);
+    row.append(avatar, bubble);
+    chat.append(row);
+    mountOaasSliders(bubble);
+    chat.scrollTop = chat.scrollHeight;
+    OQ.logInteraction("chat", "saas-to-oaas-overview-opened");
+  }
+
+  chat.addEventListener("click", event => {
+    const choice = event.target.closest("[data-choice]");
+    if (choice) {
+      const value = choice.dataset.choice;
+      if (value === "show-overview") showOaasOverview();
+      else if (value === "skip-overview") {
+        if (audienceChoices) audienceChoices.hidden = true;
+        add("user", "Já conheço, continuar.");
+        renderAudiencePrompt();
+      } else if (value === "business" || value === copy.business) {
         add("user", copy.business);
         OQ.logInteraction("chat", "audience-selected", { value: "business" });
         startBusinessMission();
-      } else {
+      } else if (value === "developer" || value === copy.developer) {
         startDeveloperPath();
       }
-    })
-  );
+      return;
+    }
+    if (event.target.closest('[data-action="overview-continue"]')) {
+      add("user", "Continuar.");
+      renderAudiencePrompt();
+    }
+  });
 
   const about = document.querySelector('[data-action="about"]');
   if (about) {
