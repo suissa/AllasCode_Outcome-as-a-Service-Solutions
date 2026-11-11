@@ -35,7 +35,7 @@ function renderHero(exp, copy) {
         <h1 class="hero-title" data-words><span class="hero-lead">${esc(copy.hero.title)}</span><span class="hero-accent">${esc(copy.hero.titleEmphasis)}</span></h1>
         <p class="hero-text" data-reveal data-delay="220">${esc(copy.hero.body)}</p>
         <div class="hero-actions" data-reveal data-delay="360">
-          <a class="cta" href="/descoberta">${esc(copy.hero.primaryCta)}${ARROW}</a>
+          <a class="cta" href="/chat#descoberta">${esc(copy.hero.primaryCta)}${ARROW}</a>
           <a class="cta" data-variant="ghost" href="#metodo">${esc(copy.hero.secondaryCta)}</a>
         </div>
         <p class="hero-note" data-reveal data-delay="480">${esc(exp.brand.promise)}</p>
@@ -339,7 +339,7 @@ export function mount(page) {
   }
 
   const navCta = document.getElementById("nav-cta");
-  if (navCta) navCta.textContent = copy.hero.primaryCta;
+  if (navCta) { navCta.textContent = copy.hero.primaryCta; navCta.href = "/chat#descoberta"; }
 
   const main = document.getElementById("oaas-main");
   if (main) {
