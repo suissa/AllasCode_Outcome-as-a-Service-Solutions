@@ -28,3 +28,19 @@ test("baseline capture aggregates validated observations and metric definitions 
  assert.equal(registry.history(metric.id).length,2);
  assert.ok(validateObservation(metric,{...baseline.observations[0]!,observedAt:"2026-10-03T00:00:00Z"},new Date("2026-10-02T00:00:00Z")).includes("observedAt:FUTURE"));
 });
+
+test("target specification rejects invalid windows, non-finite values and contradictory direction",()=>{
+ const invalid={metricId:metric.id,baseline:11,target:10,unit:metric.unit,periodStart:"2026-10-01T00:00:00Z",periodEnd:"2026-10-01T00:00:00Z",constraints:["","duplicate","duplicate"]};
+ assert.ok(validateTarget(invalid).includes("period:INVALID"));
+ assert.ok(validateTarget({...invalid,periodEnd:"2026-12-31T00:00:00Z",target:Number.NaN}).includes("values:INVALID"));
+ assert.ok(validateTarget({...invalid,periodEnd:"2026-12-31T00:00:00Z"}).includes("target:DIRECTION_CONTRADICTION"));
+ assert.ok(validateTarget({...invalid,periodEnd:"2026-12-31T00:00:00Z",target:15,constraints:["risk","risk"]}).includes("constraints:DUPLICATE"));
+});
+test("baseline and target approval reject invalid actors and timestamps",()=>{
+ assert.throws(()=>approveBaseline(baseline,"  "),/BASELINE_APPROVER_REQUIRED/);
+ assert.throws(()=>approveBaseline(baseline,"owner",new Date("invalid")),/BASELINE_APPROVAL_TIME_INVALID/);
+ const approved=approveBaseline(baseline,"baseline_owner");
+ const target={metricId:metric.id,baseline:11,target:15,unit:metric.unit,periodStart:"2026-10-01T00:00:00Z",periodEnd:"2026-12-31T00:00:00Z",constraints:[]};
+ assert.throws(()=>approveOutcomeTarget(target,approved,"target_owner",new Date("invalid")),/TARGET_APPROVAL_TIME_INVALID/);
+ assert.equal(approveOutcomeTarget(target,approved,"target_owner").baselineSnapshotId,approved.approvedAt);
+});
