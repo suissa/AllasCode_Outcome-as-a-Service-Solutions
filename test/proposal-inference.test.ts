@@ -9,7 +9,7 @@ type Graph={method:string;dimensions:{id:string}[];modules:{id:string}[];solutio
 const readJson=async<T>(path:string)=>JSON.parse(await readFile(path,"utf8")) as T;
 const discovery=await readJson<Discovery>("content/discovery.pt-BR.json");
 const graph=await readJson<Graph>("content/proposal-graph.pt-BR.json");
-const runtime=await readFile("runtime/proposal-inference.js","utf8");
+const runtime=await readFile("runtime/proposal-inference.tsx","utf8");
 new Script(runtime);
 const sandbox:{window:Record<string,any>}={window:{}};
 runInNewContext(runtime,sandbox);
@@ -159,7 +159,7 @@ test("proposal inference is deterministic and explicitly precedes data analysis"
 });
 
 test("proposal report has a print-to-PDF action and A4 print stylesheet",async()=>{
- const report=await readFile("runtime/proposal-report.js","utf8");
+ const report=await readFile("runtime/proposal-report.tsx","utf8");
  const css=await readFile("layouts/proposal.css","utf8");
  const layout=await readJson<{scripts:string[]}>("layouts/proposal.json");
  const page=await readJson<{route:string;entry:string;layout:string;contentRefs:string[]}>("pages/pt-BR/proposal.json");
@@ -168,8 +168,8 @@ test("proposal report has a print-to-PDF action and A4 print stylesheet",async()
  assert.ok(report.includes("goaltropic.discovery.v1")===false);
  assert.ok(css.includes("@page{size:A4"));
  assert.ok(css.includes("@media print"));
- assert.ok(layout.scripts.includes("runtime/proposal-inference.js"));
- assert.ok(layout.scripts.includes("runtime/proposal-report.js"));
+ assert.ok(layout.scripts.includes("runtime/proposal-inference.tsx"));
+ assert.ok(layout.scripts.includes("runtime/proposal-report.tsx"));
  assert.equal(page.route,"/proposta");
  assert.ok(page.contentRefs.includes("proposal-graph"));
  await readFile(page.entry,"utf8");
