@@ -7,8 +7,8 @@ const readJson = async (path: string) => JSON.parse(await readFile(path, "utf8")
 const discovery = await readJson("content/discovery.pt-BR.json");
 const graph = await readJson("content/proposal-graph.pt-BR.json");
 const missionSteps = await readJson("content/mission-steps.pt-BR.json");
-const inferenceSource = await readFile("runtime/proposal-inference.js", "utf8");
-const appSource = await readFile("app.js", "utf8");
+const inferenceSource = await readFile("runtime/proposal-inference.tsx", "utf8");
+const appSource = await readFile("app.tsx", "utf8");
 
 function createInference() {
   const sandbox: { window: Record<string, any> } = { window: {} };
