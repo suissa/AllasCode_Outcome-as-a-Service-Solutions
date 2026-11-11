@@ -130,8 +130,18 @@ async function generateProposal(page: Page): Promise<void> {
 
   // A Discovery possui 19 etapas. As respostas do cenário já estão persistidas;
   // aqui pulamos somente as telas para chegar ao diagnóstico final.
-  for (let stage = 0; stage < 18; stage += 1) {
+  const stageTitles = await page.evaluate(async () => {
+    await (window as typeof window & { OaaSPageReady?: Promise<unknown> }).OaaSPageReady;
+    return (window as typeof window & { OaaSPage?: { sources: any } }).OaaSPage?.sources.discovery.stages.map((stage: any) => stage.title) ?? [];
+  });
+  expect(stageTitles).toHaveLength(19);
+
+  // Wait for each rendered stage before advancing: the runtime guards overlapping
+  // transitions, so rapid clicks can otherwise be ignored by its transition lock.
+  for (let stage = 0; stage < stageTitles.length - 1; stage += 1) {
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(stageTitles[stage]);
     await page.getByRole("button", { name: /pular etapa/i }).click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(stageTitles[stage + 1]);
   }
 
   await page.getByRole("button", { name: /gerar diagnóstico/i }).click();
