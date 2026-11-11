@@ -65,3 +65,42 @@ test("Discovery builds and persists the same retail proposal", async ({ page }) 
   await page.reload();
   await expect(page.getByText("Mercado E2E").first()).toBeVisible();
 });
+
+
+test("Site CTA opens the full Discovery questionnaire inside the Chat", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/site");
+  await page.evaluate(async () => {
+    await (window as typeof window & { OaaSPageScriptsReady?: Promise<unknown> }).OaaSPageScriptsReady;
+  });
+
+  await page.locator("#nav-cta").click();
+  await expect(page).toHaveURL(/\/chat#descoberta$/);
+  await expect(page.getByText("Nome da empresa", { exact: true })).toBeVisible();
+
+  const config = await page.evaluate(async () => {
+    const response = await fetch("/content/discovery.pt-BR.json");
+    return response.json();
+  });
+  const questions = config.stages.flatMap((stage: any) => stage.questions);
+
+  for (const question of questions) {
+    await expect(page.getByText(question.label, { exact: true })).toBeVisible();
+    if (question.type === "single") {
+      await page.getByRole("button", { name: question.options[0].label, exact: true }).click();
+    } else if (question.type === "multi") {
+      await page.getByRole("button", { name: question.options[0].label, exact: true }).click();
+      await page.getByRole("button", { name: "Confirmar seleção" }).click();
+    } else {
+      await page.locator("#message").fill(question.type === "number" ? "100" : "Resposta de teste");
+      await page.getByRole("button", { name: "Enviar" }).click();
+    }
+  }
+
+  await expect(page.getByText(/Você concluiu as \d+ perguntas da Descoberta/)).toBeVisible();
+  await expect(page.getByText(/hipóteses preliminares, não resultados comprovados/)).toBeVisible();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("goaltropic.discovery.v1") || "null"));
+  expect(saved.source).toBe("chat");
+  expect(saved.chatCompleted).toBe(true);
+  expect(Object.keys(saved.answers).length).toBeGreaterThanOrEqual(questions.length);
+});
