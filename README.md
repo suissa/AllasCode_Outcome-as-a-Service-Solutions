@@ -53,7 +53,18 @@ O movimento é um sistema único: a revelação por máscara de palavra é aplic
 (`page-config.js`, função `applyMotion`) depois dos runtimes do layout, para que o conteúdo
 renderizado por JavaScript também entre na revelação. `/descoberta` e `/proposta` mantêm o
 próprio mundo visual. `/exemplos` acrescenta uma camada de scroll com GSAP + ScrollTrigger
-(`runtime/exemplos-scroll.js`): o conteúdo sobe para o lugar quando entra na viewport e o herói
-cede espaço enquanto a página avança.
+(`runtime/exemplos-scroll.js`): o conteúdo entra pela margem lateral — esquerda, direita, esquerda —
+e assenta no meio, compondo o layout; o herói cede espaço enquanto a página avança.
 
 No WSL, o projeto fica em /mnt/d (DrvFs) e nao suporta inotify; o vite.config.ts liga o watcher em polling automaticamente nesse caso.
+
+O dev server sobe desacoplado do terminal, com supervisor, e nao tem limite de tempo:
+
+```bash
+wsl -- bash scripts/dev-server.sh
+```
+
+Ele escuta em `0.0.0.0:5173` (dando acesso pela rede local em `http://<ip-do-wifi>:5173`),
+o supervisor religa o Vite se ele cair e o log fica em `/tmp/oaas-dev.log`. O hot reload
+depende do watcher: passar `watch: null` no `server` do Vite **desliga** o watcher
+inteiro, e nao apenas usa o padrao.

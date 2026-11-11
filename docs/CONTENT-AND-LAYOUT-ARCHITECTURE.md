@@ -171,10 +171,11 @@ As regras de estilo vivem em `layouts/motion.css`.
 
 `runtime/exemplos-scroll.js` é a camada de scroll da página de Exemplos: GSAP + ScrollTrigger no lugar das timelines nativas do navegador (`animation-timeline`). É declarado em `layouts/exemplos.json`, depois do runtime de conteúdo, e roda só nessa rota — as demais não carregam o GSAP.
 
-- **Entrada**: cada bloco sobe para o lugar quando entra na viewport (`.85s`, `power3.out`, escalonado). O gatilho é o próprio bloco e os alvos são os filhos dele, para um cartão subir quando a grade dele chega, e não quando a primeira grade chega.
+- **Entrada lateral**: cada bloco entra pela margem quando chega na viewport (`.9s`, `power3.out`, escalonado) e assenta no meio, compondo o layout. O lado alterna ao longo da página inteira por um contador de fluxo — esquerda, direita, esquerda —, então o ritmo não reinicia a cada seção. O gatilho é o próprio bloco e os alvos são os filhos dele, para um cartão entrar quando a grade dele chega, e não quando a primeira grade chega.
 - **Scroll**: o herói cede espaço enquanto a página avança (grade e conteúdolinked ao scroll, `scrub` com `ease: "none"`) e a barra de progresso acompanha o documento.
 - **Estado**: a camada da arquitetura marca `data-reached="true"` quando chega, e o círculo numerado acende.
-- **Devolução**: `clearProps` devolve `transform` e `opacity` ao CSS no fim da entrada, para o `:hover` do cartão continuar valendo.
+- **Devolução**: `clearProps` devolve `transform` ao CSS no fim da entrada, para o `:hover` do cartão continuar valendo.
+- **Máscara lateral**: em `layouts/exemplos.css`, a revelação por palavra também é lateral (`translateX` no lugar de `translateY`), e o título que viaja dentro de um cartão ou de uma camada não é quebrado em palavras — dentro do bloco não há dois gestos.
 - **Acessibilidade**: `gsap.matchMedia()` só registra as animações sob `prefers-reduced-motion: no-preference`; com movimento reduzido o conteúdo aparece pronto.
 - **Ciclo de vida**: `destroy()` é chamado no começo de cada `mount()` e quando o evento `oaas:page-ready` traz outra rota, para nenhum gatilho sobreviver à navegação client-side.
 

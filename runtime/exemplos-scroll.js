@@ -6,9 +6,14 @@
  * duas coisas que o CSS nao fazia: o heroi cede espaco enquanto a pagina
  * avanca e a linha de progresso acompanha a leitura.
  *
- * Um unico gesto de movimento: o conteudo sobe para o lugar quando entra na
- * viewport, sempre com o mesmo relogio (.85s, power3.out). Quem prefere menos
- * movimento nao recebe animacao nenhuma - o conteudo aparece pronto.
+ * O gesto e lateral: cada bloco entra pela margem - esquerda, direita,
+ * esquerda - e assenta no meio, compondo o layout. O titulo do bloco viaja
+ * com ele (runtime/word-reveal.js nao os quebra em palavras), e o titulo da
+ * secao, que fica de fora do bloco, tem a revelacao por mascara tambem
+ * lateral (layouts/exemplos.css).
+ *
+ * Quem prefere menos movimento nao recebe animacao nenhuma - o conteudo
+ * aparece pronto.
  *
  * O shell chama mount(page) a cada render: o modulo nao depende de
  * window.OaaSPageReady e nao duplica listeners.
@@ -21,8 +26,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 const MOTION = "(prefers-reduced-motion: no-preference)";
 
-/** O relogio unico da pagina: mesma duracao e mesma curva em tudo que sobe. */
-const RISE = { duration: 0.85, ease: "power3.out" };
+/** O relogio unico da pagina: mesma duracao e mesma curva em tudo que entra. */
+const RISE = { duration: 0.9, ease: "power3.out" };
 
 let media = null;
 
@@ -33,7 +38,18 @@ export function destroy() {
   media = null;
 }
 
-/** Heroi: a grade se apaga e o conteudo sobe enquanto a pagina avanca. */
+/**
+ * O proximo bloco entra pela margem alternada: esquerda, direita, esquerda.
+ * O contador e unico para a pagina inteira, entao o ritmo de composicao nao
+ * reinicia a cada secao.
+ */
+function nextSide(flow) {
+  const side = flow.count % 2 === 0 ? -1 : 1;
+  flow.count += 1;
+  return side;
+}
+
+/** Heroi: a grade se apaga e o conteudo cede espaco enquanto a pagina avanca. */
 function animateHero() {
   const hero = document.querySelector(".exemplos-hero");
   if (!hero) return;
@@ -48,8 +64,9 @@ function animateHero() {
   const content = document.querySelector(".exemplos-hero-content");
   if (content) {
     gsap.to(content, {
-      yPercent: -12,
-      opacity: 0.35,
+      yPercent: -10,
+      xPercent: -5,
+      opacity: 0.22,
       ease: "none",
       scrollTrigger: { ...scroll }
     });
@@ -73,51 +90,61 @@ function animateProgress() {
 }
 
 /**
- * Sobe para o lugar ao entrar na viewport.
+ * Entra pela margem lateral ao chegar na viewport.
  * Cada bloco e o seu proprio gatilho: os alvos sao os filhos do bloco, nunca
  * os do documento inteiro - um cartao sobe quando a grade dele chega.
  */
-function rise(selector, { child, y = 24, stagger = 0.08, start = "top 88%" } = {}) {
+function rise(flow, selector, { child, distance = 72, stagger = 0.09 } = {}) {
   document.querySelectorAll(selector).forEach(trigger => {
     const targets = child ? trigger.querySelectorAll(child) : [trigger];
     if (!targets.length) return;
+    const sides = Array.from(targets, () => nextSide(flow));
 
-    gsap.from(targets, {
-      ...RISE,
-      opacity: 0,
-      y,
-      stagger,
-      // Devolve o elemento ao estado do CSS: o hover do cartao continua valendo.
-      clearProps: "transform,opacity",
-      scrollTrigger: { trigger, start, once: true }
-    });
-  });
-}
-
-/** As camadas da arquitetura sobem uma a uma e o circulo do numero acende. */
-function animateLayers() {
-  document.querySelectorAll(".exemplos-layer").forEach(layer => {
-    gsap.from(layer, {
-      ...RISE,
-      opacity: 0,
-      y: 24,
-      clearProps: "transform,opacity",
-      scrollTrigger: {
-        trigger: layer,
-        start: "top 86%",
-        once: true,
-        onEnter: () => layer.setAttribute("data-reached", "true")
+    gsap.fromTo(
+      targets,
+      { opacity: 0, x: index => sides[index] * distance },
+      {
+        ...RISE,
+        opacity: 1,
+        x: 0,
+        stagger,
+        // Devolve o transform ao CSS: o hover do cartao continua valendo.
+        clearProps: "transform",
+        scrollTrigger: { trigger, start: "top 88%", once: true }
       }
-    });
+    );
   });
 }
 
-/** Os blocos de conteudo sobem para o lugar, cada um com o mesmo relogio. */
-function animateContent() {
-  rise(".exemplos-agents", { child: ".exemplos-agent", y: 26, stagger: 0.08 });
-  rise(".exemplos-insight", { y: 18 });
-  rise(".exemplos-table-wrap", { child: ".exemplos-outcome-table tbody tr", y: 12, stagger: 0.05 });
-  rise(".exemplos-closing", { y: 18 });
+/** As camadas da arquitetura entram pela margem e o circulo do numero acende. */
+function animateLayers(flow) {
+  document.querySelectorAll(".exemplos-layer").forEach(layer => {
+    const side = nextSide(flow);
+    gsap.fromTo(
+      layer,
+      { opacity: 0, x: side * 64 },
+      {
+        ...RISE,
+        opacity: 1,
+        x: 0,
+        clearProps: "transform",
+        scrollTrigger: {
+          trigger: layer,
+          start: "top 86%",
+          once: true,
+          onEnter: () => layer.setAttribute("data-reached", "true")
+        }
+      }
+    );
+  });
+}
+
+/** Os blocos de conteudo entram pela margem, cada um com o mesmo relogio. */
+function animateContent(flow) {
+  rise(flow, ".exemplos-agents", { child: ".exemplos-agent", distance: 88, stagger: 0.09 });
+  rise(flow, ".exemplos-insight", { distance: 72 });
+  rise(flow, ".exemplos-table-wrap", { distance: 72 });
+  rise(flow, ".exemplos-closing", { distance: 72 });
 }
 
 /** Monta o movimento da pagina: o shell chama a cada render. */
@@ -126,10 +153,12 @@ export async function mount() {
 
   media = gsap.matchMedia();
   media.add(MOTION, () => {
+    // Um contador so para a pagina: a alternancia de margem nao reinicia.
+    const flow = { count: 0 };
     animateProgress();
     animateHero();
-    animateContent();
-    animateLayers();
+    animateContent(flow);
+    animateLayers(flow);
   });
 
   // As posicoes dependem da fonte carregada e do layout assentado.

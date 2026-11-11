@@ -619,12 +619,25 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
 
 /* ---------------------------------------------------------------- movimento
 
-   A revelação por scroll é do GSAP (runtime/exemplos-scroll.js). O bloco
-   sobe para o lugar quando entra na viewport; o semi-título dentro dele não
-   repete o deslocamento — um gesto só por bloco. */
+   O gesto da página é lateral: cada bloco entra pela margem — esquerda,
+   direita, esquerda — e assenta no meio, compondo o layout. A revelação
+   por scroll é do GSAP (runtime/exemplos-scroll.js); a revelação dos títulos
+   de seção é lateral também, no mesmo relógio da vertical. */
 
-.exemplos-agent [data-rise]:not(.is-in),
-.exemplos-layer [data-rise]:not(.is-in) { transform: none; }
+@media (prefers-reduced-motion: no-preference) {
+  /* O semi-título da seção entra pela margem, no mesmo gesto do bloco. */
+  body.exemplos-page [data-rise]:not(.is-in) { transform: translateX(-28px); }
+
+  /* Cada palavra entra pela margem esquerda da própria máscara. */
+  body.exemplos-page [data-words]:not(.is-in) .wm__i { transform: translateX(-125%); }
+}
+
+/* Dentro do cartão e da camada não há dois gestos: o bloco chega com o
+   próprio título. */
+body.exemplos-page .exemplos-agent [data-rise]:not(.is-in),
+body.exemplos-page .exemplos-layer [data-rise]:not(.is-in),
+body.exemplos-page .exemplos-agent [data-words]:not(.is-in) .wm__i,
+body.exemplos-page .exemplos-layer [data-words]:not(.is-in) .wm__i { transform: none; }
 
 /* ---------------------------------------------------------------- responsivo */
 
@@ -707,3 +720,5 @@ body:has(#oaas-page-root .exemplos-nav)::-webkit-scrollbar-thumb {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* hot reload probe */

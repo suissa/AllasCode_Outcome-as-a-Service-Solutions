@@ -120,8 +120,12 @@ function oaasAssetsManifest(): Plugin {
 /**
  * O WSL monta /mnt/d via DrvFs, que nao suporta inotify: o watcher do Vite nunca
  * dispara e o hot reload nao acontece. Nesse caso o watcher passa a usar polling.
+ *
+ * A opcao watch so entra no config quando o polling e necessario: passar
+ * watch: null desliga o watcher do Vite por completo, matando o hot reload.
  */
 const needsPolling = process.platform === "linux" && /^\/mnt\//.test(process.cwd());
+const watch = needsPolling ? { usePolling: true, interval: 300 } : undefined;
 
 
 export default defineConfig({
@@ -130,7 +134,7 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: false,
-    watch: needsPolling ? { usePolling: true, interval: 300 } : null
+    ...(watch ? { watch } : {})
   },
   preview: { port: 4173, strictPort: false },
   build: {
