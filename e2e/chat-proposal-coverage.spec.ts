@@ -116,7 +116,7 @@ async function seedDiscoveryAnswers(
   expect(handoff.answers.success_definition.value).toContain("conversão");
   expect(handoff.chatAnswers.operational_bottleneck.value).toBe("information");
   expect(handoff.chatAnswers.conversion_notes.value).toContain("visibilidade");
-  expect(handoff.chatAnswers.primary_kpi.value).toBe("sales_count");
+  expect(handoff.chatAnswers.primary_kpi.value).toBe("conversion");
   expect(handoff.chatAnswers.target_value.value).toContain("conversão");
   expect(handoff.chatAnswers.sales_process.value).toContain("Vendas");
   expect(handoff.answers.company_name.value).toBe("Empresa E2E");
