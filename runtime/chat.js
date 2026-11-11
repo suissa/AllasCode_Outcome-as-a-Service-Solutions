@@ -64,16 +64,37 @@ export async function mount(page) {
     return { row, avatar };
   }
 
+  let lastAssistantTyping = Promise.resolve();
+
   function add(role, text) {
     const { row, avatar } = makeMessage(role);
     const bubble = document.createElement("div");
     bubble.className = "chat-bubble";
-    bubble.textContent = text;
     row.append(avatar, bubble);
     chat.append(row);
     chat.scrollTop = chat.scrollHeight;
     OQ.logMessage("chat", role, text);
     updateCount();
+
+    if (role !== "assistant") {
+      bubble.textContent = text;
+      return Promise.resolve();
+    }
+
+    const message = String(text);
+    lastAssistantTyping = lastAssistantTyping.then(async () => {
+      const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+      if (reducedMotion || message.length < 2) {
+        bubble.textContent = message;
+        return;
+      }
+      for (let index = 0; index < message.length; index++) {
+        bubble.textContent += message[index];
+        chat.scrollTop = chat.scrollHeight;
+        await new Promise(resolve => window.setTimeout(resolve, 14));
+      }
+    });
+    return lastAssistantTyping;
   }
 
   function addLink(text, label, url) {
@@ -115,8 +136,13 @@ export async function mount(page) {
 
   function renderStepControls(step) {
     clearControls();
-    input.placeholder = step.placeholder || copy.answerPlaceholder;
-    if (step.options?.length) {
+    input.placeholder = step.options?.length
+      ? "Selecione uma das opções acima..."
+      : (step.placeholder || copy.answerPlaceholder);
+
+    const render = () => {
+      clearControls();
+      if (step.options?.length) {
       const group = document.createElement("div");
       group.className = "chat-mission-grid";
       step.options.forEach(option => {
@@ -127,9 +153,9 @@ export async function mount(page) {
         button.addEventListener("click", () => submitAnswer(option.value, option.label));
         group.append(button);
       });
-      controls.append(group);
-    }
-    const skip = document.createElement("button");
+        controls.append(group);
+      }
+      const skip = document.createElement("button");
     skip.type = "button";
     skip.className = "chat-mission-skip";
     skip.textContent = copy.skipQuestion;
@@ -140,7 +166,11 @@ export async function mount(page) {
       pendingTurn = { message: copy.unknownAnswer, stepId: previousStep?.id || "unknown" };
       continueMission();
     });
-    controls.append(skip);
+      controls.append(skip);
+    };
+
+    // As opções só aparecem depois que a mensagem terminou de ser digitada.
+    lastAssistantTyping.then(render);
   }
 
   let pendingTurn = null;
@@ -209,6 +239,22 @@ export async function mount(page) {
   function submitAnswer(value, label) {
     if (isResponding || !String(value || "").trim()) return;
     const previousStep = OQ.currentMissionStep();
+    if (previousStep?.options?.length) {
+      const normalized = candidate => String(candidate || "")
+        .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").trim().toLocaleLowerCase("pt-BR");
+      const selected = previousStep.options.find(option =>
+        normalized(option.value) === normalized(value) ||
+        normalized(option.label) === normalized(value)
+      );
+      if (!selected) {
+        add("assistant", "Para manter esta etapa objetiva, escolha uma das opções apresentadas nos botões. Sua resposta ainda não foi registrada.");
+        renderStepControls(previousStep);
+        input.value = "";
+        return;
+      }
+      value = selected.value;
+      label = selected.label;
+    }
     add("user", label || value);
     OQ.advanceMission(String(value));
     pendingTurn = { message: String(value), stepId: previousStep?.id || "unknown" };
