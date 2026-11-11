@@ -8,7 +8,7 @@
   ],
   "bodyClass": "exemplos-page",
   "shell": "exemplos-nav + main + exemplos-footer",
-  "renderer": "runtime/exemplos-page.js",
+  "renderer": "runtime/exemplos-page.tsx",
   "slots": [
     "navigation",
     "hero",
@@ -18,8 +18,8 @@
     "closing-cta"
   ],
   "scripts": [
-    "app.js",
-    "runtime/exemplos-page.js",
-    "runtime/exemplos-scroll.js"
+    "app.tsx",
+    "runtime/exemplos-page.tsx",
+    "runtime/exemplos-scroll.tsx"
   ]
 }
