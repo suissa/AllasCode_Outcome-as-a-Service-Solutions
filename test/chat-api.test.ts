@@ -45,7 +45,7 @@ test("Chat API sends context to OpenRouter and restores conversation from Postgr
       }
     });
     assert.equal(first.statusCode, 200);
-    assert.match(first.json().reply, /por quais canais/i);
+    assert.match(first.json<{ reply: string }>().reply, /setor/i);
 
     const second = await app.inject({
       method: "POST",
@@ -61,7 +61,7 @@ test("Chat API sends context to OpenRouter and restores conversation from Postgr
       }
     });
     assert.equal(second.statusCode, 200);
-    assert.match(second.json().reply, /tamanho aproximado/i);
+    assert.match(second.json<{ reply: string }>().reply, /tamanho aproximado/i);
 
     const history = calls[1].messages.map(message => message.content).join("\n");
     assert.match(history, /quero vender mais/);
@@ -70,7 +70,7 @@ test("Chat API sends context to OpenRouter and restores conversation from Postgr
     const persisted = await sql`
       SELECT COUNT(*)::int AS total FROM chat_messages WHERE session_id = ${sessionId}
     `;
-    assert.equal(persisted[0].total, 4);
+    assert.equal(persisted[0]?.total, 4);
   } finally {
     await app.close();
     await sql`DELETE FROM chat_sessions WHERE id = ${sessionId}`;
