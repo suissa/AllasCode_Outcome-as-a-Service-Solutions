@@ -33,7 +33,9 @@ test("target specification rejects invalid windows, non-finite values and contra
  const invalid={metricId:metric.id,baseline:11,target:10,unit:metric.unit,periodStart:"2026-10-01T00:00:00Z",periodEnd:"2026-10-01T00:00:00Z",constraints:["","duplicate","duplicate"]};
  assert.ok(validateTarget(invalid).includes("period:INVALID"));
  assert.ok(validateTarget({...invalid,periodEnd:"2026-12-31T00:00:00Z",target:Number.NaN}).includes("values:INVALID"));
- assert.ok(validateTarget({...invalid,periodEnd:"2026-12-31T00:00:00Z"}).includes("target:DIRECTION_CONTRADICTION"));
+ assert.ok(validateTarget({...invalid,periodEnd:"2026-12-31T00:00:00Z"}).length===0);
+ const approved=approveBaseline(baseline,"baseline_owner");
+ assert.throws(()=>approveOutcomeTarget({...invalid,periodEnd:"2026-12-31T00:00:00Z"},approved,"target_owner"),/TARGET_DIRECTION_CONTRADICTION/);
  assert.ok(validateTarget({...invalid,periodEnd:"2026-12-31T00:00:00Z",target:15,constraints:["risk","risk"]}).includes("constraints:DUPLICATE"));
 });
 test("baseline and target approval reject invalid actors and timestamps",()=>{
