@@ -25,27 +25,35 @@ test("boas-vindas não usam termos de RPG", async ({ page }) => {
   expect(welcome).toContain("assistente do OaaS.Quest");
 });
 
-test("o Chat envia a primeira intenção à API e apresenta a resposta do assistente", async ({ page }) => {
-  let requestBody: any = null;
+test("o reconhecimento mostra opções após a digitação e rejeita respostas digitadas", async ({ page }) => {
+  let apiCalls = 0;
   await page.route("**/api/chat/turn", async route => {
-    requestBody = route.request().postDataJSON();
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        sessionId: requestBody.sessionId,
-        reply: "Entendi seu objetivo. Em qual setor sua empresa atua?"
-      })
-    });
+    apiCalls++;
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ reply: "Complementação da missão." }) });
   });
 
   await page.goto("/chat");
   await page.locator("#message").fill("quero vender mais");
   await page.locator('#composer button[type="submit"]').click();
 
-  await expect(page.locator(".chat-message[data-role=\"assistant\"]").last())
-    .toContainText("Em qual setor sua empresa atua?");
-  expect(requestBody.message).toBe("quero vender mais");
-  expect(requestBody.context.mission.answers.desiredOutcome.value).toBe("quero vender mais");
-  expect(requestBody.context.nextQuestion).toBe("Em qual setor sua empresa atua?");
+  const sectorQuestion = page.getByText("Em qual setor sua empresa atua?");
+  await expect(sectorQuestion).toBeVisible();
+  await expect(page.getByRole("button", { name: "Comércio" })).toBeVisible();
+
+  await page.locator("#message").fill("Comércio, mas também vendo pela internet");
+  await page.locator('#composer button[type="submit"]').click();
+  await expect(page.getByText(/Respostas digitadas não são registradas nesta etapa/i)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Comércio" })).toBeVisible();
+
+  const mission = await page.evaluate(async () => {
+    const oq = await (window as any).OQReady;
+    return oq.getMission();
+  });
+  expect(mission.stepIndex).toBe(0);
+  expect(mission.answers.segment).toBeUndefined();
+  expect(apiCalls).toBe(0);
+
+  await page.getByRole("button", { name: "Comércio" }).click();
+  await expect(page.getByText("Qual é o tamanho aproximado da operação?")).toBeVisible();
+  await expect(page.getByRole("button", { name: "2–5 pessoas" })).toBeVisible();
 });
