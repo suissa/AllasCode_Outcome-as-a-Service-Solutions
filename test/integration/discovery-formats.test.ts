@@ -114,6 +114,7 @@ test("Guilda selects the first explicit KPI when a mission mentions multiple met
   const mission = OQ.getMission();
   assert.equal(mission.status, "review");
   OQ.confirmMission();
+  OQ.prepareDiscovery();
   const saved = JSON.parse(runtime.localStorage.getItem("goaltropic.discovery.v1")!);
   assert.equal(saved.answers.primary_kpi.value, "conversion");
 });
