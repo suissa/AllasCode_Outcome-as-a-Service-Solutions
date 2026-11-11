@@ -95,6 +95,7 @@ async function seedDiscoveryAnswers(
       throw new Error("CHAT_DISCOVERY_HANDOFF_MISSING");
     }
 
+    const chatAnswers = { ...saved.answers };
     saved.answers = {
       ...saved.answers,
       company_name: { value: "Empresa E2E", status: "provided", source: "e2e" },
@@ -102,7 +103,7 @@ async function seedDiscoveryAnswers(
     };
     saved.index = 0;
     localStorage.setItem(key, JSON.stringify(saved));
-    return saved;
+    return { ...saved, chatAnswers };
   }, scenarioAnswers);
 
   expect(handoff.source).toBe("chat");
@@ -112,11 +113,11 @@ async function seedDiscoveryAnswers(
   expect(handoff.answers.goal_deadline.value).toBe("90d");
   expect(handoff.answers.goal_target.value).toContain("Aumentar as vendas");
   expect(handoff.answers.success_definition.value).toContain("conversão");
-  expect(handoff.answers.operational_bottleneck.value).toBe("information");
-  expect(handoff.answers.conversion_notes.value).toContain("visibilidade");
-  expect(handoff.answers.primary_kpi.value).toBe("sales_count");
-  expect(handoff.answers.target_value.value).toContain("conversão");
-  expect(handoff.answers.sales_process.value).toContain("Vendas");
+  expect(handoff.chatAnswers.operational_bottleneck.value).toBe("information");
+  expect(handoff.chatAnswers.conversion_notes.value).toContain("visibilidade");
+  expect(handoff.chatAnswers.primary_kpi.value).toBe("sales_count");
+  expect(handoff.chatAnswers.target_value.value).toContain("conversão");
+  expect(handoff.chatAnswers.sales_process.value).toContain("Vendas");
   expect(handoff.answers.company_name.value).toBe("Empresa E2E");
 }
 
