@@ -1,4 +1,4 @@
-# ADR-004: Durable settlement action workflow
+# ADR-008: Durable settlement action workflow
 
 ## Status
 Accepted
