@@ -5,8 +5,26 @@ import { readFile } from "node:fs/promises";
 const SYSTEM_PROMPT = await readFile(new URL("../prompts/chat-system.pt-BR.md", import.meta.url), "utf8");
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
-function safeJson(value) {
-  try { return JSON.parse(value); } catch { return null; }
+type ChatTurnBody = {
+  sessionId: string;
+  message: string;
+  context: {
+    nextQuestion?: string;
+    currentStep?: string;
+    mission?: Record<string, unknown>;
+  };
+};
+
+type OpenRouterPayload = {
+  choices?: Array<{
+    message?: {
+      content?: unknown;
+    };
+  }>;
+};
+
+function safeJson(value: string): unknown {
+  try { return JSON.parse(value) as unknown; } catch { return null; }
 }
 
 export function createApiServer({
@@ -18,7 +36,7 @@ export function createApiServer({
 } = {}) {
   const app = Fastify({ logger });
   const sql = databaseUrl ? postgres(databaseUrl, { max: 10, idle_timeout: 20 }) : null;
-  const rateWindows = new Map();
+  const rateWindows = new Map<string, { startedAt: number; count: number }>();
 
   app.addHook("preHandler", async (request, reply) => {
     if (request.method !== "POST" || request.url.split("?")[0] !== "/api/chat/turn") return;
@@ -66,7 +84,7 @@ export function createApiServer({
     model
   }));
 
-  app.post("/api/chat/turn", {
+  app.post<{ Body: ChatTurnBody }>("/api/chat/turn", {
     schema: {
       body: {
         type: "object",
@@ -117,7 +135,7 @@ export function createApiServer({
       mission: context.mission || {}
     };
 
-    let response;
+    let response: Response;
     try {
       response = await fetchImpl(OPENROUTER_URL, {
         method: "POST",
@@ -150,10 +168,13 @@ export function createApiServer({
       return reply.code(502).send({ error: "LLM_REQUEST_FAILED" });
     }
 
-    const payload = await response.json();
+    const payload = await response.json() as OpenRouterPayload;
     const raw = payload.choices?.[0]?.message?.content;
     const parsed = typeof raw === "string" ? safeJson(raw) : raw;
-    let assistantText = typeof parsed?.reply === "string" ? parsed.reply.trim() : "";
+    const parsedReply = parsed !== null && typeof parsed === "object"
+      ? (parsed as Record<string, unknown>).reply
+      : undefined;
+    let assistantText = typeof parsedReply === "string" ? parsedReply.trim() : "";
 
     if (!assistantText) return reply.code(502).send({ error: "LLM_INVALID_RESPONSE" });
     if (nextQuestion && !assistantText.includes(nextQuestion)) {
