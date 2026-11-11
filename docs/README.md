@@ -2,7 +2,7 @@
 
 Esta pasta reúne as definições de produto, operação, engenharia, contratos e comercialização necessárias para transformar uma intenção de negócio em um resultado mensurável, entregue e comprovável.
 
-## Mapa de leitura
+## Mapa de leitura\n\n| [Architecture Reference v1.5](./Architecture-Reference-v1.5.md) | Referência integrada: ciclo de outcomes, evidências, previsão adaptativa, arquitetura policromática, SBTA, antifragilidade sintropicamente governada, segurança e autonomia |
 
 | Documento | Para que serve |
 |---|---|
