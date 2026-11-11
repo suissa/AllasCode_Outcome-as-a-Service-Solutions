@@ -39,7 +39,7 @@ test("Chat confirms a retail mission, hands off to Discovery and persists the pr
   await expect(page.getByText(/resumo inicial da sua missão/i)).toBeVisible();
   await page.getByRole("button", { name: /confirmar missão e aprofundar diagnóstico/i }).click();
   await page.getByRole("button", { name: /aprofundar diagnóstico/i }).click();
-  await expect(page).toHaveURL(/\/descoberta/);
+  await expect(page).toHaveURL(/chat#descoberta$/);
   const handoff = await page.evaluate(() => JSON.parse(localStorage.getItem("goaltropic.discovery.v1") || "null"));
   expect(handoff.source).toBe("chat");
   expect(handoff.answers.segment.value).toBe("retail");
