@@ -210,8 +210,10 @@ export async function mount(page) {
     clearControls();
     input.value = "";
     const config = page.sources.discovery;
-    if (!config || !Array.isArray(config.stages)) {
-      await add("assistant", "Não consegui carregar as perguntas da descoberta. Tente novamente em instantes.");
+    const sectorPlaybooks = page.sources["sector-playbooks"]?.sectors || [];
+    const sectorScripts = page.sources["sector-discovery"]?.scripts || {};
+    if (!config || !Array.isArray(config.stages) || !Object.keys(sectorScripts).length) {
+      await add("assistant", "Não consegui carregar os roteiros da descoberta. Tente novamente em instantes.");
       return;
     }
     const storageKey = config.engine?.storageKey || "goaltropic.discovery.v1";
@@ -219,11 +221,50 @@ export async function mount(page) {
     try { saved = JSON.parse(localStorage.getItem(storageKey) || "{}") || {}; } catch {}
     saved.answers ||= {};
     saved.source = "chat";
-    const questions = (config.stages || []).flatMap(stage =>
+    const commonStages = (config.stages || []).filter(stage => ["stage_01", "stage_02"].includes(stage.id));
+    const commonQuestions = commonStages.flatMap(stage =>
       (stage.questions || []).map(question => ({ ...question, stageId: stage.id, stageTitle: stage.title, stageDescription: stage.description }))
     );
-    let index = Math.max(0, Number(saved.chatIndex) || 0);
+    const segmentQuestion = commonQuestions.find(question => question.id === "segment");
+    if (segmentQuestion) {
+      segmentQuestion.options = sectorPlaybooks.map(sector => ({ value: sector.id, label: sector.name }));
+    }
+    let questions = commonQuestions.slice();
+    let index = 0;
     let selected = new Set();
+    const resolveSectorId = value => value === "food" ? "food-hospitality" : value === "technology" ? "ecommerce" : value;
+    const configureSectorScript = value => {
+      const sectorId = resolveSectorId(value);
+      const script = sectorScripts[sectorId];
+      if (!script) return false;
+      if (saved.sectorScriptId === sectorId && questions.some(question => question.sectorSpecific)) return true;
+      const sector = sectorPlaybooks.find(item => item.id === sectorId);
+      const sectorQuestions = (script.stages || []).flatMap(stage =>
+        (stage.questions || []).map(question => ({
+          ...question,
+          sectorSpecific: true,
+          stageId: sectorId + ":" + stage.id,
+          stageTitle: stage.title,
+          stageDescription: stage.description
+        }))
+      );
+      questions = [...commonQuestions, ...sectorQuestions];
+      saved.sectorId = sectorId;
+      saved.sectorScriptId = sectorId;
+      saved.sectorName = sector?.name || sectorId;
+      saved.sectorScriptIntro = script.intro || "";
+      if (saved.chatCompleted && saved.sectorScriptId !== sectorId) saved.chatCompleted = false;
+      return true;
+    };
+    const existingSector = saved.answers.segment?.value || saved.sectorId;
+    if (existingSector) {
+      configureSectorScript(existingSector);
+      index = Math.max(0, Number(saved.chatIndex) || 0);
+    } else {
+      // Migra sessões antigas do roteiro genérico para o roteiro setorial.
+      saved.chatIndex = 0;
+      saved.chatCompleted = false;
+    }
     const persist = () => {
       saved.chatIndex = index;
       saved.updatedAt = new Date().toISOString();
@@ -243,6 +284,7 @@ export async function mount(page) {
     const storeAnswer = async (question, value, label, status = "provided") => {
       add("user", label);
       saved.answers[question.id] = { value: status === "unknown" ? null : value, status, updatedAt: new Date().toISOString(), source: "chat" };
+      if (question.id === "segment" && status === "provided") configureSectorScript(value);
       index++;
       persist();
       updateProgress();
@@ -326,23 +368,20 @@ export async function mount(page) {
       saved.chatCompletedAt = new Date().toISOString();
       persist();
       updateProgress();
-      const matched = (config.solutions || []).map(solution => {
-        const signals = (solution.signals || []).filter(signal => {
-          const [field, expected] = signal.split(":");
-          const actual = saved.answers[field];
-          if (!actual || actual.status !== "provided") return false;
-          return Array.isArray(actual.value) ? actual.value.includes(expected) : String(actual.value) === expected;
-        });
-        return { ...solution, matchedSignals: signals.length };
-      }).filter(solution => solution.matchedSignals > 0)
-        .sort((a, b) => b.matchedSignals - a.matchedSignals)
-        .slice(0, 5);
-      const resultText = matched.length
-        ? "O cruzamento inicial das respostas identificou estas frentes para validação:\n\n" + matched.map((solution, i) =>
-            (i + 1) + ". " + solution.name + " — " + solution.description + " Sinais associados: " + solution.matchedSignals + "."
-          ).join("\n\n")
-        : "As respostas foram registradas. Ainda não há sinais suficientes para recomendar uma frente específica; a análise deverá esclarecer os pontos em aberto.";
-      await add("assistant", "Você concluiu as " + questions.length + " perguntas da Descoberta. " + Object.keys(saved.answers).length + " campos foram registrados.\n\n" + resultText + "\n\nEstas associações são hipóteses preliminares, não resultados comprovados. A próxima etapa valida as informações e as evidências.");
+      const sector = sectorPlaybooks.find(item => item.id === saved.sectorId);
+      const sectorScript = sectorScripts[saved.sectorId];
+      const sectorAnswers = questions.filter(question => question.sectorSpecific && saved.answers[question.id]?.status === "provided");
+      const list = values => (values || []).map(value => "• " + value).join("\\n");
+      const resultText = sector && sectorScript
+        ? "Roteiro aplicado: " + sector.name + ".\\n\\n" +
+          sectorScript.intro + "\\n\\n" +
+          "Problemas que serão investigados:\\n" + list(sector.problems) + "\\n\\n" +
+          "Soluções que poderão ser avaliadas:\\n" + list(sector.solutions) + "\\n\\n" +
+          "Indicadores relevantes:\\n" + list(sector.metrics) + "\\n\\n" +
+          "Evidências a validar:\\n" + list(sector.evidence) + "\\n\\n" +
+          "Controles e restrições:\\n" + list(sector.guardrails)
+        : "As respostas foram registradas. A análise deverá esclarecer os pontos em aberto.";
+      await add("assistant", "Você concluiu a descoberta setorial de " + (sector?.name || "sua empresa") + ". " + Object.keys(saved.answers).length + " campos foram registrados, incluindo " + sectorAnswers.length + " respostas específicas do setor.\\n\\n" + resultText + "\\n\\nAs frentes listadas são hipóteses de investigação, não recomendações confirmadas. A próxima etapa valida as informações, as evidências e os critérios de sucesso.");
       clearControls();
       const restart = document.createElement("button");
       restart.type = "button";
@@ -357,7 +396,7 @@ export async function mount(page) {
         askNext();
       });
       controls.append(restart);
-      OQ.logInteraction("chat", "discovery-completed", { answered: Object.keys(saved.answers).length, recommendations: matched.length });
+      OQ.logInteraction("chat", "discovery-completed", { answered: Object.keys(saved.answers).length, sector: saved.sectorId, sectorAnswers: sectorAnswers.length });
     };
     const askNext = async () => {
       while (index < questions.length && answerExists(questions[index])) index++;
@@ -368,7 +407,9 @@ export async function mount(page) {
       }
       const question = questions[index];
       const intro = question.stageId !== saved.lastChatStage
-        ? question.stageTitle + " — " + question.stageDescription + "\n\n"
+        ? (question.sectorSpecific && question.stageId.endsWith(":sector_operation")
+            ? (saved.sectorScriptIntro || "") + "\\n\\n"
+            : "") + question.stageTitle + " — " + question.stageDescription + "\\n\\n"
         : "";
       saved.lastChatStage = question.stageId;
       persist();
@@ -396,7 +437,7 @@ export async function mount(page) {
       input.value = "";
       storeAnswer(question, value, value);
     });
-    await add("assistant", "Vamos fazer a descoberta por esta conversa. Vou apresentar as perguntas em sequência; nas perguntas com opções, selecione um dos botões. Você pode pular qualquer pergunta ou marcar que não sabe a resposta.");
+    await add("assistant", "Vamos começar pela identificação da empresa e do segmento. Depois disso, vou conduzir um roteiro próprio para sua área de atuação, com perguntas sobre operação, indicadores, sistemas, evidências e restrições.");
     await askNext();
   }
 
