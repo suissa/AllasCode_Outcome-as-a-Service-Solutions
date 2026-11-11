@@ -24,10 +24,10 @@ This matrix ties each open atomic issue to the code entry point and automated te
 | #26 | Baseline/source provenance | `src/diagnosis/outcome-spec.ts`, `src/measurement/metrics.ts` |
 | #27 | Data quality/freshness/confidence | `src/measurement/data-quality.ts`; metrics tests |
 | #28 | Bottlenecks/risks/constraints | `src/diagnosis/outcome-spec.ts` |
-| #49 | Target/timeframe/window | `src/diagnosis/outcome-spec.ts` |
+| #49 | Target/timeframe/window with finite values, valid period bounds, constraints and metric-direction consistency | `src/diagnosis/outcome-spec.ts`; `test/diagnosis/outcome-spec.test.ts`; `specs/outcome-specification/` |
 | #50 | Attribution/assumptions/uncertainty | `src/outcomes/attribution.ts`; core-controls tests |
-| #51 | Approve outcome/baseline | `src/diagnosis/outcome-spec.ts` |
-| #52 | Detect baseline/target change | `src/measurement/target-change.ts` |
+| #51 | Approve immutable baseline and outcome target with independent actor and validated approval timestamps | `src/diagnosis/outcome-spec.ts`; `test/diagnosis/outcome-spec.test.ts`; `specs/outcome-specification/` |
+| #52 | Detect baseline/target changes and require explicit re-approval | `src/measurement/target-change.ts`; `src/diagnosis/outcome-spec.ts`; `specs/outcome-specification/` |
 | #53 | Versioned capability catalog | `src/solutions/catalog.ts` |
 | #54 | Causes → candidate capabilities | `src/solutions/catalog.ts` |
 | #55 | Alternatives/dependencies | `src/solutions/catalog.ts` |
@@ -115,3 +115,5 @@ These additions increase implementation depth and CI coverage, but do not close 
 | #22 | Validated contiguous tenant-scoped intent history, immutable snapshots and DB append-only protection | `src/intent/versioning.ts`; `src/intent/postgres-version-store.ts`; `migrations/0013_immutable_intent_versions.sql`; `test/intent/postgres-version-store.test.ts`; `test/persistence/postgres.integration.test.ts`; `specs/intent-versioning/`; `docs/ADR-005-immutable-intent-history.md` |
 
 | #23 | Three-way routing (discovery/clarification/rejected) with stable reasons and safe explanations | `src/discovery/intake.ts`; `src/discovery/qualification.ts`; `test/discovery/intake.test.ts`; `specs/intent-routing/` |
+
+| #49–52 | Hardened baseline/target contract, immutable approval snapshots, measurement-window validation and regression coverage | `src/diagnosis/outcome-spec.ts`; `test/diagnosis/outcome-spec.test.ts`; `specs/outcome-specification/` |
