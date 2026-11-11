@@ -266,6 +266,18 @@ window.OQReady = (async function () {
     return getMission();
   }
 
+  function captureMissionIntent(text) {
+    const m = state.mission;
+    if (!m || m.status !== "collecting") throw new Error("MISSION_NOT_COLLECTING");
+    const value = String(text || "").trim();
+    if (!value) throw new Error("MISSION_INTENT_REQUIRED");
+    m.answers.desiredOutcome = { value, status: "provided", updatedAt: new Date().toISOString() };
+    m.updatedAt = new Date().toISOString();
+    event("mission-intent-captured", { missionId: m.id });
+    save();
+    return getMission();
+  }
+
   function currentMissionStep() {
     const m = state.mission;
     if (!m || m.status !== "collecting") return null;
@@ -284,6 +296,11 @@ window.OQReady = (async function () {
       updatedAt: new Date().toISOString()
     };
     m.stepIndex++;
+    // Se a pessoa já informou o objetivo espontaneamente no primeiro contato,
+    // não perguntamos novamente quando o roteiro chegar a esse campo.
+    while (m.stepIndex < STEPS.length && m.answers[STEPS[m.stepIndex].id]?.status === "provided") {
+      m.stepIndex++;
+    }
     m.updatedAt = new Date().toISOString();
     if (m.stepIndex >= STEPS.length) m.status = "review";
     event("mission-answer-recorded", { missionId: m.id, field: step.id, status: skipped ? "unknown" : "provided" });
@@ -423,6 +440,7 @@ window.OQReady = (async function () {
     startMission,
     currentMissionStep,
     advanceMission,
+    captureMissionIntent,
     reviseMission,
     confirmMission,
     prepareDiscovery,
