@@ -1,0 +1,8 @@
+[metric]
+allowed_aggregations = ["sum", "avg", "min", "max", "count", "last"]
+allowed_directions = ["increase", "decrease", "target"]
+minimum_freshness_ms = 1
+require_unique_sources = true
+require_non_empty_sources = true
+freeze_registered_definitions = true
+revision_is_append_only = true
