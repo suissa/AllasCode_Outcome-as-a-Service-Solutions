@@ -51,20 +51,15 @@ test("the chat route publishes the mission copy", async () => {
   assert.ok(html.includes("OaaS.Quest"));
 });
 
-test("chooser template copy bindings resolve against the locale catalog", async () => {
-  const [template, catalogText] = await Promise.all([
-    readFile("layouts/chooser.html", "utf8"),
-    readFile("content/ui-copy.pt-BR.json", "utf8")
-  ]);
-  const catalog = JSON.parse(catalogText);
-  const resolve = (path: string) => path.split(".").reduce((value: any, key: string) => value?.[key], catalog);
-  const bindings = [...template.matchAll(/data-copy(?:-aria-label)?="([^"]+)"/g)].flatMap(match => match[1] ? [match[1]] : []);
-  assert.ok(bindings.length > 0, "chooser should declare localized copy bindings");
-  for (const binding of bindings) {
-    assert.equal(typeof resolve(binding), "string", `missing localized copy: ${binding}`);
-  }
+test("minimal chooser renders only the logo and the two entry actions", async () => {
+  const template = await readFile("layouts/chooser.html", "utf8");
+  assert.match(template, /logo-dark\\.png/);
+  assert.match(template, /href="\\/chat"/);
+  assert.match(template, /href="\\/site"/);
+  assert.equal((template.match(/<a\\b/g) || []).length, 3);
+  assert.doesNotMatch(template, /data-copy(?:-aria-label)?=/);
+  assert.doesNotMatch(template, /href="\\/(?:exemplos|descoberta|proposta)/);
 });
-
 test("proposal report is included in crawlable SEO and GEO output", async () => {
   const html = await readFile("dist/seo/proposta/index.html", "utf8");
   const llms = await readFile("dist/llms.txt", "utf8");
