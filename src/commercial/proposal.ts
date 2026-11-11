@@ -119,6 +119,9 @@ export function assessProposalReadiness(input: OutcomeProposalInput): ProposalRe
   if (!hasText(metric.id) || !hasText(metric.name) || !hasText(metric.unit)) blockers.push("PRIMARY_METRIC_INCOMPLETE");
   if (!Number.isFinite(metric.baseline)) blockers.push("BASELINE_NOT_ESTABLISHED");
   if (!Number.isFinite(metric.target) || metric.target === metric.baseline) blockers.push("TARGET_NOT_DEFINED");
+  if (metric.direction === "target") blockers.push("METRIC_DIRECTION_NOT_DEFINED");
+  if (Number.isFinite(metric.baseline) && Number.isFinite(metric.target) && metric.direction === "increase" && metric.target! <= metric.baseline!) blockers.push("TARGET_DIRECTION_MISMATCH");
+  if (Number.isFinite(metric.baseline) && Number.isFinite(metric.target) && metric.direction === "decrease" && metric.target! >= metric.baseline!) blockers.push("TARGET_DIRECTION_MISMATCH");
   if (!hasText(metric.sourceOfTruth)) blockers.push("SOURCE_OF_TRUTH_NOT_DEFINED");
   if (!hasText(metric.population)) blockers.push("MEASUREMENT_POPULATION_NOT_DEFINED");
   if (!metric.periodStart || !metric.periodEnd || Number.isNaN(Date.parse(metric.periodStart)) || Number.isNaN(Date.parse(metric.periodEnd)) || Date.parse(metric.periodEnd) <= Date.parse(metric.periodStart)) blockers.push("MEASUREMENT_PERIOD_INVALID");

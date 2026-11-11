@@ -1,6 +1,7 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { randomUUID } from "node:crypto";
 import type { OutcomeCase } from "../application/outcome-case.ts";
+import { mapDiscoveryToOutcomeProposal, type DiscoveryProposalOptions, type DiscoverySnapshot } from "../application/discovery-proposal.ts";
 import { startOutcomeCase, recordOutcomeEvidence, recordObservation, settleOutcomeCase, disputeOutcomeCase, validateOutcomeCase } from "../application/outcome-case.ts";
 import { createAuditEvent } from "../domain/audit.ts";
 import type { EvidenceRecord } from "../evidence/evidence.ts";
@@ -51,6 +52,23 @@ export function createOutcomeHttpServer(options: OutcomeHttpOptions): Server {
       }
       const actor = await options.authenticate(request);
       if (!actor || !actor.tenantId || !actor.actorId) { send(response, 401, { error: "AUTHENTICATION_REQUIRED", correlationId }); return; }
+      if (request.method === "POST" && url.pathname === "/v1/proposals/preview") {
+        if (!(await options.authorize(actor, "proposal.preview"))) { send(response, 403, { error: "FORBIDDEN", correlationId }); return; }
+        const input = await readBody(request);
+        const snapshot = input.snapshot;
+        const proposalOptions = input.options;
+        if (!snapshot || typeof snapshot !== "object" || Array.isArray(snapshot)) throw Object.assign(new Error("DISCOVERY_SNAPSHOT_REQUIRED"), { statusCode: 400 });
+        if (!proposalOptions || typeof proposalOptions !== "object" || Array.isArray(proposalOptions)) throw Object.assign(new Error("PROPOSAL_OPTIONS_REQUIRED"), { statusCode: 400 });
+        const safeOptions = {
+          ...(proposalOptions as Partial<DiscoveryProposalOptions>),
+          tenantId: actor.tenantId,
+          proposalId: "proposal_preview_" + randomUUID(),
+          version: 1,
+        } as DiscoveryProposalOptions;
+        const preview = mapDiscoveryToOutcomeProposal(snapshot as DiscoverySnapshot, safeOptions, now());
+        send(response, 200, { value: preview.proposal, source: preview.source, unmapped: preview.unmapped, correlationId });
+        return;
+      }
       const parts = url.pathname.split("/").filter(Boolean);
       if (parts[0] === "v1" && parts[1] === "contracts") {
         const registry = options.contracts;
