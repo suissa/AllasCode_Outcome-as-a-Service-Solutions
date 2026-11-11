@@ -322,6 +322,10 @@ body:has(.chat-shell) ::selection {
   margin-top: 14px;
 }
 
+.chat-choices[hidden] {
+  display: none;
+}
+
 .chat-choices {
   display: flex;
   flex-wrap: wrap;
