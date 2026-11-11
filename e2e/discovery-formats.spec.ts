@@ -24,6 +24,10 @@ async function completeDiscovery(page: any) {
 
 test("Chat confirms a retail mission, hands off to Discovery and persists the proposal", async ({ page }) => {
   await page.goto("/chat");
+  // Wait for the page shell and chat runtime to attach their event handlers.
+  await page.evaluate(async () => {
+    await (window as typeof window & { OaaSPageScriptsReady?: Promise<unknown> }).OaaSPageScriptsReady;
+  });
   await page.getByRole("button", { name: "Sou empresário" }).click();
   await page.getByRole("button", { name: "Comércio" }).click();
   await page.getByRole("button", { name: "2–5 pessoas" }).click();
